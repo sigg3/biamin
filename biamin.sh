@@ -1485,8 +1485,8 @@ else
 	esac
 fi
 case "$DEST" in
-w | W ) # Going North (Reversed: Y-1)
-	echo -en "Going North"
+w | W | n | N ) # Going North (Reversed: Y-1)
+	echo -en "You go North"
 	if (( (MAP_Y-1) < 1 )); then
 		echo -e "\nYou wanted to visit Santa, but walked in a circle.." && sleep 3
 	else
@@ -1497,8 +1497,8 @@ w | W ) # Going North (Reversed: Y-1)
 		sleep 1
 	fi
 	;;
-d | D ) # Going East (X+1)
-	echo -en "Going East"
+d | D | e | E ) # Going East (X+1)
+	echo -en "You go East"
 	if (( (MAP_X+1) > 18 )); then
 		echo -e "\nYou tried to go East of the map, but walked in a circle.." && sleep 3
 	else
@@ -1510,7 +1510,7 @@ d | D ) # Going East (X+1)
 	fi
 	;;
 s | S ) # Going South (Reversed: Y+1)
-	echo -en "Going South"
+	echo -en "You go South"
 	if (( (MAP_Y+1) > 15 )); then
 		echo -e "\nYou tried to go someplace warm, but walked in a circle.." && sleep 3
 	else
@@ -1522,7 +1522,7 @@ s | S ) # Going South (Reversed: Y+1)
 	fi		
 	;;
 a | A ) # Going West (X-1)
-	echo -en "Going West"
+	echo -en "You go West"
 	if (( (MAP_X-1) < 1 )); then
 		echo -e "\nYou tried to go West of the map, but walked in a circle.." && sleep 3
 	else
@@ -1669,6 +1669,7 @@ else
 		RollDice 6
 		if (( DICE <= FLEE )); then
 			echo "You rolled $DICE and managed to run away!" && sleep 2
+			FIGHTMODE=0
 			MapNav
 		else
 			echo "You rolled $DICE and lost your initiative.." && sleep 2

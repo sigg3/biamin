@@ -2202,7 +2202,7 @@ sleep 2
 }
 		        
 CreateBiaminLauncher() {
-BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )	# TODO $0 is a powerful beast, but will sometimes fail..
+BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )	# TODO not too sure about this.. $0 is a powerful beast
 echo "This will add $BIAMIN_RUNTIME/biamin.sh to your .bashrc"
 echo -en "Install Biamin Launcher? [Y/N]: " && read -n 1 LAUNCHER
 case "$LAUNCHER" in

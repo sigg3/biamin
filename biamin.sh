@@ -1,22 +1,13 @@
 #!/bin/bash
 # Back In A Minute by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-<<<<<<< HEAD
 VERSION="1.3.6"
-=======
-VERSION="1.3"
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
 # BEGIN CONFIGURATION                                                  #
-<<<<<<< HEAD
 # Default dir for config, change at runtime (no trailing slash!)       #
 GAMEDIR="$HOME/.biamin"                                                #
-=======
-# Game directory used for game files (no trailing slash!)              #
-GAMEDIR="$HOME/Games/biamin"                                           #
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 #                                                                      #
 # Disable BASH history for this session                                #
 unset HISTFILE                                                         #
@@ -835,7 +826,6 @@ exit
 
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() {
-<<<<<<< HEAD
 echo -e "What to do?\n1) rename CUSTOM.map to CUSTOM_err.map or\n2) delete template file CUSTOM.map (deletion is irrevocable).\n"
 echo -en "Please select 1 or 2: " && read -n 1 MAP_CLEAN_OPTS
 case "$MAP_CLEAN_OPTS" in
@@ -843,30 +833,6 @@ case "$MAP_CLEAN_OPTS" in
 2 ) rm -f "$GAMEDIR/CUSTOM.map" && echo -e "\nCustom map deleted!" && sleep 4 ;;
 * ) echo -e "\nBad option! Quitting.." && exit ;;
 esac
-=======
-echo -e "What to do? We can either 1) rename CUSTOM.map to CUSTOM_err.map or\n2) delete template file CUSTOM.map (deletion is irrevocable).\n"
-MAP_CLEAN_OPTS="Rename Delete"
-select OPT in "$MAP_CLEAN_OPTS"; do
-if [ "$OPT" = "Rename" ]; then
-	echo "Custom map file moved to $GAMEDIR/CUSTOM_err.map"
-	mv "$GAMEDIR/CUSTOM.map" "$GAMEDIR/CUSTOM_err.map"
-	CleanUp
-elif [ "$OPT" = "Delete" ]; then
-	echo -en "If you are sure you want to delete CUSTOM.map, type YES: " && read -n 3 "del_map_opt"
-	if [ "$del_map_opt" = "YES" ] ; then
-		echo -e "\nDeleting $GAMEDIR/CUSTOM.map.."
-		rm -f "$GAMEDIR/CUSTOM.map"
-		CleanUp
-	else
-		echo "Not deleting anything. Quitting.."
-		CleanUp
-	fi
-else
-	echo "Bad option! Quitting.."
-	CleanUp
-fi
-done
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 }
 
 
@@ -927,13 +893,6 @@ fi
 
 ### DISPLAY MAP with GIFT OF SIGHT
 GX_MapSight() {
-<<<<<<< HEAD
-=======
-	
-	# sed: -e expression #1, char 2: unterminated `s' command
-
-
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 # Show ONLY the NEXT item viz. "Item to see" (ITEM2C)
 # Since 1st item is item0, and CHAR_ITEMS begins at 0, ITEM2C=CHAR_ITEMS
 ITEM2C=${HOTZONE[$CHAR_ITEMS]} #original with echo.. ITEM2C=$(echo ${HOTZONE[$CHAR_ITEMS]})
@@ -1015,7 +974,6 @@ CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").she
 if [ -f "$CHARSHEET" ] ; then
 	echo " Welcome back, $CHAR!"
 	echo " Loading character sheet ..."
-<<<<<<< HEAD
 	# replaced grep | sed to only grep		#kstn 20/03/2014
 	CHAR=$(sed -n '/^CHARACTER:/s/CHARACTER: //p' "$CHARSHEET")
 	CHAR_RACE=$(sed -n '/^RACE:/s/RACE: //p' "$CHARSHEET")
@@ -1025,16 +983,6 @@ if [ -f "$CHARSHEET" ] ; then
 	CHAR_HEALTH=$(sed -n '/^HEALTH:/s/HEALTH: //p' "$CHARSHEET")
 	CHAR_ITEMS=$(sed -n '/^ITEMS:/s/ITEMS: //p' "$CHARSHEET")
 	CHAR_KILLS=$(sed -n '/^KILLS:/s/KILLS: //p' "$CHARSHEET")
-=======
-	CHAR=$(grep 'CHARACTER:' "$CHARSHEET" | sed 's/CHARACTER: //g')
-	CHAR_RACE=$(grep 'RACE:' "$CHARSHEET" | sed 's/RACE: //g')
-	CHAR_BATTLES=$(grep 'BATTLES:' "$CHARSHEET" | sed 's/BATTLES: //g')
-	CHAR_EXP=$(grep 'EXPERIENCE:' "$CHARSHEET" | sed 's/EXPERIENCE: //g')
-	CHAR_GPS=$(grep 'LOCATION:' "$CHARSHEET" | sed 's/LOCATION: //g')
-	CHAR_HEALTH=$(grep 'HEALTH:' "$CHARSHEET" | sed 's/HEALTH: //g')
-	CHAR_ITEMS=$(grep 'ITEMS:' "$CHARSHEET" | sed 's/ITEMS: //g')
-	CHAR_KILLS=$(grep 'KILLS:' "$CHARSHEET" | sed 's/KILLS: //g')
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 
 	# Compatibility fix for older charactersheets
 	if grep -q 'HOME:' "$CHARSHEET" ; then
@@ -1118,7 +1066,6 @@ case $CHAR_RACE in
 4 ) HEALING=4 && STRENGTH=1 && ACCURACY=4 && FLEE=3 ;; # hobbit (4,1,4,3)
 esac
 
-<<<<<<< HEAD
 # Adjust abilities according to items
 if (( CHAR_ITEMS >= 2 )); then
 	((HEALING++))				 		   	# Adjusting for Emerald of Narcolepsy
@@ -1128,17 +1075,6 @@ if (( CHAR_ITEMS >= 2 )); then
 			((STRENGTH++))				   	# Adjusting for Broadsword
 			if (( CHAR_ITEMS >= 8 )); then	
 				((ACCURACY++))				# Adjusting for Steady Hand Brew
-=======
-# Adjust abilities according to items and spells
-if (( CHAR_ITEMS >= 2 )); then
-	((HEALING++))				 		   # Adjusting for Emerald of Narcolepsy
-	if (( CHAR_ITEMS >= 4 )); then
-		((FLEE++))						   # Adjusting for Fast Magic Boots
-		if (( CHAR_ITEMS >= 7 )); then
-			((STRENGTH++))				   # Adjusting for Broadsword
-			if (( CHAR_ITEMS >= 8 )); then # Allows tampered files!
-				((ACCURACY++))			   # Adjusting for Steady Hand Brew
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 			fi
 		fi
 	fi
@@ -1190,20 +1126,12 @@ case "$TODAYS_MONTH" in
 	* ) TODAYS_MONTH="Biamin Festival" ;;  # rarely happens, if ever :(
 esac
 
-<<<<<<< HEAD
 # Adjust year (removes 20 from 2013). This will have to be rewritten in 2021.
 TODAYS_YEAR=${TODAYS_YEAR#??}
 TODAYS_YEAR_STR=$TODAYS_YEAR && TODAYS_YEAR_STR+="th"
 
 # Output example "3rd of Year-Turn in the 13th cycle"
 TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR_STR Cycle"	# "date sentence" LOL
-=======
-# Adjust year (removes 20 from 2013)
-TODAYS_YEAR=${TODAYS_YEAR#??}
-
-# Output example "3rd of Year-Turn in the 13th cycle"
-TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEARth Cycle"	# "date sentence" LOL
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 }
 
 
@@ -1328,17 +1256,10 @@ if (( NUMBEROFSHEETS >= 1 )); then
 		3 ) loadRACE="Dwarf" ;;
 		4 ) loadRACE="Hobbit" ;;
 		esac
-<<<<<<< HEAD
 		loadGPS=$(sed -n '/^LOCATION:/s/LOCATION: //p' "$loadSHEET")
 		loadHEALTH=$(sed -n '/^HEALTH:/s/HEALTH: //p' "$loadSHEET")
 		loadITEMS=$(sed -n '/^ITEMS:/s/ITEMS: //p' "$loadSHEET")
 		loadEXP=$(sed -n '/^EXPERIENCE:/s/EXPERIENCE: //p' "$loadSHEET")
-=======
-		loadGPS=$(grep 'LOCATION:' "$loadSHEET" | sed 's/LOCATION: //g')
-		loadHEALTH=$(grep 'HEALTH:' "$loadSHEET" | sed 's/HEALTH: //g')
-		loadITEMS=$(grep 'ITEMS:' "$loadSHEET" | sed 's/ITEMS: //g')
-		loadEXP=$(grep 'EXPERIENCE:' "$loadSHEET" | sed 's/EXPERIENCE: //g')
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 	echo -en " $i. \"$loadCHAR\" the $loadRACE ($loadHEALTH HP, $loadEXP EXP, $loadITEMS items, sector $loadGPS)\n"
 	(( i++ ))
 	done
@@ -1725,7 +1646,6 @@ if (( EN_ACCURACY > ACCURACY )); then
 	NEXT_TURN="en"
 else
 	echo "$CHAR has the initiative!"
-<<<<<<< HEAD
 	echo -en "\n\t\t   Press any key to fight or (F) to Flee"
 	read -sn 1 FLEE_OPT
 	case "$FLEE_OPT" in
@@ -1737,19 +1657,6 @@ else
 			MapNav
 		else
 			echo "You rolled $DICE and lost your initiative.." && sleep 3
-=======
-	echo -en "\n                            (F)ight or (E)scape?           "
-	read -sn 1 FLEE_OPT
-	case "$FLEE_OPT" in
-		e | E ) echo -e "\nTrying to escape.. (Flee: $FLEE)"
-		RollDice 6
-		if (( DICE <= FLEE )); then
-			echo "You rolled $DICE and managed to run away!" && sleep 2
-			FIGHTMODE=0
-			MapNav
-		else
-			echo "You rolled $DICE and lost your initiative.." && sleep 2
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 			NEXT_TURN="en"
 		fi
 		;;
@@ -1837,17 +1744,12 @@ do
 	echo -e "${ENEMY^}\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 	if [ "$NEXT_TURN" = "pl" ] ; then
 		# Player's turn
-<<<<<<< HEAD
 		echo -en "\nIt's your turn, press any key to (R)oll or (F) to Flee" && read -sn 1 "FIGHT_PROMPT"
-=======
-		echo -en "\nIt's your turn, press the R key to (R)oll" && read -sn 1 # "FIGHT_PROMPT" # Bugfix: repeated keys [shellcheck didn't like these]
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 		RollDice 6
 		GX_Monster_$ENEMY
 		echo -e "${SHORTNAME^}\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
 		echo -e "${ENEMY^}\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 		echo -en "\nROLL D6: $DICE"
-<<<<<<< HEAD
 		if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
 			unset FIGHT_PROMPT
 			# Player tries to flee!
@@ -1881,26 +1783,6 @@ do
 				echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
 				NEXT_TURN="en" && sleep 2
 			fi
-=======
-		unset FIGHT_PROMPT # Bugfix: repeated keys
-		if (( DICE <= ACCURACY )); then
-			echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
-			echo -en "Press the R key to (R)oll for damage" && read -sn 1 # "FIGHT_PROMPT" # Bugfix: repeated keys [shellcheck didn't like these]
-			RollDice 6
-			echo -en "\nROLL D6: $DICE"
-			DAMAGE=$(( DICE*STRENGTH ))
-			echo -en "\tYour blow dishes out $DAMAGE damage points!"
-			EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-			unset FIGHT_PROMPT # Bugfix: repeated keys
-			if (( EN_HEALTH <= 0 )); then
-				sleep 2 # extra pause here..
-			fi
-			NEXT_TURN="en" && sleep 3
-
-		else
-			echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
-			NEXT_TURN="en" && sleep 2
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 		fi
 	else
 		# Enemy's turn
@@ -1945,11 +1827,7 @@ else
 		echo "When you come to, the $ENEMY has left the area ..."
 	else
 		if (( LUCK == 1 )); then
-<<<<<<< HEAD
 			# ENEMY managed to FLEE
-=======
-			# ENEMY ran away
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 			echo -en "You defeated the $ENEMY and gained"
 			case "$ENEMY" in
 				bandit ) echo " 10 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+10 )) ;;
@@ -1960,7 +1838,6 @@ else
 				chthulu ) echo "500 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+500 )) ;;
 			esac
 		else
-<<<<<<< HEAD
 			if (( LUCK == 3 )); then
 				# PLAYER manged to FLEE during fight!
 				echo -en "You got away while the $ENEMY wasn't looking, gaining"
@@ -1988,31 +1865,12 @@ else
 				esac
 				(( CHAR_KILLS++ ))
 			fi
-=======
-			# enemy was slain!
-			GX_Monster_$ENEMY
-			echo -e "${SHORTNAME^}\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
-			echo -e "${ENEMY^}\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
-			echo -en "\nYou defeated the $ENEMY and gained"
-			case "$ENEMY" in
-				bandit ) echo " 20 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+20 )) ;;
-				goblin ) echo " 30 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+30 )) ;;
-				orc ) echo " 50 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+50 )) ;;
-				varg ) echo " 100 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+100 )) ;;
-				mage ) echo " 150 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+150 )) ;;
-				chthulu ) echo "1000 Experience Points!" && CHAR_EXP=$(( CHAR_EXP+1000 )) ;;
-			esac
-			(( CHAR_KILLS++ ))
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 		fi
 	fi
 	FIGHTMODE=0
 	(( CHAR_BATTLES++ ))
 	SaveCurrentSheet
-<<<<<<< HEAD
 	unset LUCK
-=======
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 	sleep 4
 	DisplayCharsheet
 fi
@@ -2390,7 +2248,6 @@ case "$1" in
 	--h | --help )	echo "Run the game BACK IN A MINUTE with '--play' or 'p' arguments to play!"
 			echo "For usage: run biamin --usage"
 			echo -e "\nCurrent dir for game files: $GAMEDIR/"
-<<<<<<< HEAD
 			echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 			exit ;;
 	--i | --install ) CreateBiaminLauncher ;;
@@ -2399,30 +2256,10 @@ case "$1" in
 				echo -e "\nCreating custom map template.."
 				MapCreateCustom
 
-=======
-			echo "Change this setting on line 10 in the CONFIGURATION section of script."
-
-			exit ;;
-	--map )         echo -e "Create custom map template?"
-			CUSTOM_MAP_PROMPT="Yes No"
-			select OPT in "$CUSTOM_MAP_PROMPT"; do
-			if [ "$OPT" = "Yes" ]; then
-				echo "Creating custom map template.."
-				break
-			elif [ "$OPT" = "No" ]; then
-				echo "Not doing anything! Quitting.."
-				exit
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 			else
 				echo -e "\nNot doing anything! Quitting.."
 				exit
-<<<<<<< HEAD
 			fi ;;
-=======
-			fi
-			done
-			MapCreateCustom ;;
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 	--play | p ) 	echo "Launching Back in a Minute.." ;;
 	
     --v | --version )	echo -e "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
@@ -2440,10 +2277,7 @@ case "$1" in
             echo "  (NO ARGUMENTS)      display this usage text and exit"
             echo "  --play or p         PLAY the game \"Back in a minute\""
 			echo "  --announce          DISPLAY an adventure summary for social media and exit"
-<<<<<<< HEAD
 			echo "  --install           ADD biamin.sh to your .bashrc file"
-=======
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 			echo "  --map               CREATE custom map template with instructions and exit"
 			echo "  --help              display help text and exit"
 			echo "  --usage             display this usage text and exit" 
@@ -2457,7 +2291,6 @@ if [ -d "$GAMEDIR" ] && [ -f "$GAMEDIR/config" ] ; then
 	COLOR=$(sed -n '/^COLOR:/s/COLOR: //p' "$GAMEDIR/config")
 	GAMEDIR=$(sed -n '/^GAMEDIR:/s/GAMEDIR: //p' "$GAMEDIR/config")
 else
-<<<<<<< HEAD
 	echo "Game directory default is $GAMEDIR/"
 	echo "You can change this in $GAMEDIR/config. Creating directory.."
 	mkdir -p "$GAMEDIR/" || NoWriteOnGamedir
@@ -2473,54 +2306,6 @@ case "$COLOR" in
 * ) ColorConfig ;;
 esac
 
-=======
-	# TODO create a function for creating game dir..? This is not critical.
-	# IT MUST a) ask for permission to do so
-	#		  b) ask for path
-	#		  c) copy itself "biamin.sh" to the path in b)
-	#		  d) change line 10 in CONFIGURATION to reflect b)
-	#		  e) exit itself and launch new gamedir's biamin.sh..!
-	echo "Please create $GAMEDIR/ directory before running" && exit
-fi
-
-# Color configuration
-if [ -f "$GAMEDIR/color" ] ; then
-	read COLOR < "$GAMEDIR/color"
-	if [ "$COLOR" = "ENABLE" ] ; then
-		COLOR=1
-		echo "Enabling color for maps!"
-	elif [ "$COLOR" = "DISABLE" ] ; then
-		COLOR=0
-		echo "Enabling old black-and-white version!"
-	else
-		rm -f "$GAMEDIR/color"
-		echo "Color config is faulty. Please run biamin again to configure colors!"
-		exit
-	fi
-else
-	echo "We need to configure terminal colors for the map!"
-	echo "Note: A symbol that is colored is easier to see on the world map!"
-	echo "Back in a minute was designed for white text on black background."
-	echo -e "Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
-	echo "Hit 1 for YES (enable color) and 2 for NO (disable color)."
-	COLOR_CONFIG="Enable Disable"
-	select OPT in "$COLOR_CONFIG"; do
-	if [ "$OPT" = "Enable" ]; then
-		echo "Enabling color!"
-		COLOR=1
-		echo "ENABLE" > "$GAMEDIR/color" && break
-	elif [ "$OPT" = "Disable" ]; then
-		echo "Disabling color!"
-		COLOR=0
-		echo "DISABLE" > "$GAMEDIR/color" && break
-	else
-		echo "Bad option! Quitting.."
-		exit
-	fi
-	done
-	sleep 1
-fi
->>>>>>> 1813685971b8991e5779e5ab65a6dba945314655
 
 # Direct termination signals to CleanUp
 trap CleanUp SIGHUP SIGINT SIGTERM

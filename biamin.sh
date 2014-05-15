@@ -1602,6 +1602,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    sleep 2
 		    break # bugfix: Fled enemy continue fighting..
 		fi
+		FightTable
 	    fi
 
 	    echo -en "\nIt's the $ENEMY's turn"

@@ -919,29 +919,25 @@ GX_Map() { # Used in MapNav()
 
     clear
 
-    # Awk comments:
-    # 1st if - place "o" (player) on map
-    #     internal if - lazy fix for ASCII borders 
-    #     MAP_Y+2 and MAP_X+1 - fix for boards
-    # 2nd if - if player has Gift-Of-Sight and not all items are found
-    #     internal if - place ITEM2C on map 
-    #     ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
-    # 3rd if - if $COLOR == 1 colorise "o" (player) and "~" (ITEM2C)
     awk '
     BEGIN { FS = "   " ; OFS = "   ";}
     {
-      if (NR == '$(( MAP_Y + 2 ))') {
+      # place "o" (player) on map
+      if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
          if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
          else                 { $'$(( MAP_X + 1 ))'="o";   } 
          }
-
+      # if player has Gift-Of-Sight and not all items are found
       if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
+         # place ITEM2C on map 
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
  	 if (NR == '$(( ITEM2C_Y + 2 ))') {
             if ( '$ITEM2C_X' == 18 ) { $'$(( ITEM2C_X + 1 ))'="~ ("; }
             else                     { $'$(( ITEM2C_X + 1 ))'="~";   } 
             }
          }
- 
+      # All color on map sets here
+      # if $COLOR == 1 colorise "o" (player) and "~" (ITEM2C)
       if ('${COLOR}' == 1 ) {
 	 if ( NR > 2 && NR < 19 ) {
  	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
@@ -950,8 +946,8 @@ GX_Map() { # Used in MapNav()
          }
       print;
     }' <<< "$MAP"
-
 }
+
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
     echo "CHARACTER: $CHAR
@@ -1243,9 +1239,10 @@ LoadGame() { # Used in MainMenu()
     else
 	local i=1
 	for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet') ; do 
-	    # Character can consist from two and more words
-	    # not only "Corum" but "Corum Jhaelen Irsei" for instance 
-	    awk '{ if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
+	    awk '{ 
+                   # Character can consist from two and more words
+                   # not only "Corum" but "Corum Jhaelen Irsei" for instance 
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
                		                 if ($2 == 2 ) { RACE="Elf"; }
@@ -1735,7 +1732,7 @@ NewSection() { # Used in Intro()
 	# Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
-	# MAP_X+2 MAP_X+2 - padding for borders
+	# MAP_Y+2 MAP_X+2 - padding for borders
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" )
 	# Finish GPS_Fix() 
 	# Look for treasure @ current GPS location

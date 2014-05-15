@@ -1857,7 +1857,6 @@ Announce() {
     echo -e "$HR\n"
 
     [[ $ANNOUNCEMENT_LENGHT -gt 160 ]] && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
-    exit 0
 }
 
 ColorConfig() {
@@ -1907,49 +1906,43 @@ CreateBiaminLauncher() {
 
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in
-    --announce )
-	Announce ;;
-    --h | --help )
-	echo "Run the game BACK IN A MINUTE with '--play' or 'p' arguments to play!"
-	echo "For usage: run biamin --usage"
-	echo "Current dir for game files: $GAMEDIR/"
-	echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
+    --announce ) Announce && exit 0 ;;
+    -h | --help ) printf "%s\n" "\
+Run the game BACK IN A MINUTE with '-p', '--play' or 'p' arguments to play!
+For usage: run biamin --usage
+Current dir for game files: $GAMEDIR/
+You can change it in the $GAMEDIR/config";
 	exit 0;;
-    --i | --install )
-	CreateBiaminLauncher ;
-	exit 0;;
+    -i | --install ) CreateBiaminLauncher && exit 0 ;;
     --map )
-	read -n1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT
-	if [ "$CUSTOM_MAP_PROMPT" = "y" ] || [ "$CUSTOM_MAP_PROMPT" = "Y" ]; then
-	    echo "Creating custom map template.."
-	    MapCreateCustom
-	else
-	    echo "Not doing anything! Quitting.."
-	fi
+	read -n 1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT;
+	case "$CUSTOM_MAP_PROMPT" in
+	    y | Y) echo -e "\nCreating custom map template.." && MapCreateCustom ;;
+	    *)     echo -e "\nNot doing anything! Quitting.."
+	esac
 	exit 0 ;;
-    --play | -p | p )
-	echo "Launching Back in a Minute.." ;;
-    --v | --version )
-	echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
-	echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
-	echo "This is free software: you are free to change and redistribute it."
-	echo "There is NO WARRANTY, to the extent permitted by law."
-	echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
-	echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
-	echo "You are free to copy, distribute, transmit and adapt the work."
-	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
-	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
+    -p | --play | p ) echo "Launching Back in a Minute.." ;;
+    -v | --version ) printf "%s\n" "\
+BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net
+Game SHELL CODE released under GNU GPL version 3 (GPLv3).
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+For details see: <http://www.gnu.org/licenses/gpl-3.0>
+Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0.
+You are free to copy, distribute, transmit and adapt the work.
+For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>
+Game created by Sigg3. Submit bugs & feedback at <$WEBURL>" ;
 	exit 0 ;;
-    --usage | * )
-	echo "Usage: biamin or ./biamin.sh"
-	echo "  (NO ARGUMENTS)      display this usage text and exit"
-	echo "  --play or p         PLAY the game \"Back in a minute\""
-	echo "  --announce          DISPLAY an adventure summary for social media and exit"
-	echo "  --install           ADD biamin.sh to your .bashrc file"
-	echo "  --map               CREATE custom map template with instructions and exit"
-	echo "  --help              display help text and exit"
-	echo "  --usage             display this usage text and exit"
-	echo "  --version           display version and licensing info and exit"
+    --usage | * ) printf "%s\n" "\
+Usage: biamin or ./biamin.sh
+  (NO ARGUMENTS)      display this usage text and exit
+  -p --play or p      PLAY the game \"Back in a minute\"
+     --announce       DISPLAY an adventure summary for social media and exit
+  -i --install        ADD biamin.sh to your .bashrc file
+     --map            CREATE custom map template with instructions and exit
+  -h --help           display help text and exit
+     --usage          display this usage text and exit
+  -v --version        display version and licensing info and exit" ;
 	exit 0;;
 esac
 

@@ -1881,31 +1881,19 @@ Do you want color? No to DISABLE, Yes or ENTER to ENABLE color: "
 }
 
 CreateBiaminLauncher() {
-    if grep -q 'biamin.sh' "$HOME/.bashrc" ; then
-	echo "Found existing launcher in $HOME/.bashrc.. skipping!"
-    else
-	BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )	# TODO $0 is a powerful beast, but will sometimes fail..
-	echo "This will add $BIAMIN_RUNTIME/biamin.sh to your .bashrc"
-	read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
-	case "$LAUNCHER" in
-	    y | Y ) LAUNCHER=1 ;;
-	    * ) LAUNCHER=0 ;;
-	esac
-	if (( LAUNCHER == 1 )) ; then
-	    {   # https://github.com/koalaman/shellcheck/wiki/SC2129
-		echo ""
-		echo "# Back in a Minute Game Launcher (just run 'biamin')"
-		echo "biamin() {"
-		echo "$BIAMIN_RUNTIME/biamin.sh \"\$@\""
-		echo "}"
-	    } >> "$HOME/.bashrc"
-	    echo "Done. Close and re-open BASH to test \"biamin\" command!"
-	else
-	    echo "Don't worry, not changing anything!"
-	fi
-    fi
-}		        
-
+    grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
+    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
+    echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
+    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
+    case "$LAUNCHER" in
+	y | Y ) { # https://github.com/koalaman/shellcheck/wiki/SC2129
+		echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')"
+		echo "alias biamin='$BIAMIN_RUNTIME/biamin.sh'"
+		    } >> "$HOME/.bashrc";
+	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
+	* ) echo -e "\nDon't worry, not changing anything!";;
+    esac
+}
 
 #                           END FUNCTIONS                              #
 #                                                                      #

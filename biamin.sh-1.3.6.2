@@ -45,8 +45,20 @@ DISABLE_CHEATS=0                                                       #
 ########################################################################
 
 ########################################################################
+#			       SETTINGS                                #
+#                                                                      #
+# Enemys abilities sets in FightMode()                                 #
+# Race abilities sets in BiaminSetup()                                 #
+# Default money sets in CompabilityFix() (for older saves) and         #
+#  in BiaminSetup() (for new characters )                              #
+#                                                                      #
+########################################################################
+
+########################################################################
+#                                                                      #
 #                       CHANGES for 1.3.6.2                            #
 # remains of GPS_Fix() included in NewSection()                        #
+#                                                                      #
 #                       CHANGES for 1.3.6.1                            #
 # NoWriteOnGamedir() replaced to Die() because was used only once      #
 # CosmeticName() removed because was used only in Intro()              #
@@ -960,7 +972,7 @@ BiaminSetup() { # Used in MainMenu()
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
     # Check whether CHAR exists if not create CHARSHEET
     if [[ -f "$CHARSHEET" ]] ; then
-	echo -e " Welcome back, $CHAR!\n Loading character sheet ..."
+	echo -en " Welcome back, $CHAR!\n Loading character sheet ..."
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	# 
@@ -1359,16 +1371,16 @@ MapNav() { # Used in NevSection()
     fi
 
     case "$DEST" in
-	w | W | n | N ) echo "You go North"; # Going North (Reversed: Y-1)
-	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo "You wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
-	d | D | e | E ) echo "You go East" # Going East (X+1)
-	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo "You tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
-	s | S ) echo "You go South" # Going South (Reversed: Y+1)
-	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo "You tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
-	a | A ) echo "You go West" # Going West (X-1)
-	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo "You tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
+	w | W | n | N ) echo -n "You go North. "; # Going North (Reversed: Y-1)
+	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo -n "You wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
+	d | D | e | E ) echo -n "You go East. " # Going East (X+1)
+	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo -n "You tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
+	s | S ) echo -n "You go South. " # Going South (Reversed: Y+1)
+	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo -n "You tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
+	a | A ) echo -n "You go West. " # Going West (X-1)
+	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo -n "You tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
 	q | Q ) CleanUp ;; # Save and exit
-	* ) echo -en "Loitering..." && sleep 2
+	* ) echo -n "Loitering..." && sleep 2
     esac
 
     # TranslatePosition() - Translate MAP_X numeric back to A-R
@@ -1602,7 +1614,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    sleep 2
 		    break # bugfix: Fled enemy continue fighting..
 		fi
-		FightTable
+		FightTable # Clear screen to prevent making the screen go "up and down" in 80x24 terminal
 	    fi
 
 	    echo -en "\nIt's the $ENEMY's turn"
@@ -1981,6 +1993,8 @@ case "$COLOR" in
 esac
 
 # Define colors if enabled
+# Do not hard-code ANSI color escape sequences in your program!
+# http://mywiki.wooledge.org/BashFAQ/037
 if (( COLOR == 1 )); then
     YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
     RESET='\033[0m'

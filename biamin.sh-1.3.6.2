@@ -1578,7 +1578,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    echo -en "\tYour blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
 		    unset FIGHT_PROMPT
-		    (( EN_HEALTH <= 0 )) && sleep 1 && break # extra pause here..
+		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
 		    NEXT_TURN="en" 
 		    sleep 3
 		else

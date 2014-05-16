@@ -1023,19 +1023,17 @@ BiaminSetup() { # Used in MainMenu()
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK
 		read CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$CHAR_LOC")
-		if (( CHAR_LOC_LEN > 3 )) || (( CHAR_LOC_LEN < 1 )) ; then
-		    Die " Error! Wrong number of characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
-		else
-		    echo -en "Sanity check.."
-		    case "$CHAR_LOC_A" in
-			A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
-			* ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
-		    esac
-		    case "$CHAR_LOC_B" in
-			1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
-			* ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
-		    esac
-		fi
+		(( CHAR_LOC_LEN > 3 )) && Die " Error! Too many characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		(( CHAR_LOC_LEN < 1 )) && Die " Error! Too less characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		echo -en "Sanity check.."
+		case "$CHAR_LOC_A" in
+		    A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
+		    * ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
+		esac
+		case "$CHAR_LOC_B" in
+		    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
+		    * ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
+		esac
 		unset CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
 		# End of SANITY check, everything okay!
 		CHAR_GPS="$CHAR_LOC"
@@ -1211,8 +1209,7 @@ License() { # Used in Credits()
 	"$PAGER" "$GAMEDIR/LICENSE" # Some like "more" than "less" (as pager) :)
     else
 	echo "License file currently missing in $GAMEDIR/ !"
-	echo -n "To DL licenses, about 60kB, type YES (requires internet access): " 
-	read "DL_LICENSE_OPT"
+	read -p "To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
 	    YES ) 
 		PrepareLicense && "$PAGER" "$GAMEDIR/LICENSE" ;;
@@ -1270,10 +1267,9 @@ LoadGame() { # Used in MainMenu()
 	return 0 # BiaminSetup() will be run after LoadGame()
     fi
 }   # return to MainMenu()
-# GAME ITEMS
 
 # GAME ITEMS
-# Randomizers for Item Positions used in e.g. HotzonesDistribute
+# Randomizers for Item Positions
 ITEM_X() { # Used in HotzonesDistribute() and GX_Map()
     ITEM_X=$((RANDOM%18+1))
 }

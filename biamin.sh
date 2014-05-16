@@ -1120,7 +1120,7 @@ TodaysDate() {
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "        (P)lay    (L)oad game    (H)ighscore    (C)redits    (Q)uit   " TOPMENU_OPT
+	read -sn 1 -p "      (P)lay      (L)oad game      (H)ighscore      (C)redits      (Q)uit      " TOPMENU_OPT
 	case "$TOPMENU_OPT" in
 	    p | P ) 
 		GX_Banner ;
@@ -1164,18 +1164,18 @@ HighScore() { # Used in MainMenu()
     else
 	HighscoreRead		# Show 10 highscore entries
     fi
-    echo -e "\n                   Press the any key to go to (M)ain menu    "
+    echo -e "\n                      Press any key to go to (M)ain menu                      "
     read -sn 1 
 }   # Return to MainMenu()
 
 Credits() { # Used in MainMenu()
     GX_Credits
-    read -sn 1 -p "                 (H)owTo    (L)icense      (M)ain menu       " "CREDITS_OPT"
+    read -sn 1 -p "             (H)owTo             (L)icense             (M)ain menu             " "CREDITS_OPT"
     case "$CREDITS_OPT" in
 	L | l ) License ;;
 	H | h ) 
 	    GX_HowTo
-	    read -sn 1 -p "                       Press any key to return to (M)ain Menu               " ;;
+	    read -sn 1 -p "                      Press any key to go to (M)ain menu                      " ;;
 	M | * ) ;;
     esac
     unset CREDITS_OPT
@@ -1231,10 +1231,8 @@ Press any key to go back to main menu!";
 LoadGame() { # Used in MainMenu()
     GX_LoadGame
     if [[ ! $(find "$GAMEDIR"/ -name '*.sheet') ]]; then
-	# TODO replace to read -p after debug
 	echo " Sorry! No character sheets in $GAMEDIR/"
-	echo " Press any key to return to (M)ain menu and try (P)lay"
-	read -sn 1 # St. Anykey - patron of cyberneticists :)
+	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
 	return 1   # BiaminSetup() will not be run after LoadGame()
     else
 	local i=1
@@ -1320,7 +1318,7 @@ ItemWasFound() { # Used in NewSection()
     COUNTDOWN=180
     while (( COUNTDOWN > 0 )); do
 	GX_Item$CHAR_ITEMS
-	echo "                      Press any letter to continue  ($COUNTDOWN)"
+	echo "                         Press any letter to continue ($COUNTDOWN)"
 	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
 
@@ -1360,8 +1358,7 @@ MapNav() { # Used in NevSection()
 	esac
 
 	echo "$HR"
-	read -sn 1 -p " I want to go   (W) North  (A) West  (S)outh  (D) East  (Q)uit  :  " DEST
-
+	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit : " DEST
     else  # The player did NOT toggle map, just moved without looking from NevSection()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
@@ -1419,11 +1416,12 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
  Items found:               $CHAR_ITEMS of 8
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
 EOF
-    echo -en "\n       (D)isplay Race Info                                     (Q)uit     "
+    echo -en "\n              (D)isplay Race Info             (A)ny key to return              "
     read -sn 1 CHARSHEET_OPT
+    # TODO replace to case
     if [[ "$CHARSHEET_OPT" == "d" || "$CHARSHEET_OPT" == "D"  ]] ; then
     	GX_Races
-    	echo -en "\n             Press any letter to return                     "
+    	echo -en "                            Press any key to return                            "
     	read -sn1
     fi
 }
@@ -1764,8 +1762,7 @@ NewSection() { # Used in Intro()
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
-	    echo -en "          (C)haracter     (R)est     (M)ap and Travel     (Q)uit   "
-	    read -sn 1 ACTION
+	    read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit        " ACTION
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
 		r | R ) 
@@ -1793,7 +1790,7 @@ Intro() { # Used in BiaminSetup()
 
     local COUNTDOWN=60
     GX_Intro
-    echo "                        Press any letter to continue" 
+    echo "                           Press any key to continue"
     while [ $COUNTDOWN -ge 0 ]; do
     	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done

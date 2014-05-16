@@ -1418,12 +1418,10 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
 EOF
     echo -en "\n              (D)isplay Race Info             (A)ny key to return              "
     read -sn 1 CHARSHEET_OPT
-    # TODO replace to case
-    if [[ "$CHARSHEET_OPT" == "d" || "$CHARSHEET_OPT" == "D"  ]] ; then
-    	GX_Races
-    	echo -en "                            Press any key to return                            "
-    	read -sn1
-    fi
+    case "$CHARSHEET_OPT" in
+	d | D) GX_Races && read -sn1 -p "                            Press any key to return";;    
+	*) ;; # Do nothing
+    esac
 }
 
 # FIGHT MODE! (secondary loop for fights)

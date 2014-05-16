@@ -1006,7 +1006,7 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_ITEMS=0
 	CHAR_KILLS=0
 	GX_Races
-	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
+	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
 	case $CHAR_RACE in
 	    2 ) echo "You chose to be an ELF" ;;
 	    3 ) echo "You chose to be a DWARF" ;;
@@ -1019,7 +1019,7 @@ BiaminSetup() { # Used in MainMenu()
 
 	# If there IS a CUSTOM.map file, ask where the player would like to start
 	if [ -f "$GAMEDIR/CUSTOM.map" ] ; then
-	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"
+	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC" 2>&1
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK
 		read CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$CHAR_LOC")
@@ -1118,11 +1118,11 @@ TodaysDate() {
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "      (P)lay      (L)oad game      (H)ighscore      (C)redits      (Q)uit      " TOPMENU_OPT
+	read -sn 1 -p "      (P)lay      (L)oad game      (H)ighscore      (C)redits      (Q)uit      " TOPMENU_OPT 2>&1
 	case "$TOPMENU_OPT" in
 	    p | P ) 
 		GX_Banner ;
-		read -p " Enter character name (case sensitive): " CHAR ;
+		read -p " Enter character name (case sensitive): " CHAR 2>&1;
 		[[ $CHAR ]] && BiaminSetup;; # Do nothing if CHAR is empty
 	    l | L ) 
 		LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
@@ -1168,12 +1168,12 @@ HighScore() { # Used in MainMenu()
 
 Credits() { # Used in MainMenu()
     GX_Credits
-    read -sn 1 -p "             (H)owTo             (L)icense             (M)ain menu             " "CREDITS_OPT"
+    read -sn 1 -p "             (H)owTo             (L)icense             (M)ain menu             " "CREDITS_OPT" 2>&1
     case "$CREDITS_OPT" in
 	L | l ) License ;;
 	H | h ) 
 	    GX_HowTo
-	    read -sn 1 -p "                      Press any key to go to (M)ain menu                      " ;;
+	    read -sn 1 -p "                      Press any key to go to (M)ain menu                      " 2>&1;;
 	M | * ) ;;
     esac
     unset CREDITS_OPT
@@ -1209,7 +1209,7 @@ License() { # Used in Credits()
 	"$PAGER" "$GAMEDIR/LICENSE" # Some like "more" than "less" (as pager) :)
     else
 	echo "License file currently missing in $GAMEDIR/ !"
-	read -p "To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
+	read -p "To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT" 2>&1
 	case "$DL_LICENSE_OPT" in
 	    YES ) 
 		PrepareLicense && "$PAGER" "$GAMEDIR/LICENSE" ;;
@@ -1229,7 +1229,7 @@ LoadGame() { # Used in MainMenu()
     GX_LoadGame
     if [[ ! $(find "$GAMEDIR"/ -name '*.sheet') ]]; then
 	echo " Sorry! No character sheets in $GAMEDIR/"
-	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
+	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" 2>&1 # St. Anykey - patron of cyberneticists :)
 	return 1   # BiaminSetup() will not be run after LoadGame()
     else
 	local i=1
@@ -1354,7 +1354,7 @@ MapNav() { # Used in NevSection()
 	esac
 
 	echo "$HR"
-	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit : " DEST
+	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit : " DEST 2>&1
     else  # The player did NOT toggle map, just moved without looking from NevSection()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
@@ -1415,7 +1415,7 @@ EOF
     echo -en "\n              (D)isplay Race Info             (A)ny key to return              "
     read -sn 1 CHARSHEET_OPT
     case "$CHARSHEET_OPT" in
-	d | D) GX_Races && read -sn1 -p "                            Press any key to return";;    
+	d | D) GX_Races && read -sn1 -p "                            Press any key to return" 2>&1;;    
 	*) ;; # Do nothing
     esac
 }
@@ -1755,7 +1755,7 @@ NewSection() { # Used in Intro()
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
-	    read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit        " ACTION
+	    read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit        " ACTION 2>&1
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
 		r | R ) 
@@ -1870,7 +1870,7 @@ CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
     echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
-    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
+    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
     case "$LAUNCHER" in
 	y | Y ) { # https://github.com/koalaman/shellcheck/wiki/SC2129
 		echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')"
@@ -1902,7 +1902,7 @@ You can change it in the $GAMEDIR/config";
 	exit 0;;
     -i | --install ) CreateBiaminLauncher && exit 0 ;;
     --map )
-	read -n 1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT;
+	read -n 1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT 2>&1;
 	case "$CUSTOM_MAP_PROMPT" in
 	    y | Y) echo -e "\nCreating custom map template.." && MapCreateCustom ;;
 	    *)     echo -e "\nNot doing anything! Quitting.."

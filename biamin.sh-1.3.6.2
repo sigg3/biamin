@@ -1485,12 +1485,11 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    LUCK=3;
 		    unset FIGHTMODE; } || {
 		    echo "You rolled $DICE and lost your initiative.." ;
-		    NEXT_TURN="en" ; } ;;
+		    NEXT_TURN="en" ; } ;
+		sleep 2 ;; # Pause to look at trying flee results :)
 	    * ) NEXT_TURN="pl" ;;
 	esac
     fi
-
-    sleep 2
 
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY--)) # Resets Quick Rabbit Reaction setting..
 

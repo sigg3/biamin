@@ -1359,7 +1359,8 @@ MapNav() { # Used in NevSection()
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
     fi
-
+    # Dirty bugfix to prevent the screen go "up and down" in 80x24 terminal. TODO make it less ugly
+    tput hpa 1 && tput el # Move cursor to the 1st col and clean to the end of line
     case "$DEST" in
 	w | W | n | N ) echo -n "You go North. "; # Going North (Reversed: Y-1)
 	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo -n "You wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;

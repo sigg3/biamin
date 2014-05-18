@@ -1412,9 +1412,9 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
  Enemies Slain:             $CHAR_KILLS ($MURDERSCORE%)
  Items found:               $CHAR_ITEMS of 8
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
+
 EOF
-    echo -en "\n              (D)isplay Race Info             (A)ny key to return              "
-    read -sn 1 CHARSHEET_OPT
+    read -sn 1 "              (D)isplay Race Info             (A)ny key to return              " CHARSHEET_OPT 2>&1
     case "$CHARSHEET_OPT" in
 	d | D) GX_Races && read -sn1 -p "                            Press any key to return" 2>&1;;    
 	*) ;; # Do nothing

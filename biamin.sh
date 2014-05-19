@@ -49,6 +49,7 @@ DISABLE_CHEATS=0                                                       #
 #                                                                      #
 # Enemys abilities sets in FightMode()                                 #
 # Race abilities sets in BiaminSetup()                                 #
+# All charsheet compability fixes sets in BiaminSetup()                #
 # Default money sets in CompabilityFix() (for older saves) and         #
 #  in BiaminSetup() (for new characters )                              #
 #                                                                      #
@@ -969,12 +970,11 @@ BiaminSetup() { # Used in MainMenu()
     # Check whether CHAR exists if not create CHARSHEET
     if [[ -f "$CHARSHEET" ]] ; then
 	echo -en " Welcome back, $CHAR!\n Loading character sheet ..."
+	# Fixes for older charsheets compability #TODO make it less ugly
+	grep -q -E '^HOME:' "$CHARSHEET" || echo "HOME: $START_LOCATION" >> $CHARSHEET
+	# Fixes ends
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
-	# 
-	# "if (/^HOME:/) { HOME = $2 }" - is compatibility fix for older charactersheets
-	# so it is last in line and will be undef if there isn't /^HOME:/ line in $CHARSHEET
-	# TODO may be this fixes should be in main section?
 	local CHAR_TMP=$(awk '
                   { 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
@@ -993,8 +993,6 @@ BiaminSetup() { # Used in MainMenu()
                  }' $CHARSHEET )
 	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME <<< "$CHAR_TMP"
 	unset CHAR_TMP
-	# Compatibility fix for older charactersheets
-	[[ $CHAR_HOME ]] || CHAR_HOME="$START_LOCATION"
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 	sleep 2

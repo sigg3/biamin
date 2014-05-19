@@ -1309,15 +1309,12 @@ ItemWasFound() { # Used in NewSection()
 	7 | *) (( ACCURACY++ )) && GX_Item7 ;;	# Steady Hand Brew (set now & setup)
     esac
 
-    COUNTDOWN=180
+    local COUNTDOWN=180
     while (( COUNTDOWN > 0 )); do
 	GX_Item$CHAR_ITEMS
 	echo "                         Press any letter to continue ($COUNTDOWN)"
 	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
-
-    unset SKIP
-
     # Remove the item that is found from the world
     i=0
     while (( i < 7 )); do

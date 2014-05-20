@@ -1409,7 +1409,7 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
 
 EOF
-    read -sn 1 "              (D)isplay Race Info             (A)ny key to return              " CHARSHEET_OPT 2>&1
+    read -sn 1 -p "              (D)isplay Race Info             (A)ny key to return              " CHARSHEET_OPT 2>&1
     case "$CHARSHEET_OPT" in
 	d | D) GX_Races && read -sn1 -p "                            Press any key to return" 2>&1;;    
 	*) ;; # Do nothing

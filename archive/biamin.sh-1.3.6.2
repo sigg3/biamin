@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.3.7" 
+VERSION="1.3.6.2" 
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
@@ -846,6 +846,7 @@ function Die() {
 
 # CLEANUP Function
 CleanUp() { # Used in MainMenu(), NewSection(),
+    clear
     [[ $FIGHTMODE ]] && {
 	#  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
@@ -853,13 +854,13 @@ CleanUp() { # Used in MainMenu(), NewSection(),
     	echo "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP" ;
     	echo -e "HEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
-    echo -e "\nLeaving the realm of magic behind ....
+    echo "Leaving the realm of magic behind ....
 Please submit bugs and feedback at <$WEBURL>"
     exit 0
 }
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() {
-    # Used in MapCreate(), NewSection() and MapNav()
+    # Used in MapCreate(), NevSection() and MapNav()
     echo -en "What to do?
 1) rename CUSTOM.map to CUSTOM_err.map or
 2) delete template file CUSTOM.map (deletion is irrevocable).
@@ -877,14 +878,10 @@ Please select 1 or 2: "
 }
 
 SetupHighscore() { # Used in main() and Announce()
-	HIGHSCORE="$GAMEDIR/highscore"
-	if [[ -f "$HIGHSCORE" ]] ; then
-		if grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" ; then	# legacy
-			rm -f "$HIGHSCORE"	# Backwards compatibility: replaces old-style empty HS..
-			clear
-		fi
-	fi
-	touch -a "$HIGHSCORE"
+    [[ -d "$GAMEDIR" ]] && { 
+	HIGHSCORE="$GAMEDIR/highscore" ;
+	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists
+    } || Die "Please create $GAMEDIR/ directory before running" # I'm not sure do we really need it
 }
 
 ### DISPLAY MAP
@@ -1249,7 +1246,7 @@ LoadGame() { # Used in MainMenu()
                    if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
                  }
                  END { 
-                 print " "'$i' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
+                 print '$i' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
                  }' $loadSHEET 
 	    SHEETS[((i++))]="$loadSHEET" # initialize SHEETS[$i] than $i++
 	done
@@ -1338,7 +1335,7 @@ ItemWasFound() { # Used in NewSection()
 }   # Return to NewSection()
 
 ## GAME ACTION: MAP + MOVE
-MapNav() { # Used in NewSection()
+MapNav() { # Used in NevSection()
     if [ -z "$1" ] ; then	# If empty = toggle map (m) was pressed, else just move!
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
@@ -1354,21 +1351,21 @@ MapNav() { # Used in NewSection()
 	esac
 
 	echo "$HR"
-	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST
+	read -sn 1 -p " I want to go   (W) North  (A) West  (S)outh  (D) East  (Q)uit  :  " DEST
 
-    else  # The player did NOT toggle map, just moved without looking from NewSection()..
+    else  # The player did NOT toggle map, just moved without looking from NevSection()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
     fi
 
     case "$DEST" in
-	w | W | n | N ) echo -en "You go North"; # Going North (Reversed: Y-1)
+	w | W | n | N ) echo "You go North"; # Going North (Reversed: Y-1)
 	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo "You wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
-	d | D | e | E ) echo -en "You go East" # Going East (X+1)
+	d | D | e | E ) echo "You go East" # Going East (X+1)
 	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo "You tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
-	s | S ) echo -en "You go South" # Going South (Reversed: Y+1)
+	s | S ) echo "You go South" # Going South (Reversed: Y+1)
 	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo "You tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
-	a | A ) echo -en "You go West" # Going West (X-1)
+	a | A ) echo "You go West" # Going West (X-1)
 	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo "You tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
 	q | Q ) CleanUp ;; # Save and exit
 	* ) echo -en "Loitering..." && sleep 2
@@ -1378,7 +1375,7 @@ MapNav() { # Used in NewSection()
     MAP_X=$(awk '{print substr("ABCDEFGHIJKLMNOPQR", '$MAP_X', 1)}' <<< "$MAP_X")   
     CHAR_GPS="$MAP_X$MAP_Y" 	# Set new [A-R][1-15] to CHAR_GPS
     sleep 1
-}   # Return NewSection()
+}   # Return NevSection()
 
 # GAME ACTION: DISPLAY CHARACTER SHEET
 DisplayCharsheet() { # Used in NewSection() and FightMode()
@@ -1413,15 +1410,12 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
  Items found:               $CHAR_ITEMS of 8
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
 EOF
-    echo -en "\n      (D)isplay Race Info        (A)ny key to continue          (Q)uit     "
+    echo -en "\n       (D)isplay Race Info                                     (Q)uit     "
     read -sn 1 CHARSHEET_OPT
     if [[ "$CHARSHEET_OPT" == "d" || "$CHARSHEET_OPT" == "D"  ]] ; then
     	GX_Races
-    	echo -en "\n                          Press any letter to return        "
+    	echo -en "\n             Press any letter to return                     "
     	read -sn1
-    elif
-		[[ "$CHARSHEET_OPT" == "q" || "$CHARSHEET_OPT" == "Q" ]] ; then
-		CleanUp
     fi
 }
 
@@ -1429,10 +1423,8 @@ EOF
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"		# ${VAR^} - capitalise $VAR
     # TODO ${VAR^} should be changed to work on bash less than 4 (MacOS for instance)
-	ENEMYNAME=$(echo $ENEMY | sed  's/^\(.\)/\U\1/' ) # nice capital NAME for enemies..
-	
-    echo -e "$SHORTNAME\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
-    echo -e "$ENEMYNAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
+    echo -e "${SHORTNAME^}\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
+    echo -e "${ENEMY^}\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 }   # Return to FightMode()
 
 FightMode() {	# FIGHT MODE! (secondary loop for fights)
@@ -1470,7 +1462,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     esac
 
     GX_Monster_$ENEMY
-    sleep 1 #?!!
+    sleep 2
 
     # Adjustments for items
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
@@ -1497,7 +1489,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	esac
     fi
 
-    sleep 1
+    sleep 2
 
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY--)) # Resets Quick Rabbit Reaction setting..
 
@@ -1609,8 +1601,6 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    unset FIGHTMODE
 		    sleep 2
 		    break # bugfix: Fled enemy continue fighting..
-		else
-			FightTable
 		fi
 	    fi
 
@@ -1787,7 +1777,6 @@ Intro() { # Used in BiaminSetup()
                        else { if (length($0) > 12) { print substr($0,0,11); }
                               else {STR = $0; LEN = 12 - length(STR); for (i=0; i < LEN; i++) { STR = STR "_" } print STR } }
                      }' <<< "$CHAR")
-	SHORTNAME=$( echo $SHORTNAME | sed  's/^\(.\)/\U\1/' ) # ALL CAPS
     TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     HotzonesDistribute # Place items randomly in map
@@ -1940,14 +1929,14 @@ case "$1" in
     --play | -p | p )
 	echo "Launching Back in a Minute.." ;;
     --v | --version )
-	echo -e "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net\n"
+	echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
 	echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
 	echo "This is free software: you are free to change and redistribute it."
 	echo "There is NO WARRANTY, to the extent permitted by law."
-	echo -e "For details see: <http://www.gnu.org/licenses/gpl-3.0>\n"
+	echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
 	echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
 	echo "You are free to copy, distribute, transmit and adapt the work."
-	echo -e "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>\n"
+	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --usage | * )

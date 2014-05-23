@@ -977,8 +977,6 @@ BiaminSetup() { # Used in MainMenu()
                  }' $CHARSHEET )
 	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME <<< "$CHAR_TMP"
 	unset CHAR_TMP
-	# Compatibility fix for older charactersheets
-	[[ $CHAR_HOME ]] || CHAR_HOME="$START_LOCATION"
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 	sleep 2
@@ -1115,7 +1113,7 @@ MainMenu() {
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;
-	    * ) ;; # TODO rewrite without clear 
+	    * ) ;;
 	esac
     done
 }
@@ -1320,8 +1318,6 @@ ItemWasFound() { # Used in NewSector()
 	echo "                      Press any letter to continue  ($COUNTDOWN)"
 	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
-
-    unset SKIP
 
     # Remove the item that is found from the world
     i=0

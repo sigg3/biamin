@@ -1,7 +1,7 @@
 #!/bin/bash
-# Back In A Minute by Sigg3.net (C) 2014
+# Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.3.6.2" 
+VERSION="1.3.7.5" 
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
@@ -44,14 +44,14 @@ DISABLE_CHEATS=0                                                       #
 #                                                                      #
 ########################################################################
 
-########################################################################
-#                       CHANGES for 1.3.6.2                            #
-# remains of GPS_Fix() included in NewSection()                        #
-#                       CHANGES for 1.3.6.1                            #
+########################################################################      # TODO Remove this block in 1.4
+#                 kstn major rewrite CHANGES for 1.3.7                 #      # I just have to blog the changes first:)
+# remains of GPS_Fix() included in NewSector()                         #
+#                       CHANGES for 1.3.6.1                            #	  # Also, I have made 1.3.7 first GPL-only release too..!
 # NoWriteOnGamedir() replaced to Die() because was used only once      #
 # CosmeticName() removed because was used only in Intro()              #
-# LookForItem() removed because was used only in NewSection()          #
-# ActionsBar() removed because was used only in NewSection()           #
+# LookForItem() removed because was used only in NewSector()           #
+# ActionsBar() removed because was used only in NewSector()            #
 # TranslatePosition() removed because used only in MapNav()            #
 # TopMenu() removed because used only in MainMenu()                    #
 # HowTo() removed becouse used only in Credits()                       #
@@ -845,22 +845,19 @@ function Die() {
 }
 
 # CLEANUP Function
-CleanUp() { # Used in MainMenu(), NewSection(),
-    clear
-    [[ $FIGHTMODE ]] && {
-	#  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
+CleanUp() { # Used in MainMenu(), NewSector(),
+    [[ $FIGHTMODE ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;
     	echo "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP" ;
     	echo -e "HEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
-    echo "Leaving the realm of magic behind ....
-Please submit bugs and feedback at <$WEBURL>"
+    echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
     exit 0
 }
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() {
-    # Used in MapCreate(), NevSection() and MapNav()
+    # Used in MapCreate(), NewSector() and MapNav()
     echo -en "What to do?
 1) rename CUSTOM.map to CUSTOM_err.map or
 2) delete template file CUSTOM.map (deletion is irrevocable).
@@ -878,10 +875,10 @@ Please select 1 or 2: "
 }
 
 SetupHighscore() { # Used in main() and Announce()
-    [[ -d "$GAMEDIR" ]] && { 
 	HIGHSCORE="$GAMEDIR/highscore" ;
 	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists
-    } || Die "Please create $GAMEDIR/ directory before running" # I'm not sure do we really need it
+	# Backwards compatibility: replaces old-style empty HS..
+	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE"
 }
 
 ### DISPLAY MAP
@@ -905,31 +902,27 @@ GX_Map() { # Used in MapNav()
     fi
     # Finish GX_MapSight()
 
-    clear
+   clear
 
-    # Awk comments:
-    # 1st if - place "o" (player) on map
-    #     internal if - lazy fix for ASCII borders 
-    #     MAP_Y+2 and MAP_X+1 - fix for boards
-    # 2nd if - if player has Gift-Of-Sight and not all items are found
-    #     internal if - place ITEM2C on map 
-    #     ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
-    # 3rd if - if $COLOR == 1 colorise "o" (player) and "~" (ITEM2C)
     awk '
     BEGIN { FS = "   " ; OFS = "   ";}
     {
-      if (NR == '$(( MAP_Y + 2 ))') {
+      # place "o" (player) on map
+      if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
          if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
          else                 { $'$(( MAP_X + 1 ))'="o";   } 
          }
-
+      # if player has Gift-Of-Sight and not all items are found
       if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
+         # place ITEM2C on map 
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
  	 if (NR == '$(( ITEM2C_Y + 2 ))') {
             if ( '$ITEM2C_X' == 18 ) { $'$(( ITEM2C_X + 1 ))'="~ ("; }
             else                     { $'$(( ITEM2C_X + 1 ))'="~";   } 
             }
          }
- 
+      # All color on map sets here
+      # if $COLOR == 1 colorise "o" (player) and "~" (ITEM2C)
       if ('${COLOR}' == 1 ) {
 	 if ( NR > 2 && NR < 19 ) {
  	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
@@ -938,7 +931,6 @@ GX_Map() { # Used in MapNav()
          }
       print;
     }' <<< "$MAP"
-
 }
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
@@ -961,12 +953,11 @@ BiaminSetup() { # Used in MainMenu()
     # Check whether CHAR exists if not create CHARSHEET
     if [[ -f "$CHARSHEET" ]] ; then
 	echo -e " Welcome back, $CHAR!\n Loading character sheet ..."
+	# Fixes for older charsheets compability #TODO make it less ugly
+	grep -q -E '^HOME:' "$CHARSHEET" || echo "HOME: $START_LOCATION" >> $CHARSHEET
+
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
-	# 
-	# "if (/^HOME:/) { HOME = $2 }" - is compatibility fix for older charactersheets
-	# so it is last in line and will be undef if there isn't /^HOME:/ line in $CHARSHEET
-	# TODO may be this fixes should be in main section?
 	local CHAR_TMP=$(awk '
                   { 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
@@ -1103,7 +1094,7 @@ TodaysDate() {
 	*) TODAYS_YEAR+="th";;
     esac
     # Output example "3rd of Year-Turn in the 13th cycle"
-    TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"	# "date sentence" LOL
+    TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }
 
 
@@ -1174,9 +1165,10 @@ Credits() { # Used in MainMenu()
 }   # Return to MainMenu()
 
 PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
-    # TODO add option to use wget if systen hasn't curl (Debian for instance)
+    # TODO add option to use wget if systen hasn't curl (Debian for instance) -kstn
+    # TODO I'm not sure. I was told to use curl because it has greater compatibility than wget..? - s3
     echo "Download GNU GPL Version 3 ..."
-    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "")
+    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I didn't know we could do that :)
     echo "Download CC BY-NC-SA 4.0 ..."
     CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
     if [[ $GPL && $CC ]] ; then 
@@ -1189,7 +1181,7 @@ $CC"  > "$GAMEDIR/LICENSE"
 	sleep 1
 	return 0
     else
-	echo "Can't download licenses :( Do you've internet access?"
+	echo "Can't download licenses :( Do you have Internet access?"
 	sleep 1
 	return 1
     fi
@@ -1200,14 +1192,13 @@ License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     clear
     if [ -f "$GAMEDIR/LICENSE" ]; then
-	"$PAGER" "$GAMEDIR/LICENSE" # Some like "more" than "less" (as pager) :)
+	less "$GAMEDIR/LICENSE" # TODO $PAGER was unset/didn't work..? Staying with less atm..
     else
 	echo "License file currently missing in $GAMEDIR/ !"
-	echo -n "To DL licenses, about 60kB, type YES (requires internet access): " 
-	read "DL_LICENSE_OPT"
+	read -p "To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
 	    YES ) 
-		PrepareLicense && "$PAGER" "$GAMEDIR/LICENSE" ;;
+		PrepareLicense && less "$GAMEDIR/LICENSE" ;;
 	    * ) 
 		echo -e "
 Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
@@ -1225,15 +1216,15 @@ LoadGame() { # Used in MainMenu()
     if [[ ! $(find "$GAMEDIR"/ -name '*.sheet') ]]; then
 	# TODO replace to read -p after debug
 	echo " Sorry! No character sheets in $GAMEDIR/"
-	echo " Press any key to return to (M)ain menu and try (P)lay"
-	read -sn 1 # St. Anykey - patron of cyberneticists :)
+	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
 	return 1   # BiaminSetup() will not be run after LoadGame()
     else
 	local i=1
 	for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet') ; do 
-	    # Character can consist from two and more words
-	    # not only "Corum" but "Corum Jhaelen Irsei" for instance 
-	    awk '{ if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
+	    awk '{ 
+                   # Character can consist from two and more words
+                   # not only "Corum" but "Corum Jhaelen Irsei" for instance 
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
                		                 if ($2 == 2 ) { RACE="Elf"; }
@@ -1263,10 +1254,9 @@ LoadGame() { # Used in MainMenu()
 	return 0 # BiaminSetup() will be run after LoadGame()
     fi
 }   # return to MainMenu()
-# GAME ITEMS
 
 # GAME ITEMS
-# Randomizers for Item Positions used in e.g. HotzonesDistribute
+# Randomizers for Item Positions
 ITEM_X() { # Used in HotzonesDistribute() and GX_Map()
     ITEM_X=$((RANDOM%18+1))
 }
@@ -1296,7 +1286,7 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
 }
 
 ## GAME FUNCTIONS: ITEMS IN LOOP
-ItemWasFound() { # Used in NewSection()
+ItemWasFound() { # Used in NewSector()
     case "$CHAR_ITEMS" in
 	0 ) GX_Item0 ;;				# Gift of Sight (set in MapNav)
 	1 ) (( HEALING++ )) && GX_Item1 ;;	# Emerald of Narcolepsy (set now & setup)
@@ -1308,7 +1298,7 @@ ItemWasFound() { # Used in NewSection()
 	7 | *) (( ACCURACY++ )) && GX_Item7 ;;	# Steady Hand Brew (set now & setup)
     esac
 
-    COUNTDOWN=180
+    local COUNTDOWN=180
     while (( COUNTDOWN > 0 )); do
 	GX_Item$CHAR_ITEMS
 	echo "                      Press any letter to continue  ($COUNTDOWN)"
@@ -1332,10 +1322,10 @@ ItemWasFound() { # Used in NewSection()
     
     SaveCurrentSheet # Save CHARSHEET items
     NODICE=1         # No fighting if item is found..
-}   # Return to NewSection()
+}   # Return to NewSector()
 
 ## GAME ACTION: MAP + MOVE
-MapNav() { # Used in NevSection()
+MapNav() { # Used in NewSector()
     if [ -z "$1" ] ; then	# If empty = toggle map (m) was pressed, else just move!
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
@@ -1351,21 +1341,21 @@ MapNav() { # Used in NevSection()
 	esac
 
 	echo "$HR"
-	read -sn 1 -p " I want to go   (W) North  (A) West  (S)outh  (D) East  (Q)uit  :  " DEST
+	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST
 
-    else  # The player did NOT toggle map, just moved without looking from NevSection()..
+    else  # The player did NOT toggle map, just moved without looking from NewSector()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
     fi
 
     case "$DEST" in
-	w | W | n | N ) echo "You go North"; # Going North (Reversed: Y-1)
+	w | W | n | N ) echo -en "You go North"; # Going North (Reversed: Y-1)
 	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo "You wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
-	d | D | e | E ) echo "You go East" # Going East (X+1)
+	d | D | e | E ) echo -en "You go East" # Going East (X+1)
 	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo "You tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
-	s | S ) echo "You go South" # Going South (Reversed: Y+1)
+	s | S ) echo -en "You go South" # Going South (Reversed: Y+1)
 	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo "You tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
-	a | A ) echo "You go West" # Going West (X-1)
+	a | A ) echo -en "You go West" # Going West (X-1)
 	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo "You tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
 	q | Q ) CleanUp ;; # Save and exit
 	* ) echo -en "Loitering..." && sleep 2
@@ -1375,10 +1365,10 @@ MapNav() { # Used in NevSection()
     MAP_X=$(awk '{print substr("ABCDEFGHIJKLMNOPQR", '$MAP_X', 1)}' <<< "$MAP_X")   
     CHAR_GPS="$MAP_X$MAP_Y" 	# Set new [A-R][1-15] to CHAR_GPS
     sleep 1
-}   # Return NevSection()
+}   # Return NewSector()
 
 # GAME ACTION: DISPLAY CHARACTER SHEET
-DisplayCharsheet() { # Used in NewSection() and FightMode()
+DisplayCharsheet() { # Used in NewSector() and FightMode()
     if (( CHAR_KILLS > 0 )); then
 	MURDERSCORE=$(echo "scale=zero;100*$CHAR_KILLS/$CHAR_BATTLES" | bc -l) # kill/fight percentage
     else
@@ -1410,25 +1400,26 @@ DisplayCharsheet() { # Used in NewSection() and FightMode()
  Items found:               $CHAR_ITEMS of 8
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
 EOF
-    echo -en "\n       (D)isplay Race Info                                     (Q)uit     "
-    read -sn 1 CHARSHEET_OPT
-    if [[ "$CHARSHEET_OPT" == "d" || "$CHARSHEET_OPT" == "D"  ]] ; then
-    	GX_Races
-    	echo -en "\n             Press any letter to return                     "
-    	read -sn1
-    fi
+	read -sn 1 -p "      (D)isplay Race Info        (A)ny key to continue          (Q)uit     " CHARSHEET_OPT
+	case "$CHARSHEET_OPT" in
+		d | D ) GX_Races && read -sn1 -p "                          Press any letter to return" ;;    
+		q | Q ) CleanUp ;;		# Do we need it here ???
+		*) ;; # Do nothing
+	esac
 }
 
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"		# ${VAR^} - capitalise $VAR
     # TODO ${VAR^} should be changed to work on bash less than 4 (MacOS for instance)
-    echo -e "${SHORTNAME^}\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
-    echo -e "${ENEMY^}\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
+	ENEMYNAME=$(echo $ENEMY | sed  's/^\(.\)/\U\1/' ) # nice capital NAME for enemies..
+	
+    echo -e "$SHORTNAME\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
+    echo -e "$ENEMYNAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 }   # Return to FightMode()
 
 FightMode() {	# FIGHT MODE! (secondary loop for fights)
-                # Used in NewSection() and Rest()
+                # Used in NewSector() and Rest()
     LUCK=0      # Used to assess the match in terms of EXP..
     FIGHTMODE=1	# Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
 
@@ -1462,7 +1453,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     esac
 
     GX_Monster_$ENEMY
-    sleep 2
+    sleep 1 #?!!
 
     # Adjustments for items
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
@@ -1489,7 +1480,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	esac
     fi
 
-    sleep 2
+    sleep 1
 
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY--)) # Resets Quick Rabbit Reaction setting..
 
@@ -1556,7 +1547,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		unset FIGHT_PROMPT
 		# Player tries to flee!
 		if (( DICE <= FLEE )); then
-		    echo -e "\tFlee [D6 $DICE < FLEE] You managed to flee!"
+		    echo -e "\tFlee [D6 $DICE < $FLEE] You managed to flee!"
 		    unset FIGHTMODE
 		    LUCK=3
 		    sleep 3
@@ -1577,8 +1568,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    DAMAGE=$(( DICE*STRENGTH ))
 		    echo -en "\tYour blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-		    unset FIGHT_PROMPT
-		    (( EN_HEALTH <= 0 )) && sleep 1 && break # extra pause here..
+			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
 		    NEXT_TURN="en" 
 		    sleep 3
 		else
@@ -1601,6 +1591,8 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    unset FIGHTMODE
 		    sleep 2
 		    break # bugfix: Fled enemy continue fighting..
+		else
+			FightTable
 		fi
 	    fi
 
@@ -1646,7 +1638,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	sleep 4
 	DisplayCharsheet
     fi    
-}   # Return to NewSection() or to Rest()
+}   # Return to NewSector() or to Rest()
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
     RollDice 6
@@ -1662,7 +1654,7 @@ RollForHealing() { # Used in Rest()
 
 # GAME ACTION: REST
 # Game balancing can also be done here, if you think players receive too much/little health by resting.
-Rest() {  # Used in NewSection()
+Rest() {  # Used in NewSector()
     RollDice 100
     GX_Rest
     case "$SCENARIO" in
@@ -1681,17 +1673,17 @@ Rest() {  # Used in NewSection()
 	C ) RollForEvent 5  && FightMode || RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
     esac
     sleep 2
-}   # Return to NewSection()
+}   # Return to NewSector()
 
 # THE GAME LOOP
 
-RollForEvent() { # Used in NewSection() and Rest()
+RollForEvent() { # Used in NewSector() and Rest()
     echo -e "Rolling for event: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 
     sleep 2
     (( DICE <= $1 )) && return 0 || return 1
-}   # Return to NewSection() or Rest()
+}   # Return to NewSector() or Rest()
 
-GX_Place() {     # Used in NewSection() and MapNav()
+GX_Place() {     # Used in NewSector() and MapNav()
     # Display scenario GFX
     case "$1" in
 	H ) GX_Home ;;
@@ -1708,11 +1700,11 @@ GX_Place() {     # Used in NewSection() and MapNav()
 	    echo ""
 	    CustomMapError;;
     esac
-}   # Return to NewSection() or MapNav()
+}   # Return to NewSector() or MapNav()
 
 
 # THE GAME LOOP
-NewSection() { # Used in Intro()
+NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
     do
 	# Do not attack player at the first turn
@@ -1722,7 +1714,7 @@ NewSection() { # Used in Intro()
 	# Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
-	# MAP_X+2 MAP_X+2 - padding for borders
+	# MAP_Y+2 MAP_X+2 - padding for borders
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" )
 	# Finish GPS_Fix() 
 	# Look for treasure @ current GPS location
@@ -1777,6 +1769,7 @@ Intro() { # Used in BiaminSetup()
                        else { if (length($0) > 12) { print substr($0,0,11); }
                               else {STR = $0; LEN = 12 - length(STR); for (i=0; i < LEN; i++) { STR = STR "_" } print STR } }
                      }' <<< "$CHAR")
+	SHORTNAME=$( echo $SHORTNAME | sed  's/^\(.\)/\U\1/' ) # ALL CAPS
     TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     HotzonesDistribute # Place items randomly in map
@@ -1789,8 +1782,8 @@ Intro() { # Used in BiaminSetup()
     done
     unset COUNTDOWN
     
-    NODICE=1 # Do not roll on first section after loading/starting a game in NewSection()
-    NewSection
+    NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
+    NewSector
 }
 
 Announce() {
@@ -1858,40 +1851,29 @@ Do you want color? No to DISABLE, Yes or ENTER to ENABLE color: "
     case "$COLOR_CONFIG" in
 	N | n | NO | No | no | DISABLE | disable ) 
 	    COLOR=0 ;
-	    echo -e "Disabling color! Edit $GAMEDIR/config to change this setting.";
-	    sed -i 's/COLOR: NA/COLOR: 0/g' "$GAMEDIR/config" ;;
+	    echo "Disabling color! Edit $GAMEDIR/config to change this setting.";
+	    sed -i"" 's/COLOR: NA/COLOR: 0/g' "$GAMEDIR/config" ;; # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
 	* ) COLOR=1 ;
 	    echo "Enabling color!" ;
-	    sed -i 's/COLOR: NA/COLOR: 1/g' "$GAMEDIR/config" ;;
+	    sed -i"" 's/COLOR: NA/COLOR: 1/g' "$GAMEDIR/config" ;; # MacOS fix ^^
     esac
     sleep 2
 }
 
 CreateBiaminLauncher() {
-    if grep -q 'biamin.sh' "$HOME/.bashrc" ; then
-	echo "Found existing launcher in $HOME/.bashrc.. skipping!"
-    else
-	BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )	# TODO $0 is a powerful beast, but will sometimes fail..
-	echo "This will add $BIAMIN_RUNTIME/biamin.sh to your .bashrc"
-	read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
-	case "$LAUNCHER" in
-	    y | Y ) LAUNCHER=1 ;;
-	    * ) LAUNCHER=0 ;;
-	esac
-	if (( LAUNCHER == 1 )) ; then
-	    {   # https://github.com/koalaman/shellcheck/wiki/SC2129
-		echo ""
-		echo "# Back in a Minute Game Launcher (just run 'biamin')"
-		echo "biamin() {"
-		echo "$BIAMIN_RUNTIME/biamin.sh \"\$@\""
-		echo "}"
-	    } >> "$HOME/.bashrc"
-	    echo "Done. Close and re-open BASH to test \"biamin\" command!"
-	else
-	    echo "Don't worry, not changing anything!"
-	fi
-    fi
-}		        
+    grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
+    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
+    echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
+    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
+    case "$LAUNCHER" in
+	y | Y ) { # https://github.com/koalaman/shellcheck/wiki/SC2129
+		echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')"
+		echo "alias biamin='$BIAMIN_RUNTIME/biamin.sh'"
+		    } >> "$HOME/.bashrc";
+	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
+	* ) echo -e "\nDon't worry, not changing anything!";;
+    esac
+}        
 
 
 #                           END FUNCTIONS                              #
@@ -1908,47 +1890,45 @@ CreateBiaminLauncher() {
 case "$1" in
     --announce )
 	Announce ;;
-    --h | --help )
+    -h | --help )
 	echo "Run the game BACK IN A MINUTE with '--play' or 'p' arguments to play!"
 	echo "For usage: run biamin --usage"
 	echo "Current dir for game files: $GAMEDIR/"
 	echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 	exit 0;;
-    --i | --install )
+    -i | --install )
 	CreateBiaminLauncher ;
 	exit 0;;
     --map )
 	read -n1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT
-	if [ "$CUSTOM_MAP_PROMPT" = "y" ] || [ "$CUSTOM_MAP_PROMPT" = "Y" ]; then
-	    echo "Creating custom map template.."
-	    MapCreateCustom
-	else
-	    echo "Not doing anything! Quitting.."
-	fi
+	case "$CUSTOM_MAP_PROMPT" in
+		y | Y) echo -e "\nCreating custom map template.." && MapCreateCustom ;;
+		*)     echo -e "\nNot doing anything! Quitting.."
+	esac
 	exit 0 ;;
-    --play | -p | p )
+    -p | --play | p )
 	echo "Launching Back in a Minute.." ;;
-    --v | --version )
-	echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
+    -v | --version )
+	echo -e "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net\n"
 	echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
 	echo "This is free software: you are free to change and redistribute it."
 	echo "There is NO WARRANTY, to the extent permitted by law."
-	echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
+	echo -e "For details see: <http://www.gnu.org/licenses/gpl-3.0>\n"
 	echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
 	echo "You are free to copy, distribute, transmit and adapt the work."
-	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
+	echo -e "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>\n"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --usage | * )
 	echo "Usage: biamin or ./biamin.sh"
 	echo "  (NO ARGUMENTS)      display this usage text and exit"
-	echo "  --play or p         PLAY the game \"Back in a minute\""
-	echo "  --announce          DISPLAY an adventure summary for social media and exit"
-	echo "  --install           ADD biamin.sh to your .bashrc file"
-	echo "  --map               CREATE custom map template with instructions and exit"
-	echo "  --help              display help text and exit"
-	echo "  --usage             display this usage text and exit"
-	echo "  --version           display version and licensing info and exit"
+	echo "  -p --play or p      PLAY the game \"Back in a minute\""
+	echo "     --announce       DISPLAY an adventure summary for social media and exit"
+	echo "  -i --install        ADD biamin.sh to your .bashrc file"
+	echo "     --map            CREATE custom map template with instructions and exit"
+	echo "     --help           display help text and exit"
+	echo "     --usage          display this usage text and exit"
+	echo "  -v --version        display version and licensing info and exit"
 	exit 0;;
 esac
 
@@ -1985,7 +1965,8 @@ if (( COLOR == 1 )); then
     RESET='\033[0m'
 fi
 
-trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
+# Direct termination signals to CleanUp
+trap CleanUp SIGHUP SIGINT SIGTERM
 
 SetupHighscore # Setup highscore file
 MainMenu       # Run main menu

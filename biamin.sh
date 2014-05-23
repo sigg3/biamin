@@ -846,6 +846,7 @@ function Die() {
 
 # CLEANUP Function
 CleanUp() { # Used in MainMenu(), NewSector(),
+	clear && GX_BiaminTitle && echo -e "\n$HR"
     [[ $FIGHTMODE ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;

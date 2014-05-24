@@ -846,6 +846,7 @@ function Die() {
 
 # CLEANUP Function
 CleanUp() { # Used in MainMenu(), NewSector(),
+	clear && GX_BiaminTitle && echo -e "\n$HR"
     [[ $FIGHTMODE ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;
@@ -858,7 +859,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() {
     # Used in MapCreate(), NewSector() and MapNav()
-    echo -en "What to do?
+    echo -n "What to do?
 1) rename CUSTOM.map to CUSTOM_err.map or
 2) delete template file CUSTOM.map (deletion is irrevocable).
 Please select 1 or 2: "
@@ -976,8 +977,6 @@ BiaminSetup() { # Used in MainMenu()
                  }' $CHARSHEET )
 	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME <<< "$CHAR_TMP"
 	unset CHAR_TMP
-	# Compatibility fix for older charactersheets
-	[[ $CHAR_HOME ]] || CHAR_HOME="$START_LOCATION"
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 	sleep 2
@@ -1009,7 +1008,7 @@ BiaminSetup() { # Used in MainMenu()
 		if (( CHAR_LOC_LEN > 3 )) || (( CHAR_LOC_LEN < 1 )) ; then
 		    Die " Error! Wrong number of characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
 		else
-		    echo -en "Sanity check.."
+		    echo -n "Sanity check.."
 		    case "$CHAR_LOC_A" in
 			A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
 			* ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
@@ -1114,7 +1113,7 @@ MainMenu() {
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;
-	    * ) ;; # TODO rewrite without clear 
+	    * ) ;;
 	esac
     done
 }
@@ -1135,7 +1134,7 @@ HighscoreRead() {
 	HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
 	((i++))
     done < "$HIGHSCORE"
-    echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
+    echo "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
     unset HIGHSCORE_TMP
 }
 
@@ -1320,8 +1319,6 @@ ItemWasFound() { # Used in NewSector()
 	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
 
-    unset SKIP
-
     # Remove the item that is found from the world
     i=0
     while (( i < 7 )); do
@@ -1363,17 +1360,17 @@ MapNav() { # Used in NewSector()
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
     fi
 
-    case "$DEST" in
+    case "$DEST" in # Fix for 80x24: \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward. Dirty but better than nothing #kstn
 	w | W | n | N ) echo -n "You go North"; # Going North (Reversed: Y-1)
-	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo -en "\nYou wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
+	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || ( echo -en "\e[1K\e[80DYou wanted to visit Santa, but walked in a circle.." && sleep 3 ) ;;
 	d | D | e | E ) echo -n "You go East" # Going East (X+1)
-	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo -en "\nYou tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
+	    (( MAP_X != 18 )) && (( MAP_X++ )) || ( echo -en "\e[1K\e[80DYou tried to go East of the map, but walked in a circle.." && sleep 3 ) ;;
 	s | S ) echo -n "You go South" # Going South (Reversed: Y+1)
-	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo -en "\nYou tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
+	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || ( echo -en "\e[1K\e[80DYou tried to go someplace warm, but walked in a circle.." && sleep 3 ) ;;
 	a | A ) echo -n "You go West" # Going West (X-1)
-	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo -en "\nYou tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
+	    (( MAP_X != 1  )) && (( MAP_X-- )) || ( echo -en "\e[1K\e[80DYou tried to go West of the map, but walked in a circle.." && sleep 3 ) ;;
 	q | Q ) CleanUp ;; # Save and exit
-	* ) echo -en "Loitering.." && sleep 2
+	* ) echo -n "Loitering.." && sleep 2
     esac
 
     # TranslatePosition() - Translate MAP_X numeric back to A-R
@@ -1426,9 +1423,8 @@ EOF
 
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
-    GX_Monster_"$ENEMY"		# ${VAR^} - capitalise $VAR
-    # TODO ${VAR^} should be changed to work on bash less than 4 (MacOS for instance)
-	ENEMYNAME=$(echo $ENEMY | sed  's/^\(.\)/\U\1/' ) # nice capital NAME for enemies..
+    GX_Monster_"$ENEMY"
+    ENEMYNAME=$(echo $ENEMY | sed  's/^\(.\)/\U\1/' ) # Capitalize enemy to Enemy
 	
     echo -e "$SHORTNAME\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
     echo -e "$ENEMYNAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
@@ -1584,7 +1580,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    DAMAGE=$(( DICE*STRENGTH ))
 		    echo -en "\tYour blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
+		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
 		    NEXT_TURN="en" 
 		    sleep 3
 		else
@@ -1637,14 +1633,14 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	if (( LUCK == 2 )); then   # died but saved by guardian angel or 1000 EXP
 	    echo "When you come to, the $ENEMY has left the area ..."
 	elif (( LUCK == 1 )); then # ENEMY managed to FLEE
-	    echo -en "You defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
+	    echo -n "You defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
 	    CHAR_EXP=$(( CHAR_EXP + EN_FLEE_EXP ))
 	elif (( LUCK == 3 )); then # PLAYER managed to FLEE during fight!
-	    echo -en "You got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
+	    echo -n "You got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
 	    CHAR_EXP=$(( CHAR_EXP + PL_FLEE_EXP ))
 	else			   # ENEMY was slain!
 	    FightTable
-	    echo -en "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
+	    echo -n "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
 	    CHAR_EXP=$(( CHAR_EXP + EN_DEFEATED_EXP ))
 	    (( CHAR_KILLS++ ))
 	fi
@@ -1753,7 +1749,7 @@ NewSector() { # Used in Intro()
 		echo "Whoops! There is an error with your map file!"
 		echo "Either it contains unknown characters or it uses incorrect whitespace."
 		echo "Recognized characters are: x . T @ H C"
-		echo -e "Please run game with --map argument to create a new template as a guide.\n"
+		echo "Please run game with --map argument to create a new template as a guide."
 		CustomMapError
 		;;
 	esac
@@ -1762,7 +1758,7 @@ NewSector() { # Used in Intro()
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
-	    echo -en "          (C)haracter     (R)est     (M)ap and Travel     (Q)uit   "
+	    echo -n "          (C)haracter     (R)est     (M)ap and Travel     (Q)uit   "
 	    read -sn 1 ACTION
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
@@ -1850,7 +1846,7 @@ Announce() {
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"
     echo -e "\n$ANNOUNCEMENT\n" | fmt
-    echo -e "$HR\n"
+    echo "$HR"
 
     [[ $ANNOUNCEMENT_LENGHT -gt 160 ]] && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
     exit 0
@@ -1925,14 +1921,14 @@ case "$1" in
     -p | --play | p )
 	echo "Launching Back in a Minute.." ;;
     -v | --version )
-	echo -e "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net\n"
+	echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
 	echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
 	echo "This is free software: you are free to change and redistribute it."
 	echo "There is NO WARRANTY, to the extent permitted by law."
-	echo -e "For details see: <http://www.gnu.org/licenses/gpl-3.0>\n"
+	echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
 	echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
 	echo "You are free to copy, distribute, transmit and adapt the work."
-	echo -e "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>\n"
+	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --usage | * )
@@ -1979,6 +1975,7 @@ esac
 if (( COLOR == 1 )); then
     YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
     RESET='\033[0m'
+# TODO define here another seqences from MapNav()
 fi
 
 # Direct termination signals to CleanUp

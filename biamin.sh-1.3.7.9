@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.3.7.7"
+VERSION="1.3.7.9"
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################

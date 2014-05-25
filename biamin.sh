@@ -1864,10 +1864,10 @@ Do you want color? No to DISABLE, Yes or ENTER to ENABLE color: "
 	N | n | NO | No | no | DISABLE | disable ) 
 	    COLOR=0 ;
 	    echo "Disabling color! Edit $GAMEDIR/config to change this setting.";
-	    sed -i"" 's/COLOR: NA/COLOR: 0/g' "$GAMEDIR/config" ;; # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
+	    sed -i"~" 's/COLOR: NA/COLOR: 0/g' "$GAMEDIR/config" ;; # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
 	* ) COLOR=1 ;
 	    echo "Enabling color!" ;
-	    sed -i"" 's/COLOR: NA/COLOR: 1/g' "$GAMEDIR/config" ;; # MacOS fix ^^
+	    sed -i"~" 's/COLOR: NA/COLOR: 1/g' "$GAMEDIR/config" ;; # MacOS fix ^^
     esac
     sleep 2
 }

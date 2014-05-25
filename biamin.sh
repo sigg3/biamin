@@ -1278,17 +1278,24 @@ ITEM_Y() { # Used in HotzonesDistribute() and GX_Map()
     ITEM_Y=$((RANDOM%15+1))
 }
 
-HotzonesDistribute() { # Used in Intro(),
+HotzonesDistribute() { # Used in Intro() and ItemWasFound()
+    # TODO rewrite it to less complicate
     # Scatters special items across the map
     if (( CHAR_ITEMS < 8 )); then
+	# bugfix to prevent finding item at 1st turn of 2 or more items at one turn
+	local MAP_X;
+	local MAP_Y;
+	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
+	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
 	ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
 	# default x-y HOTZONEs to extraterrestrial section 20-20
 	HOTZONE=( 20-20 20-20 20-20 20-20 20-20 20-20 20-20 20-20 )
 	i=7
 	while [ $ITEMS_2_SCATTER -gt 0 ]; do
 	    ITEM_X && ITEM_Y
-	    HOTZONE[$i]="$ITEM_X-$ITEM_Y"
-	    ((i--))
+	    [[ ITEM_X -eq  MAP_X && ITEM_Y -eq MAP_Y ]] && continue # reroll if HOTZONE == CHAR_GPS
+	    # TODO add check is is this $ITEM_X-$ITEM_Y already in HOTZONE
+	    HOTZONE[((i--))]="$ITEM_X-$ITEM_Y" # Init ${HOTZONE[i]}, than $i++
 	    ((ITEMS_2_SCATTER--))
 	done
     fi
@@ -1732,7 +1739,7 @@ NewSector() { # Used in Intro()
 	# Look for treasure @ current GPS location
 	(( CHAR_ITEMS < 8 )) && { # Checks current section for treasure
 	    for zoneS in "${HOTZONE[@]}" ; do
-	    	[[ "$zoneS" == "$MAP_X-$MAP_Y" ]] && ItemWasFound
+	    	[[ "$zoneS" == "$MAP_X-$MAP_Y" ]] && ItemWasFound && break # not try to find another thing
 	    done
 	}
 

@@ -1844,7 +1844,7 @@ Announce() {
     [[ $highBATTLES -eq 1 ]] && highBATTLES+=" battle" || highBATTLES+=" battles"
     [[ $highITEMS -eq 1 ]]   && highITEMS+=" item"     || highITEMS+=" items"
 
-    highCHAR=${highCHAR^}
+    highCHAR=$(echo $highCHAR | sed  's/^\(.\)/\U\1/' ) # Capitalize
 
     ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     

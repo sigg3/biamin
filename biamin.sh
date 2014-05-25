@@ -923,8 +923,11 @@ GX_Map() { # Used in MapNav()
             }
          }
       # All color on map sets here
-      # if $COLOR == 1 colorise "o" (player) and "~" (ITEM2C)
+      # if $COLOR == 1
       if ('${COLOR}' == 1 ) {
+			# Terminal color scheme bugfix
+			if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); }
+			# colorise "o" (player) and "~" (ITEM2C)
 	 if ( NR > 2 && NR < 19 ) {
  	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
 	    gsub(/o/, "'$(printf "%s" "${YELLOW}o${RESET}")'")

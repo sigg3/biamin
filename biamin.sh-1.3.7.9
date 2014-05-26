@@ -1650,7 +1650,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    CHAR_EXP=$(( CHAR_EXP + PL_FLEE_EXP ))
 	else			   # ENEMY was slain!
 	    FightTable
-	    echo -n "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
+	    echo -en "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
 	    CHAR_EXP=$(( CHAR_EXP + EN_DEFEATED_EXP ))
 	    (( CHAR_KILLS++ ))
 	fi

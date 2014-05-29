@@ -1137,7 +1137,7 @@ HighscoreRead() {
 	HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
 	((i++))
     done < "$HIGHSCORE"
-    echo "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
+    echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
     unset HIGHSCORE_TMP
 }
 

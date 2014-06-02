@@ -1449,10 +1449,8 @@ EOF
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"
-    ENEMYNAME=$(echo $ENEMY | sed  's/^\(.\)/\U\1/' ) # Capitalize enemy to Enemy
-	
     echo -e "$SHORTNAME\t\tHEALTH: $CHAR_HEALTH\tStrength: $STRENGTH\tAccuracy: $ACCURACY" | tr '_' ' '
-    echo -e "$ENEMYNAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
+    echo -e "$ENEMY_NAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 }   # Return to FightMode()
 
 FightMode() {	# FIGHT MODE! (secondary loop for fights)
@@ -1488,6 +1486,9 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=35  ; EN_FLEE_EXP=75  ; EN_DEFEATED_EXP=150  ;;
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
     esac
+
+    # Capitalize enemy to Enemy for FightTable()
+    ENEMY_NAME=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$ENEMY") 
 
     GX_Monster_$ENEMY
     sleep 1 #?!!
@@ -1801,12 +1802,11 @@ NewSector() { # Used in Intro()
 
 Intro() { # Used in BiaminSetup()
     # Intro function basically gets the game going
-    # Create FIGHT CHAR name
-    SHORTNAME=$(awk '{ if (length($0) == 12) { print $0; } 
-                       else { if (length($0) > 12) { print substr($0,0,11); }
-                              else {STR = $0; LEN = 12 - length(STR); for (i=0; i < LEN; i++) { STR = STR "_" } print STR } }
-                     }' <<< "$CHAR")
-	SHORTNAME=$( echo $SHORTNAME | sed  's/^\(.\)/\U\1/' ) # ALL CAPS
+    # Create capitalized FIGHT CHAR name
+    SHORTNAME=$(awk '{ STR = $0;
+                       if (length(STR) > 12) { STR = substr(STR,0,12); }
+                       else { LEN = 12 - length(STR); for (i=0; i < LEN; i++) { STR = STR "_" } }
+                       print substr(toupper(STR), 1,1) substr(STR, 2); }' <<< "$CHAR")
     TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     HotzonesDistribute # Place items randomly in map
@@ -1862,8 +1862,7 @@ Announce() {
     [[ $highBATTLES -eq 1 ]] && highBATTLES+=" battle" || highBATTLES+=" battles"
     [[ $highITEMS -eq 1 ]]   && highITEMS+=" item"     || highITEMS+=" items"
 
-    highCHAR=$(echo $highCHAR | sed  's/^\(.\)/\U\1/' ) # Capitalize
-
+    highCHAR=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$highCHAR") # Capitalize
     ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     
     ANNOUNCEMENT_LENGHT=$(awk '{print length($0)}' <<< "$ANNOUNCEMENT" ) 

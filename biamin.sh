@@ -1428,6 +1428,7 @@ EOF
 	esac
 }
 
+
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"
@@ -1441,6 +1442,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     FIGHTMODE=1	# Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
 
     RollDice 20 # Determine enemy type
+    
     case "$SCENARIO" in
 	H ) ENEMY="chthulu" ;; 
 	x ) (( DICE <= 10 )) && ENEMY="orc"     || (( DICE >= 16 )) && ENEMY="goblin" || ENEMY="varg" ;;
@@ -1450,11 +1452,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	C ) (( DICE <=  5 )) && ENEMY="chthulu" || ENEMY="mage" ;;
     esac
 
-    # ENEMY ATTRIBUTES; If you want to tune/balance the fights do it here!
-    # 
-    # I know it looks ugly, but I think we should have all monster's in one place
-    # We could use associative arrays but it will not work with bash less than 4.0 (or 4.2 ?) - MacOS for instance
-    #
+    # SET ENEMY ATTRIBUTES
     # EN_FLEE_THRESHOLD - At what Health will enemy flee? :)
     # PL_FLEE_EXP       - Exp player get if he manage to flee from enemy
     # EN_FLEE_EXP       - Exp player get if enemy manage to flee from him
@@ -1491,10 +1489,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    f | F ) echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
 		RollDice 6
 		(( DICE <= FLEE )) && { 
-		    echo "You rolled $DICE and managed to run away!";
+		    echo -e "Roll D6 <= FLEE \$ [ $DICE  <= $FLEE ] You managed to run away!";
 		    LUCK=3;
 		    unset FIGHTMODE; } || {
-		    echo "You rolled $DICE and lost your initiative.." ;
+		    echo -e "Roll D6 <= FLEE \$ [ $DICE  >  $FLEE ] You rolled $DICE and lost your initiative.." && sleep 1 ; # Dubious sleep, must test.
 		    NEXT_TURN="en" ; } ;;
 	    * ) NEXT_TURN="pl" ;;
 	esac
@@ -1558,41 +1556,41 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	FightTable
 
 	if [ "$NEXT_TURN" = "pl" ] ; then  # Player's turn
-	    echo -en "\nIt's your turn, press any key to (R)oll or (F) to Flee" 
+	    echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
 	    read -sn 1 "FIGHT_PROMPT"
 	    RollDice 6
 	    FightTable
-	    echo -en "\nROLL D6: $DICE"
+	    echo -en "\nRoll D6 "
 	    if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
 		unset FIGHT_PROMPT
 		# Player tries to flee!
 		if (( DICE <= FLEE )); then
-		    echo -e "\tFlee [D6 $DICE < $FLEE] You managed to flee!"
+		    echo -e "<= FLEE \$ [ $DICE  <= $FLEE ] You managed to flee!"
 		    unset FIGHTMODE
 		    LUCK=3
 		    sleep 3
 		    break
 		else
-		    echo -e "\tFlee [D6 $DICE > $FLEE] Your escape was ill-fated!"
+		    echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
 		    NEXT_TURN="en"
 		    sleep 2
 		fi
 	    else # Player fights
 		unset FIGHT_PROMPT
 		if (( DICE <= ACCURACY )); then
-		    echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
+		    echo -e "<= ACC  \$ [ 1  <= 4 ] Your weapon hits the target!"
 		    echo -n "Press the R key to (R)oll for damage" 
 		    read -sn 1 "FIGHT_PROMPT"
 		    RollDice 6
-		    echo -en "\nROLL D6: $DICE"
+		    echo -en "\nRoll D6  x STR  \$ [ $DICE"
 		    DAMAGE=$(( DICE*STRENGTH ))
-		    echo -en "\tYour blow dishes out $DAMAGE damage points!"
+		    echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
 		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
-		    NEXT_TURN="en" 
+		    NEXT_TURN="en"
 		    sleep 3
 		else
-		    echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
+		    echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
 		    NEXT_TURN="en"
 		    sleep 2
 		fi
@@ -1602,11 +1600,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
 		FightTable
 		RollDice 20
-		echo -e "\nRolling for enemy flee: D20 < $EN_FLEE"
+		echo -e "\nRolling for enemy flee .. [ D20 < $EN_FLEE ]"
 		sleep 2
 		if (( DICE < EN_FLEE )); then
-		    echo -n "ROLL D20: $DICE"
-		    echo -e "\tThe $ENEMY uses an opportunity to flee!"
+		    echo -e "Roll D20 < $EN_FLEE \$ [ $DICE  <  $EN_FLEE ] The $ENEMY uses an opportunity to flee!"
 		    LUCK=1
 		    unset FIGHTMODE
 		    sleep 2
@@ -1615,20 +1612,19 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			FightTable
 		fi
 	    fi
-
-	    echo -en "\nIt's the $ENEMY's turn"
+	    echo -en "\nIt's the $ENEMY's turn\n"
 	    sleep 2
 	    RollDice 6
 	    if (( DICE <= EN_ACCURACY )); then
-		echo -en "\nAccuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
+		echo -en "Roll D6 <= $EN_ACCURACY \$ [ $DICE  <= $EN_ACCURACY ] The $ENEMY strikes you!"
 		RollDice 6
 		DAMAGE=$(( DICE*EN_STRENGTH ))
-		echo -en "\n-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
+		echo -en "\n  -$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
 		CHAR_HEALTH=$(( CHAR_HEALTH-DAMAGE ))
 		SaveCurrentSheet
 		NEXT_TURN="pl"
 	    else
-		echo -e "\nAccuracy [D6 $DICE > $EN_ACCURACY] The $ENEMY misses!"
+		echo -e "Roll D6 <= $EN_ACCURACY \$ [ $DICE  >  $EN_ACCURACY ] The $ENEMY misses!"
 		NEXT_TURN="pl"
 	    fi
 	    sleep 2
@@ -1657,8 +1653,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	unset LUCK
 	sleep 4
 	DisplayCharsheet
-    fi    
+    fi
 }   # Return to NewSector() or to Rest()
+
+
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
     RollDice 6

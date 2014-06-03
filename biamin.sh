@@ -44,24 +44,6 @@ DISABLE_CHEATS=0                                                       #
 #                                                                      #
 ########################################################################
 
-########################################################################      # TODO Remove this block in 1.4
-#                 kstn major rewrite CHANGES for 1.3.7                 #      # I just have to blog the changes first:)
-# remains of GPS_Fix() included in NewSector()                         #
-#                       CHANGES for 1.3.6.1                            #	  # Also, I have made 1.3.7 first GPL-only release too..!
-# NoWriteOnGamedir() replaced to Die() because was used only once      #
-# CosmeticName() removed because was used only in Intro()              #
-# LookForItem() removed because was used only in NewSector()           #
-# ActionsBar() removed because was used only in NewSector()            #
-# TranslatePosition() removed because used only in MapNav()            #
-# TopMenu() removed because used only in MainMenu()                    #
-# HowTo() removed becouse used only in Credits()                       #
-# remains of GX_MapSight() included in GX_Map()                        #
-# all TodaysDate() moved to Intro() because need only once             #
-#                                                                      #
-# Fixed some little bugs (I'cant remember how many :) )                #
-#                                                                      #
-########################################################################
-
 ########################################################################
 #                                                                      #
 #                        0. GFX FUNCTIONS                              #

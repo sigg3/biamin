@@ -44,24 +44,6 @@ DISABLE_CHEATS=0                                                       #
 #                                                                      #
 ########################################################################
 
-########################################################################      # TODO Remove this block in 1.4
-#                 kstn major rewrite CHANGES for 1.3.7                 #      # I just have to blog the changes first:)
-# remains of GPS_Fix() included in NewSector()                         #
-#                       CHANGES for 1.3.6.1                            #	  # Also, I have made 1.3.7 first GPL-only release too..!
-# NoWriteOnGamedir() replaced to Die() because was used only once      #
-# CosmeticName() removed because was used only in Intro()              #
-# LookForItem() removed because was used only in NewSector()           #
-# ActionsBar() removed because was used only in NewSector()            #
-# TranslatePosition() removed because used only in MapNav()            #
-# TopMenu() removed because used only in MainMenu()                    #
-# HowTo() removed becouse used only in Credits()                       #
-# remains of GX_MapSight() included in GX_Map()                        #
-# all TodaysDate() moved to Intro() because need only once             #
-#                                                                      #
-# Fixed some little bugs (I'cant remember how many :) )                #
-#                                                                      #
-########################################################################
-
 ########################################################################
 #                                                                      #
 #                        0. GFX FUNCTIONS                              #
@@ -1190,39 +1172,36 @@ $CC"  > "$GAMEDIR/LICENSE"
 }
 
 ShowLicense() { # Used in License()
-	case "$PAGER" in
-		0 ) echo -en "\n License file available at $GAMEDIR/LICENSE\n Press any key to continue...  " && read -sn 1 ;;
-		* ) "$PAGER" "$GAMEDIR/LICENSE" ;;
-	esac
+    if [ -z "$PAGER" ] ; then
+	echo -en "\n License file available at $GAMEDIR/LICENSE\n Press any key to continue...  " && read -sn 1
+    else
+	"$PAGER" "$GAMEDIR/LICENSE"
+    fi
 }
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     clear
     GX_BiaminTitle
-	if [ -z "$PAGER" ] ; then				# If $PAGER is not set
-		if [ -f "/usr/bin/less" ] ; then
-			local PAGER="/usr/bin/less"		# try less
-		elif [ -f "/usr/bin/more" ] ; then
-			local PAGER="/usr/bin/more"		# or try more
-		else
-			local PAGER="0"		# or fallback gracefully (see ShowLicense in case PAGER is 0)
-		fi
+    if [ -z "$PAGER" ] ; then  # If $PAGER is not set. If PAGER is used in another function, it shoudn't be 'local' !!!
+	if [[ $(which less 2>/dev/null) ]]; then # try less
+	    PAGER=$(which less)                
+	elif [[ $(which more 2>/dev/null) ]]; then # or try more
+	    PAGER=$(which more)
 	fi
-	if [ -f "$GAMEDIR/LICENSE" ]; then
-		ShowLicense
-	else
+    fi # or PAGER remains unset (see ShowLicense() in case PAGER is unset)
+    if [ -f "$GAMEDIR/LICENSE" ]; then
+	ShowLicense
+    else
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
 	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
-	    YES ) 
-		PrepareLicense && ShowLicense ;;
-	    * ) 
-		echo -e "
-Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
-Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
-More info:\t<${WEBURL}about#license>
-Press any key to go back to main menu!";
-		read -sn 1;;
+	    YES ) PrepareLicense && ShowLicense ;;
+	    *   ) read -sn 1 -p "
+Code License: <http://www.gnu.org/licenses/gpl-3.0.txt>
+Art License:  <http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
+More info:    <${WEBURL}about#license>
+
+               Press any key to go back to main menu!" ;; # I've removed \t for 80x24 compability #kstn
 	esac
     fi
 }   # Return to Credits() 
@@ -1446,6 +1425,7 @@ EOF
 	esac
 }
 
+
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"
@@ -1459,6 +1439,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     FIGHTMODE=1	# Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
 
     RollDice 20 # Determine enemy type
+    
     case "$SCENARIO" in
 	H ) ENEMY="chthulu" ;; 
 	x ) (( DICE <= 10 )) && ENEMY="orc"     || (( DICE >= 16 )) && ENEMY="goblin" || ENEMY="varg" ;;
@@ -1468,11 +1449,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	C ) (( DICE <=  5 )) && ENEMY="chthulu" || ENEMY="mage" ;;
     esac
 
-    # ENEMY ATTRIBUTES; If you want to tune/balance the fights do it here!
-    # 
-    # I know it looks ugly, but I think we should have all monster's in one place
-    # We could use associative arrays but it will not work with bash less than 4.0 (or 4.2 ?) - MacOS for instance
-    #
+    # SET ENEMY ATTRIBUTES
     # EN_FLEE_THRESHOLD - At what Health will enemy flee? :)
     # PL_FLEE_EXP       - Exp player get if he manage to flee from enemy
     # EN_FLEE_EXP       - Exp player get if enemy manage to flee from him
@@ -1509,10 +1486,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    f | F ) echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
 		RollDice 6
 		(( DICE <= FLEE )) && { 
-		    echo "You rolled $DICE and managed to run away!";
+		    echo -e "Roll D6 <= FLEE \$ [ $DICE  <= $FLEE ] You managed to run away!";
 		    LUCK=3;
 		    unset FIGHTMODE; } || {
-		    echo "You rolled $DICE and lost your initiative.." ;
+		    echo -e "Roll D6 <= FLEE \$ [ $DICE  >  $FLEE ] You rolled $DICE and lost your initiative.." && sleep 1 ; # Dubious sleep, must test.
 		    NEXT_TURN="en" ; } ;;
 	    * ) NEXT_TURN="pl" ;;
 	esac
@@ -1576,41 +1553,41 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	FightTable
 
 	if [ "$NEXT_TURN" = "pl" ] ; then  # Player's turn
-	    echo -en "\nIt's your turn, press any key to (R)oll or (F) to Flee" 
+	    echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
 	    read -sn 1 "FIGHT_PROMPT"
 	    RollDice 6
 	    FightTable
-	    echo -en "\nROLL D6: $DICE"
+	    echo -en "\nRoll D6 "
 	    if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
 		unset FIGHT_PROMPT
 		# Player tries to flee!
 		if (( DICE <= FLEE )); then
-		    echo -e "\tFlee [D6 $DICE < $FLEE] You managed to flee!"
+		    echo -e "<= FLEE \$ [ $DICE  <= $FLEE ] You managed to flee!"
 		    unset FIGHTMODE
 		    LUCK=3
 		    sleep 3
 		    break
 		else
-		    echo -e "\tFlee [D6 $DICE > $FLEE] Your escape was ill-fated!"
+		    echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
 		    NEXT_TURN="en"
 		    sleep 2
 		fi
 	    else # Player fights
 		unset FIGHT_PROMPT
 		if (( DICE <= ACCURACY )); then
-		    echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
+		    echo -e "<= ACC  \$ [ 1  <= 4 ] Your weapon hits the target!"
 		    echo -n "Press the R key to (R)oll for damage" 
 		    read -sn 1 "FIGHT_PROMPT"
 		    RollDice 6
-		    echo -en "\nROLL D6: $DICE"
+		    echo -en "\nRoll D6  x STR  \$ [ $DICE"
 		    DAMAGE=$(( DICE*STRENGTH ))
-		    echo -en "\tYour blow dishes out $DAMAGE damage points!"
+		    echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
 		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
-		    NEXT_TURN="en" 
+		    NEXT_TURN="en"
 		    sleep 3
 		else
-		    echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
+		    echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
 		    NEXT_TURN="en"
 		    sleep 2
 		fi
@@ -1620,11 +1597,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
 		FightTable
 		RollDice 20
-		echo -e "\nRolling for enemy flee: D20 < $EN_FLEE"
+		echo -e "\nRolling for enemy flee .. [ D20 < $EN_FLEE ]"
 		sleep 2
 		if (( DICE < EN_FLEE )); then
-		    echo -n "ROLL D20: $DICE"
-		    echo -e "\tThe $ENEMY uses an opportunity to flee!"
+		    echo -e "Roll D20 < $EN_FLEE \$ [ $DICE  <  $EN_FLEE ] The $ENEMY uses an opportunity to flee!"
 		    LUCK=1
 		    unset FIGHTMODE
 		    sleep 2
@@ -1633,20 +1609,19 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			FightTable
 		fi
 	    fi
-
-	    echo -en "\nIt's the $ENEMY's turn"
+	    echo -en "\nIt's the $ENEMY's turn\n"
 	    sleep 2
 	    RollDice 6
 	    if (( DICE <= EN_ACCURACY )); then
-		echo -en "\nAccuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
+		echo -en "Roll D6 <= $EN_ACCURACY \$ [ $DICE  <= $EN_ACCURACY ] The $ENEMY strikes you!"
 		RollDice 6
 		DAMAGE=$(( DICE*EN_STRENGTH ))
-		echo -en "\n-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
+		echo -en "\n  -$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
 		CHAR_HEALTH=$(( CHAR_HEALTH-DAMAGE ))
 		SaveCurrentSheet
 		NEXT_TURN="pl"
 	    else
-		echo -e "\nAccuracy [D6 $DICE > $EN_ACCURACY] The $ENEMY misses!"
+		echo -e "Roll D6 <= $EN_ACCURACY \$ [ $DICE  >  $EN_ACCURACY ] The $ENEMY misses!"
 		NEXT_TURN="pl"
 	    fi
 	    sleep 2
@@ -1675,8 +1650,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	unset LUCK
 	sleep 4
 	DisplayCharsheet
-    fi    
+    fi
 }   # Return to NewSector() or to Rest()
+
+
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
     RollDice 6

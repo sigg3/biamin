@@ -1172,39 +1172,36 @@ $CC"  > "$GAMEDIR/LICENSE"
 }
 
 ShowLicense() { # Used in License()
-	case "$PAGER" in
-		0 ) echo -en "\n License file available at $GAMEDIR/LICENSE\n Press any key to continue...  " && read -sn 1 ;;
-		* ) "$PAGER" "$GAMEDIR/LICENSE" ;;
-	esac
+    if [ -z "$PAGER" ] ; then
+	echo -en "\n License file available at $GAMEDIR/LICENSE\n Press any key to continue...  " && read -sn 1
+    else
+	"$PAGER" "$GAMEDIR/LICENSE"
+    fi
 }
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     clear
     GX_BiaminTitle
-	if [ -z "$PAGER" ] ; then				# If $PAGER is not set
-		if [ -f "/usr/bin/less" ] ; then
-			local PAGER="/usr/bin/less"		# try less
-		elif [ -f "/usr/bin/more" ] ; then
-			local PAGER="/usr/bin/more"		# or try more
-		else
-			local PAGER="0"		# or fallback gracefully (see ShowLicense in case PAGER is 0)
-		fi
+    if [ -z "$PAGER" ] ; then  # If $PAGER is not set. If PAGER is used in another function, it shoudn't be 'local' !!!
+	if [[ $(which less 2>/dev/null) ]]; then # try less
+	    PAGER=$(which less)                
+	elif [[ $(which more 2>/dev/null) ]]; then # or try more
+	    PAGER=$(which more)
 	fi
-	if [ -f "$GAMEDIR/LICENSE" ]; then
-		ShowLicense
-	else
+    fi # or PAGER remains unset (see ShowLicense() in case PAGER is unset)
+    if [ -f "$GAMEDIR/LICENSE" ]; then
+	ShowLicense
+    else
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
 	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
-	    YES ) 
-		PrepareLicense && ShowLicense ;;
-	    * ) 
-		echo -e "
-Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
-Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
-More info:\t<${WEBURL}about#license>
-Press any key to go back to main menu!";
-		read -sn 1;;
+	    YES ) PrepareLicense && ShowLicense ;;
+	    *   ) read -sn 1 -p "
+Code License: <http://www.gnu.org/licenses/gpl-3.0.txt>
+Art License:  <http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
+More info:    <${WEBURL}about#license>
+
+               Press any key to go back to main menu!" ;; # I've removed \t for 80x24 compability #kstn
 	esac
     fi
 }   # Return to Credits() 

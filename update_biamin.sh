@@ -78,14 +78,26 @@ fi
 echo -en "\nPress any key to download latest biamin.sh or CTRL+C to cancel .." && read -sn 1
 GX_BiaminTitle
 echo "Downloading latest biamin.sh from repo .."
-wget -q -O "$WORKDIR/biamin.repo" "$REPO_SRC" || BiUpError DOWNLOAD_ERR_no-internet_or_no-wget
+
+# Step 4.5 Depend downloader and download 
+if [[ $(which wget 2>/dev/null) ]]; then # Try wget
+    wget -q -O "$WORKDIR/biamin.repo" "$REPO_SRC" || BiUpError DOWNLOAD_ERR_no-internet_with_wget
+elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect, because REPO_SRC is redirect to current master
+    curl -s -L -o "$WORKDIR/biamin.repo" "$REPO_SRC" || BiUpError DOWNLOAD_ERR_no-internet_with_curl
+else
+    BiUpError DOWNLOAD_ERR_no-curl_or_wget
+fi
+
 
 # Step 5. Update or install biamin.sh
-if (( updateflag = 1  )) ; then
+if (( updateflag == 1  )) ; then # '==', because '(( updateflag = 1  ))' sets to 1 !!!
 	# We're updating existing biamin.sh
-	CURRENTVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.sh" | sed 's/VERSION=//g' | sed 's/"//g' )
+        # Are you sure that VERSION'll always be the 4th line? #kstn
+	# CURRENTVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.sh" | sed 's/VERSION=//g' | sed 's/"//g' )
+	CURRENTVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$WORKDIR/biamin.sh" )
 	echo "Your current version of Back in a Minute is: $CURRENTVERSION"
-	REPOVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.repo" | sed 's/VERSION=//g' | sed 's/"//g' )
+	# REPOVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.repo" | sed 's/VERSION=//g' | sed 's/"//g' )
+	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$WORKDIR/biamin.repo" )
 	echo -e "The newest version of Back in a Minute is: $REPOVERSION\n"
 	if [[ "$CURRENTVERSION" == "$REPOVERSION" ]] ; then # Assume repo is the latest..
 		echo "You're using the latest version of Back in a Minute!"
@@ -96,6 +108,7 @@ if (( updateflag = 1  )) ; then
 		case "$CONFIRMUPDATE" in
 			Y | y ) # We're gonna update!
 					echo -e "\n\nUpdating Back in a Minute to version $REPOVERSION"
+					# Why not only 'mv "$WORKDIR/biamin.repo" "$WORKDIR/biamin.sh"' ? #kstn
 					mv "$WORKDIR/biamin.sh" "$WORKDIR/biamin.old"
 					mv "$WORKDIR/biamin.repo" "$WORKDIR/biamin.sh"
 					if [ -f "$WORKDIR/biamin.old" ] ; then
@@ -148,8 +161,9 @@ fi
 
 echo -e "We're all done here!\nThanks for playing :)"
 
-unset WORKDIR
-unset GAMEDIR
-unset CURRENTVERSION
+# We don't need unset them - they will be unset at exit
+# unset WORKDIR
+# unset GAMEDIR
+# unset CURRENTVERSION
 
 exit

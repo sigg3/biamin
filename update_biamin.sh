@@ -1,169 +1,129 @@
 #!/bin/bash
 # Biamin Update Script (GNU GPL v.3+)
-VERSION="0.7"
-WEBURL="http://sigg3.net/biamin"
+UPDATERVERSION="0.8"
+BIAMINWEB="http://sigg3.net/biamin/bugs"
 REPO_SRC="https://gitorious.org/back-in-a-minute/code/raw/biamin.sh"
 WORKDIR="$HOME/.biamin"
-########################################################################
+CURRENT="$WORKDIR/biamin.sh"
 
-HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
+########################### FUNCTIONS BLOCK  ###########################
 
-GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo() and License() !
+GX_BiaminUpdaterTitle() { # Updater Title Banner
 clear
-	cat <<"EOT"
+	cat <<"OXFORD"
             ______                                                     
           (, /    )       /)     ,                    ,               
             /---(  _   _ (/_      __     _     ___     __      _/_  _ 
          ) / ____)(_(_(__/(__  _(_/ (_  (_(_   // (__(_/ (_(_(_(___(/_
         (_/ (   
-EOT
-echo "$HR"
+OXFORD
+echo "                            UPDATER VERSION $UPDATERVERSION"
+echo "- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 }
 
-# Gotta catch 'em all Error function...
-BiUpError() {
+BiUpError() {	# Error function
 	# Throw $1 at BiUpError() for error message
-	GX_BiaminTitle
+	GX_BiaminUpdaterTitle
 	if [ -z "$1" ] ; then
-		echo -e "\nUser interupted operation!"
+		echo "User interupted operation!"
 	else
 		echo "There was an error and we had to stop!"
-		echo "Log: $1"
+		echo "Log: $1" | tr '_' ' '
 	fi
-	echo -e "\nPlease submit bugs at <$WEBURL>"
+	if [ -f "$REPO" ]; then
+		rm -f "$REPO" # Remove temporary files.
+	fi	
+	echo -e "\nPlease submit questions/bugs to <$BIAMINWEB>"
 	exit
 }
+# Trap interrupt signals
 trap BiUpError SIGHUP SIGINT SIGTERM
 
-########################################################################
+ChBiaminPath() { # Change biamin.sh path
+	echo -e "\nPlease enter path to desired directory WITHOUT trailing /"
+	echo -e "Example: $HOME/.biamin\n"
+	echo -n "Path: " && read "WORKDIR"
+}
 
-GX_BiaminTitle
-echo "Back in a Minute Installer & Updater version $VERSION"
-echo "This script installs biamin to default location $HOME/.biamin"
-echo -e "If Biamin is installed it checks the official repo for updates!\n"
-
-# Step 1. Confirm directory
-echo "Default \$GAMEDIR is $WORKDIR"
-echo "Is this your desired setting [Y/N]? " && read -sn1 INITIALSETUP
-
-case "$INITIALSETUP" in
-	y | Y ) echo "Keeping game dir as $WORKDIR/" ;;
-	* ) # change and/or setup
-		echo "Please enter path to desired folder WITHOUT trailing /"
-		echo -e "Example: /home/david/Games/CLI/biamin\n"
-		echo -n "PATH: " && read "WORKDIR"
-		;;
+ConfirmBiaminPath() { # Confirm biamin.sh path
+echo -en "Confirm that the directory is correct [Y/N]: " && read -n1 CONFIRMWORKDIR && echo " "
+case "$CONFIRMWORKDIR" in
+	Y | y ) CURRENT="$WORKDIR/biamin.sh" ;;
+	* ) ChBiaminPath ;;
 esac
+}
 
-# Step 2. Check that dir exists, if not create it
-if [ ! -d "$WORKDIR" ] ; then
-	echo "No such directory exists. Create it? [Y/N] " && read -sn1 CREATEDIRPROMPT
-	case "$CREATEDIRPROMPT" in
-		y | Y ) mkdir -p "$WORKDIR" || BiUpError PERMISSION_ERR_couldnt_create_directory
-				echo "$WORKDIR directory created!" ;;
-		* ) BiUpError ABORT_User_aborted_session ;;
-	esac
-fi
-
-# Step 3. Check that biamin.sh exists in $WORKDIR else wget it
-if [ ! -f "$WORKDIR/biamin.sh" ] ; then
-	echo "No file biamin.sh exists in $WORKDIR/"
-	updateflag=0
+DownLatestBiamin() { # Download latest biamin.sh
+GX_BiaminUpdaterTitle
+echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
+REPO=$( mktemp $WORKDIR/repo.XXXXXX )
+if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
+    wget -q -O "$REPO" "$REPO_SRC" || BiUpError DOWNLOAD_ERR__No_internet_with_wget
+elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
+    curl -s -L -o "$REPO" "$REPO_SRC" || BiUpError DOWNLOAD_ERR__No_internet_with_curl
 else
-	echo "Found existing biamin.sh in default $WORKDIR/biamin.sh!"
-	updateflag=1
+    BiUpError DOWNLOAD_ERR__No_curl_or_wget_available
 fi
+}
 
-# Step 4. Download biamin.sh from gitorious.org
-echo -en "\nPress any key to download latest biamin.sh or CTRL+C to cancel .." && read -sn 1
-GX_BiaminTitle
-echo "Downloading latest biamin.sh from repo .."
+UpdateGamedirVar() { # Change GAMEDIR var (LINE 10) in biamin.sh
+echo "Changing biamin.sh GAMEDIR variable LINE 10 to $WORKDIR"
+sed -i -e "10 c\GAMEDIR=\""${WORKDIR}"\"" "$CURRENT" || BiUpError PERMISSION__Couldnt_update_LINE_10
+}
 
-# Step 4.5 Depend downloader and download 
-if [[ $(which wget 2>/dev/null) ]]; then # Try wget
-    wget -q -O "$WORKDIR/biamin.repo" "$REPO_SRC" || BiUpError DOWNLOAD_ERR_no-internet_with_wget
-elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect, because REPO_SRC is redirect to current master
-    curl -s -L -o "$WORKDIR/biamin.repo" "$REPO_SRC" || BiUpError DOWNLOAD_ERR_no-internet_with_curl
-else
-    BiUpError DOWNLOAD_ERR_no-curl_or_wget
-fi
+UpgradeBiamin() { # Upgrades biamin to latest version, assuming repo is newer
+	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
+	CURRENTVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$CURRENT" )
+	echo "Your current Back in a Minute game is version $CURRENTVERSION"
 
-
-# Step 5. Update or install biamin.sh
-if (( updateflag == 1  )) ; then # '==', because '(( updateflag = 1  ))' sets to 1 !!!
-	# We're updating existing biamin.sh
-        # Are you sure that VERSION'll always be the 4th line? #kstn
-	# CURRENTVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.sh" | sed 's/VERSION=//g' | sed 's/"//g' )
-	CURRENTVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$WORKDIR/biamin.sh" )
-	echo "Your current version of Back in a Minute is: $CURRENTVERSION"
-	# REPOVERSION=$( awk '{ if (NR==4) print $0 }' "$WORKDIR/biamin.repo" | sed 's/VERSION=//g' | sed 's/"//g' )
-	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$WORKDIR/biamin.repo" )
-	echo -e "The newest version of Back in a Minute is: $REPOVERSION\n"
-	if [[ "$CURRENTVERSION" == "$REPOVERSION" ]] ; then # Assume repo is the latest..
-		echo "You're using the latest version of Back in a Minute!"
+	if [[ "$CURRENTVERSION" == "$REPOVERSION" ]] ; then
+		echo "This is the latest version ($CURRENTVERSION) of Back in a Minute!" && rm -f "$REPO" 
 	else
-		echo "You're using an older version of Back in a Minute!"
+		echo "Newer version $REPOVERSION is available!"
 		echo "Updating will NOT destroy character sheets, highscore or current config."
-		echo -en "Do you want to update Back in a Minute? [Y/N] " && read -n1 "CONFIRMUPDATE"
+		echo "Update to Biamin version $REPOVERSION? [Y/N] " && read -sn1 CONFIRMUPDATE
 		case "$CONFIRMUPDATE" in
-			Y | y ) # We're gonna update!
-					echo -e "\n\nUpdating Back in a Minute to version $REPOVERSION"
-					# Why not only 'mv "$WORKDIR/biamin.repo" "$WORKDIR/biamin.sh"' ? #kstn
-					mv "$WORKDIR/biamin.sh" "$WORKDIR/biamin.old"
-					mv "$WORKDIR/biamin.repo" "$WORKDIR/biamin.sh"
-					if [ -f "$WORKDIR/biamin.old" ] ; then
-						echo "Removing old version $CURRENTVERSION biamin.sh"
-						rm -f "$WORKDIR/biamin.old"
-					else
-						BiUpError FILE_ERROR_cant_find_old_version
-					fi
-					if [ ! -f "$WORKDIR/biamin.sh" ]; then
-						BiUpError FILE_ERROR_cant_find_updated_version
-					else
-						echo "File $WORKDIR/biamin.sh updated to version $REPOVERSION!"
-						chmod +x "$WORKDIR/biamin.sh" || BiUpError PERMISSION_couldnt_make_biamin-sh_executable
-					fi
+			y | Y ) echo "Updating Back in a Minute from $CURRENTVERSION to $REPOVERSION .."
+					rm -f "$CURRENT" && mv "$REPO" "$CURRENT"
+					chmod +x "$CURRENT" || BiUpError PERMISSION__Couldnt_make_biamin_executable
 					;;
-			* )		# We're not gonna update!	
-					echo -e "\nNot touching anything!" ;;
+			* )		echo "Not updating! Removing temporary file .." && rm -f "$REPO" ;;
 		esac
 	fi
+}
+
+###########################  RUNTIME BLOCK  ############################
+GX_BiaminUpdaterTitle && echo -en "Locating biamin.sh .. "
+
+# Locate biamin.sh..
+if [ -f "$CURRENT" ]; then
+	echo "found: $CURRENT!"	# UPDATE
+	ConfirmBiaminPath
 else
-	# We're installing a fresh biamin.sh from biamin.repo
-	mv "$WORKDIR/biamin.repo" "$WORKDIR/biamin.sh"
-	chmod +x "$WORKDIR/biamin.sh" || BiUpError PERMISSION_couldnt_make_biamin-sh_executable
-	echo "Biamin.sh installed to $WORKDIR/"
-
-	# Update .bashrc with biamin launcher
-	if grep -q 'biamin' "$HOME/.bashrc" ; then
-		echo "Found existing Biamin launcher in .bashrc .. skipping!"
-	else
-		echo "Add biamin alias to your .bashrc file? .." && read -sn1 BIAMINLAUNCH
-		case "$BIAMINLAUNCH" in
-			y | Y ) echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')\nalias biamin='$WORKDIR/biamin.sh'" >> "$HOME/.bashrc" || BiUpError ALIAS_couldnt_update_bashrc_config
-					echo -e "Done.\nRun 'source \$HOME/.bashrc' to test 'biamin' command or close/open terminal." ;;
-			* ) echo "Leaving your .bashrc file alone .."
+	echo "couldn't find biamin.sh in default location!"	# INSTALL
+	ChBiaminPath
+	ConfirmBiaminPath
+	if [ ! -d "$WORKDIR" ] ; then
+		mkdir -p "$WORKDIR" || BiUpError PERMISSION__Couldnt_make_dir_$WORKDIR
+	fi
+	if [ ! -f "$CURRENT" ] ; then
+		echo "Still no biamin.sh found in $WORKDIR/!"
+		echo -en "Type DOWNLOAD to dl latest biamin.sh to the dir : " && read CONFIRMDL
+		case "$CONFIRMDL" in
+			DOWNLOAD | download | Download ) DownLatestBiamin
+				mv "$REPO" "$CURRENT"
+				chmod +x "$CURRENT" || BiUpError PERMISSION__Couldnt_make_biamin_executable
+				UpdateGamedirVar
+				echo "Latest version installed to $CURRENT"
+				echo "Run 'sh $CURRENT --install' to add launcher!"
+				echo "Thanks for playing!" && exit ;;
+			* ) rm -f "$WORKDIR" # Let's clean up after ourselves
+				BiUpError CONFUSED_USER__Consider_cup_of_hot_chocolate ;;
 		esac
 	fi
 fi
-
-# Step 6. Change biamin.sh $GAMEDIR to $WORKDIR
-if [[ "$WORKDIR" != "$HOME/.biamin" ]] ; then
-		echo "Changing biamin GAMEDIR variable to $WORKDIR .."
-		sed -i -e "10 c\GAMEDIR=\""${WORKDIR}"\"" "$WORKDIR/biamin.sh" || BiUpError PERMISSION_couldnt_update_LINE-10_of_biamin
-fi
-
-
-# Step 7. Remove leftover.repo files
-if [ -f "$WORKDIR/biamin.repo" ] ; then
-	rm -f "$WORKDIR/biamin.repo"
-fi
-
-echo -e "We're all done here!\nThanks for playing :)"
-
-# We don't need unset them - they will be unset at exit
-# unset WORKDIR
-# unset GAMEDIR
-# unset CURRENTVERSION
-
+DownLatestBiamin  # Retrieve latest biamin.sh to $REPO
+UpgradeBiamin     # Upgrade to latest
+UpdateGamedirVar  # Fix GAMEDIR var
+echo "Run 'sh $CURRENT --install' to add launcher!" && echo "Done. Thanks for playing :)"
 exit

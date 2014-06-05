@@ -1182,12 +1182,12 @@ License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     clear
     GX_BiaminTitle
-    if [ -z "$PAGER" ] ; then  # If $PAGER is not set. If PAGER is used in another function, it shoudn't be 'local' !!!
-	if [[ $(which less 2>/dev/null) ]]; then # try less
-	    PAGER=$(which less)                
-	elif [[ $(which more 2>/dev/null) ]]; then # or try more
-	    PAGER=$(which more)
-	fi
+    if [ -z "$PAGER" ] ; then
+		if [[ $(which less 2>/dev/null) ]]; then # try less
+			PAGER=$(which less)                
+		elif [[ $(which more 2>/dev/null) ]]; then # or try more
+			PAGER=$(which more)
+		fi
     fi # or PAGER remains unset (see ShowLicense() in case PAGER is unset)
     if [ -f "$GAMEDIR/LICENSE" ]; then
 	ShowLicense

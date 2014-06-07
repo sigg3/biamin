@@ -15,7 +15,8 @@ TODO GPL repo
 
 
 TODO LEGACY branch
-[ ] Add updater to biamin.sh and make it dl only legacy updates.
+[-] Add updater to biamin.sh and make it dl only legacy updates.
+[ ] Remove update_biamin.sh from LEGACY once it hits 1.4. Only 2.0 has updater.
 [ ] Add LEGACY to $VERSION once it hits 1.4.
 [ ] ASCII GX_Monster_boar 
 [ ] ASCII GX_Monster_dragon

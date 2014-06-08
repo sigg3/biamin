@@ -1207,10 +1207,10 @@ More info:    <${WEBURL}about#license>
 }   # Return to Credits() 
 
 LoadGame() { # Used in MainMenu()
-    local i=1 # Count of all sheets. We could use ${#array_name[@]}, but I'm not sure if MacOS'll understand that. So let's invent bicycle!
+    local i=0 # Count of all sheets. We could use ${#array_name[@]}, but I'm not sure if MacOS'll understand that. So let's invent bicycle!
     # xargs ls -t - sort by date, last played char'll be the first in array
     for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet' | xargs ls -t) ; do # Find all sheets and add to array if any
-	SHEETS[((i++))]="$loadSHEET" # initialize SHEETS[$i] than $i++
+	SHEETS[((++i))]="$loadSHEET" # $i++ THAN initialize SHEETS[$i]
     done
 
     if [[ ! ${SHEETS[@]} ]] ; then # If no one sheet was found
@@ -1245,6 +1245,7 @@ LoadGame() { # Used in MainMenu()
                  print " "'$a' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
                  }' ${SHEETS[((a + OFFSET))]} 
 	done
+
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT characters. Use (P)revious or (N)ext to list," # Don't show it if there are chars < LIMIT
 	echo -en "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
 	read -n 1 NUM # TODO replace to read -p after debug

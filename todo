@@ -27,7 +27,7 @@ TODO 2.0 branch
 [x] ASCII GX_Monster_boar 
 [ ] ASCII GX_Monster_dragon
 [x] ASCII GX_Tavern
-[ ] 	ASCII GX_DiceGame_Table
+[x] 	ASCII GX_DiceGame_Table
 [ ] ASCII GX_Marketplace
 [ ]	ASCII GX_Grocer
 [ ]	ASCII GX_Tradesman

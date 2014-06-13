@@ -42,13 +42,13 @@ TODO 2.0 branch
 [ ] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [ ] Allow trading gold->tobacco / tobacco-> gold also
 [ ] ASCII Cosmetics on: starvation, pre-fight prompts etc.
-[ ] Other WorldChangeEVENTS ?
-[ ] Quests?    >> Post 2.0
-[ ] Messenger? >> Post 2.0
-[ ] Crime (you're WANTED)? Or perhaps curse?
+[?] Other WorldChangeEVENTS ?
+[?] Quests?    >> Post 2.0
+[?] Messenger? >> Post 2.0
+[?] Crime (you're WANTED)? Or perhaps curse?
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
-[ ] Adventure log (optional)
+[?] Adventure log (optional)
 [x] Dice game in tavern
 [?] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
 	I'm thinking about doing this also. Perhaps it would be better to 

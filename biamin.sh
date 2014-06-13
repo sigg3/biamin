@@ -1584,7 +1584,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    DAMAGE=$(( DICE*STRENGTH ))
 		    echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
 		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 1 && break # extra pause here..
+		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 2 && break # extra pause here..
 		    NEXT_TURN="en"
 		    sleep 3
 		else
@@ -1723,9 +1723,7 @@ GX_Place() {     # Used in NewSector() and MapNav()
 NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
     do
-	# Do not attack player at the first turn
-	# TODO DICE_SIZE=100 - it's very dirty fix for first use RollForEvent()
-	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
+
 	# GPS_Fix()  Find out where we are
 	# Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
@@ -1739,6 +1737,10 @@ NewSector() { # Used in Intro()
 	    	[[ "$zoneS" == "$MAP_X-$MAP_Y" ]] && ItemWasFound && break # not try to find another thing
 	    done
 	}
+
+	# Do not attack player at the first turn
+	# TODO DICE_SIZE=100 - it's very dirty fix for first use RollForEvent()
+	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
 
 	GX_Place "$SCENARIO"
 	# Find out if we're attacked - FightMode() if RollForEvent return 0

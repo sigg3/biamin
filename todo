@@ -9,10 +9,11 @@
 Add stuff here discovered while testing and/or working out other problems
 that needs to be done. Or from e-mail discussions. ~~ sigg3
 
+LEGEND: x = done, + someone's working on it, ? = open question, - = removed
+
 TODO GPL repo
 [ ] Create LEGACY for -gpl repo once it hits 1.4
 [ ] Remove updater from -gpl 1.4
-
 
 TODO LEGACY branch
 [ ] Remove update_biamin.sh from LEGACY once it hits 1.4. Only 2.0 has updater.
@@ -20,45 +21,45 @@ TODO LEGACY branch
 
 
 TODO 2.0 branch
+[?] NPC system to complete the experience of a living place ..
 [ ] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
 [ ] ASCII GX_Monster_dragon
 [x] ASCII GX_Tavern
+[ ] 	ASCII GX_DiceGame_Table
 [ ] ASCII GX_Marketplace
-[ ] Add 2-3 more Economy scenarios with different values (shocking stuff)
-[ ] ASCII Finish look of GX_Bulletin (left side)
+[ ]	ASCII GX_Grocer
+[ ]	ASCII GX_Tradesman
+[+] Add 4 more Economy scenarios with different values (current: 12 + default)
+[x] ASCII Finish look of GX_Bulletin (left side)
 [ ] Pickpocket tuning
 [ ] Add boar )    EN_STRENGTH=5 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=5  ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=40  ;;
 [ ] Add dragon )    EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=100  ; EN_FLEE_THRESHOLD=50 ; PL_FLEE_EXP=50  ; EN_FLEE_EXP=70  ; EN_DEFEATED_EXP=140  ;;
 [ ] Rewrite CUSTOM map functionality to allow >1 map
-[ ] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
-[ ] LoadMap() displaying list of maps to choose from ^^
+[+] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
+[+] LoadMap() displaying list of maps to choose from ^^
 [ ] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [ ] Allow trading gold->tobacco / tobacco-> gold also
-[ ] STARVATION ?
-	what's wrong with it? O_o #kstn
-	isn't there some logic missing atm? and we need to polish those strings:) # sig
-
 [ ] ASCII Cosmetics on: starvation, pre-fight prompts etc.
 [ ] Other WorldChangeEVENTS ?
-[ ] Quests?
-[ ] Messenger?
+[ ] Quests?    >> Post 2.0
+[ ] Messenger? >> Post 2.0
 [ ] Crime (you're WANTED)? Or perhaps curse?
-[ ] Game of chance (for tavern), dice game or card game etc.
+[x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
 [ ] Adventure log (optional)
-[ ] Dice game in tavern
-[ ] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
+[x] Dice game in tavern
+[?] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
+	I'm thinking about doing this also. Perhaps it would be better to 
+	create a subsystem of NPC() that populate certain areas, scattered like 
+	HotzoneDistribute()
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
-
-GIT 
-[x] Move todo to separate branch? For not push commit in master at every changing todo (#kstn)
 
 BLOG/Misc.
 [ ] LEGACY announcement
 [ ] Re-write About page
 [ ] Update download page
-[ ] Publish 2.0 with much fanfare :)
+[ ] Publish 2.0 with much fanfare: "Survival mode" :)
 

@@ -18,7 +18,7 @@ TODO GPL repo
 TODO LEGACY branch
 [ ] Remove update_biamin.sh from LEGACY once it hits 1.4. Only 2.0 has updater.
 [ ] Add LEGACY to $VERSION once it hits 1.4.
-[ ] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
+[x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
 
 TODO 2.0 branch
 [?] NPC system to complete the experience of a living place ..

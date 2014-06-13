@@ -28,7 +28,7 @@ TODO 2.0 branch
 [ ] ASCII GX_Monster_dragon
 [x] ASCII GX_Tavern
 [x] 	ASCII GX_DiceGame_Table
-[ ] ASCII GX_Marketplace
+[x] ASCII GX_Marketplace
 [ ]	ASCII GX_Grocer
 [ ]	ASCII GX_Tradesman
 [+] Add 4 more Economy scenarios with different values (current: 12 + default)

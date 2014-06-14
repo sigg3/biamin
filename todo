@@ -21,7 +21,6 @@ TODO LEGACY branch
 [x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
 
 TODO 2.0 branch
-[?] NPC system to complete the experience of a living place ..
 [ ] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
@@ -59,7 +58,8 @@ TODO Post 2.0 branch
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?] Messenger? >> Post 2.0
 [?] Crime (you're WANTED)? Or perhaps curse?
-[?] Huge map (4 parts)
+[?] World Map (tiles of maps) for a bigger world
+[?] NPC system to complete the experience of a living place
 
 BLOG/Misc.
 [ ] LEGACY announcement

@@ -43,9 +43,6 @@ TODO 2.0 branch
 [ ] Allow trading gold->tobacco / tobacco-> gold also
 [ ] ASCII Cosmetics on: starvation, pre-fight prompts etc.
 [?] Other WorldChangeEVENTS ?
-[?] Quests?    >> Post 2.0
-[?] Messenger? >> Post 2.0
-[?] Crime (you're WANTED)? Or perhaps curse?
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
 [?] Adventure log (optional)
@@ -56,6 +53,13 @@ TODO 2.0 branch
 	HotzoneDistribute()
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
+
+TODO Post 2.0 branch
+[?] Quests?    >> Post 2.0
+[?] 	  Kill the dragon and get 500 gold (bullutin0)
+[?] Messenger? >> Post 2.0
+[?] Crime (you're WANTED)? Or perhaps curse?
+[?] Huge map (4 parts)
 
 BLOG/Misc.
 [ ] LEGACY announcement

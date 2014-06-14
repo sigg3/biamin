@@ -24,9 +24,10 @@ TODO 2.0 branch
 [ ] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
-[ ] ASCII GX_Monster_dragon
+[x] ASCII GX_Monster_dragon
 [x] ASCII GX_Tavern
-[x] 	ASCII GX_DiceGame_Table
+[x] 	ASCII GX_DiceGame_Table && _Instructions
+[+]     ASCII GX_DiceGame
 [x] ASCII GX_Marketplace
 [ ]	ASCII GX_Grocer
 [ ]	ASCII GX_Tradesman

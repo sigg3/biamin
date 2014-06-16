@@ -1481,18 +1481,25 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	NEXT_TURN="en"
     else
 	echo "$CHAR has the initiative!"
-	echo -en "\n\t\t   Press any key to fight or (F) to Flee"
-	read -sn 1 FLEE_OPT
-	case "$FLEE_OPT" in
-	    f | F ) echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
-		RollDice 6
-		(( DICE <= FLEE )) && { 
-		    echo -e "Roll D6 <= FLEE \$ [ $DICE  <= $FLEE ] You managed to run away!";
-		    LUCK=3;
-		    unset FIGHTMODE; } || {
-		    echo -e "Roll D6 <= FLEE \$ [ $DICE  >  $FLEE ] You rolled $DICE and lost your initiative.." && sleep 1 ; # Dubious sleep, must test.
-		    NEXT_TURN="en" ; } ;;
-	    * ) NEXT_TURN="pl" ;;
+	NEXT_TURN="pl" 
+
+	# BUGFIX if player has intitiave, but not tries to flee, he got
+	# "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee"  at 1st turn
+	# so it seems to me that we don't need check for flee here.
+	# I didn't deleted unneeded code, but just commented it. #kstn
+
+	# echo -en "\n\t\t   Press any key to fight or (F) to Flee"
+	# read -sn 1 FLEE_OPT
+	# case "$FLEE_OPT" in
+	#     f | F ) echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
+	# 	RollDice 6
+	# 	(( DICE <= FLEE )) && { 
+	# 	    echo -e "Roll D6 <= FLEE \$ [ $DICE  <= $FLEE ] You managed to run away!";
+	# 	    LUCK=3;
+	# 	    unset FIGHTMODE; } || {
+	# 	    echo -e "Roll D6 <= FLEE \$ [ $DICE  >  $FLEE ] You rolled $DICE and lost your initiative.." && sleep 1 ; # Dubious sleep, must test.
+	# 	    NEXT_TURN="en" ; } ;;
+	#     * ) NEXT_TURN="pl" ;;
 	esac
     fi
 

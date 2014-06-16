@@ -1500,7 +1500,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	# 	    echo -e "Roll D6 <= FLEE \$ [ $DICE  >  $FLEE ] You rolled $DICE and lost your initiative.." && sleep 1 ; # Dubious sleep, must test.
 	# 	    NEXT_TURN="en" ; } ;;
 	#     * ) NEXT_TURN="pl" ;;
-	esac
+	## esac
     fi
 
     sleep 1
@@ -1516,22 +1516,24 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    echo "You WERE KILLED by the $ENEMY, and now you are dead..."
 	    sleep 2
 	    if (( CHAR_EXP >= 1000 )) && (( CHAR_HEALTH < -5 )) && (( CHAR_HEALTH > -15 )); then
+# BUG ???	# Do not resurrect player whith 1000 EXP, -4 HEALTH and without GUARDIAN ANGEL??? O_o #kstn
 		echo "However, your $CHAR_EXP Experience Points relates that you have"
 		echo "learned many wondrous and magical things in your travels..!"
-		echo "+20 HEALTH: Health Restored to 20"
+# BUG ???	# if we want restore to 20 HEALTH
+		echo "Health Restored to 20"
 		CHAR_HEALTH=20
+		# or if we want get  +20 HEALTH 
+		# (( CHAR_HEALTH += 20))
+		# echo "+20 HEALTH: Health Restored to $CHAR_HEALTH"
+		# Uncomment what variant we need #kstn
 		LUCK=2
-		unset FIGHTMODE
 		sleep 8
-		break	# bugfix: Resurrected player could continue fighting
 	    elif (( CHAR_ITEMS >= 3 )) && (( CHAR_HEALTH > -6 )); then
 		echo "Suddenly you awake again, SAVED by your Guardian Angel!"
 		echo "+5 HEALTH: Health Restored to 5"
 		CHAR_HEALTH=5
 		LUCK=2
-		unset FIGHTMODE
 		sleep 8
-		break # bugfix: Resurrected player could continue fighting..
 	    else      # DEATH!
 		echo "Gain 1000 Experience Points to achieve magic healing!"
 		sleep 4
@@ -1551,89 +1553,90 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		done
 		unset FUNERAL_RACE COUNTDOWN
 		echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
-		rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
-		# Zombie fix
+		rm -f "$CHARSHEET" # A sense of loss is important for gameplay :)
 		unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS
-		unset FIGHTMODE && DEATH=1 && break 	# Zombie fix		    
+		DEATH=1 
 	    fi
+	    unset FIGHTMODE 
+	    break # Zombie fix for all variants of death and resurrection
 	fi
 
 	FightTable
 
-	if [ "$NEXT_TURN" = "pl" ] ; then  # Player's turn
-	    echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
-	    read -sn 1 "FIGHT_PROMPT"
-	    RollDice 6
-	    FightTable
-	    echo -en "\nRoll D6 "
-	    if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
-		unset FIGHT_PROMPT
-		# Player tries to flee!
-		if (( DICE <= FLEE )); then
-		    echo -e "<= FLEE \$ [ $DICE  <= $FLEE ] You managed to flee!"
-		    unset FIGHTMODE
-		    LUCK=3
-		    sleep 3
-		    break
-		else
-		    echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
-		    NEXT_TURN="en"
-		    sleep 2
-		fi
-	    else # Player fights
-		unset FIGHT_PROMPT
-		if (( DICE <= ACCURACY )); then
-		    echo -e "<= ACC  \$ [ 1  <= 4 ] Your weapon hits the target!"
-		    echo -n "Press the R key to (R)oll for damage" 
-		    read -sn 1 "FIGHT_PROMPT"
-		    RollDice 6
-		    echo -en "\nRoll D6  x STR  \$ [ $DICE"
-		    DAMAGE=$(( DICE*STRENGTH ))
-		    echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
-		    EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-		    (( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 2 && break # extra pause here..
-		    NEXT_TURN="en"
-		    sleep 3
-		else
-		    echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
-		    NEXT_TURN="en"
-		    sleep 2
-		fi
-	    fi
-	else # Enemy's turn
-	    # Enemy tries to flee
-	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
-		FightTable
-		RollDice 20
-		echo -e "\nRolling for enemy flee .. [ D20 < $EN_FLEE ]"
-		sleep 2
-		if (( DICE < EN_FLEE )); then
-		    echo -e "Roll D20 < $EN_FLEE \$ [ $DICE  <  $EN_FLEE ] The $ENEMY uses an opportunity to flee!"
-		    LUCK=1
-		    unset FIGHTMODE
-		    sleep 2
-		    break # bugfix: Fled enemy continue fighting..
-		else
-			FightTable
-		fi
-	    fi
-	    echo -en "\nIt's the $ENEMY's turn\n"
-	    sleep 2
-	    RollDice 6
-	    if (( DICE <= EN_ACCURACY )); then
-		echo -en "Roll D6 <= $EN_ACCURACY \$ [ $DICE  <= $EN_ACCURACY ] The $ENEMY strikes you!"
+	case "$NEXT_TURN" in
+	    pl )  # Player's turn
+		echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
+		read -sn 1 "FIGHT_PROMPT"
 		RollDice 6
-		DAMAGE=$(( DICE*EN_STRENGTH ))
-		echo -en "\n  -$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
-		CHAR_HEALTH=$(( CHAR_HEALTH-DAMAGE ))
-		SaveCurrentSheet
+		FightTable
+		echo -en "\nRoll D6 "
+		if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
+		    unset FIGHT_PROMPT
+		    # Player tries to flee!
+		    if (( DICE <= FLEE )); then
+			echo -e "<= FLEE \$ [ $DICE  <= $FLEE ] You managed to flee!"
+			unset FIGHTMODE
+			LUCK=3
+			sleep 3
+			break
+		    else
+			echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
+			NEXT_TURN="en"
+			sleep 2
+		    fi
+		else # Player fights
+		    unset FIGHT_PROMPT
+		    if (( DICE <= ACCURACY )); then
+			echo -e "<= ACC  \$ [ 1  <= 4 ] Your weapon hits the target!"
+			echo -n "Press the R key to (R)oll for damage" 
+			read -sn 1 "FIGHT_PROMPT"
+			RollDice 6
+			echo -en "\nRoll D6  x STR  \$ [ $DICE"
+			DAMAGE=$(( DICE*STRENGTH ))
+			echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
+			EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
+			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 2 && break # extra pause here..
+		    else
+			echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
+		    fi
+		    NEXT_TURN="en"
+		    sleep 3
+		fi 
+		;;
+	    
+	    en ) # Enemy's turn
+		# Enemy tries to flee
+		if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
+		    FightTable
+		    RollDice 20
+		    echo -e "\nRolling for enemy flee .. [ D20 < $EN_FLEE ]"
+		    sleep 2
+		    if (( DICE < EN_FLEE )); then
+			echo -e "Roll D20 < $EN_FLEE \$ [ $DICE  <  $EN_FLEE ] The $ENEMY uses an opportunity to flee!"
+			LUCK=1
+			unset FIGHTMODE
+			sleep 2
+			break # bugfix: Fled enemy continue fighting..
+		    fi
+		    FightTable # If enemy didn't maneged to flee
+		fi
+		echo -en "\nIt's the $ENEMY's turn\n"
+		sleep 2
+		RollDice 6
+		if (( DICE <= EN_ACCURACY )); then
+		    echo -en "Roll D6 <= $EN_ACCURACY \$ [ $DICE  <= $EN_ACCURACY ] The $ENEMY strikes you!"
+		    RollDice 6
+		    DAMAGE=$(( DICE*EN_STRENGTH ))
+		    echo -en "\n  -$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
+		    CHAR_HEALTH=$(( CHAR_HEALTH-DAMAGE ))
+		    SaveCurrentSheet
+		else
+		    echo -e "Roll D6 <= $EN_ACCURACY \$ [ $DICE  >  $EN_ACCURACY ] The $ENEMY misses!"
+		fi
 		NEXT_TURN="pl"
-	    else
-		echo -e "Roll D6 <= $EN_ACCURACY \$ [ $DICE  >  $EN_ACCURACY ] The $ENEMY misses!"
-		NEXT_TURN="pl"
-	    fi
-	    sleep 2
-	fi
+		sleep 2		
+		;;
+	esac
     done
     # FIGHT LOOP ends
 

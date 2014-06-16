@@ -1587,7 +1587,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		else # Player fights
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
-			echo -e "<= ACC  \$ [ 1  <= 4 ] Your weapon hits the target!"
+			echo -e "<= ACC  \$ [ $DICE  <=  $ACCURACY ] Your weapon hits the target!" # BUGFIX promt
 			echo -n "Press the R key to (R)oll for damage" 
 			read -sn 1 "FIGHT_PROMPT"
 			RollDice 6

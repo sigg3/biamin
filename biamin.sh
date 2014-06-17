@@ -939,7 +939,7 @@ BiaminSetup() { # Used in MainMenu()
 	# Fixes for older charsheets compability #TODO make it less ugly
 	grep -q -E '^HOME:' "$CHARSHEET" || echo "HOME: $START_LOCATION" >> $CHARSHEET
 
-	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
+	# I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '
                   { 
@@ -1710,7 +1710,7 @@ NewSector() { # Used in Intro()
 	}
 
 	# Do not attack player at the first turn
-	# TODO DICE_SIZE=100 - it's very dirty fix for first use RollForEvent()
+	# very dirty fix for first use RollForEvent()
 	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
 
 	GX_Place "$SCENARIO"
@@ -1843,7 +1843,7 @@ Do you want color? No to DISABLE, Yes or ENTER to ENABLE color: "
 
 CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
-    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
+    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # $0 is a powerful beast, but will sometimes fail..
     echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
     read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
     case "$LAUNCHER" in
@@ -1867,7 +1867,7 @@ CreateBiaminLauncher() {
 #                        2. RUNTIME BLOCK                              #
 #                   All running code goes here!                        #
 
-# Parse CLI arguments if any # TODO use getopts ?
+# Parse CLI arguments if any
 case "$1" in
     --announce )
 	Announce ;;

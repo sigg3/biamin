@@ -1187,27 +1187,22 @@ More info:    <${WEBURL}about#license>
 
 LoadGame() { # Used in MainMenu()
     local i=0 # Count of all sheets. We could use ${#array_name[@]}, but I'm not sure if MacOS'll understand that. So let's invent bicycle!
-    # xargs ls -t - sort by date, last played char'll be the first in array
-    for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet' | xargs ls -t) ; do # Find all sheets and add to array if any
-	SHEETS[((++i))]="$loadSHEET" # $i++ THAN initialize SHEETS[$i]
+    for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet' | xargs ls -t) ; do # Find all sheets, sort by date and add to array if any
+	SHEETS[((++i))]="$loadSHEET" # $i++ THAN initialize SHEETS[$i]. ${SHEETS[0]} is always empty - we'll need it later
     done
-
     if [[ ! ${SHEETS[@]} ]] ; then # If no one sheet was found
 	GX_LoadGame
-	echo " Sorry! No character sheets in $GAMEDIR/"
-	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
+	read -sn 1 -p " Sorry! No character sheets in ${GAMEDIR}/
+Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
 	return 1   # BiaminSetup() will not be run after LoadGame()
-    fi
-
+    fi  # leave
     local LIMIT=9
     local OFFSET=0
     while (true) ; do
 	GX_LoadGame
 	for (( a=1; a <= LIMIT ; a++)); do
 	    [[ ! ${SHEETS[((a + OFFSET))]} ]] && break
-	awk '{ 
-                   # Character can consist from two and more words
-                   # not only "Corum" but "Corum Jhaelen Irsei" for instance 
+	    awk '{ # Character can consist from two and more words - not only "Corum" but "Corum Jhaelen Irsei" for instance 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
@@ -1224,7 +1219,6 @@ LoadGame() { # Used in MainMenu()
                  print " "'$a' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
                  }' ${SHEETS[((a + OFFSET))]} 
 	done
-
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT characters. Use (P)revious or (N)ext to list," # Don't show it if there are chars < LIMIT
 	echo -en "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
 	read -n 1 NUM # TODO replace to read -p after debug

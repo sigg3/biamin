@@ -1486,19 +1486,15 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    sleep 2
 	    echo "You WERE KILLED by the $ENEMY, and now you are dead..."
 	    sleep 2
-	    if (( CHAR_EXP >= 1000 )) && (( CHAR_HEALTH < -5 )) && (( CHAR_HEALTH > -15 )); then
-# BUG ???	# Do not resurrect player whith 1000 EXP, -4 HEALTH and without GUARDIAN ANGEL??? O_o #kstn
-		echo "However, your $CHAR_EXP Experience Points relates that you have"
+	    if (( CHAR_EXP >= 1000 )) && (( CHAR_HEALTH < -5 )) && (( CHAR_HEALTH > -15 )); then    # Without the < -5, BOTH this && GA would show up. In the old code, at least.
+		echo "However, your $CHAR_EXP Experience Points relates that you have"                  # IF you have 1000 EXP, you are very likely to have GA, no?
 		echo "learned many wondrous and magical things in your travels..!"
-# BUG ???	# if we want restore to 20 HEALTH
-		echo "Health Restored to 20"
-		CHAR_HEALTH=20
-		# or if we want get  +20 HEALTH 
-		# (( CHAR_HEALTH += 20))
-		# echo "+20 HEALTH: Health Restored to $CHAR_HEALTH"
-		# Uncomment what variant we need #kstn
+		(( CHAR_HEALTH +=20 ))
+		echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
 		LUCK=2
-		sleep 8
+		unset FIGHTMODE && sleep 8 && break
+		# bug? Resurrected player could continue fighting - kstn.
+		# I'm typically defeated by a sudden attack from full-health orc. I would have no chance with 5 HP.. - sig.
 	    elif (( CHAR_ITEMS >= 3 )) && (( CHAR_HEALTH > -6 )); then
 		echo "Suddenly you awake again, SAVED by your Guardian Angel!"
 		echo "+5 HEALTH: Health Restored to 5"

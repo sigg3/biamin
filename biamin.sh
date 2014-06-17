@@ -740,15 +740,10 @@ EOT
 
 # FILL THE $MAP file using either default or custom map
 MapCreate() {
-    if [ -f "$GAMEDIR/CUSTOM.map" ]; then
-	if grep -q 'Z' "$GAMEDIR/CUSTOM.map" ; then
-	    echo "Whoops! Custom map file still contains Z's!"
-	    echo "Use ONLY symbols from the legend (x . T @ H C) in your custom maps!"
-	    CustomMapError
-	else
-	    MAP=$(cat "$GAMEDIR/CUSTOM.map")
-	fi
-    else
+    if [ -f "$GAMEDIR/CUSTOM.map" ]; then # Try to load Custom map
+	grep -q 'Z' "$GAMEDIR/CUSTOM.map" && CustomMapError # And exit after CustomMapError
+	MAP=$(cat "$GAMEDIR/CUSTOM.map")
+    else # Load default map
 	MAP=$(cat <<EOT
        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
    #=========================================================================#
@@ -802,14 +797,14 @@ MapCreateCustom() {
                   H = Home (Heal Your Wounds) C = Oldburg Castle     W + E
                                                                        S
 EOT
-    echo "Custom map template created in $GAMEDIR/rename_to_CUSTOM.map"
-    echo ""
-    echo "1. Change all 'Z' symbols in map area with any of these:  x . T @ H C"
-    echo "   See the LEGEND in rename_to_CUSTOM.map file for details."
-    echo "   Home default is $START_LOCATION. Change line 16 of CONFIG or enter new HOME at runtime."
-    echo "2. Spacing must be accurate, so don't touch whitespace or add new lines."
-    echo "3. When you are done, simply rename your map file to CUSTOM.map"
-    echo "Please submit bugs and feedback at <$WEBURL>"
+    echo "Custom map template created in $GAMEDIR/rename_to_CUSTOM.map
+
+1. Change all 'Z' symbols in map area with any of these:  x . T @ H C
+   See the LEGEND in rename_to_CUSTOM.map file for details.
+   Home default is $START_LOCATION. Change line 16 of CONFIG or enter new HOME at runtime.
+2. Spacing must be accurate, so don't touch whitespace or add new lines.
+3. When you are done, simply rename your map file to CUSTOM.map
+Please submit bugs and feedback at <$WEBURL>"
 }
 
 #                          END GFX FUNCTIONS                           #
@@ -841,18 +836,21 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() {
     # Used in MapCreate(), NewSector() and MapNav()
-    echo -n "What to do?
+    clear
+    echo -n "Whoops! There is an error with your map file!
+Either it contains unknown characters or it uses incorrect whitespace.
+Recognized characters are: x . T @ H C
+Please run game with --map argument to create a new template as a guide.
+
+What to do?
 1) rename CUSTOM.map to CUSTOM_err.map or
 2) delete template file CUSTOM.map (deletion is irrevocable).
 Please select 1 or 2: "
     read -n 1 MAP_CLEAN_OPTS
     case "$MAP_CLEAN_OPTS" in
 	1 ) mv "$GAMEDIR/CUSTOM.map" "$GAMEDIR/CUSTOM_err.map" ;
-	    echo -e "\nCustom map file moved to $GAMEDIR/CUSTOM_err.map" ;
-	    sleep 4 ;;
-	2 ) rm -f "$GAMEDIR/CUSTOM.map" ;
-	    echo -e "\nCustom map deleted!" ;
-	    sleep 4 ;;
+	    Die "\nCustom map file moved to $GAMEDIR/CUSTOM_err.map" ;;
+	2 ) rm -f "$GAMEDIR/CUSTOM.map" && Die "\nCustom map deleted!" || Die "Can't delete $GAMEDIR/CUSTOM.map";;
 	* ) Die "\nBad option! Quitting.." ;;
     esac
 }
@@ -1718,13 +1716,7 @@ GX_Place() {     # Used in NewSector() and MapNav()
 	T ) GX_Town ;;
 	@ ) GX_Forest ;;
 	C ) GX_Castle ;;
-	Z | * )  clear
-	    echo "Whoops! There is an error with your map file!"
-	    echo "Either it contains unknown characters or it uses incorrect whitespace."
-	    echo "Recognized characters are: x . T @ H C"
-	    echo "Please run game with --map argument to create a new template as a guide."
-	    echo ""
-	    CustomMapError;;
+        * ) CustomMapError;;
     esac
 }   # Return to NewSector() or MapNav()
 
@@ -1761,13 +1753,7 @@ NewSector() { # Used in Intro()
 	    T ) RollForEvent 15 && FightMode ;;
 	    @ ) RollForEvent 35 && FightMode ;;
 	    C ) RollForEvent 10 && FightMode ;;
-	    Z | * )  clear
-		echo "Whoops! There is an error with your map file!"
-		echo "Either it contains unknown characters or it uses incorrect whitespace."
-		echo "Recognized characters are: x . T @ H C"
-		echo "Please run game with --map argument to create a new template as a guide."
-		CustomMapError
-		;;
+	    * ) CustomMapError ;;
 	esac
 	# If player was slain in fight mode
         (( DEATH == 1 )) && unset DEATH && HighScore && break

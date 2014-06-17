@@ -1111,11 +1111,8 @@ HighscoreRead() {
 HighScore() { # Used in MainMenu()
     GX_HighScore
     echo ""
-    if [ ! -s "$HIGHSCORE" ] ; then # Die if $HIGHSCORE is empty
-	echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
-    else
-	HighscoreRead		# Show 10 highscore entries
-    fi
+    # Show 10 highscore entries or die if $HIGHSCORE is empty
+    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
     echo -e "\n                   Press the any key to go to (M)ain menu    "
     read -sn 1 
 }   # Return to MainMenu()

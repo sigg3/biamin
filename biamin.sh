@@ -1128,12 +1128,18 @@ Credits() { # Used in MainMenu()
 }   # Return to MainMenu()
 
 PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
-    # TODO add option to use wget if systen hasn't curl (Debian for instance) -kstn
-    # TODO I'm not sure. I was told to use curl because it has greater compatibility than wget..? - s3
-    echo " Download GNU GPL Version 3 ..."
-    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I didn't know we could do that :)
-    echo " Download CC BY-NC-SA 4.0 ..."
-    CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+    echo " Downloading GNU GPL Version 3 ..."
+    if [[ $(which wget 2>/dev/null) ]]; then # Try wget first
+		GPL=$(wget -q -O gpl-3.0.txt "http://www.gnu.org/licenses/gpl-3.0.txt" || "")
+		echo "Downloading CC BY-NC-SA 4.0 ..."
+	    CC=$(wget -q -O legalcode.txt "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+	elif [[ $(which curl 2>/dev/null) ]]; then # If no wget try curl
+	    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "")
+		echo " Downloading CC BY-NC-SA 4.0 ..."
+		CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+	fi
+    
+	# Concatenate files into LICENSE file and remove extra files
     if [[ $GPL && $CC ]] ; then 
 	echo -e "\t\t   BACK IN A MINUTE BASH CODE LICENSE:\t\t\t(Q)uit\n
 $HR
@@ -1141,10 +1147,16 @@ $GPL
 \n$HR\n\n\t\t   BACK IN A MINUTE ARTWORK LICENSE:\n\n
 $CC"  > "$GAMEDIR/LICENSE"
 	echo " Licenses downloaded and concatenated!"
+	if [ -f "$GAMEDIR/gpl-3.0.txt" ] ; then
+		rm -f "$GAMEDIR/gpl-3.0.txt"
+	fi
+	if [ -f "$GAMEDIR/legalcode.txt" ] ; then
+		rm -f "$GAMEDIR/legalcode.txt"
+	fi
 	sleep 1
 	return 0
     else
-	echo "Couldn't download license files :( Do you have Internet access?"
+	echo "Couldn't download the license files :( Do you have Internet access?"
 	sleep 1
 	return 1
     fi

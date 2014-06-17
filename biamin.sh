@@ -1077,12 +1077,10 @@ MainMenu() {
 	GX_Banner 		
 	read -sn 1 -p "        (P)lay    (L)oad game    (H)ighscore    (C)redits    (Q)uit   " TOPMENU_OPT
 	case "$TOPMENU_OPT" in
-	    p | P ) 
-		GX_Banner ;
-		read -p " Enter character name (case sensitive): " CHAR ;
-		[[ $CHAR ]] && BiaminSetup;; # Do nothing if CHAR is empty
-	    l | L ) 
-		LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
+	    p | P ) GX_Banner ;
+		    read -p " Enter character name (case sensitive): " CHAR ;
+		    [[ $CHAR ]] && BiaminSetup;; # Do nothing if CHAR is empty
+	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;

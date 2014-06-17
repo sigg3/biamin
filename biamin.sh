@@ -823,7 +823,7 @@ function Die() {
 
 # CLEANUP Function
 CleanUp() { # Used in MainMenu(), NewSector(),
-	clear && GX_BiaminTitle && echo -e "\n$HR"
+    clear && GX_BiaminTitle && echo -e "\n$HR"
     [[ $FIGHTMODE ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;
@@ -834,8 +834,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     exit 0
 }
 # PRE-CLEANUP tidying function for buggy custom maps
-CustomMapError() {
-    # Used in MapCreate(), NewSector() and MapNav()
+CustomMapError() { # Used in MapCreate(), NewSector() and MapNav()
     clear
     echo -n "Whoops! There is an error with your map file!
 Either it contains unknown characters or it uses incorrect whitespace.
@@ -962,7 +961,6 @@ BiaminSetup() { # Used in MainMenu()
 	unset CHAR_TMP
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
-	sleep 2
     else
 	echo " $CHAR is a new character!"
 	CHAR_BATTLES=0
@@ -985,34 +983,28 @@ BiaminSetup() { # Used in MainMenu()
 	# If there IS a CUSTOM.map file, ask where the player would like to start
 	if [ -f "$GAMEDIR/CUSTOM.map" ] ; then
 	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"
-	    if [[ ! -z "$CHAR_LOC" ]]; then
-		# Use user input as start location.. but first SANITY CHECK
+	    if [[ ! -z "$CHAR_LOC" ]]; then # Use user input as start location.. but first SANITY CHECK		
 		read CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$CHAR_LOC")
-		if (( CHAR_LOC_LEN > 3 )) || (( CHAR_LOC_LEN < 1 )) ; then
-		    Die " Error! Wrong number of characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
-		else
-		    echo -n "Sanity check.."
-		    case "$CHAR_LOC_A" in
-			A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
-			* ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
-		    esac
-		    case "$CHAR_LOC_B" in
-			1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
-			* ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
-		    esac
-		fi
-		unset CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
-		# End of SANITY check, everything okay!
+		(( CHAR_LOC_LEN > 3 )) && Die " Error! Too many characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		(( CHAR_LOC_LEN < 1 )) && Die " Error! Too few  characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		echo -n "Sanity check.."
+		case "$CHAR_LOC_A" in
+		    A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
+		    * ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
+		esac
+		case "$CHAR_LOC_B" in
+		    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
+		    * ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
+		esac # End of SANITY check, everything okay!
 		CHAR_GPS="$CHAR_LOC"
 		CHAR_HOME="$CHAR_LOC"
-		unset CHAR_LOC
+		unset CHAR_LOC CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
 	    fi # or CHAR_GPS and CHAR_HOME not changed from START_LOCATION
 	fi
 	echo " Creating fresh character sheet for $CHAR ..."
 	SaveCurrentSheet
-	sleep 2
     fi # Finish check whether CHAR exists if not create CHARSHEET 
-
+    sleep 2 # merged sleep from 'load char' and 'new char'
     # Set abilities according to race (each equal to 12)
     case $CHAR_RACE in
 	1 ) HEALING=3 && STRENGTH=3 && ACCURACY=3 && FLEE=3 ;; # human  (3,3,3,3)
@@ -1020,7 +1012,6 @@ BiaminSetup() { # Used in MainMenu()
 	3 ) HEALING=2 && STRENGTH=5 && ACCURACY=3 && FLEE=2 ;; # dwarf  (2,5,3,2)
 	4 ) HEALING=4 && STRENGTH=1 && ACCURACY=4 && FLEE=3 ;; # hobbit (4,1,4,3)
     esac
-
     # Adjust abilities according to items
     if (( CHAR_ITEMS >= 2 )); then
 	((HEALING++))			# Adjusting for Emerald of Narcolepsy
@@ -1034,7 +1025,6 @@ BiaminSetup() { # Used in MainMenu()
 	    fi
 	fi
     fi
-
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     [[ $DISABLE_CHEATS -eq 1 && $CHAR_HEALTH -ge 150 ]] && CHAR_HEALTH=150
     Intro

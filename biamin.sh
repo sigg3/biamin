@@ -1092,10 +1092,10 @@ MainMenu() {
 HighscoreRead() {
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
     local HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n;"
-    local i=1
+    local i=0
     # Read values from highscore file (BashFAQ/001)
     while IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR; do
-	(( i > 10 )) && break
+	(( ++i > 10 )) && break # i++ THEN check (( i > 10 )) 
 	case "$highRACE" in
 	    1 ) highRACE="Human" ;;
 	    2 ) highRACE="Elf" ;;
@@ -1103,7 +1103,6 @@ HighscoreRead() {
 	    4 ) highRACE="Hobbit" ;;
 	esac
 	HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
-	((i++))
     done < "$HIGHSCORE"
     echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
     unset HIGHSCORE_TMP

@@ -135,7 +135,7 @@ GX_HowTo() {
    inhabiting the different scenarios. Some places are safer than others.
 EOT
     echo -e "   For more information please visit <$WEBURL>\n$HR"
-    read -sn 1 -p "                       Press any key to return to (M)ain Menu" ;;
+    read -sn 1 -p "                       Press any key to return to (M)ain Menu"
 }
 
 GX_HighScore() {

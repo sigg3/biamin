@@ -134,8 +134,8 @@ GX_HowTo() {
    Travelling and resting involves the risk of being attacked by the creatures
    inhabiting the different scenarios. Some places are safer than others.
 EOT
-    echo "   For more information please visit <$WEBURL>"
-    echo "$HR"
+    echo -e "   For more information please visit <$WEBURL>\n$HR"
+    read -sn 1 -p "                       Press any key to return to (M)ain Menu" ;;
 }
 
 GX_HighScore() {
@@ -1119,13 +1119,10 @@ HighScore() { # Used in MainMenu()
 
 Credits() { # Used in MainMenu()
     GX_Credits
-    read -sn 1 -p "                 (H)owTo    (L)icense      (M)ain menu       " "CREDITS_OPT"
+    read -sn 1 -p "                 (H)owTo    (L)icense      (M)ain menu" "CREDITS_OPT"
     case "$CREDITS_OPT" in
 	L | l ) License ;;
-	H | h ) 
-	    GX_HowTo
-	    read -sn 1 -p "                       Press any key to return to (M)ain Menu               " ;;
-	M | * ) ;;
+	H | h ) GX_HowTo ;;
     esac
     unset CREDITS_OPT
 }   # Return to MainMenu()

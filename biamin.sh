@@ -871,7 +871,7 @@ GX_Map() { # Used in MapNav()
 	# If ITEM2C has been found earlier, it is now 20-20 and must be changed
 	# Remember, the player won't necessarily find items in HOTZONE array's sequence
 	if [[ "$ITEM2C" -eq "20-20" ]] ; then
-	    ITEM_X && ITEM_Y
+	    ITEM_YX
 	    HOTZONE[$CHAR_ITEMS]="$ITEM_X-$ITEM_Y"
 	    ITEM2C=${HOTZONE[$CHAR_ITEMS]}
 	fi
@@ -1242,11 +1242,9 @@ Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of 
 
 # GAME ITEMS
 # Randomizers for Item Positions
-ITEM_X() { # Used in HotzonesDistribute() and GX_Map()
-    ITEM_X=$((RANDOM%18+1))
-}
-ITEM_Y() { # Used in HotzonesDistribute() and GX_Map()
+ITEM_YX() { # Used in HotzonesDistribute() and GX_Map()
     ITEM_Y=$((RANDOM%15+1))
+    ITEM_X=$((RANDOM%18+1))
 }
 
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()
@@ -1262,11 +1260,11 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
 	# default x-y HOTZONEs to extraterrestrial section 20-20
 	HOTZONE=( 20-20 20-20 20-20 20-20 20-20 20-20 20-20 20-20 )
 	i=7
-	while [ $ITEMS_2_SCATTER -gt 0 ]; do
-	    ITEM_X && ITEM_Y
-	    [[ ITEM_X -eq  MAP_X && ITEM_Y -eq MAP_Y ]] && continue # reroll if HOTZONE == CHAR_GPS
+	while (( ITEMS_2_SCATTER > 0 )); do
+	    ITEM_YX
+	    (( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue # reroll if HOTZONE == CHAR_GPS
 	    # TODO add check is is this $ITEM_X-$ITEM_Y already in HOTZONE
-	    HOTZONE[((i--))]="$ITEM_X-$ITEM_Y" # Init ${HOTZONE[i]}, than $i++
+	    HOTZONE[((i--))]="$ITEM_X-$ITEM_Y" # Init ${HOTZONE[i]}, than $i--
 	    ((ITEMS_2_SCATTER--))
 	done
     fi

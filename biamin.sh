@@ -1546,10 +1546,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    pl )  # Player's turn
 		echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
 		read -sn 1 "FIGHT_PROMPT"
-		RollDice 6
-		FightTable
-		echo -en "\nRoll D6 "
 		if [ "$FIGHT_PROMPT" = "f" ] || [ "$FIGHT_PROMPT" = "F" ] ; then
+			RollDice 20
+			FightTable
+			echo -en "\nRoll D20 "
 		    unset FIGHT_PROMPT
 		    # Player tries to flee!
 		    if (( DICE <= FLEE )); then
@@ -1564,6 +1564,9 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			sleep 2
 		    fi
 		else # Player fights
+			RollDice 6
+			FightTable
+			echo -en "\nRoll D6 "
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
 			echo -e "<= ACC  \$ [ $DICE  <=  $ACCURACY ] Your weapon hits the target!" # BUGFIX promt
@@ -1574,7 +1577,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			DAMAGE=$(( DICE*STRENGTH ))
 			echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
 			EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
-			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 2 && break # extra pause here..
+			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 4 && break
 		    else
 			echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
 		    fi
@@ -1606,7 +1609,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    echo -en "Roll D6 <= $EN_ACCURACY \$ [ $DICE  <= $EN_ACCURACY ] The $ENEMY strikes you!"
 		    RollDice 6
 		    DAMAGE=$(( DICE*EN_STRENGTH ))
-		    echo -en "\n  -$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
+		    echo -en "\n-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!   " # -en used here to avoid "jumping" from >24 blocks in terminal
 		    CHAR_HEALTH=$(( CHAR_HEALTH-DAMAGE ))
 		    SaveCurrentSheet
 		else

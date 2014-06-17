@@ -1162,11 +1162,11 @@ License() { # Used in Credits()
     clear
     GX_BiaminTitle
     if [ -z "$PAGER" ] ; then
-		if [[ $(which less 2>/dev/null) ]]; then # try less
-			PAGER=$(which less)                
-		elif [[ $(which more 2>/dev/null) ]]; then # or try more
-			PAGER=$(which more)
-		fi
+	if [[ $(which less 2>/dev/null) ]]; then # try less
+	    PAGER=$(which less)                
+	elif [[ $(which more 2>/dev/null) ]]; then # or try more
+	    PAGER=$(which more)
+	fi
     fi # or PAGER remains unset (see ShowLicense() in case PAGER is unset)
     if [ -f "$GAMEDIR/LICENSE" ]; then
 	ShowLicense

@@ -1365,6 +1365,34 @@ FightTable() {  # Used in FightMode()
     echo -e "$ENEMY_NAME\t\t\tHEALTH: $EN_HEALTH\tStrength: $EN_STRENGTH\tAccuracy: $EN_ACCURACY"
 }   # Return to FightMode()
 
+EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
+# req.: dice-size | formula | skill-abbrevation
+# "6 le A ' echo's  "[ D6 <= A ]$ "
+# "12 eq F ' echo's "[D12  = F ]$"
+local DICE_SIZE="$1"
+local FORMULA="$2"
+local SKILLABBREV="$3"
+
+if (( DICE_SIZE <= 9 )) ; then
+	echo -n "[ D$DICE_SIZE "
+else
+	echo -n "[D$ICE_SIZE "
+fi
+
+case "$FORMULA" in
+eq ) echo -n " = " ;;
+gt ) echo -n " > " ;;
+lt ) echo -n " < " ;;
+ge ) echo -n " >=" ;;
+le ) echo -n " <=" ;;
+esac
+
+# skill & roll
+echo -n " $SKILLABBREV ]\$"
+# The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
+# determined in the if and cases of the Fight Loop, so don't repeat here.
+}
+
 FightMode() {	# FIGHT MODE! (secondary loop for fights)
                 # Used in NewSector() and Rest()
     LUCK=0      # Used to assess the match in terms of EXP..

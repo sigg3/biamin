@@ -1054,16 +1054,15 @@ TodaysDate() {
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "        (P)lay    (L)oad game    (H)ighscore    (C)redits    (Q)uit   " TOPMENU_OPT
+	read -sn 1 -p "      (P)lay      (L)oad game      (H)ighscore      (C)redits      (Q)uit" TOPMENU_OPT # CENTERED to 79px
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ;
 		    read -p " Enter character name (case sensitive): " CHAR ;
-		    [[ $CHAR ]] && BiaminSetup;; # Do nothing if CHAR is empty
-	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
+		    [[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
+	    l | L ) LoadGame && BiaminSetup;; # Do nothing if LoadGame return 1
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;
-	    * ) ;;
 	esac
     done
 }

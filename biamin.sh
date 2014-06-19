@@ -1420,6 +1420,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     while (( FIGHTMODE > 0 )) # If player didn't manage to run
     do
 	if (( CHAR_HEALTH <= 0 )); then
+	    FightTable # for 80x24 compability
 	    echo -e "\nYour health points are $CHAR_HEALTH"
 	    sleep 2
 	    echo "You WERE KILLED by the $ENEMY, and now you are dead..."
@@ -1471,7 +1472,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
 		read -sn 1 "FIGHT_PROMPT"
 		FightTable
-		if [[ "$FIGHT_PROMPT" -eq "f" || "$FIGHT_PROMPT" -eq "F" ]] ; then # Player tries to flee!
+		if [[ "$FIGHT_PROMPT" == "f" || "$FIGHT_PROMPT" == "F" ]] ; then # Player tries to flee!
 		    RollDice 20
 		    echo -en "\nRoll D20 "
 		    unset FIGHT_PROMPT

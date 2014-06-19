@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.3.8"
+VERSION="1.3.9 LEGACY" # TODO change to 1.4 once it's  all said and done
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
@@ -1805,6 +1805,61 @@ case "$1" in
 	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
+	--update ) # Updater for LEGACY
+	REPO_SRC="https://gitorious.org/back-in-a-minute/legacy/raw/biamin.sh"
+	GX_BiaminTitle;
+	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
+	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
+	if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
+	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD_ERR__No_internet_with_wget
+	elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
+	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD_ERR__No_internet_with_curl
+	else
+	    Die DOWNLOAD_ERR__No_curl_or_wget_available
+	fi
+
+	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
+	echo "Your current Back in a Minute game is version $VERSION"
+
+	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
+	# Return 0 if $1 == $2, 1 if $1 > than $2, 2 if $2 < than $1
+	if [[ "$VERSION" == "$REPOVERSION" ]] ; then
+	    RETVAL=0  
+	else
+	    IFS="\." read -a VER1 <<< "$VERSION"
+	    IFS="\." read -a VER2 <<< "$REPOVERSION"
+	    for ((i=0; ; i++)); do # until break
+		[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; }
+		[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; }
+		(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; }
+		(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; }
+	    done
+	    unset VER1 VER2
+	fi
+	case "$RETVAL" in
+	    0)  echo "This is the latest version ($VERSION) of Back in a Minute!" ; rm -f "$REPO";;
+	    1)  echo "Your version ($VERSION) is newer than $REPOVERSION" ; rm -f "$REPO";;
+	    2)  echo "Newer version $REPOVERSION is available!"
+		echo "Updating will NOT destroy character sheets, highscore or current config."
+ 		read -sn1 -p "Update to Biamin version $REPOVERSION? [Y/N] " CONFIRMUPDATE
+		case "$CONFIRMUPDATE" in
+		    y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPOVERSION .."
+			# TODO make it less ugly
+			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail.
+			BIAMIN_RUNTIME+="/"
+			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
+			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
+			mv "$REPO" "$BIAMIN_RUNTIME"
+			chmod +x "$BIAMIN_RUNTIME" || Die PERMISSION__Couldnt_make_biamin_executable
+			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
+			echo "Current file moved to ${BIAMIN_RUNTIME}.bak"
+			;;
+		    * ) echo -e "\nNot updating! Removing temporary file .."; rm -f "$REPO" ;;
+		esac
+		;;
+	esac
+	echo "Done. Thanks for playing :)"
+	exit 0;;
     --usage | * )
 	echo "Usage: biamin or ./biamin.sh"
 	echo "  (NO ARGUMENTS)      display this usage text and exit"

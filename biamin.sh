@@ -818,8 +818,8 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"
     if [[ "$FIGHTMODE" ]] ; then #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
-    	CHAR_HEALTH=$(( CHAR_HEALTH-20 ))
-    	CHAR_EXP=$(( CHAR_EXP-20 ))
+	(( CHAR_HEALTH -= 20 ))
+	(( CHAR_EXP -= 20 ))
     	echo "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP"
     	echo -e "HEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP"
     fi
@@ -1059,7 +1059,7 @@ MainMenu() {
 	    p | P ) GX_Banner ;
 		    read -p " Enter character name (case sensitive): " CHAR ;
 		    [[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
-	    l | L ) LoadGame && BiaminSetup;; # Do nothing if LoadGame return 1
+	    l | L ) LoadGame && BiaminSetup;;      # Do nothing if LoadGame return 1
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;
@@ -1108,9 +1108,11 @@ Credits() { # Used in MainMenu()
 PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
     echo " Downloading GNU GPL Version 3 ..."
     if [[ $(which wget 2>/dev/null) ]]; then # Try wget first
-	GPL=$(wget -q -O gpl-3.0.txt "http://www.gnu.org/licenses/gpl-3.0.txt" || "")
+	wget -q -O gpl-3.0.txt "http://www.gnu.org/licenses/gpl-3.0.txt"
+	GPL=$(cat gpl-3.0.txt)
 	echo "Downloading CC BY-NC-SA 4.0 ..."
-	CC=$(wget -q -O legalcode.txt "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+	wget -q -O legalcode.txt "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt"
+	CC=$(cat legalcode.txt)
     elif [[ $(which curl 2>/dev/null) ]]; then # If no wget try curl
 	GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "")
 	echo "Downloading CC BY-NC-SA 4.0 ..."
@@ -1124,8 +1126,8 @@ $GPL
 \n$HR\n\n\t\t   BACK IN A MINUTE ARTWORK LICENSE:\n\n
 $CC"  > "$GAMEDIR/LICENSE"
 	echo " Licenses downloaded and concatenated!"
-	[[ -f "$GAMEDIR/gpl-3.0.txt" ]] && rm -f "$GAMEDIR/gpl-3.0.txt"
-	[[ -f "$GAMEDIR/legalcode.txt" ]] && rm -f "$GAMEDIR/legalcode.txt"
+	[[ -f "$GAMEDIR/gpl-3.0.txt" ]] && rm -f "$GAMEDIR/gpl-3.0.txt"     # Compability for older versions fix ??? #kstn
+	[[ -f "$GAMEDIR/legalcode.txt" ]] && rm -f "$GAMEDIR/legalcode.txt" # Compability for older versions fix ??? #kstn
 	sleep 1
 	return 0
     else
@@ -1724,13 +1726,13 @@ Announce() { # Simply outputs a 160 char text you can cut & paste to social medi
     highCHAR=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$highCHAR") # Capitalize
     ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     
-    ANNOUNCEMENT_LENGHT=$(awk '{print length($0)}' <<< "$ANNOUNCEMENT" ) 
     GX_HighScore
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"
     echo -e "\n$ANNOUNCEMENT\n" | fmt
     echo "$HR"
 
+    ANNOUNCEMENT_LENGHT=$(awk '{print length($0)}' <<< "$ANNOUNCEMENT" ) 
     (( ANNOUNCEMENT_LENGHT > 160 )) && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
 }
 

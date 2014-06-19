@@ -1635,22 +1635,23 @@ NewSector() { # Used in Intro()
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" )
 	# Look for treasure @ current GPS location  - checks current section for treasure
 	(( CHAR_ITEMS < 8 )) && [[ $(grep -E "(^| )$MAP_X-$MAP_Y( |$)" <<< "${HOTZONE[@]}") ]] && ItemWasFound
-	# Do not attack player at the first turn of after finding item - very dirty fix for first use RollForEvent()
-	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
 
-	GX_Place "$SCENARIO"
-	# Find out if we're attacked - FightMode() if RollForEvent return 0
-	case "$SCENARIO" in
-	    H ) RollForEvent 1  && FightMode ;; 
-	    x ) RollForEvent 50 && FightMode ;;
-	    . ) RollForEvent 20 && FightMode ;;
-	    T ) RollForEvent 15 && FightMode ;;
-	    @ ) RollForEvent 35 && FightMode ;;
-	    C ) RollForEvent 10 && FightMode ;;
-	    * ) CustomMapError ;;
-	esac
-	# If player was slain in fight mode
-        (( DEATH == 1 )) && unset DEATH && HighScore && break
+	if [[ $NODICE ]] ; then # Do not attack player at the first turn of after finding item
+	    unset NODICE 
+	else
+	    GX_Place "$SCENARIO"
+	    RollDice 100        # Find out if we're attacked 
+	    case "$SCENARIO" in # FightMode() if RollForEvent return 0
+		H ) RollForEvent 1  && FightMode ;; 
+		x ) RollForEvent 50 && FightMode ;;
+		. ) RollForEvent 20 && FightMode ;;
+		T ) RollForEvent 15 && FightMode ;;
+		@ ) RollForEvent 35 && FightMode ;;
+		C ) RollForEvent 10 && FightMode ;;
+		* ) CustomMapError ;;
+	    esac
+            (( DEATH == 1 )) && unset DEATH && HighScore && break # If player was slain in fight mode
+	fi
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"

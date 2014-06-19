@@ -739,8 +739,9 @@ MapCreate() { # FILL THE $MAP file using either default or custom map
 	grep -q 'Z' "$GAMEDIR/CUSTOM.map" && CustomMapError # And exit after CustomMapError
 	MAP=$(cat "$GAMEDIR/CUSTOM.map")
     else # Load default map
-	MAP=$(cat <<EOT
-       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
+	# Dirty fix for MacOS - it doesn't understand 	'MAP=$(cat <<EOT'
+	# I know that it's unreadable, but I can't find better variant now :( #kstn
+	MAP='       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
    #=========================================================================#
  1 )   x   x   x   x   x   @   .   .   .   T   x   x   x   x   x   x   @   T (
  2 )   x   x   H   x   @   @   .   @   @   x   x   x   x   x   @   @   @   @ (
@@ -760,9 +761,7 @@ MapCreate() { # FILL THE $MAP file using either default or custom map
    #=========================================================================#
           LEGEND: x = Mountain, . = Road, T = Town, @ = Forest         N
                   H = Home (Heal Your Wounds) C = Oldburg Castle     W + E
-                                                                       S
-EOT
-)
+                                                                       S'
     fi
 }
 

@@ -14,13 +14,14 @@ LEGEND: x = done, . someone's working on it, ? = open question, - = removed
 TODO GPL repo
 [ ] Create LEGACY for -gpl repo once it hits 1.4
 [ ] Add updater to -gpl 1.4, refers to separate repo.
+[x] Updated sprites in wait for 1.4
 
 TODO LEGACY branch
 [x] Remove update_biamin.sh from LEGACY
 [x] Add updater function once it hits 1.4 that refers to separate repo.
 [x] Add LEGACY to $VERSION once it hits 1.4.
 [x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
-[.] Finalize fight prompt for LEGACY and future branches
+[?] Finalize fight prompt for LEGACY and future branches
 
 TODO 2.0 branch
 [ ] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float

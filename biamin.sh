@@ -861,17 +861,9 @@ SetupHighscore() { # Used in main() and Announce()
 GX_Map() { # Used in MapNav()
     if (( CHAR_ITEMS > 0 )) && (( CHAR_ITEMS < 8 )) ; then # Check for Gift of Sight
 	# Show ONLY the NEXT item viz. "Item to see" (ITEM2C)
-	# Since 1st item is item0, and CHAR_ITEMS begins at 0, ITEM2C=CHAR_ITEMS
-	ITEM2C=${HOTZONE[$CHAR_ITEMS]}
-	# If ITEM2C has been found earlier, it is now 20-20 and must be changed
+	# There always will be item in HOTZONE[0]!
+     	IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" # Retrieve item map positions e.g. 1-15 >> X=1 Y=15
 	# Remember, the player won't necessarily find items in HOTZONE array's sequence
-	if [[ "$ITEM2C" -eq "20-20" ]] ; then
-	    ITEM_YX
-	    HOTZONE[$CHAR_ITEMS]="$ITEM_X-$ITEM_Y"
-	    ITEM2C=${HOTZONE[$CHAR_ITEMS]}
-	fi
-	# Retrieve item map positions e.g. 1-15 >> X=1 Y=15
-	IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "$ITEM2C"
     else # Lazy fix for awk - it falls when see undefined variable #kstn
 	ITEM2C_Y=0 && ITEM2C_X=0 
     fi
@@ -928,9 +920,8 @@ BiaminSetup() { # Used in MainMenu()
     # Check whether CHAR exists if not create CHARSHEET
     if [[ -f "$CHARSHEET" ]] ; then
 	echo -en " Welcome back, $CHAR!\n Loading character sheet ..."
-	# Fixes for older charsheets compability #TODO make it less ugly
+	# Fixes for older charsheets compability
 	grep -q -E '^HOME:' "$CHARSHEET" || echo "HOME: $START_LOCATION" >> $CHARSHEET
-
 	# I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '
@@ -1245,25 +1236,22 @@ ITEM_YX() { # Used in HotzonesDistribute() and GX_Map()
 }
 
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()
-    if (( CHAR_ITEMS < 8 )); then # Scatters special items across the map
-	# bugfix to prevent finding item at 1st turn of 2 or more items at one turn
-	local MAP_X
-	local MAP_Y
-	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
-	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
-	ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
-	# default x-y HOTZONEs to extraterrestrial section 20-20
-	HOTZONE=( 20-20 20-20 20-20 20-20 20-20 20-20 20-20 20-20 )
-	local i=7
-	while (( ITEMS_2_SCATTER > 0 )); do
-	    ITEM_YX
-	    (( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue # reroll if HOTZONE == CHAR_GPS
-	    # TODO add check is is this $ITEM_X-$ITEM_Y already in HOTZONE
-	    HOTZONE[((i--))]="$ITEM_X-$ITEM_Y" # Init ${HOTZONE[i]}, THAN $i--
-	    ((ITEMS_2_SCATTER--))
-	done
-    fi
+    # Scatters special items across the map
+    local MAP_X;
+    local MAP_Y;
+    read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
+    MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
+    ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
+    HOTZONE=() # Reset HOTZONE  
+    while (( ITEMS_2_SCATTER > 0 )) ; do
+	ITEM_YX # Randomize ITEM_X and ITEM_Y
+	(( ITEM_X ==  MAP_X )) && (( ITEM_Y == MAP_Y )) && continue         # reroll if HOTZONE == CHAR_GPS
+	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
+	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, than init ${HOTZONE[ITEMS_2_SCATTER]},
+	# --ITEMS_2_SCATTER - because array starts from ${HOTZONE[0]}
+    done
 }
+
 ################### GAME SYSTEM #################
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE_SIZE=$1 # DICE_SIZE used in RollForEvent()
@@ -1289,20 +1277,8 @@ ItemWasFound() { # Used in NewSector()
 	echo "                      Press any letter to continue  ($COUNTDOWN)"
 	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
-
-    # Remove the item that is found from the world
-    i=0
-    while (( i < 7 )); do
-        [[ "$MAP_X-$MAP_Y" -eq "${HOTZONE[$i]}" ]] && HOTZONE[$i]="20-20"
-	((i++))
-    done
-
-    (( CHAR_ITEMS++ )) 
-
-    # BUGFIX: re-distribute items to increase randomness. Fix to avoid items
-    # previously shown still there (but hidden) after a diff item was found..
-    HotzonesDistribute
-    
+    # Re-distribute items to increase randomness if char haven't all 8 items.
+    (( ++CHAR_ITEMS < 8 )) && HotzonesDistribute # Increase CHAR_ITEMS , THEN check (( CHAR_ITEMS < 8 ))    
     SaveCurrentSheet # Save CHARSHEET items
     NODICE=1         # No fighting if item is found..
 }   # Return to NewSector()
@@ -1325,7 +1301,6 @@ MapNav() { # Used in NewSector()
 
 	echo "$HR"
 	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST
-
     else  # The player did NOT toggle map, just moved without looking from NewSector()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
@@ -1398,8 +1373,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     LUCK=0      # Used to assess the match in terms of EXP..
     FIGHTMODE=1	# Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
 
-    RollDice 20 # Determine enemy type
-    
+    RollDice 20 # Determine enemy type    
     case "$SCENARIO" in
 	H ) ENEMY="chthulu" ;; 
 	x ) (( DICE <= 10 )) && ENEMY="orc"     || (( DICE >= 16 )) && ENEMY="goblin" || ENEMY="varg" ;;
@@ -1455,17 +1429,17 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    sleep 2
 	    echo "You WERE KILLED by the $ENEMY, and now you are dead..."
 	    sleep 2
-	    if (( CHAR_EXP >= 1000 )) && (( CHAR_HEALTH > -16 )); then    
+	    if (( CHAR_EXP >= 1000 )) && (( CHAR_HEALTH > -15 )); then    
 		echo "However, your $CHAR_EXP Experience Points relates that you have"
 		echo "learned many wondrous and magical things in your travels..!"
-		(( CHAR_HEALTH +=20 ))
+		(( CHAR_HEALTH += 20 ))
 		echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
 		LUCK=2
 		sleep 8
-	    elif (( CHAR_ITEMS >= 3 )) && (( CHAR_HEALTH > -6 )); then
+	    elif (( CHAR_ITEMS >= 3 )) && (( CHAR_HEALTH > -5 )); then
 		echo "Suddenly you awake again, SAVED by your Guardian Angel!"
-		echo "+5 HEALTH: Health Restored to 5"
-		CHAR_HEALTH=5
+		echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
+		(( CHAR_HEALTH += 5 ))
 		LUCK=2
 		sleep 8
 	    else      # DEATH!
@@ -1572,11 +1546,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		sleep 2		
 		;;
 	esac
-    done
-    # FIGHT LOOP ends
+    done # FIGHT LOOP ends
 
     # After the figthing 
-    if [[ $DEATH -ne 1 ]] ; then   # VICTORY!
+    if (( DEATH != 1 )) ; then   # VICTORY!
 	if (( LUCK == 2 )); then   # died but saved by guardian angel or 1000 EXP
 	    echo "When you come to, the $ENEMY has left the area ..."
 	elif (( LUCK == 1 )); then # ENEMY managed to FLEE
@@ -1657,7 +1630,6 @@ GX_Place() {     # Used in NewSector() and MapNav()
     esac
 }   # Return to NewSector() or MapNav()
 
-
 # THE GAME LOOP
 NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
@@ -1667,12 +1639,8 @@ NewSector() { # Used in Intro()
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
 	# MAP_Y+2 MAP_X+2 - padding for borders
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" )
-	# Look for treasure @ current GPS location
-	if (( CHAR_ITEMS < 8 )) ; then  # Checks current section for treasure
-	    for zoneS in "${HOTZONE[@]}" ; do
-	    	[[ "$zoneS" == "$MAP_X-$MAP_Y" ]] && ItemWasFound && break # not try to find another thing
-	    done
-	fi
+	# Look for treasure @ current GPS location  - checks current section for treasure
+	(( CHAR_ITEMS < 8 )) && [[ $(grep -E "(^| )$MAP_X-$MAP_Y( |$)" <<< "${HOTZONE[@]}") ]] && ItemWasFound
 	# Do not attack player at the first turn of after finding item - very dirty fix for first use RollForEvent()
 	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
 
@@ -1715,8 +1683,7 @@ Intro() { # Used in BiaminSetup()
                        print substr(toupper(STR), 1,1) substr(STR, 2); }' <<< "$CHAR")
     TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
-    HotzonesDistribute # Place items randomly in map
-
+    (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     local COUNTDOWN=60
     GX_Intro
     echo "                        Press any letter to continue" 

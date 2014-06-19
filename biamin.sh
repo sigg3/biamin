@@ -1091,7 +1091,7 @@ HighScore() { # Used in MainMenu()
     echo ""
     # Show 10 highscore entries or die if $HIGHSCORE is empty
     [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
-    echo -e "\n                   Press the any key to go to (M)ain menu"
+    echo -e "\n                   Press the any key to go to (M)ain menu" # CENTERED to 79px
     read -sn 1 
 }   # Return to MainMenu()
 
@@ -1204,8 +1204,8 @@ Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of 
                  }' ${SHEETS[((a + OFFSET))]} 
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT characters. Use (P)revious or (N)ext to list," # Don't show it if there are chars < LIMIT
-	echo -en "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
-	read -n 1 NUM
+	echo -e "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
+	read -sn 1 NUM
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
@@ -1213,7 +1213,6 @@ Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of 
 	    *     ) NUM=0; break;; # Unset NUM to prevent fall in [[ ! ${SHEETS[$NUM]} ]] if user press ESC, KEY_UP etc. ${SHEETS[0]} is always empty
 	esac
     done
-    echo "" # TODO empty line - fix it later
     if [[ ! ${SHEETS[$NUM]} ]] ; then
 	unset NUM SHEETS i
 	return 1 # BiaminSetup() will not be run after LoadGame()
@@ -1323,7 +1322,7 @@ MapNav() { # Used in NewSector()
 # GAME ACTION: DISPLAY CHARACTER SHEET
 DisplayCharsheet() { # Used in NewSector() and FightMode()
     # kill/fight percentage
-    (( CHAR_KILLS > 0 )) && MURDERSCORE=$(echo "scale=zero;100*$CHAR_KILLS/$CHAR_BATTLES" | bc -l) || MURDERSCORE=0
+    (( CHAR_KILLS > 0 )) && MURDERSCORE=$(bc <<< "scale=zero; (100 * $CHAR_KILLS ) / $CHAR_BATTLES") || MURDERSCORE=0
     case $CHAR_RACE in
 	1 ) local RACE="(Human)" ;;
 	2 ) local RACE="(Elf)" ;;
@@ -1351,7 +1350,7 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  
 EOF
-	read -sn 1 -p "      (D)isplay Race Info        (A)ny key to continue          (Q)uit" CHARSHEET_OPT
+	read -sn 1 -p "        (D)isplay Race Info        (A)ny key to continue        (Q)uit"  CHARSHEET_OPT  # CENTERED to 79px
 	case "$CHARSHEET_OPT" in
 		d | D ) GX_Races && read -sn1 -p "                          Press any letter to return" ;;    
 		q | Q ) CleanUp ;;
@@ -1589,13 +1588,12 @@ Rest() {  # Used in NewSector()
     GX_Rest
     case "$SCENARIO" in
 	H ) if (( CHAR_HEALTH < 100 )); then
-	    CHAR_HEALTH=100
-	    echo "You slept well in your own bed. Health restored to 100."
+		CHAR_HEALTH=100
+		echo "You slept well in your own bed. Health restored to 100."
 	    else
-	    echo "You slept well in your own bed, and woke up to a beautiful day."
+		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
-	    sleep 2
-	    ;;
+	    sleep 2 ;;
 	x ) RollForEvent 60 && FightMode || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
 	. ) RollForEvent 30 && FightMode || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
 	T ) RollForEvent 15 && FightMode || RollForHealing 15 "The vices of town life kept you up all night.." ;;

@@ -1569,10 +1569,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			else
 				echo -n "$DICE < $EN_ACCURACY"
 			fi
-			echo " ) The $ENEMY strikes you!"
+			echo " ) The $ENEMY strikes you!" && sleep 1
 		    RollDice 6
 		    EchoFightFormula 6 times eS
-		    DAMAGE=$(( DICE * EN_STRENGTH )) && sleep 1
+		    DAMAGE=$(( DICE * EN_STRENGTH ))
 		    echo -en "$DICE x $EN_STRENGTH ) The $ENEMY's blow hits you with $DAMAGE points! [-$DAMAGE HP]" # -en used here to avoid "jumping" from >24 blocks in terminal
 		    CHAR_HEALTH=$(( CHAR_HEALTH - DAMAGE ))
 		    SaveCurrentSheet

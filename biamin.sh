@@ -1385,10 +1385,11 @@ gt ) echo -n " > " ;;
 lt ) echo -n " < " ;;
 ge ) echo -n " >=" ;;
 le ) echo -n " <=" ;;
+times ) echo -n " x " ;;
 esac
 
 # skill & roll
-echo -n " $SKILLABBREV ]\$"
+echo -n " $SKILLABBREV ]\$ "
 # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
 # determined in the if and cases of the Fight Loop, so don't repeat here.
 }
@@ -1514,20 +1515,25 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
 		else # Player fights
 		    RollDice 6
-		    echo -en "\nRoll D6 "
+   		    EchoFightFormula 6 le A		# test-implementation of EchoFightFormulat
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
-			echo -e "<= ACC  \$ [ $DICE  <=  $ACCURACY ] Your weapon hits the target!" # BUGFIX promt
-			echo -n "Press the R key to (R)oll for damage" 
+				if (( DICE == ACCURACY )) ; then
+					echo -n "$DICE = $ACCURACY"
+				else
+					echo -n "$DICE < $ACCURACY"
+				fi
+			echo -n " : Your weapon hits the target!"
+			echo -n "Press the R key to (R)oll for damage"  # -n or simple echo ? TODO
 			read -sn 1 "FIGHT_PROMPT"
 			RollDice 6
-			echo -en "\nRoll D6  x STR  \$ [ $DICE"
+			EchoFightFormula 6 times S
 			DAMAGE=$(( DICE * STRENGTH ))
-			echo -n "  x  $STRENGTH ] Your blow dishes out $DAMAGE damage points!"
+			echo -n "$DICE x $STRENGTH : Your blow dishes out $DAMAGE damage points!"
 			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
 			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 4 && break
 		    else
-			echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
+		    echo -n "$DICE > $ACCURACY : You missed!"
 		    fi
 		fi 
 		NEXT_TURN="en"

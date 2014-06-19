@@ -53,7 +53,8 @@ DISABLE_CHEATS=0                                                       #
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
 GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo() and License() !
-	cat <<"EOT"
+    clear
+    cat <<"EOT"
             ______                                                     
           (, /    )       /)     ,                    ,               
             /---(  _   _ (/_      __     _     ___     __      _/_  _ 
@@ -63,7 +64,6 @@ EOT
 }  
 
 GX_Banner() {
-    clear
     GX_BiaminTitle
     cat <<"EOT"
                                                      ___________(  )_ 
@@ -87,7 +87,6 @@ EOT
 }
 
 GX_Credits() {
-    clear
     GX_BiaminTitle
     cat <<"EOT" 
           
@@ -112,7 +111,6 @@ EOT
 }
 
 GX_HowTo() {
-    clear
     GX_BiaminTitle
     cat <<"EOT"
     
@@ -818,7 +816,8 @@ Die() {
 }
 
 CleanUp() { # Used in MainMenu(), NewSector(),
-    clear && GX_BiaminTitle && echo -e "\n$HR"
+    GX_BiaminTitle
+    echo -e "\n$HR"
     if [[ "$FIGHTMODE" ]] ; then #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 ))
     	CHAR_EXP=$(( CHAR_EXP-20 ))
@@ -1147,7 +1146,6 @@ ShowLicense() { # Used in License()
 }
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
-    clear
     GX_BiaminTitle
     if [ -z "$PAGER" ] ; then
 	if [[ $(which less 2>/dev/null) ]]; then # try less

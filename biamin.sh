@@ -1868,6 +1868,7 @@ case "$1" in
 	echo "  -i --install        ADD biamin.sh to your .bashrc file"
 	echo "     --map            CREATE custom map template with instructions and exit"
 	echo "     --help           display help text and exit"
+	echo "     --update         check for updates"
 	echo "     --usage          display this usage text and exit"
 	echo "  -v --version        display version and licensing info and exit"
 	exit 0 ;;

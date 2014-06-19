@@ -1643,7 +1643,7 @@ NewSector() { # Used in Intro()
 		C ) RollForEvent 10 && FightMode ;;
 		* ) CustomMapError ;;
 	    esac
-            (( DEATH == 1 )) && unset DEATH && HighScore && break # If player was slain in fight mode
+            (( DEATH == 1 )) && break # If player was slain in fight mode
 	fi
 
 	while (true); do # GAME ACTIONS MENU BAR
@@ -1653,13 +1653,15 @@ NewSector() { # Used in Intro()
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
 		r | R ) Rest; # Player may be attacked during the rest :)
-		        (( DEATH == 1 )) && unset DEATH && HighScore && break 2 ;; # If player was slain during the rest
+		        (( DEATH == 1 )) && break 2 ;; # If player was slain during the rest
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		m | M ) MapNav; break ;;        # Go to Map then move
 		* ) MapNav "$ACTION"; break ;;	# Move directly (if not WASD, then loitering :)
 	    esac
 	done
-    done
+    done # Player is dead
+    unset DEATH
+    HighScore
 }   # Return to MainMenu() (if player is dead)
 
 Intro() { # Used in BiaminSetup()

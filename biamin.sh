@@ -1393,18 +1393,16 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
     esac
 
-    # Capitalize enemy to Enemy for FightTable()
-    ENEMY_NAME=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$ENEMY") 
+    ENEMY_NAME=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$ENEMY") # Capitalize enemy to Enemy for FightTable()
 
     GX_Monster_$ENEMY
-    sleep 1 #?!!
+    sleep 1
 
     # Adjustments for items
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
     (( CHAR_ITEMS >= 6 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
 
-    # DETERMINE INITIATIVE (will usually be enemy)
-    if (( EN_ACCURACY > ACCURACY )); then
+    if (( EN_ACCURACY > ACCURACY )); then # DETERMINE INITIATIVE (will usually be enemy)
 	echo "The $ENEMY has initiative"
 	NEXT_TURN="en"
     else
@@ -1470,9 +1468,9 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    pl )  # Player's turn
 		echo -en "\nIt's your turn, press (A)ny key to (R)oll or (F) to Flee" 
 		read -sn 1 "FIGHT_PROMPT"
+		FightTable
 		if [[ "$FIGHT_PROMPT" -eq "f" || "$FIGHT_PROMPT" -eq "F" ]] ; then # Player tries to flee!
 		    RollDice 20
-		    FightTable
 		    echo -en "\nRoll D20 "
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
@@ -1483,11 +1481,8 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			break # If player managed to flee
 		    fi 
 		    echo -e "<= FLEE \$ [ $DICE  >  $FLEE ] Your escape was ill-fated!"
-		    NEXT_TURN="en"
-		    sleep 2
 		else # Player fights
 		    RollDice 6
-		    FightTable
 		    echo -en "\nRoll D6 "
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
@@ -1503,14 +1498,12 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    else
 			echo -e "<= ACC  \$ [ $DICE  >  $ACCURACY ] You missed!"
 		    fi
-		    NEXT_TURN="en"
-		    sleep 3
 		fi 
+		NEXT_TURN="en"
+		sleep 3
 		;;
-	    
 	    en ) # Enemy's turn
-		# Enemy tries to flee
-		if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
+		if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 		    FightTable
 		    RollDice 20
 		    echo -e "\nRolling for enemy flee .. [ D20 < $EN_FLEE ]"

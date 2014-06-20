@@ -1126,8 +1126,8 @@ $GPL
 \n$HR\n\n\t\t   BACK IN A MINUTE ARTWORK LICENSE:\n\n
 $CC"  > "$GAMEDIR/LICENSE"
 	echo " Licenses downloaded and concatenated!"
-	[[ -f "$GAMEDIR/gpl-3.0.txt" ]] && rm -f "$GAMEDIR/gpl-3.0.txt"     # Compability for older versions fix ??? #kstn
-	[[ -f "$GAMEDIR/legalcode.txt" ]] && rm -f "$GAMEDIR/legalcode.txt" # Compability for older versions fix ??? #kstn
+	[[ -f "$GAMEDIR/gpl-3.0.txt" ]] && rm -f "$GAMEDIR/gpl-3.0.txt"     # if wget was used
+	[[ -f "$GAMEDIR/legalcode.txt" ]] && rm -f "$GAMEDIR/legalcode.txt" # if wget was used
 	sleep 1
 	return 0
     else
@@ -1726,7 +1726,7 @@ Intro() { # Used in BiaminSetup()
     local COUNTDOWN=60
     GX_Intro
     echo "                        Press any letter to continue" 
-    while [ $COUNTDOWN -ge 0 ]; do
+    while (( COUNTDOWN >= 0 )); do
     	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
     done
     unset COUNTDOWN
@@ -1868,17 +1868,16 @@ case "$1" in
 	echo "Your current Back in a Minute game is version $VERSION"
 
 	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
-	# Return 0 if $1 == $2, 1 if $1 > than $2, 2 if $2 < than $1
 	if [[ "$VERSION" == "$REPOVERSION" ]] ; then
-	    RETVAL=0  
+	    RETVAL=0 
 	else
 	    IFS="\." read -a VER1 <<< "$VERSION"
 	    IFS="\." read -a VER2 <<< "$REPOVERSION"
 	    for ((i=0; ; i++)); do # until break
-		[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; }
-		[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; }
-		(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; }
-		(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; }
+		[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; } # REPOVERSION > VERSION
+		[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; } # VERSION > REPOVERSION
+		(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; } # VERSION > REPOVERSION
+		(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; } # REPOVERSION > VERSION
 	    done
 	    unset VER1 VER2
 	fi

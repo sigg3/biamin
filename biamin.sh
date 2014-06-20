@@ -1366,30 +1366,30 @@ FightTable() {  # Used in FightMode()
 }   # Return to FightMode()
 
 EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
-# req.: dice-size | formula | skill-abbrevation
-local DICE_SIZE="$1"
-local FORMULA="$2"
-local SKILLABBREV="$3"
+    # req.: dice-size | formula | skill-abbrevation
+    local DICE_SIZE="$1"
+    local FORMULA="$2"
+    local SKILLABBREV="$3"
 
-if (( DICE_SIZE <= 9 )) ; then
+    if (( DICE_SIZE <= 9 )) ; then
 	echo -n "Roll D$DICE_SIZE "
-else
+    else
 	echo -n "Roll D$DICE_SIZE"
-fi
+    fi
 
-case "$FORMULA" in
-eq ) echo -n " = " ;;
-gt ) echo -n " > " ;;
-lt ) echo -n " < " ;;
-ge ) echo -n " >=" ;;
-le ) echo -n " <=" ;;
-times ) echo -n " x " ;;
-esac
+    case "$FORMULA" in
+	eq ) echo -n " = " ;;
+	gt ) echo -n " > " ;;
+	lt ) echo -n " < " ;;
+	ge ) echo -n " >=" ;;
+	le ) echo -n " <=" ;;
+	times ) echo -n " x " ;;
+    esac
 
-# skill & roll
-echo -n " $SKILLABBREV ( "
-# The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
-# determined in the if and cases of the Fight Loop, so don't repeat here.
+    # skill & roll
+    echo -n " $SKILLABBREV ( "
+    # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
+    # determined in the if and cases of the Fight Loop, so don't repeat here.
 }
 
 FightMode() {	# FIGHT MODE! (secondary loop for fights)
@@ -1504,11 +1504,11 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    EchoFightFormula 20 le F
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
-				if (( DICE == FLEE )); then
-					echo -n "$DICE = $FLEE"
-				else
-					echo -n "$DICE < $FLEE"
-				fi
+			if (( DICE == FLEE )); then
+			    echo -n "$DICE = $FLEE"
+			else
+			    echo -n "$DICE < $FLEE"
+			fi
 			echo -n " ) You managed to flee!"
 			unset FIGHTMODE
 			LUCK=3
@@ -1521,11 +1521,11 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
    		    EchoFightFormula 6 le A		# test-implementation of EchoFightFormulat
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
-				if (( DICE == ACCURACY )) ; then
-					echo -n "$DICE = $ACCURACY"
-				else
-					echo -n "$DICE < $ACCURACY"
-				fi
+			if (( DICE == ACCURACY )) ; then
+			    echo -n "$DICE = $ACCURACY"
+			else
+			    echo -n "$DICE < $ACCURACY"
+			fi
 			echo -n " ) Your weapon hits the target!"
 			echo -e "\nPress the R key to (R)oll for damage"
 			read -sn 1 "FIGHT_PROMPT"
@@ -1536,7 +1536,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
 			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 4 && break
 		    else
-		    echo -n "$DICE > $ACCURACY ) You missed!"
+			echo -n "$DICE > $ACCURACY ) You missed!"
 		    fi
 		fi 
 		NEXT_TURN="en"
@@ -1550,7 +1550,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    echo -en "\nRolling for enemy flee .."		    
 		    sleep 2
 		    if (( DICE < EN_FLEE )); then
-		    EchoFightFormula 20 lt eF
+			EchoFightFormula 20 lt eF
 			echo "$DICE < $EN_FLEE ) The $ENEMY uses an opportunity to flee!"
 			LUCK=1
 			unset FIGHTMODE
@@ -1564,12 +1564,12 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		RollDice 6
 		EchoFightFormula 6 le eA
 		if (( DICE <= EN_ACCURACY )); then
-			if (( DICE == EN_ACCURACY )) ; then
-				echo -n "$DICE = $EN_ACCURACY"
-			else
-				echo -n "$DICE < $EN_ACCURACY"
-			fi
-			echo " ) The $ENEMY strikes you!" && sleep 1
+		    if (( DICE == EN_ACCURACY )) ; then
+			echo -n "$DICE = $EN_ACCURACY"
+		    else
+			echo -n "$DICE < $EN_ACCURACY"
+		    fi
+		    echo " ) The $ENEMY strikes you!" && sleep 1
 		    RollDice 6
 		    EchoFightFormula 6 times eS
 		    DAMAGE=$(( DICE * EN_STRENGTH ))
@@ -1851,7 +1851,7 @@ case "$1" in
 	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
-	--update ) # Updater for LEGACY
+    --update ) # Updater for LEGACY
 	REPO_SRC="https://gitorious.org/back-in-a-minute/legacy/raw/biamin.sh"
 	GX_BiaminTitle;
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'

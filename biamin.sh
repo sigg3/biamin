@@ -1533,7 +1533,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 			EchoFightFormula 6 times S
 			DAMAGE=$(( DICE * STRENGTH ))
 			echo -n "$DICE x $STRENGTH ) Your blow dishes out $DAMAGE damage points!"
-			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
+			(( EN_HEALTH -= DAMAGE ))
 			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && sleep 4 && break
 		    else
 			echo -n "$DICE > $ACCURACY ) You missed!"
@@ -1574,7 +1574,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    EchoFightFormula 6 times eS
 		    DAMAGE=$(( DICE * EN_STRENGTH ))
 		    echo -en "$DICE x $EN_STRENGTH ) The $ENEMY's blow hits you with $DAMAGE points! [-$DAMAGE HP]" # -en used here to avoid "jumping" from >24 blocks in terminal
-		    CHAR_HEALTH=$(( CHAR_HEALTH - DAMAGE ))
+		    (( CHAR_HEALTH -= DAMAGE ))
 		    SaveCurrentSheet
 		else
 		    echo "$DICE > $EN_ACCURACY ) The $ENEMY misses!"
@@ -1591,14 +1591,14 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    echo "When you come to, the $ENEMY has left the area ..."
 	elif (( LUCK == 1 )); then # ENEMY managed to FLEE
 	    echo -n "You defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
-	    CHAR_EXP=$(( CHAR_EXP + EN_FLEE_EXP ))
+	    (( CHAR_EXP += EN_FLEE_EXP ))
 	elif (( LUCK == 3 )); then # PLAYER managed to FLEE during fight!
 	    echo -n "You got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
-	    CHAR_EXP=$(( CHAR_EXP + PL_FLEE_EXP ))
+	    (( CHAR_EXP += PL_FLEE_EXP ))
 	else			   # ENEMY was slain!
 	    FightTable
 	    echo -en "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
-	    CHAR_EXP=$(( CHAR_EXP + EN_DEFEATED_EXP ))
+	    (( CHAR_EXP += EN_DEFEATED_EXP ))
 	    (( CHAR_KILLS++ ))
 	fi
 	(( CHAR_BATTLES++ ))
@@ -1614,12 +1614,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 RollForHealing() { # Used in Rest()
     RollDice 6
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
-    if (( DICE <= HEALING )); then
-	CHAR_HEALTH=$(( CHAR_HEALTH + $1 ))
-	echo "You slept well and gained $1 Health."
-    else
-	echo "$2"
-    fi
+    (( DICE > HEALING )) && echo "$2" || { (( CHAR_HEALTH += $1 )) ; echo "You slept well and gained $1 Health." ;}
     sleep 2
 }   # Return to Rest()
 
@@ -1654,8 +1649,7 @@ RollForEvent() { # Used in NewSector() and Rest()
 }   # Return to NewSector() or Rest()
 
 GX_Place() {     # Used in NewSector() and MapNav()
-    # Display scenario GFX
-    case "$1" in
+    case "$1" in # Display scenario GFX
 	H ) GX_Home ;;
 	x ) GX_Mountains ;;
 	. ) GX_Road ;;
@@ -1831,9 +1825,8 @@ case "$1" in
 	echo "Current dir for game files: $GAMEDIR/"
 	echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 	exit 0;;
-    -i | --install ) CreateBiaminLauncher ; exit 0;;
-    --map )
-	read -n1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT
+    -i | --install ) CreateBiaminLauncher ; exit 0 ;;
+    --map ) read -n1 -p "Create custom map template? [Y/N] " CUSTOM_MAP_PROMPT
 	case "$CUSTOM_MAP_PROMPT" in
 		y | Y) echo -e "\nCreating custom map template.." && MapCreateCustom ;;
 		*)     echo -e "\nNot doing anything! Quitting.."
@@ -1897,14 +1890,12 @@ case "$1" in
 			mv "$REPO" "$BIAMIN_RUNTIME"
 			chmod +x "$BIAMIN_RUNTIME" || Die PERMISSION__Couldnt_make_biamin_executable
 			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
-			echo "Current file moved to ${BIAMIN_RUNTIME}.bak"
-			;;
+			echo "Current file moved to ${BIAMIN_RUNTIME}.bak" ;;
 		    * ) echo -e "\nNot updating! Removing temporary file .."; rm -f "$REPO" ;;
-		esac
-		;;
+		esac ;;
 	esac
 	echo "Done. Thanks for playing :)"
-	exit 0;;
+	exit 0 ;;
     --usage | * )
 	echo "Usage: biamin or ./biamin.sh"
 	echo "  (NO ARGUMENTS)      display this usage text and exit"

@@ -1887,7 +1887,7 @@ case "$1" in
 		case "$CONFIRMUPDATE" in
 		    y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPOVERSION .."
 			# TODO make it less ugly
-			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail.
+			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # $0 is a powerful beast, but will sometimes fail.
 			BIAMIN_RUNTIME+="/"
 			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file

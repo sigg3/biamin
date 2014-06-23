@@ -18,6 +18,9 @@ START_LOCATION="C2"                                                    #
 # Disable Cheats 1 or 0 (chars with >150 health set to 100 health )    #
 DISABLE_CHEATS=0                                                       #
 #                                                                      #
+# Get updates from git repository (code, legacy or gpl-only)           #
+REPO_EDITION="legacy"                                                  #
+#                                                                      #
 # Editing beyond this line is considered unsportsmanlike by some..!    #
 # END CONFIGURATION                                                    #
 #                                                                      #
@@ -1846,7 +1849,7 @@ case "$1" in
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --update ) # Updater for LEGACY
-	REPO_SRC="https://gitorious.org/back-in-a-minute/legacy/raw/biamin.sh"
+    REPO_SRC="https://gitorious.org/back-in-a-minute/$REPO_EDITION/raw/biamin.sh"
 	GX_BiaminTitle;
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
 	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 

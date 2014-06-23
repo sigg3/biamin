@@ -1547,8 +1547,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 		    FightTable
 		    RollDice 20
-		    EchoFightFormula 20 lt eF
-		    echo -en "\nRolling for enemy flee .."		    
+		    echo "Rolling for enemy flee .. ( D20 < eF )"		    
 		    sleep 2
 		    if (( DICE < EN_FLEE )); then
 			EchoFightFormula 20 lt eF
@@ -1594,7 +1593,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    echo -n "You defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
 	    (( CHAR_EXP += EN_FLEE_EXP ))
 	elif (( LUCK == 3 )); then # PLAYER managed to FLEE during fight!
-	    echo -n "You got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
+	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
 	    (( CHAR_EXP += PL_FLEE_EXP ))
 	else			   # ENEMY was slain!
 	    FightTable

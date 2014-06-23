@@ -812,7 +812,8 @@ Please submit bugs and feedback at <$WEBURL>"
 #                    All program functions go here!                    #
 
 Die() {
-    echo -e "$1" && exit 1
+    echo -e "$1" | tr '_' ' '
+    exit 1
 }
 
 CleanUp() { # Used in MainMenu(), NewSector(),
@@ -1850,17 +1851,17 @@ case "$1" in
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
 	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
 	if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
-	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD_ERR__No_internet_with_wget
+	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD_ERROR__No_internet_with_wget
 	elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
-	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD_ERR__No_internet_with_curl
+	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD_ERROR__No_internet_with_curl
 	else
-	    Die DOWNLOAD_ERR__No_curl_or_wget_available
+	    Die DOWNLOAD_ERROR__No_curl_or_wget_available
 	fi
 
 	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
 	echo "Your current Back in a Minute game is version $VERSION"
 
-	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
+	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ... # TODO GPL $VERSION is string "1.3.9 non-ASCII" and LEGACY "1.3.9 LEGACY"
 	if [[ "$VERSION" == "$REPOVERSION" ]] ; then
 	    RETVAL=0 
 	else
@@ -1888,7 +1889,7 @@ case "$1" in
 			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
 			mv "$REPO" "$BIAMIN_RUNTIME"
-			chmod +x "$BIAMIN_RUNTIME" || Die PERMISSION__Couldnt_make_biamin_executable
+			chmod +x "$BIAMIN_RUNTIME" || Die PERMISSION_ERROR__Couldnt_make_biamin_executable
 			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
 			echo "Current file moved to ${BIAMIN_RUNTIME}.bak" ;;
 		    * ) echo -e "\nNot updating! Removing temporary file .."; rm -f "$REPO" ;;

@@ -50,6 +50,7 @@ TODO 2.0 branch
 [x] Dice game in tavern
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
+[ ] Replace bash's pseudo-random RANDOM to smth more random.
 
 TODO Post 2.0 branch
 [?] Other WorldChangeEVENTS ?

@@ -815,8 +815,7 @@ Please submit bugs and feedback at <$WEBURL>"
 #                    All program functions go here!                    #
 
 Die() {
-    echo -e "$1" | tr '_' ' '
-    exit 1
+    echo -e "$1" && exit 1
 }
 
 CleanUp() { # Used in MainMenu(), NewSector(),
@@ -1854,11 +1853,11 @@ case "$1" in
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
 	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
 	if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
-	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD_ERROR__No_internet_with_wget
+	    wget -q -O "$REPO" "$REPO_SRC" || Die "DOWNLOAD ERROR: No internet with wget"
 	elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
-	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD_ERROR__No_internet_with_curl
+	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  "DOWNLOAD ERROR: No internet with curl"
 	else
-	    Die DOWNLOAD_ERROR__No_curl_or_wget_available
+	    Die "DOWNLOAD ERROR: No curl or wget available"
 	fi
 
 	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
@@ -1892,7 +1891,7 @@ case "$1" in
 			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
 			mv "$REPO" "$BIAMIN_RUNTIME"
-			chmod +x "$BIAMIN_RUNTIME" || Die PERMISSION_ERROR__Couldnt_make_biamin_executable
+			chmod +x "$BIAMIN_RUNTIME" || Die "PERMISSION ERROR: Couldnt make biamin executable"
 			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
 			echo "Current file moved to ${BIAMIN_RUNTIME}.bak" ;;
 		    * ) echo -e "\nNot updating! Removing temporary file .."; rm -f "$REPO" ;;

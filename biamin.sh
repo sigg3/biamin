@@ -1256,6 +1256,7 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
 ################### GAME SYSTEM #################
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE_SIZE=$1 # DICE_SIZE used in RollForEvent()
+    RANDOM=$(date '+%N') # Reseed random number generator
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

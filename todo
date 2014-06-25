@@ -24,7 +24,8 @@ TODO LEGACY branch
 [?] Finalize fight prompt for LEGACY and future branches
 
 TODO 2.0 branch
-[ ] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
+[x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
+[ ] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
 [x] ASCII GX_Monster_dragon
@@ -39,7 +40,7 @@ TODO 2.0 branch
 [ ] Pickpocket tuning
 [x] Add boar
 [x] Add dragon
-[ ] Rewrite CUSTOM map functionality to allow >1 map
+[.] Rewrite CUSTOM map functionality to allow >1 map
 [.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
@@ -53,6 +54,8 @@ TODO 2.0 branch
 [ ] Replace bash's pseudo-random RANDOM to smth more random.
 
 TODO Post 2.0 branch
+[?] (S)ettings
+[?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
 [?] Quests?    >> Post 2.0
 [?] 	  Kill the dragon and get 500 gold (bullutin0)

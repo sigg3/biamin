@@ -1510,11 +1510,10 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
 			if (( DICE == FLEE )); then
-			    echo -n "$DICE = $FLEE"
+			    echo -n "$DICE = $FLEE ) You managed to flee!"
 			else
-			    echo -n "$DICE < $FLEE"
+			    echo -n "$DICE < $FLEE ) You managed to flee!"
 			fi
-			echo -n " ) You managed to flee!"
 			unset FIGHTMODE
 			LUCK=3
 			sleep 3
@@ -1849,9 +1848,9 @@ case "$1" in
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --update ) # Updater for LEGACY
-    REPO_SRC="https://gitorious.org/back-in-a-minute/$REPO_EDITION/raw/biamin.sh"
+	REPO_SRC="https://gitorious.org/back-in-a-minute/$REPO_EDITION/raw/biamin.sh"
 	GX_BiaminTitle;
-	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
+	sed 's/https:\/\///' <<< "Retrieving $REPO_SRC .."
 	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
 	if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
 	    wget -q -O "$REPO" "$REPO_SRC" || Die "DOWNLOAD ERROR: No internet with wget"
@@ -1861,31 +1860,31 @@ case "$1" in
 	    Die "DOWNLOAD ERROR: No curl or wget available"
 	fi
 
-	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
-	echo "Your current Back in a Minute game is version $VERSION"
-
-	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ... # TODO GPL $VERSION is string "1.3.9 non-ASCII" and LEGACY "1.3.9 LEGACY"
-	if [[ "$VERSION" == "$REPOVERSION" ]] ; then
+	REPO_VERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^" ]*) .*".*$/\1/p' "$REPO" )
+	CURRENT_VERSION=$( sed -r 's/^([^" ]*) .*$/\1/' <<< "$VERSION")
+	echo "Your current Back in a Minute game is version ${VERSION}"
+	# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ... 
+	if [[ "$CURRENT_VERSION" == "$REPO_VERSION" ]] ; then
 	    RETVAL=0 
 	else
-	    IFS="\." read -a VER1 <<< "$VERSION"
-	    IFS="\." read -a VER2 <<< "$REPOVERSION"
+	    IFS="\." read -a VER1 <<< "$CURRENT_VERSION"
+	    IFS="\." read -a VER2 <<< "$REPO_VERSION"
 	    for ((i=0; ; i++)); do # until break
-		[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; } # REPOVERSION > VERSION
-		[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; } # VERSION > REPOVERSION
-		(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; } # VERSION > REPOVERSION
-		(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; } # REPOVERSION > VERSION
+		[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; } # REPO_VERSION > VERSION
+		[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; } # VERSION > REPO_VERSION
+		(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; } # VERSION > REPO_VERSION
+		(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; } # REPO_VERSION > VERSION
 	    done
 	    unset VER1 VER2
 	fi
 	case "$RETVAL" in
 	    0)  echo "This is the latest version ($VERSION) of Back in a Minute!" ; rm -f "$REPO";;
-	    1)  echo "Your version ($VERSION) is newer than $REPOVERSION" ; rm -f "$REPO";;
-	    2)  echo "Newer version $REPOVERSION is available!"
+	    1)  echo "Your version ($VERSION) is newer than $REPO_VERSION" ; rm -f "$REPO";;
+	    2)  echo "Newer version $REPO_VERSION is available!"
 		echo "Updating will NOT destroy character sheets, highscore or current config."
- 		read -sn1 -p "Update to Biamin version $REPOVERSION? [Y/N] " CONFIRMUPDATE
+ 		read -sn1 -p "Update to Biamin version $REPO_VERSION? [Y/N] " CONFIRMUPDATE
 		case "$CONFIRMUPDATE" in
-		    y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPOVERSION .."
+		    y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPO_VERSION .."
 			# TODO make it less ugly
 			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # $0 is a powerful beast, but will sometimes fail.
 			BIAMIN_RUNTIME+="/"

@@ -238,13 +238,12 @@ GX_Races() {
    Healing:  3/6      Healing:  4/6       Healing:  2/6        Healing:  4/6   
    Strength: 3/6      Strength: 3/6       Strength: 5/6        Strength: 1/6
    Accuracy: 3/6      Accuracy: 4/6       Accuracy: 3/6        Accuracy: 4/6
-   Flee:    8/20      Flee:    4/20       Flee:    7/20        Flee:    8/20
+   Flee:     3/6      Flee:     1/6       Flee:     2/6        Flee:     3/6
    
    
    Dice rolls on each turn. Accuracy also initiative. Healing during resting.
 
 EOT
-#    Flee:     3/6      Flee:     1/6       Flee:     2/6        Flee:     3/6
     echo "$HR"
 }
 
@@ -991,11 +990,11 @@ BiaminSetup() { # Used in MainMenu()
     fi # Finish check whether CHAR exists if not create CHARSHEET 
     sleep 2 # merged sleep from 'load char' and 'new char'
     # Set abilities according to race (each equal to 12 except FLEE)
-    case $CHAR_RACE in                                         # original:         # new: change from D6 to D20 rolls
-	1 ) HEALING=3 && STRENGTH=3 && ACCURACY=3 && FLEE=8 ;; # human  (3,3,3,3)  # was 50% is now 40%
-	2 ) HEALING=4 && STRENGTH=3 && ACCURACY=4 && FLEE=4 ;; # elf    (4,3,4,1)  # was 16% is now 20%
-	3 ) HEALING=2 && STRENGTH=5 && ACCURACY=3 && FLEE=7 ;; # dwarf  (2,5,3,2)  # was 33% is now 35%
-	4 ) HEALING=4 && STRENGTH=1 && ACCURACY=4 && FLEE=8 ;; # hobbit (4,1,4,3)  # was 50% is now 40%
+    case $CHAR_RACE in
+	1 ) HEALING=3 && STRENGTH=3 && ACCURACY=3 && FLEE=3 ;; # human  (3,3,3,3)
+	2 ) HEALING=4 && STRENGTH=3 && ACCURACY=4 && FLEE=1 ;; # elf    (4,3,4,1)
+	3 ) HEALING=2 && STRENGTH=5 && ACCURACY=3 && FLEE=2 ;; # dwarf  (2,5,3,2)
+	4 ) HEALING=4 && STRENGTH=1 && ACCURACY=4 && FLEE=3 ;; # hobbit (4,1,4,3)
     esac
     # Adjust abilities according to items
     if (( CHAR_ITEMS >= 2 )); then
@@ -1507,21 +1506,38 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		read -sn 1 "FIGHT_PROMPT"
 		FightTable
 		if [[ "$FIGHT_PROMPT" == "f" || "$FIGHT_PROMPT" == "F" ]] ; then # Player tries to flee!
-		    RollDice 20
-		    EchoFightFormula 20 le F
+		    RollDice 6
+		    EchoFightFormula 6 le F
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
-			if (( DICE == FLEE )); then
-			    echo -n "$DICE = $FLEE ) You managed to flee!"
+				if (( DICE == FLEE )); then
+					echo -n "$DICE ="
+				else
+					echo -n "$DICE <"
+				fi
+				echo -n " $FLEE ) You try to flee the battle .."
+				sleep 2
+				FightTable
+				RollDice 6
+				EchoFightFormula 6 le eA
+				if (( DICE <= EN_ACCURACY )); then
+					if (( DICE == FLEE )); then
+						echo -n "$DICE ="
+					else
+						echo -n "$DICE <"
+					fi
+					echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
+					sleep 1
+				else
+					# Player managed to flee
+					echo -n "$DICE > $EN_ACCURACY ) You managed to flee!"
+					unset FIGHTMODE
+					LUCK=3
+					break
+				fi
 			else
-			    echo -n "$DICE < $FLEE ) You managed to flee!"
+				echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
 			fi
-			unset FIGHTMODE
-			LUCK=3
-			sleep 3
-			break # If player managed to flee
-		    fi 
-		    echo "$DICE > $FLEE ) Your escape was ill-fated!"
 		else # Player fights
 		    RollDice 6
    		    EchoFightFormula 6 le A		# test-implementation of EchoFightFormulat

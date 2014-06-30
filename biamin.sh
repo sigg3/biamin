@@ -1385,11 +1385,11 @@ EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     fi
 
     case "$FORMULA" in
-	eq ) echo -n " = " ;;
-	gt ) echo -n " > " ;;
-	lt ) echo -n " < " ;;
-	ge ) echo -n " >=" ;;
-	le ) echo -n " <=" ;;
+	eq )    echo -n " = " ;;
+	gt )    echo -n " > " ;;
+	lt )    echo -n " < " ;;
+	ge )    echo -n " >=" ;;
+	le )    echo -n " <=" ;;
 	times ) echo -n " x " ;;
     esac
 

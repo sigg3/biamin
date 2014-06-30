@@ -1258,6 +1258,9 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE_SIZE=$1 # DICE_SIZE used in RollForEvent()
     RANDOM=$(date '+%N') # Reseed random number generator
+    # SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
+    # RANDOM=$SEED
+    # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

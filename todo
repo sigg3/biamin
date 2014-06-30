@@ -21,7 +21,7 @@ TODO LEGACY branch
 [x] Add updater function once it hits 1.4 that refers to separate repo.
 [x] Add LEGACY to $VERSION once it hits 1.4.
 [x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
-[?] Finalize fight prompt for LEGACY and future branches
+[x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
 
 TODO 2.0 branch
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float

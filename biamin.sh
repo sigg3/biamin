@@ -1232,8 +1232,10 @@ Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of 
 # GAME ITEMS
 # Randomizers for Item Positions
 ITEM_YX() { # Used in HotzonesDistribute() and GX_Map()
-    ITEM_Y=$((RANDOM%15+1))
-    ITEM_X=$((RANDOM%18+1))
+    RollDice 15
+    ITEM_Y=$DICE
+    RollDice 18
+    ITEM_X=$DICE
 }
 
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()

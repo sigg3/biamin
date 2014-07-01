@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.3.9 LEGACY" # TODO change to 1.4 once it's  all said and done
+VERSION="1.4 LEGACY"
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
@@ -1258,9 +1258,6 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE_SIZE=$1 # DICE_SIZE used in RollForEvent()
     RANDOM=$(date '+%N') # Reseed random number generator
-    # SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
-    # RANDOM=$SEED
-    # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

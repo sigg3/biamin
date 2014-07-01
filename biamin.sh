@@ -1851,6 +1851,11 @@ case "$1" in
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --update ) # Updater for LEGACY
+    # Removes stranded repo files before proceeding..
+	STRANDED_REPO_FILES=$(find "$GAMEDIR"/repo.* | wc -l)
+	if (( STRANDED_REPO_FILES >= 1 )); then
+		rm -f "$GAMEDIR/repo.*"
+	fi
 	REPO_SRC="https://gitorious.org/back-in-a-minute/$REPO_EDITION/raw/biamin.sh"
 	GX_BiaminTitle;
 	sed 's/https:\/\///' <<< "Retrieving $REPO_SRC .."

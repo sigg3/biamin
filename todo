@@ -24,6 +24,7 @@ TODO LEGACY branch
 [x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
 
 TODO 2.0 branch
+[ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [ ] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()

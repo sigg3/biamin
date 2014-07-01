@@ -1684,7 +1684,7 @@ NewSector() { # Used in Intro()
 	    GX_Place "$SCENARIO"
 	    RollDice 100        # Find out if we're attacked 
 	    case "$SCENARIO" in # FightMode() if RollForEvent return 0
-		H ) RollForEvent 1  && FightMode ;; 
+		H ) RollForEvent 1  && FightMode ;;
 		x ) RollForEvent 50 && FightMode ;;
 		. ) RollForEvent 20 && FightMode ;;
 		T ) RollForEvent 15 && FightMode ;;

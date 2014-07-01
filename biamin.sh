@@ -1513,44 +1513,31 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		    EchoFightFormula 6 le F
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
-				if (( DICE == FLEE )); then
-					echo -n "$DICE ="
-				else
-					echo -n "$DICE <"
-				fi
-				echo -n " $FLEE ) You try to flee the battle .."
-				sleep 2
-				FightTable
-				RollDice 6
-				EchoFightFormula 6 le eA
-				if (( DICE <= EN_ACCURACY )); then
-					if (( DICE == FLEE )); then
-						echo -n "$DICE ="
-					else
-						echo -n "$DICE <"
-					fi
-					echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
-					sleep 1
-				else
-					# Player managed to flee
-					echo -n "$DICE > $EN_ACCURACY ) You managed to flee!"
-					unset FIGHTMODE
-					LUCK=3
-					break
-				fi
-			else
-				echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
+			(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
+			echo -n " $FLEE ) You try to flee the battle .."
+			sleep 2
+			FightTable
+			RollDice 6
+			EchoFightFormula 6 le eA
+			if (( DICE <= EN_ACCURACY )); then
+			    (( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
+			    echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
+			    sleep 1
+			else # Player managed to flee
+			    echo -n "$DICE > $EN_ACCURACY ) You managed to flee!"
+			    unset FIGHTMODE
+			    LUCK=3
+			    break
 			fi
+		    else
+			echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
+		    fi
 		else # Player fights
 		    RollDice 6
    		    EchoFightFormula 6 le A		# test-implementation of EchoFightFormulat
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
-			if (( DICE == ACCURACY )) ; then
-			    echo -n "$DICE = $ACCURACY"
-			else
-			    echo -n "$DICE < $ACCURACY"
-			fi
+			(( DICE == ACCURACY )) && echo -n "$DICE = $ACCURACY" || echo -n "$DICE < $ACCURACY"
 			echo -n " ) Your weapon hits the target!"
 			echo -e "\nPress the R key to (R)oll for damage"
 			read -sn 1 "FIGHT_PROMPT"
@@ -1588,16 +1575,14 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 		RollDice 6
 		EchoFightFormula 6 le eA
 		if (( DICE <= EN_ACCURACY )); then
-		    if (( DICE == EN_ACCURACY )) ; then
-			echo -n "$DICE = $EN_ACCURACY"
-		    else
-			echo -n "$DICE < $EN_ACCURACY"
-		    fi
-		    echo " ) The $ENEMY strikes you!" && sleep 1
+		    (( DICE == EN_ACCURACY )) && echo -n "$DICE = $EN_ACCURACY" || echo -n "$DICE < $EN_ACCURACY"
+		    echo " ) The $ENEMY strikes you!"
+		    sleep 1
 		    RollDice 6
 		    EchoFightFormula 6 times eS
 		    DAMAGE=$(( DICE * EN_STRENGTH ))
-		    echo -en "$DICE x $EN_STRENGTH ) The $ENEMY's blow hits you with $DAMAGE points! [-$DAMAGE HP]" # -en used here to avoid "jumping" from >24 blocks in terminal
+		    #    -en used here to avoid "jumping" from >24 blocks in terminal
+		    echo -en "$DICE x $EN_STRENGTH ) The $ENEMY's blow hits you with $DAMAGE points! [-$DAMAGE HP]" 
 		    (( CHAR_HEALTH -= DAMAGE ))
 		    SaveCurrentSheet
 		else
@@ -1630,7 +1615,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	unset LUCK
 	sleep 4
 	DisplayCharsheet
-    fi
+    fi  # else exit after CheckForDeath() in NewSector()
 }   # Return to NewSector() or to Rest()
 
 

@@ -1454,7 +1454,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     do
 	if (( CHAR_HEALTH <= 0 )); then
 	    FightTable # for 80x24 compability
-	    echo -e "\nYour health points are $CHAR_HEALTH"
+	    echo "Your health points are $CHAR_HEALTH"
 	    sleep 2
 	    echo "You WERE KILLED by the $ENEMY, and now you are dead..."
 	    sleep 2
@@ -1603,7 +1603,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    (( CHAR_EXP += PL_FLEE_EXP ))
 	else			   # ENEMY was slain!
 	    FightTable
-	    echo -en "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
+	    echo "You defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
 	    (( CHAR_EXP += EN_DEFEATED_EXP ))
 	    (( CHAR_KILLS++ ))
 	fi

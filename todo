@@ -12,8 +12,8 @@ that needs to be done. Or from e-mail discussions. ~~ sigg3
 LEGEND: x = done, . someone's working on it, ? = open question, - = removed
 
 TODO GPL repo
-[ ] Create LEGACY for -gpl repo once it hits 1.4
-[ ] Add updater to -gpl 1.4, refers to separate repo.
+[x] Create LEGACY for -gpl repo once it hits 1.4
+[x] Add updater to -gpl 1.4, refers to separate repo.
 [x] Updated sprites in wait for 1.4
 
 TODO LEGACY branch

@@ -2750,7 +2750,9 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
 
 Announce() {
     # Simply outputs a 160 char text you can cut & paste to social media.
-    # I was gonna use pump.io for this, but too much hassle && dependencies..
+    
+    # TODO: Once date is decoupled from system date (with CREATION and DATE), create new message. E.g.
+    # $CHAR died $DATE having fought $BATTLES ($KILLS victoriously) etc...
 
     SetupHighscore
 

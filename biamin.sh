@@ -254,6 +254,9 @@ EOF
 }
 
 GX_Calendar() { # Used in DisplayCharsheet()
+	# TODO The Idea is simply put to have a calendar on the right side
+	# and some info about the current month on the left (or vice-versa)
+
 	clear
 	echo "CALENDAR placeholder"
 	echo "$HR"

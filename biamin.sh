@@ -229,7 +229,7 @@ ___                          (         \__ 1                _/             \   \
                                |  |  |_    1    \___________________________  
                                |__| ___\   1                                \___
 EOT
-    echo -e "$HR\n                        Press (A)ny key to continue.."
+    echo "$HR" && PressAnyKey
 }
 
 GX_Races() {
@@ -251,6 +251,13 @@ GX_Races() {
 
 $HR
 EOF
+}
+
+GX_Calendar() { # Used in DisplayCharsheet()
+	clear
+	echo "CALENDAR placeholder"
+	echo "$HR"
+	PressAnyKey
 }
 
 GX_Castle() {

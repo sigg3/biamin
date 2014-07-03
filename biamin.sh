@@ -2008,7 +2008,7 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
 
     # DETERMINE INITIATIVE (will usually be enemy)
-    if (( EN_ACCURACY > ACCURACY )); then
+    if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING=1 )) ; then
 	echo "The $ENEMY has initiative"
 	NEXT_TURN="en"
     else
@@ -2263,12 +2263,13 @@ Rest() {  # Used in NewSector()
 	    fi
 	    sleep 2
 	    ;;
-	x ) RollForEvent 60 "fight" && FightMode || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
-	. ) RollForEvent 30 "fight" && FightMode || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
-	T ) RollForEvent 15 "fight" && FightMode || RollForHealing 15 "The vices of town life kept you up all night.." ;;
-	@ ) RollForEvent 35 "fight" && FightMode || RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
-	C ) RollForEvent 5  "fight" && FightMode || RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
+	x ) RollForEvent 60 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
+	. ) RollForEvent 30 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
+	T ) RollForEvent 15 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 15 "The vices of town life kept you up all night.." ;;
+	@ ) RollForEvent 35 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
+	C ) RollForEvent 5  "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
     esac
+    PLAYER_RESTING=0
     sleep 2
 }   # Return to NewSector()
 

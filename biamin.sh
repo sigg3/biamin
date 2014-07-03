@@ -1564,7 +1564,16 @@ TodaysDate() {
     # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
     # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
     # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
+
+	# TODO: Decouple biamin date from real date once CREATION is set in charsheet
+    # Add check here, IF CREATION is not set, CREATION && DATE in CHARSHEET is TodaysDate
+    # if (( -z $CREATION )) ; then
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
+	# else
+	# just increment date, month and/or year..
+	# fi
+	# TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
+    
     # Adjust date
     case "$TODAYS_DATE" in
 	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
@@ -2589,6 +2598,7 @@ NewSector() { # Used in Intro()
 	  # What's your plan? -Sig.
 	    # Look, we need check-for-starvation here and in Rest (one code in two places) 
 	    # So it seems to me that it should be separate function (like CheckForDeath) #kstn
+			# Sounds like a sound logic :) # sigge
 	# TODO not check for food at the 1st turn
 	# TODO set check to death from starvation
 	# TODO Probably due to this temporary placement in code it popped up on the Display Race Info page after a fight.. :P
@@ -2818,17 +2828,22 @@ case "$1" in
 	echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
-    --update )
+    --update ) # Update function
+    # Removes stranded repo files before proceeding..
+	STRANDED_REPO_FILES=$(find "$GAMEDIR"/repo.* | wc -l)
+	if (( STRANDED_REPO_FILES >= 1 )); then
+		rm -f "$GAMEDIR/repo.*"
+	fi
 	REPO_SRC="https://gitorious.org/back-in-a-minute/code/raw/biamin.sh"
 	GX_BiaminTitle;
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
 	REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
 	if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
-	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD_ERR__No_internet_with_wget
+	    wget -q -O "$REPO" "$REPO_SRC" || Die DOWNLOAD ERROR  No internet with wget
 	elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
-	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD_ERR__No_internet_with_curl
+	    curl -s -L -o "$REPO" "$REPO_SRC" || Die  DOWNLOAD ERROR  No internet with curl
 	else
-	    Die DOWNLOAD_ERR__No_curl_or_wget_available
+	    Die DOWNLOAD ERROR  No curl or wget available
 	fi
 
 	REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )

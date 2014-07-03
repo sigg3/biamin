@@ -2629,7 +2629,7 @@ NewSector() { # Used in Intro()
 		C ) RollForEvent 10 && FightMode ;;
 		* ) CustomMapError ;;
 	    esac
-            (( DEATH == 1 )) && break # If player was slain in fight mode
+        (( DEATH == 1 )) && break # If player was slain in fight mode
 	fi
 
 	# Food check # TODO add it to Rest() after finishing

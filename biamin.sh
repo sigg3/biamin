@@ -1386,6 +1386,8 @@ GX_Map() { # Used in MapNav()
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
     echo "CHARACTER: $CHAR
+CREATED: $CREATION
+DATE: $BIAMIN_DATE
 RACE: $CHAR_RACE
 BATTLES: $CHAR_BATTLES
 EXPERIENCE: $CHAR_EXP
@@ -1424,12 +1426,16 @@ BiaminSetup() { # Used in MainMenu()
 	grep -q -E '^VAL_GOLD:' "$CHARSHEET"    || echo "VAL_GOLD: 1" >> $CHARSHEET
 	grep -q -E '^VAL_TOBACCO:' "$CHARSHEET" || echo "VAL_TOBACCO: 1" >> $CHARSHEET
 	grep -q -E '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
+	grep -q -E '^CREATED:' "$CHARSHEET"     || echo "CREATED: 0" >> $CHARSHEET
+	grep -q -E '^DATE:' "$CHARSHEET"        || echo "DATE: 0" >> $CHARSHEET
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '
                   { 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^CREATED:/)    { CREATION= $2 }
+                   if (/^DATE:/)       { BIAMIN_DATE= $2 }
                    if (/^RACE:/)       { RACE= $2 }
                    if (/^BATTLES:/)    { BATTLES = $2 }
                    if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
@@ -1448,7 +1454,7 @@ BiaminSetup() { # Used in MainMenu()
                    if (/^STARVATION:/) { STARVATION = $2 }
                  }
                  END { 
-                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";"
+                 print CHARACTER "; " CREATION";" DATE ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";"
                  }' $CHARSHEET )
 	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION <<< "$CHAR_TMP"
 	unset CHAR_TMP
@@ -1457,6 +1463,8 @@ BiaminSetup() { # Used in MainMenu()
 	sleep 2
     else
 	echo " $CHAR is a new character!"
+	CREATION=0
+	BIAMIN_DATE=0
 	CHAR_BATTLES=0
 	CHAR_EXP=0
 	CHAR_HEALTH=100
@@ -1570,25 +1578,39 @@ TodaysDate() {
     # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
     # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
     # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
-
-	# TODO: Decouple biamin date from real date once CREATION is set in charsheet
-    # Add check here, IF CREATION is not set, CREATION && DATE in CHARSHEET is TodaysDate
-    # if [[ $CREATION == 0 ]] ; then # first run
-    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-	# else
-	# just increment date, month and/or year..
-	# fi
-	# TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
-	# NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
     
-    # Adjust date
+	if (( CREATION == 0 )) ; then # first run
+	read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
+	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
+	BIAMIN_DATE="$CREATION"
+	else
+	
+	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
+
+	# Increment date
+	(( TODAYS_DATE ++ )) # increment date
+
+	if (( TODAYS_DATE > 31 )) ; then
+	TODAYS_DATE=1
+	(( TODAYS_MONTH ++ )) # change month
+	fi
+	
+	if (( TODAYS_MONTH > 12 )) ; then
+	TODAYS_MONTH=1
+	(( TODAYS_YEAR ++ )) # change year
+	fi
+	# save it
+	BIAMIN_DATE="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
+	fi
+	SaveCurrentSheet # not sure if this is necessary..
+	
+	# CREATE and CONCATENATE DATE STRING
     case "$TODAYS_DATE" in
 	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
 	2 | 22 ) TODAYS_DATE+="nd" ;;
 	3 | 23 ) TODAYS_DATE+="rd" ;;
  	* ) TODAYS_DATE+="th" ;;
     esac
-    # Adjust month
     case "$TODAYS_MONTH" in
 	1 ) TODAYS_MONTH="After-Witching" ;;
 	2 ) TODAYS_MONTH="Year-Turn" ;;
@@ -1604,13 +1626,13 @@ TodaysDate() {
  	12 ) TODAYS_MONTH="Fore-Witching" ;;
  	* ) TODAYS_MONTH="Biamin Festival" ;;  # rarely happens, if ever :(
     esac
-    # Adjust year
     case ${TODAYS_YEAR} in
 	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) TODAYS_YEAR+="st";;
 	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) TODAYS_YEAR+="nd";;
 	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) TODAYS_YEAR+="rd";;
 	*) TODAYS_YEAR+="th";;
     esac
+
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }
@@ -2990,6 +3012,11 @@ CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move curs
 
 # Direct termination signals to CleanUp
 trap CleanUp SIGHUP SIGINT SIGTERM
+
+# Get date
+if (( BIAMIN_DATE == 0 )) || (( CREATION == 0 )) ; then
+	TodaysDate
+fi
 
 SetupHighscore # Setup highscore file
 MainMenu       # Run main menu

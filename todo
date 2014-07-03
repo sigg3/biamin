@@ -15,6 +15,7 @@ TODO GPL repo
 [x] Create LEGACY for -gpl repo once it hits 1.4
 [x] Add updater to -gpl 1.4, refers to separate repo.
 [x] Updated sprites in wait for 1.4
+[?] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
 
 TODO LEGACY branch
 [x] Remove update_biamin.sh from LEGACY
@@ -22,6 +23,7 @@ TODO LEGACY branch
 [x] Add LEGACY to $VERSION once it hits 1.4.
 [x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
 [x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
+[?] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 
 TODO 2.0 branch
 [ ] Continue designing a nicer fight prompt
@@ -50,6 +52,7 @@ TODO 2.0 branch
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
 [x] Dice game in tavern
+[?]	Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
 [ ] Replace bash's pseudo-random RANDOM to smth more random.
@@ -58,6 +61,7 @@ TODO Post 2.0 branch
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
+[?]	Hurricane - see lower
 [?] Quests?    >> Post 2.0
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?] Messenger? >> Post 2.0
@@ -95,4 +99,4 @@ BLOG/Misc.
 [.] Re-write About page
 [x] Update download page
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)
-
+[ ] Make text for roguebasin's page

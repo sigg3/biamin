@@ -61,8 +61,27 @@ TODO Post 2.0 branch
 [?] Quests?    >> Post 2.0
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?] Messenger? >> Post 2.0
+[?] Date - internal date not attached to real - one turn - one day
+[?] Weather - changes every turn.
+[?]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
+[?]	Rain (+/-FLEE, more chanses but less HP from REST)
+[?]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)
+[?]	Wind (+/- FLEE from animal enemies - varg, boar)
+[?]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
+[?]	Any other...?
+[?]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
+[?] Seasons - winter, spring, summer, autumn
+[?]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
 [?] Crime (you're WANTED)? Or perhaps curse?
 [?] World Map (tiles of maps) for a bigger world
+[?] Internal sub-maps (random?) for locations - caves, etc
+[?] Caravans from city to city. 
+[?]	Player can walk with caravan for money (less chances to battle on the road)
+[?]     Player can take work to guard caravan (gets money after, but bigger chances to battle on the road)
+[?]	Player cat meet caravan on the road, and buy smth for lower price.
+[?]	Player can ROB caravans on the road!!!
+[?]		Enemy - merchant/caravan-master???
+[?]	Player can meet caravan whet it is robbing and can choose - go avay or help
 [?] NPC system to complete the experience of a living place
 [?] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
         I'm thinking about doing this also. Perhaps it would be better to

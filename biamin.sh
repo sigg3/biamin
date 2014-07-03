@@ -1574,37 +1574,8 @@ BiaminSetup() { # Used in MainMenu()
     Intro
 }
 
-TodaysDate() {
-    # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
-    # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
-    # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
-    
-	if (( CREATION == 0 )) ; then # first run
-	read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
-	BIAMIN_DATE="$CREATION"
-	else
-	
-	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
-
-	# Increment date
-	(( TODAYS_DATE ++ )) # increment date
-
-	if (( TODAYS_DATE > 31 )) ; then
-	TODAYS_DATE=1
-	(( TODAYS_MONTH ++ )) # change month
-	fi
-	
-	if (( TODAYS_MONTH > 12 )) ; then
-	TODAYS_MONTH=1
-	(( TODAYS_YEAR ++ )) # change year
-	fi
-	# save it
-	BIAMIN_DATE="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
-	fi
-	SaveCurrentSheet # not sure if this is necessary..
-	
-	# CREATE and CONCATENATE DATE STRING
+TodaysDateString() { 	# Creates and concatenates date string
+	# Adjusted version of warhammeronline.wikia.com/wiki/Calendar
     case "$TODAYS_DATE" in
 	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
 	2 | 22 ) TODAYS_DATE+="nd" ;;
@@ -1635,6 +1606,38 @@ TodaysDate() {
 
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
+}
+
+TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
+	DODATESTRING="$1" # Sending 1 to TodaysDate() will also run TodaysDateString()
+   	if (( CREATION == 0 )) ; then # first run
+	read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
+	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
+	BIAMIN_DATE="$CREATION"
+	else
+	
+	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
+
+	# Increment date
+	(( TODAYS_DATE ++ )) # increment date
+
+	if (( TODAYS_DATE > 31 )) ; then
+	TODAYS_DATE=1
+	(( TODAYS_MONTH ++ )) # change month
+	fi
+	
+	if (( TODAYS_MONTH > 12 )) ; then
+	TODAYS_MONTH=1
+	(( TODAYS_YEAR ++ )) # change year
+	fi
+	# save it
+	BIAMIN_DATE="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
+	fi
+	SaveCurrentSheet # not sure if this is necessary..
+	
+	if (( DODATESTRING == 1 )) ; then
+		TodaysDateString
+	fi
 }
 
 ## WORLD EVENT functions
@@ -2160,7 +2163,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		echo "Gain 1000 Experience Points to achieve magic healing!"
 		sleep 4		
 		GX_Death
-		echo " The $TODAYS_DATE_STR:"
+		TodaysDateString && echo " The $TODAYS_DATE_STR:"
 		echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
 		local COUNTDOWN=20
 		while (( COUNTDOWN > 0 )); do
@@ -2760,7 +2763,7 @@ NewSector() { # Used in Intro()
 
 Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
-    TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+    TodaysDateString   # Fetch today's date && string (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
@@ -3013,11 +3016,6 @@ CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move curs
 
 # Direct termination signals to CleanUp
 trap CleanUp SIGHUP SIGINT SIGTERM
-
-# Get date
-if (( BIAMIN_DATE == 0 )) || (( CREATION == 0 )) ; then
-	TodaysDate
-fi
 
 SetupHighscore # Setup highscore file
 MainMenu       # Run main menu

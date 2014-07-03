@@ -26,6 +26,7 @@ TODO LEGACY branch
 [?] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 
 TODO 2.0 branch
+[ ] Implement EchoFightFormula in FightMode from LEGACY
 [ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [ ] Check are all checks for gold/tobacco replaced to bc

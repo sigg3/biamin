@@ -38,11 +38,13 @@ TODO 2.0 branch
 [x] ASCII GX_Marketplace
 [x]	ASCII GX_Grocer
 [ ]	ASCII GX_Tradesman
+[ ] ASCII GX_ for 2 more enemies (10 total)
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [x] ASCII Finish look of GX_Bulletin (left side)
 [ ] Pickpocket tuning
 [x] Add boar
 [x] Add dragon
+[ ] Add 2 more enemies (e.g. imp and cave bear)
 [.] Rewrite CUSTOM map functionality to allow >1 map
 [.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
@@ -93,6 +95,7 @@ TODO Post 2.0 branch
         HotzoneDistribute()
 [?] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
 [?] Adventure log (optional)
+[?] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
 
 BLOG/Misc.
 [x] LEGACY announcement

@@ -2641,7 +2641,7 @@ GoIntoTown() { # Used in NewSector()
 NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
     do
-    TodaysDate # get date
+    TodaysDate 0 # Get date without string
 	# Find out where we are - Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn

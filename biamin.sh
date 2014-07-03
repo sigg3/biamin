@@ -1147,10 +1147,39 @@ EOT
 	# TODO: Must fix the prices or add msg on current value of gold.
 }
 
-GX_Marketplace_Trader() {
+GX_Marketplace_Merchant() { # Used in GX_Marketplace
 	clear
-	echo "Placeholder for TRADER"
-	echo "$HR"	
+	cat <<"EOT"
+                                                            .--^`~~.
+                                                            ),-~~._/     
+              THE MERCHANT                                  j-, -`;;     
+                                                            .~_~  ,'       
+EOT
+echo -en "    \"Oye there, "
+case "$CHAR_RACE" in
+2 ) echo -n "galant Elf of the Forests!               " ;;
+3 ) echo -n "fierce master Dwarf!                     " ;;
+4 ) echo -n "young master Hobbit!                     " ;;
+1 | * ) echo -n "weather-beaten Traveller!                " ;;
+esac
+echo "__..\`#~-(.__"
+	cat <<"EOT"
+    Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
+    to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
+    in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
+    possible prices! I buy everything      .-,        `._{__7-~-~-~~; `~-'|l  
+    and sell only the best, 'tis true!     ,X.             :-'      |    ;  \  
+    Want to trade?"                     __(___)_.~~,__    ;     (  `l   (__,_)
+                                       [ _ _ _ _,)(. _]  ;      l    `,        
+                                       [_ _ _ ,'    `.] ;       )     )       
+                                       [ _ _ /        \ \,_____/\____,'     
+                                       l_____l        4    ;_/  ,|_/__ 
+                                             `-._____,'   /--|  \._`_.) 
+                                                          \_/    
+EOT
+	echo "$HR"
+	
+# TODO add PRICING case statements at crate-height.
 }
 
 # GFX MAP FUNCTIONS

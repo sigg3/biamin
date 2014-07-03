@@ -38,7 +38,7 @@ TODO 2.0 branch
 [.]     ASCII GX_DiceGame
 [x] ASCII GX_Marketplace
 [x]	ASCII GX_Grocer
-[ ]	ASCII GX_Tradesman
+[x]	ASCII GX_Tradesman (RENAMED to Merchant)
 [ ] ASCII GX_ for 2 more enemies (10 total)
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [x] ASCII Finish look of GX_Bulletin (left side)

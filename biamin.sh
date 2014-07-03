@@ -1130,10 +1130,17 @@ GX_Marketplace_Grocer() {
     If we don't have it, I suspect        |l;'  (      _|_     ,  `: |l_______ 
     nobody else will neither."            |;'  ,;)_ _ _ o_ _ _,^.   \',~~~~~~~
                                     ______,~,~ t(______________)_;~~~: _______
-    Price: 1 Gold per item         _____  '----`    ____      __ '-^-^`  _____
+    Price: 1 per item              _____  '----`    ____      __ '-^-^`  _____
    
 EOT
 	echo "$HR"
+	# TODO: Must fix the prices or add msg on current value of gold.
+}
+
+GX_Marketplace_Trader() {
+	clear
+	echo "Placeholder for TRADER"
+	echo "$HR"	
 }
 
 # GFX MAP FUNCTIONS
@@ -1566,12 +1573,13 @@ TodaysDate() {
 
 	# TODO: Decouple biamin date from real date once CREATION is set in charsheet
     # Add check here, IF CREATION is not set, CREATION && DATE in CHARSHEET is TodaysDate
-    # if (( -z $CREATION )) ; then
+    # if [[ $CREATION == 0 ]] ; then # first run
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
 	# else
 	# just increment date, month and/or year..
 	# fi
 	# TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
+	# NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
     
     # Adjust date
     case "$TODAYS_DATE" in

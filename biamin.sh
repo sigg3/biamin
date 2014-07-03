@@ -2763,7 +2763,12 @@ NewSector() { # Used in Intro()
 
 Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
-    TodaysDate 1       # Fetch today's date && string (Used in DisplayCharsheet() and FightMode() )
+    # Fetch today's date && string (Used in DisplayCharsheet() and FightMode() )
+    if (( CREATION == 0 )) || (( BIAMIN_DATE == 0 )) ; then
+		TodaysDate 1
+	else
+		TodaysDateString
+	fi
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    

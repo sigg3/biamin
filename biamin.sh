@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="2.0" # Reserved for feature-money atm..
+VERSION="1.8" # 12 items on TODO. Change to 2.0 when list is x'd out
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################

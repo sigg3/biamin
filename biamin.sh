@@ -1286,11 +1286,10 @@ EOT
 #                          1. FUNCTIONS                                #
 #                    All program functions go here!                    #
 
-function Die() {
+Die() {
     echo -e "$1" && exit 1
 }
 
-# CLEANUP Function
 CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"
@@ -1926,10 +1925,38 @@ FightTable() {  # Used in FightMode()
     printf "%-12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }   # Return to FightMode()
 
-FightMode() {	# FIGHT MODE! (secondary loop for fights)
-                # Used in NewSector() and Rest()
-    LUCK=0      # Used to assess the match in terms of EXP..
-    FIGHTMODE=1	# Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
+
+EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
+    # req.: dice-size | formula | skill-abbrevation
+    local DICE_SIZE="$1"
+    local FORMULA="$2"
+    local SKILLABBREV="$3"
+
+    if (( DICE_SIZE <= 9 )) ; then
+	echo -n "Roll D$DICE_SIZE "
+    else
+	echo -n "Roll D$DICE_SIZE"
+    fi
+
+    case "$FORMULA" in
+	eq )    echo -n " = " ;;
+	gt )    echo -n " > " ;;
+	lt )    echo -n " < " ;;
+	ge )    echo -n " >=" ;;
+	le )    echo -n " <=" ;;
+	times ) echo -n " x " ;;
+    esac
+
+    # skill & roll
+    echo -n " $SKILLABBREV ( "
+    # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
+    # determined in the if and cases of the Fight Loop, so don't repeat here.
+}
+
+FightMode() {	  # FIGHT MODE! (secondary loop for fights)
+                  # Used in NewSector() and Rest()
+    LUCK=0        # Used to assess the match in terms of EXP..
+    FIGHTMODE=1	  # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
     PICKPOCKET=0  # Flag for succesful pickpocket
 
     RollDice 20 # Determine enemy type
@@ -2129,17 +2156,28 @@ FightMode() {	# FIGHT MODE! (secondary loop for fights)
 	    echo -n "ROLL D6: $DICE"
 	    case "$FIGHT_PROMPT" in
 		f | F ) # Player tries to flee!
+		    RollDice 6
+		    EchoFightFormula 6 le F
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
-			echo -e "\tFlee [D6 $DICE < $FLEE] You managed to flee!"
-			unset FIGHTMODE
-			LUCK=3
-			sleep 3
-			break
-		    else
-			echo -e "\tFlee [D6 $DICE > $FLEE] Your escape was ill-fated!"
-			NEXT_TURN="en"
+			(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
+			echo -n " $FLEE ) You try to flee the battle .."
 			sleep 2
+			FightTable
+			RollDice 6
+			EchoFightFormula 6 le eA
+			if (( DICE <= EN_ACCURACY )); then
+			    (( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
+			    echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
+			    sleep 1
+			else # Player managed to flee
+			    echo -n "$DICE > $EN_ACCURACY ) You managed to flee!"
+			    unset FIGHTMODE
+			    LUCK=3
+			    break
+			fi
+		    else
+			echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
 		    fi
 		    ;;
 		*)  # Player fights

@@ -1648,12 +1648,12 @@ TodaysDateString() { 	# Creates and concatenates date string
 }
 
 TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
-	DODATESTRING="$1" # Sending 1 to TodaysDate() will also run TodaysDateString()
-   	if (( CREATION == 0 )) ; then # first run
+    DODATESTRING="$1" # Sending 1 to TodaysDate() will also run TodaysDateString()
+    if (( CREATION == 0 )) ; then # first run
 	read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
 	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
 	BIAMIN_DATE="$CREATION"
-	else
+    else
 	
 	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
 
@@ -1661,22 +1661,23 @@ TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
 	(( TODAYS_DATE ++ )) # increment date
 
 	if (( TODAYS_DATE > 31 )) ; then
-	TODAYS_DATE=1
-	(( TODAYS_MONTH ++ )) # change month
+	    TODAYS_DATE=1
+	    (( TODAYS_MONTH ++ )) # change month
 	fi
 	
 	if (( TODAYS_MONTH > 12 )) ; then
-	TODAYS_MONTH=1
-	(( TODAYS_YEAR ++ )) # change year
+	    TODAYS_MONTH=1
+	    (( TODAYS_YEAR ++ )) # change year
 	fi
 	# save it
 	BIAMIN_DATE="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
-	fi
-	SaveCurrentSheet # not sure if this is necessary..
-	
-	if (( DODATESTRING == 1 )) ; then
-		TodaysDateString
-	fi
+    fi
+
+    SaveCurrentSheet # not sure if this is necessary..
+    
+    if (( DODATESTRING == 1 )) ; then
+	TodaysDateString
+    fi
 }
 
 ## WORLD EVENT functions
@@ -1903,11 +1904,11 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
 }
 ################### GAME SYSTEM #################
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
-	# SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
+    # SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
 
-	DICE_SIZE=$1 # DICE_SIZE used in RollForEvent()
+    DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
     RANDOM=$(date '+%N') # Reseed random number generator using nano seconds    
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
@@ -2096,17 +2097,17 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     (( DICE <= EN_TOBACCO )) && RollDice 10 && EN_TOBACCO=$( bc <<< "scale=2;$ $DICE*(EN_TOBACCO/100)" ) || EN_TOBACCO=0
     RollDice 100
     if (( DICE <= EN_FOOD )) ; then
-		# Loot: Food table for animal creatures
-		RollDice 10
-		case "$ENEMY" in
-		boar )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
-		varg )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
-		chthulu ) EN_FOOD=$DICE                             ;; # max 40 days, min 4 days   (is huge..)
-		dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE*0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
-		esac
-		
-		# IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
-	fi
+	# Loot: Food table for animal creatures
+	RollDice 10
+	case "$ENEMY" in
+	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
+	    varg )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
+	    chthulu ) EN_FOOD=$DICE                             ;; # max 40 days, min 4 days   (is huge..)
+	    dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE*0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
+	esac
+	
+	# IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
+    fi
 
     # Adjustments for items
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
@@ -2375,10 +2376,10 @@ Rest() {  # Used in NewSector()
     GX_Rest
     case "$SCENARIO" in
 	H ) if (( CHAR_HEALTH < 100 )); then
-	    CHAR_HEALTH=100
-	    echo "You slept well in your own bed. Health restored to 100."
+		CHAR_HEALTH=100
+		echo "You slept well in your own bed. Health restored to 100."
 	    else
-	    echo "You slept well in your own bed, and woke up to a beautiful day."
+		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
 	    sleep 2
 	    ;;
@@ -2513,7 +2514,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    
 	    # Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
 	    case $DGAME_RESULT in
-	    2 | 12 ) DGAME_WINNINGS=$DGAME_POT ;;			      # 100%  # TODO
+	    2 | 12 ) DGAME_WINNINGS=$DGAME_POT ;;		       # 100%  # TODO
 	    3 | 11 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.85" ) ;; # 85%   # PLAY TEST THESE %s
 	    4 | 10 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.70" ) ;; # 70%
 	    5 | 9  ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.55" ) ;; # 55%
@@ -2724,7 +2725,6 @@ NewSector() { # Used in Intro()
 			1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; # Restore lost ability after
 			2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; # overcoming starvation
 		    esac		    
-		    
 		fi
 		STARVATION=0
 	    fi
@@ -2740,9 +2740,9 @@ NewSector() { # Used in Intro()
 	    (( CHAR_HEALTH -= 5 ))
 	    echo "-5 HEALTH: Your body is suffering from starvation .. (Health: $HEALTH)" # Light Starvation penalty - decrease 5HP/turn	    
 
-	    if (( STARVATION == 8 )); then 
+	    if (( STARVATION == 8 )); then # Extreme Starvation penalty
 		case "$CHAR_RACE" in
-		    1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (Strength: $STRENGTH)" ;; # Extreme Starvation penalty
+		    1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (Strength: $STRENGTH)" ;; 
 		    2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
 		esac
 	    fi
@@ -2804,10 +2804,10 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
     # Fetch today's date && string (Used in DisplayCharsheet() and FightMode() )
     if (( CREATION == 0 )) || (( BIAMIN_DATE == 0 )) ; then
-		TodaysDate 1
-	else
-		TodaysDateString
-	fi
+	TodaysDate 1
+    else
+	TodaysDateString
+    fi
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    

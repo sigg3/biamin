@@ -1339,7 +1339,7 @@ Die() {
 CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"
-    [[ $FIGHTMODE ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
+    [[ "$FIGHTMODE" ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;
     	echo "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP" ;
@@ -1380,7 +1380,7 @@ SetupHighscore() { # Used in main() and Announce()
 
 ### DISPLAY MAP
 GX_Map() { # Used in MapNav()
-    if [[ $CHAR_ITEMS -gt 0 && $CHAR_ITEMS -lt 8 ]] ; then # Check for Gift of Sight
+    if ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ; then # Check for Gift of Sight
 	# Show ONLY the NEXT item viz. "Item to see" (ITEM2C)
 	# There always will be item in HOTZONE[0]!
      	IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" # Retrieve item map positions e.g. 1-15 >> X=1 Y=15
@@ -1390,9 +1390,7 @@ GX_Map() { # Used in MapNav()
     fi
 
     clear
-
-    awk '
-    BEGIN { FS = "   " ; OFS = "   ";}
+    awk 'BEGIN { FS = "   " ; OFS = "   "; }
     {
       # place "o" (player) on map
       if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
@@ -1409,7 +1407,6 @@ GX_Map() { # Used in MapNav()
             }
          }
       # All color on map sets here
-      # if $COLOR == 1 
       if ('${COLOR}' == 1 ) {
          # Terminal color scheme bugfix
          if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
@@ -1513,7 +1510,7 @@ BiaminSetup() { # Used in MainMenu()
 	STARVATION=0;
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
-	case $CHAR_RACE in
+	case "$CHAR_RACE" in
 	    2 ) echo "You chose to be an ELF" && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
 	    3 ) echo "You chose to be a DWARF" && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
 	    4 ) echo "You chose to be a HOBBIT" && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
@@ -1614,7 +1611,7 @@ BiaminSetup() { # Used in MainMenu()
 }
 
 TodaysDateString() { 	# Creates and concatenates date string
-	# Adjusted version of warhammeronline.wikia.com/wiki/Calendar
+    # Adjusted version of warhammeronline.wikia.com/wiki/Calendar
     case "$TODAYS_DATE" in
 	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
 	2 | 22 ) TODAYS_DATE+="nd" ;;
@@ -1636,7 +1633,7 @@ TodaysDateString() { 	# Creates and concatenates date string
  	12 ) TODAYS_MONTH="Fore-Witching" ;;
  	* ) TODAYS_MONTH="Biamin Festival" ;;  # rarely happens, if ever :(
     esac
-    case ${TODAYS_YEAR} in
+    case "$TODAYS_YEAR" in
 	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) TODAYS_YEAR+="st";;
 	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) TODAYS_YEAR+="nd";;
 	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) TODAYS_YEAR+="rd";;
@@ -1654,11 +1651,9 @@ TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
 	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
 	BIAMIN_DATE="$CREATION"
     else
-	
 	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
-
 	# Increment date
-	(( TODAYS_DATE ++ )) # increment date
+	(( TODAYS_DATE++ )) # increment date
 
 	if (( TODAYS_DATE > 31 )) ; then
 	    TODAYS_DATE=1
@@ -1675,9 +1670,8 @@ TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
 
     SaveCurrentSheet # not sure if this is necessary..
     
-    if (( DODATESTRING == 1 )) ; then
-	TodaysDateString
-    fi
+    (( DODATESTRING == 1 )) && TodaysDateString
+
 }
 
 ## WORLD EVENT functions
@@ -1790,25 +1784,23 @@ ShowLicense() { # Used in License()
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     GX_BiaminTitle
-	if [ -z "$PAGER" ] ; then				# If $PAGER is not set
-		if [ -f "/usr/bin/less" ] ; then
-			local PAGER="/usr/bin/less"		# try less
-		elif [ -f "/usr/bin/more" ] ; then
-			local PAGER="/usr/bin/more"		# or try more
-		else
-			local PAGER="0"		# or fallback gracefully (see ShowLicense in case PAGER is 0)
-		fi
-	fi
-	if [ -f "$GAMEDIR/LICENSE" ]; then
-		ShowLicense
+    if [ -z "$PAGER" ] ; then				# If $PAGER is not set
+	if [ -f "/usr/bin/less" ] ; then
+	    local PAGER="/usr/bin/less"		# try less
+	elif [ -f "/usr/bin/more" ] ; then
+	    local PAGER="/usr/bin/more"		# or try more
 	else
+	    local PAGER="0"		# or fallback gracefully (see ShowLicense in case PAGER is 0)
+	fi
+    fi
+    if [ -f "$GAMEDIR/LICENSE" ]; then
+	ShowLicense
+    else
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
 	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
-	    YES ) 
-		PrepareLicense && ShowLicense ;;
-	    * ) 
-		echo -e "
+	    YES ) PrepareLicense && ShowLicense ;;
+	    * )   echo -e "
 Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
 Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
 More info:\t<${WEBURL}about#license>

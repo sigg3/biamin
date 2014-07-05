@@ -974,78 +974,55 @@ PressAnyKey
 } # End of GX_Bulletin()
 
 
-GX_DiceGame() { #Used in MiniGame_Dice(). Requires: $DGAME_DICE_1 $GDAME_DICE_2!
-    clear
-    GDICE_1=$1
-    GDICE_2=$2
+GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dice
     GDICE_SYM="@" # @ looks nice:)
-    # Dice Strings
-    GDICE_PRE="                 " && GDICE_POST=":         "
-    GDICE_HR="$GDICE_PRE|               |$GDICE_POST|               |$GDICE_POST"
-    GDICE_1_EMPTY="$GDICE_PRE|               |$GDICE_POST"
-    GDICE_2_EMPTY="|               |$GDICE_POST"
-
-    # Display dice header
-    cat <<"EOT"
-                  _______________            _______________
+    DICES='                  _______________            _______________
                  [               ].         [               ].
-EOT
-
-    # Row 1 DICE 1
-    case $GDICE_1 in
-	4 | 5 | 6 )	echo -n "$GDICE_PRE|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-	3 | 2 )		echo -n "$GDICE_PRE|           $GDICE_SYM   |$GDICE_POST" ;;
-	1 )		echo -n "$GDICE_1_EMPTY" ;;
-    esac
-
-# Row 1 DICE 2
-    case $GDICE_2 in
-	4 | 5 | 6 )	echo "|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-	3 | 2 )		echo "|           $GDICE_SYM   |$GDICE_POST" ;;
-	1 ) 		echo "$GDICE_2_EMPTY" ;;
-    esac
-
-    echo "$GDICE_HR" # Display empty row
-
-    # ROW 2 DICE 1
-    case $GDICE_1 in
-	1 | 3 | 5)	echo -n "$GDICE_PRE|       $GDICE_SYM       |$GDICE_POST" ;;
-	2 | 4 ) 	echo -n "$GDICE_1_EMPTY" ;;
-	6 )		echo -n "$GDICE_PRE|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-    esac
-
-    # ROW 2 DICE 2
-    case $GDICE_2 in
-	1 | 3 | 5)	echo "|       $GDICE_SYM       |$GDICE_POST" ;;
-	2 | 4 ) 	echo "$GDICE_2_EMPTY" ;;
-	6 )		echo "|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-    esac
-
-    echo "$GDICE_HR" # Display empty row
-
-    # ROW 3 DICE 1
-    case $GDICE_1 in
-	4 | 5 | 6 )	echo -n "$GDICE_PRE|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-	3 | 2 )		echo -n "$GDICE_PRE|   $GDICE_SYM           |$GDICE_POST" ;;
-	1 ) 		echo -n "$GDICE_1_EMPTY"  ;;
-    esac
-
-    # ROW 3 DICE 2
-    case $GDICE_2 in
-	4 | 5 | 6 )	echo "|   $GDICE_SYM       $GDICE_SYM   |$GDICE_POST" ;;
-	3 | 2 )		echo "|   $GDICE_SYM           |$GDICE_POST" ;;
-	1 ) 		echo "$GDICE_2_EMPTY" ;;
-    esac
-
-    # Display dice footer
-    cat <<"EOT"
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
                  [_______________];         [_______________];
                   `~------------~`           `~------------~`                
-EOT
+                                                     '
 
+    clear
+    echo "$DICES" | awk ' BEGIN { FS = "" ; OFS = ""; }
+{   # First dice
+    if ('$1' == 1) { if (NR == 5) { $26 = "@"} } 
+    if ('$1' == 2) { if (NR == 3) { $30 = "@"; }
+ 	             if (NR == 7) { $22 = "@"; } }
+    if ('$1' == 3) { if (NR == 3) { $30 = "@"; }
+            	     if (NR == 5) { $26 = "@"; }
+	             if (NR == 7) { $22 = "@"; } }
+    if ('$1' == 4) { if (NR == 3) { $22 = "@"; $30= "@"; }
+	             if (NR == 7) { $22 = "@"; $30= "@"; } }
+    if ('$1' == 5) { if (NR == 3) { $22 = "@"; $30= "@"; }
+	             if (NR == 5) { $26 = "@"; }
+	             if (NR == 7) { $22 = "@"; $30= "@"; } }
+    if ('$1' == 6) { if (NR == 3) { $22 = "@"; $30= "@"; }
+	             if (NR == 5) { $22 = "@"; $30= "@"; }
+	             if (NR == 7) { $22 = "@"; $30= "@"; } }
+    # Second dice
+    if ('$2' == 1) { if (NR == 5) { $53 = "@"} }
+    if ('$2' == 2) { if (NR == 3) { $57 = "@"; }
+	             if (NR == 7) { $49 = "@"; } }
+    if ('$2' == 3) { if (NR == 3) { $57 = "@"; }
+	             if (NR == 5) { $53 = "@"; }
+		     if (NR == 7) { $49 = "@"; } }
+    if ('$2' == 4) { if (NR == 3) { $49 = "@"; $57= "@"; }
+	             if (NR == 7) { $49 = "@"; $57= "@"; } }
+    if ('$2' == 5) { if (NR == 3) { $49 = "@"; $57= "@"; }
+	             if (NR == 5) { $53 = "@"; }
+		     if (NR == 7) { $49 = "@"; $57= "@"; } }
+    if ('$2' == 6) { if (NR == 3) { $49 = "@"; $57= "@"; }
+ 	             if (NR == 5) { $49 = "@"; $57= "@"; }
+		     if (NR == 7) { $49 = "@"; $57= "@"; } }
     # Display numbers too for great justice (or readability)
-    echo -e "                         $GDICE_1                          $GDICE_2\n$HR"
-}
+    if (NR == 10) { $26 = '$1'; $53 = '$2'; }
+    print; } '
+}   # Return to MiniGame_Dice()
 
 GX_DiceGame_Table() {
 	clear

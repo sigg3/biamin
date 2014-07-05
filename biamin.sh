@@ -1470,8 +1470,6 @@ BiaminSetup() { # Used in MainMenu()
                   { 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
-                   if (/^CREATED:/)    { CREATION= $2 }
-                   if (/^DATE:/)       { BIAMIN_DATE= $2 }
                    if (/^RACE:/)       { RACE= $2 }
                    if (/^BATTLES:/)    { BATTLES = $2 }
                    if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
@@ -1488,9 +1486,12 @@ BiaminSetup() { # Used in MainMenu()
                    if (/^VAL_TOBACCO:/){ VAL_TOBACCO = $2 }
                    if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
                    if (/^STARVATION:/) { STARVATION = $2 }
+                   # new
+                   if (/^CREATED:/)    { CREATION= $2 }
+                   if (/^DATE:/)       { BIAMIN_DATE= $2 }
                  }
                  END { 
-                 print CHARACTER "; " CREATION";" DATE ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";"
+                 print CHARACTER ";"  RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" CREATION ";" DATE ";"
                  }' $CHARSHEET )
 	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION <<< "$CHAR_TMP"
 	unset CHAR_TMP

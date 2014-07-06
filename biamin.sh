@@ -247,7 +247,7 @@ GX_Races() {
    
    
    Dice rolls on each turn. Accuracy also initiative. Healing during resting.
-   Men and dwarves start with more gold, Elves and Hobbits with more tobacco.
+   Men and Dwarves start with more gold, Elves and Hobbits with more tobacco.
 
 $HR
 EOF

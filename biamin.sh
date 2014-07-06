@@ -1623,41 +1623,28 @@ BiaminSetup() { # Used in MainMenu()
 }
 
 DateFromTurn() {
-    # Hexenstag Witching Day 1 New Years Day 
-    # Mitterfruhl Mid-Spring 1 Spring Equinox 
-    # Sonstill Sun Still 1 Summer Solstice 
-    # Geheimnistag Mystery Day 1 Day of Mystery 
-    # Mittherbst Mid-Autumn  1 Autumn Equinox 
-    # Mondstill World Still 1 Winter Solstice
-
-    # Nachhexen  | After-Witching | 32 
-    # Jahrdrung  | Year-Turn      | 33 
-    # Pflugzeit  | Plough Month   | 33 
-    # Sigmarzeit | Sigmar Month   | 33 
-    # Sommerzeit | Summer Month   | 33 
-    # Vorgeheim  | Fore-Mystery   | 33 
-    # Nachgeheim | After-Mystery  | 32 
-    # Erntzeit   | Harvest Month  | 33 
-    # Brauzeit   | Brew Month     | 33 
-    # Kaldezeit  | Chill Month    | 33 
-    # Ulriczeit  | Ulric Month    | 33 
-    # Vorhexen   | Fore-Witching  | 33	
-    # Total days :                | 394 !
-
+    local YEAR_LENGHT=400
     local MONTH_STR=("Biamin Festival" # rarely happens, if ever :(
-	"After-Witching" "Year-Turn" "Plough Month"
-	"Sigmar Month" "Summer Month" "Fore-Mystery" 
-	"After-Mystery" "Harvest Month" "Brew Month" 
-	"Chill Month" "Ulric Month" "Fore-Witching")
-
-    local MONTH_LENGTH=( 0 0 32 65 98 131 164 197 229 262 295 328 361)
+	"Witching Day"
+	"After-Witching" "Year-Turn" 
+	"Mid-Spring Day"
+	"Plough Month" "Sigmar Month" 
+	"Sun Still Day"
+	"Summer Month" "Fore-Mystery" 
+	"Mystery Day"
+	"After-Mystery" "Harvest Month" 
+	"Mid-Autumn Day"
+	"Brew Month" "Chill Month" "Ulric Month" 
+	"World Still Day"
+	"Fore-Witching")
+    local MONTH_LENGTH=( 0 0 1 33 66 67 100 133 166 167 200 201 233 266 267 300 333 366 367 400 )
 
     local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
 	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
 
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
-    case $( bc <<< "( $TURN / 25 )" ) in
+    case $( bc <<< "( $TURN % 25 )" ) in
 	0 | 1 | 2 | 3 ) MOON="New moon" ;;
 	4 | 5 | 6 )     MOON="Waxing crescent" ;;
 	7 | 8 | 9 )     MOON="First quarter" ;;
@@ -1670,41 +1657,57 @@ DateFromTurn() {
 
     WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 8" )]}
 
-    YEAR=$( bc <<< "( $TURN / 394 ) + 1" )
-    local REMAINDER=$( bc <<< "$TURN % 394" ) # month and days
-    (( REMAINDER ==  0 )) && ((YEAR--)) && REMAINDER=394 # last day of year fix
-    local MONTH_NUM=$( awk '{ 
-                    if ($0 <= 32 ) { print "1"; exit; }
-                    if ($0 <= 65 ) { print "2"; exit; }
-                    if ($0 <= 98 ) { print "3"; exit; }
-                    if ($0 <= 131) { print "4"; exit; }
-                    if ($0 <= 164) { print "5"; exit; }
-                    if ($0 <= 197) { print "6"; exit; }
-                    if ($0 <= 229) { print "7"; exit; }
-                    if ($0 <= 262) { print "8"; exit; }
-                    if ($0 <= 295) { print "9"; exit; }
-                    if ($0 <= 328) { print "10"; exit; }
-                    if ($0 <= 361) { print "11"; exit; }
-                    if ($0 <= 394) { print "12"; exit; }
+    YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
+    local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" ) # month and days
+    (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
+    local MONTH_NUM=$( awk '{  
+                    if ($0 == 1 )   { print "1"; exit; }
+                    if ($0 <= 33 )  { print "2"; exit; }
+                    if ($0 <= 66 )  { print "3"; exit; }
+                    if ($0 == 67 )  { print "4"; exit; }
+                    if ($0 <= 100 ) { print "5"; exit; }
+                    if ($0 <= 133 ) { print "6"; exit; }
+                    if ($0 <= 166 ) { print "7"; exit; }
+                    if ($0 == 167 ) { print "8"; exit; }
+                    if ($0 <= 200 ) { print "9"; exit; }
+                    if ($0 == 201 ) { print "10"; exit; }
+                    if ($0 <= 233 ) { print "11"; exit; }
+                    if ($0 <= 266 ) { print "12"; exit; }
+                    if ($0 == 267 ) { print "13"; exit; }
+                    if ($0 <= 300 ) { print "14"; exit; }
+                    if ($0 <= 333 ) { print "15"; exit; }
+                    if ($0 <= 366 ) { print "16"; exit; }
+                    if ($0 == 367 ) { print "17"; exit; }
+                    if ($0 <= 400 ) { print "18"; exit; }
                     }' <<< "$REMAINDER" )
-    MONTH=${MONTH_STR[$MONTH_NUM]}
-    DAY=$( bc <<< "$REMAINDER - ${MONTH_LENGTH[$MONTH_NUM]}" )
-
-    # Adjust date
-    case "$DAY" in
-	1 | 21 | 31 ) DAY+="st" ;;
-	2 | 22 | 32 ) DAY+="nd" ;;
-	3 | 23 | 33 ) DAY+="rd" ;;
- 	* )           DAY+="th" ;;
+    case "$MONTH_NUM" in
+	1 | 4 | 8 | 10 | 13 | 17 ) DAY=${MONTH_STR[$MONTH_NUM]} ;; # 'Witching Day' etc. 
+	*)  MONTH=${MONTH_STR[$MONTH_NUM]}
+	    DAY=$( bc <<< "$REMAINDER - ${MONTH_LENGTH[$MONTH_NUM]}" )
+	    case "$DAY" in # Adjust date
+		1 | 21 | 31 ) DAY+="st" ;;
+		2 | 22 | 32 ) DAY+="nd" ;;
+		3 | 23 | 33 ) DAY+="rd" ;;
+ 		* )           DAY+="th" ;;
+	    esac
     esac
-    case "$YEAR" in #TODO FIX it for year > 100
+    (( YEAR > 99 )) && YEAR=$( bc <<< "$YEAR % 100" ) # FIX for year > 100
+    case "$YEAR" in 
 	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) YEAR+="st";;
 	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) YEAR+="nd";;
 	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) YEAR+="rd";;
 	*) YEAR+="th";;
     esac
-    # Output example "3rd of Year-Turn in the 13th cycle"
-    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
+
+    case "$MONTH_NUM" in
+	1 | 4 | 8 | 10 | 13 | 17 ) 
+	    # Output example "Witching Day in the 13th cycle"
+	    MONTH=""; # !!! Do not remove - fix for HighScore
+	    BIAMIN_DATE_STR="The $DAY in the $YEAR Cycle";;
+	*)  # Output example "3rd of Year-Turn in the 13th cycle"
+	    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle";;
+    esac
+
 }
 
 TodaysDate() {
@@ -1807,7 +1810,11 @@ HighscoreRead() {
 	    3 ) highRACE="Dwarf" ;;
 	    4 ) highRACE="Hobbit" ;;
 	esac
-	HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
+	if [[ "$highMONTH" ]] ; then # fix for "Witching Day", etc
+	    HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
+	else
+	    HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;the $highDATE ($highYEAR)\n"
+	fi
 	((i++))
     done < "$HIGHSCORE"
     echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
@@ -3001,8 +3008,12 @@ Announce() {
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
 
     highCHAR=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$highCHAR") # Capitalize
-    ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     
+    if [[ "$highMONTH" ]] ; then # fix for "Witching Day", etc
+	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
+    else
+	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain at the $highDATE in the $highYEAR Cycle."
+    fi
     ANNOUNCEMENT_LENGHT=$(awk '{print length($0)}' <<< "$ANNOUNCEMENT" ) 
     GX_HighScore
 
@@ -3053,7 +3064,7 @@ CreateBiaminLauncher() {
 
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in
-    --announce )     Announce ;;
+    -a | --announce )     Announce ;;
     -i | --install ) CreateBiaminLauncher ;;
     -h | --help )
 	echo "Run BACK IN A MINUTE with '-p', '--play' or 'p' argument to play!"
@@ -3142,7 +3153,7 @@ case "$1" in
 	echo "Usage: biamin or ./biamin.sh"
 	echo "  (NO ARGUMENTS)      display this usage text and exit"
 	echo "  -p --play or p      PLAY the game \"Back in a minute\""
-	echo "     --announce       DISPLAY an adventure summary for social media and exit"
+	echo "  -a --announce       DISPLAY an adventure summary for social media and exit"
 	echo "  -i --install        ADD biamin.sh to your .bashrc file"
 	echo "     --map            CREATE custom map template with instructions and exit"
 	echo "     --help           display help text and exit"

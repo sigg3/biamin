@@ -2630,6 +2630,25 @@ Marketplace() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.
     while (true); do
 	GX_Marketplace
+	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR
+	case "$VAR" in
+	    g | G) Marketplace_Grocer;;
+	    m | M) GX_Marketplace_Merchant;
+		read -sn 1
+		;;
+	    *) break ;;
+	esac
+    done
+    # TODO? Add stealing from market??? 
+    # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
+    # Or he call the police (the guards?) and they throw player from town? (kstn)
+} # Return to GoIntoTown()
+
+
+Marketplace_Grocer() { # Used in GoIntoTown()
+    # The PRICE of a unit (food, ale) is always 1.
+    while (true); do
+	GX_Marketplace_Grocer
 	# Determine prices for 1 unit depending on currencies' respective values
 	local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
 	local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
@@ -2639,7 +2658,7 @@ Marketplace() { # Used in GoIntoTown()
 	read -sn1 -p "       Trade for (G)old        Trade for (T)obacco       (N)ot interested" MARKETVAR
 	case "$MARKETVAR" in
 	    g | G )
-		GX_Marketplace
+		GX_Marketplace_Grocer
 		read -p "How many food items do you want to buy? " QUANTITY
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "$PRICE_IN_GOLD * $QUANTITY" )
@@ -2653,7 +2672,7 @@ Marketplace() { # Used in GoIntoTown()
 		read -n 1		
 		;;
 	    t | T )
-		GX_Marketplace
+		GX_Marketplace_Grocer
 		read -p "How much food you want to buy? " QUANTITY
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "${PRICE_IN_TOBACCO} * $QUANTITY" )
@@ -2673,6 +2692,56 @@ Marketplace() { # Used in GoIntoTown()
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
     # Or he call the police (the guards?) and they throw player from town? (kstn)
 } # Return to GoIntoTown()
+
+
+# Marketplace() { # Used in GoIntoTown()
+#     # The PRICE of a unit (food, ale) is always 1.
+#     while (true); do
+# 	GX_Marketplace
+# 	# Determine prices for 1 unit depending on currencies' respective values
+# 	local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
+# 	local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
+# 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
+# 	echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_!
+# 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
+# 	read -sn1 -p "       Trade for (G)old        Trade for (T)obacco       (N)ot interested" MARKETVAR
+# 	case "$MARKETVAR" in
+# 	    g | G )
+# 		GX_Marketplace
+# 		read -p "How many food items do you want to buy? " QUANTITY
+# 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
+# 		local COST=$( bc <<< "$PRICE_IN_GOLD * $QUANTITY" )
+# 		if (( $(bc <<< "$CHAR_GOLD > $COST") )); then
+# 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
+# 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+# 		    echo "You bought $QUANTITY food for $COST Gold, and you have $CHAR_FOOD Food in your inventory"
+# 		else
+# 		    echo "You don't have enough Gold to buy $QUANTITY food yet. Try a little less!"
+# 		fi
+# 		read -n 1		
+# 		;;
+# 	    t | T )
+# 		GX_Marketplace
+# 		read -p "How much food you want to buy? " QUANTITY
+# 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
+# 		local COST=$( bc <<< "${PRICE_IN_TOBACCO} * $QUANTITY" )
+# 		if (( $(bc <<< "$CHAR_TOBACCO > $COST") )); then
+# 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
+# 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+# 		    echo "You traded $COST Tobacco for $QUANTITY food, and have $CHAR_FOOD Food in your inventory"
+# 		else
+# 		    echo "You don't have enough Tobacco to trade for $QUANTITY food yet. Try a little less!"
+# 		fi
+# 		read -n 1		
+# 		;;
+# 	    *) break;
+# 	esac
+#     done
+#     # TODO? Add stealing from market??? 
+#     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
+#     # Or he call the police (the guards?) and they throw player from town? (kstn)
+# } # Return to GoIntoTown()
+
 
 GoIntoTown() { # Used in NewSector()
     while (true); do

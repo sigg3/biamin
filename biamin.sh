@@ -2491,8 +2491,9 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    echo " " # Empty line for cosmetical purposes # TODO
 	    
 	    # Dice Game Instructions (mostly re: payout)
-	    [[ "$DGAME_GUESS" -eq "i" || "$DGAME_GUESS" -eq "I" ]] && GX_DiceGame_Instructions && continue # Start loop from the beginning
+#	    [[ "$DGAME_GUESS" -eq "i" || "$DGAME_GUESS" -eq "I" ]] && GX_DiceGame_Instructions && continue # Start loop from the beginning
 	    case "$DGAME_GUESS" in
+		"i" | "I" ) GX_DiceGame_Instructions ; continue ;; # Start loop from the beginning
 		1  |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 |  10 |  11 |  12 )
 		    if (( GAME_ROUND > 1 )) ; then # First round is already paid
 		    	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )

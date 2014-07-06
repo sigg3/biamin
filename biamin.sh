@@ -1399,8 +1399,6 @@ GX_Map() { # Used in MapNav()
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
     echo "CHARACTER: $CHAR
-CREATED: $CREATION
-DATE: $BIAMIN_DATE
 RACE: $CHAR_RACE
 BATTLES: $CHAR_BATTLES
 EXPERIENCE: $CHAR_EXP
@@ -1416,7 +1414,8 @@ BBSMSG: $BBSMSG
 VAL_GOLD: $VAL_GOLD
 VAL_TOBACCO: $VAL_TOBACCO
 VAL_CHANGE: $VAL_CHANGE
-STARVATION: $STARVATION" > "$CHARSHEET"
+STARVATION: $STARVATION
+TURN: $TURN" > "$CHARSHEET"
 }
 
 
@@ -1439,8 +1438,8 @@ BiaminSetup() { # Used in MainMenu()
 	grep -q -E '^VAL_GOLD:' "$CHARSHEET"    || echo "VAL_GOLD: 1" >> $CHARSHEET
 	grep -q -E '^VAL_TOBACCO:' "$CHARSHEET" || echo "VAL_TOBACCO: 1" >> $CHARSHEET
 	grep -q -E '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
-	grep -q -E '^CREATED:' "$CHARSHEET"     || echo "CREATED: 0" >> $CHARSHEET
-	grep -q -E '^DATE:' "$CHARSHEET"        || echo "DATE: 0" >> $CHARSHEET
+	# Time 
+	grep -q -E '^TURN:' "$CHARSHEET"        || echo "TURN: 0" >> $CHARSHEET
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '
@@ -1464,21 +1463,18 @@ BiaminSetup() { # Used in MainMenu()
                    if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
                    if (/^STARVATION:/) { STARVATION = $2 }
                    # new
-                   if (/^CREATED:/)    { CREATION= $2 }
-                   if (/^DATE:/)       { BIAMIN_DATE= $2 }
+                   if (/^TURN:/)    { TURN= $2 }
                  }
                  END { 
-                 print CHARACTER ";"  RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" CREATION ";" DATE ";"
+                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";"
                  }' $CHARSHEET )
-	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION <<< "$CHAR_TMP"
+	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN <<< "$CHAR_TMP"
 	unset CHAR_TMP
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 	sleep 2
     else
 	echo " $CHAR is a new character!"
-	CREATION=0
-	BIAMIN_DATE=0
 	CHAR_BATTLES=0
 	CHAR_EXP=0
 	CHAR_HEALTH=100
@@ -1486,6 +1482,7 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
+	TURN=0			# For the beginning player starts from 1st Jan 1 year. After starting date'll be random
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
 	case "$CHAR_RACE" in
@@ -1588,14 +1585,101 @@ BiaminSetup() { # Used in MainMenu()
     Intro
 }
 
-TodaysDateString() { 	# Creates and concatenates date string
-    # Adjusted version of warhammeronline.wikia.com/wiki/Calendar
+DateFromTurn() {
+    # Hexenstag Witching Day 1 New Years Day 
+    # Mitterfruhl Mid-Spring 1 Spring Equinox 
+    # Sonstill Sun Still 1 Summer Solstice 
+    # Geheimnistag Mystery Day 1 Day of Mystery 
+    # Mittherbst Mid-Autumn  1 Autumn Equinox 
+    # Mondstill World Still 1 Winter Solstice
+
+    # Nachhexen  | After-Witching | 32 
+    # Jahrdrung  | Year-Turn      | 33 
+    # Pflugzeit  | Plough Month   | 33 
+    # Sigmarzeit | Sigmar Month   | 33 
+    # Sommerzeit | Summer Month   | 33 
+    # Vorgeheim  | Fore-Mystery   | 33 
+    # Nachgeheim | After-Mystery  | 32 
+    # Erntzeit   | Harvest Month  | 33 
+    # Brauzeit   | Brew Month     | 33 
+    # Kaldezeit  | Chill Month    | 33 
+    # Ulriczeit  | Ulric Month    | 33 
+    # Vorhexen   | Fore-Witching  | 33	
+    # Total days :                | 394 !
+
+    local MONTH_STR=("Biamin Festival" # rarely happens, if ever :(
+	"After-Witching" "Year-Turn" "Plough Month"
+	"Sigmar Month" "Summer Month" "Fore-Mystery" 
+	"After-Mystery" "Harvest Month" "Brew Month" 
+	"Chill Month" "Ulric Month" "Fore-Witching")
+
+    local MONTH_LENGTH=( 0 0 32 65 98 131 164 197 229 262 295 328 361)
+
+    local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
+	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
+
+    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 8" )]}
+
+    YEAR=$( bc <<< "( $TURN / 394 ) + 1" )
+    local REMAINDER=$( bc <<< "$TURN % 394" ) # month and days
+    (( REMAINDER ==  0 )) && ((YEAR--)) && REMAINDER=394 # last day of year fix
+    local MONTH_NUM=$( awk '{ 
+                    if ($0 <= 32 ) { print "1"; exit; }
+                    if ($0 <= 65 ) { print "2"; exit; }
+                    if ($0 <= 98 ) { print "3"; exit; }
+                    if ($0 <= 131) { print "4"; exit; }
+                    if ($0 <= 164) { print "5"; exit; }
+                    if ($0 <= 197) { print "6"; exit; }
+                    if ($0 <= 229) { print "7"; exit; }
+                    if ($0 <= 262) { print "8"; exit; }
+                    if ($0 <= 295) { print "9"; exit; }
+                    if ($0 <= 328) { print "10"; exit; }
+                    if ($0 <= 361) { print "11"; exit; }
+                    if ($0 <= 394) { print "12"; exit; }
+                    }' <<< "$REMAINDER" )
+    MONTH=${MONTH_STR[$MONTH_NUM]}
+    DAY=$( bc <<< "$REMAINDER - ${MONTH_LENGTH[$MONTH_NUM]}" )
+
+    # Adjust date
+    case "$DAY" in
+	1 | 21 | 31 ) DAY+="st" ;;
+	2 | 22 | 32 ) DAY+="nd" ;;
+	3 | 23 | 33 ) DAY+="rd" ;;
+ 	* )           DAY+="th" ;;
+    esac
+    case "$YEAR" in #TODO FIX it for year > 100
+	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) YEAR+="st";;
+	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) YEAR+="nd";;
+	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) YEAR+="rd";;
+	*) YEAR+="th";;
+    esac
+    # Output example "3rd of Year-Turn in the 13th cycle"
+    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
+}
+
+TodaysDate() {
+    # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
+    # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
+    # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
+
+    # TODO: Decouple biamin date from real date once CREATION is set in charsheet
+    # Add check here, IF CREATION is not set, CREATION && DATE in CHARSHEET is TodaysDate
+    # if [[ $CREATION == 0 ]] ; then # first run
+    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
+    # else
+    # just increment date, month and/or year..
+    # fi
+    # TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
+    # NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
+    
+    # Adjust date
     case "$TODAYS_DATE" in
 	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
 	2 | 22 ) TODAYS_DATE+="nd" ;;
 	3 | 23 ) TODAYS_DATE+="rd" ;;
  	* ) TODAYS_DATE+="th" ;;
     esac
+    # Adjust month
     case "$TODAYS_MONTH" in
 	1 ) TODAYS_MONTH="After-Witching" ;;
 	2 ) TODAYS_MONTH="Year-Turn" ;;
@@ -1617,40 +1701,10 @@ TodaysDateString() { 	# Creates and concatenates date string
 	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) TODAYS_YEAR+="rd";;
 	*) TODAYS_YEAR+="th";;
     esac
-
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }
 
-TodaysDate() { # Used a lot, e.g. BIAMIN_DATE and CREATION vars
-    DODATESTRING="$1" # Sending 1 to TodaysDate() will also run TodaysDateString()
-    if (( CREATION == 0 )) ; then # first run
-	read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-	CREATION="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
-	BIAMIN_DATE="$CREATION"
-    else
-	IFS="." read -r "TODAYS_DATE" "TODAYS_MONTH" "TODAYS_YEAR" <<< "$(echo $BIAMIN_DATE)" # TODO test that this works and is silent..
-	# Increment date
-	(( TODAYS_DATE++ )) # increment date
-
-	if (( TODAYS_DATE > 31 )) ; then
-	    TODAYS_DATE=1
-	    (( TODAYS_MONTH ++ )) # change month
-	fi
-	
-	if (( TODAYS_MONTH > 12 )) ; then
-	    TODAYS_MONTH=1
-	    (( TODAYS_YEAR ++ )) # change year
-	fi
-	# save it
-	BIAMIN_DATE="$TODAYS_DATE.$TODAYS_MONTH.$TODAYS_YEAR"
-    fi
-
-    SaveCurrentSheet # not sure if this is necessary..
-    
-    (( DODATESTRING == 1 )) && TodaysDateString
-
-}
 
 ## WORLD EVENT functions
 
@@ -1952,7 +2006,8 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  Inventory:                 $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food
  Current Date:              $TODAYS_DATE_STR
- 
+ Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
+ Biamin Date:               $BIAMIN_DATE_STR
 EOF
 	read -sn 1 -p "      (D)isplay Race Info        (A)ny key to continue          (Q)uit" CHARSHEET_OPT
 	case "$CHARSHEET_OPT" in
@@ -2173,7 +2228,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		echo "Gain 1000 Experience Points to achieve magic healing!"
 		sleep 4		
 		GX_Death
-		TodaysDateString && echo " The $TODAYS_DATE_STR:"
+		# echo " The $TODAYS_DATE_STR:"
+		echo " The $BIAMIN_DATE_STR:"
 		echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
 		local COUNTDOWN=20
 		while (( COUNTDOWN > 0 )); do
@@ -2181,7 +2237,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     		    read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
 		done
 		unset COUNTDOWN
-		echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
+		#echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
+		echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$YEAR" >> "$HIGHSCORE"
 		rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
 		unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
 		DEATH=1 
@@ -2651,7 +2708,9 @@ GoIntoTown() { # Used in NewSector()
 NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
     do
-    TodaysDate 0 # Get date without string
+	((TURN++)) # Nev turn, new date
+	DateFromTurn # Get year, month, day, weekday
+	# May be we'll need get-date-from-turn here ?
 	# Find out where we are - Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
@@ -2772,12 +2831,7 @@ NewSector() { # Used in Intro()
 
 Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
-    # Fetch today's date && string (Used in DisplayCharsheet() and FightMode() )
-    if (( CREATION == 0 )) || (( BIAMIN_DATE == 0 )) ; then
-	TodaysDate 1
-    else
-	TodaysDateString
-    fi
+    TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    

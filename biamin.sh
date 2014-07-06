@@ -1238,7 +1238,7 @@ LoadCustomMap() { # Used in MapCreate()
 		echo "$MAP"
 		read -sn1 -p "Play this map? [Y/N]: " VAR
 		case "$VAR" in
-		    y | Y ) return 0;; # Return to MapCreate()
+		    y | Y ) CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0;; # Return to MapCreate()
 		    * )     unset MAP ;;
 		esac
 		;;
@@ -1265,13 +1265,6 @@ MapCreate() {
 	    c | C) LoadCustomMap && return 0;; #leave
 	esac
     fi
-    # if [ -f "$GAMEDIR/CUSTOM.map" ]; then
-    # 	if grep -q 'Z' "$GAMEDIR/CUSTOM.map" ; then
-    # 	    CustomMapError
-    # 	else
-    # 	    MAP=$(cat "$GAMEDIR/CUSTOM.map")
-    # 	fi
-    # else
     MAP=$(cat <<EOT
        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
    #=========================================================================#
@@ -1569,7 +1562,8 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_GPS="$START_LOCATION"
 	CHAR_HOME="$START_LOCATION"
 	# If there IS a CUSTOM.map file, ask where the player would like to start
-	if [[ -f "$GAMEDIR/CUSTOM.map" ]] ; then
+	if [[ "$CUSTOM_MAP" ]] ; then
+#	    START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
 	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK

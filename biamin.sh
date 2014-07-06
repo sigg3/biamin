@@ -1210,16 +1210,11 @@ LoadCustomMap() { # Used in MapCreate()
 	for (( a=1; a <= LIMIT ; a++)); do
 	    NUM=$(( a + OFFSET ))
 	    [[ ! ${MAPS[$NUM]} ]] && break	    
+	    [[ ${MAPS[$NUM]} == "Deleted" ]] && echo "  | Deleted" && continue
 	    cat "${GAMEDIR}/${MAPS[$NUM]}" | awk '{
-                   if (/^NAME:/)  { RLENGTH = match($0,/: /);
-                  	            NAME = substr($0, RLENGTH+2); }
-
-                   if (/^CREATOR:/)  { RLENGTH = match($0,/: /);
-                  	            CREATOR = substr($0, RLENGTH+2); }
-
-                   if (/^DESCRIPTION:/) { RLENGTH = match($0,/: /);
-                  	            DESCRIPTION = substr($0, RLENGTH+2); }
-
+                   if (/^NAME:/)        { RLENGTH = match($0,/: /); NAME = substr($0, RLENGTH+2); }
+                   if (/^CREATOR:/)     { RLENGTH = match($0,/: /); CREATOR = substr($0, RLENGTH+2); }
+                   if (/^DESCRIPTION:/) { RLENGTH = match($0,/: /); DESCRIPTION = substr($0, RLENGTH+2); }
                    FILE = "'${MAPS[$NUM]}'";
                    gsub(".map$", "", FILE);
                    }
@@ -1233,13 +1228,18 @@ LoadCustomMap() { # Used in MapCreate()
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
 	    [1-9] ) NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
-		# TODO add check for errors
-		echo " you select ${MAPS[$NUM]}" ;
+		MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
+		if grep -q 'Z' <<< "$MAP" ; then # check for errors
+		    CustomMapError "${GAMEDIR}/${MAPS[$NUM]}" 
+		    MAPS[$NUM]="Deleted"
+		    continue 
+		fi
 		clear
-		awk '{ if (NR > 4) { print}}'  "${GAMEDIR}/${MAPS[$NUM]}"
+		echo "$MAP"
 		read -sn1 -p "Play this map? [Y/N]: " VAR
 		case "$VAR" in
-		    y | Y ) MAP=$(awk '{ if (NR > 4) { print}}'  "${GAMEDIR}/${MAPS[$NUM]}"); return 0;; # Return to MapCreate()
+		    y | Y ) return 0;; # Return to MapCreate()
+		    * )     unset MAP ;;
 		esac
 		;;
 	    *     )  break;; 
@@ -1258,7 +1258,7 @@ MapCreate() {
 	MAPS[((++i))]=$(basename "$loadMAP") # i++ THAN initialize SHEETS[$i]
     done
 
-    if [[ ${MAPS[@]} ]] ; then # If there is/are  custom map/s
+    if [[ "${MAPS[@]}" ]] ; then # If there is/are  custom map/s
 	GX_LoadGame
 	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP
 	case "$MAP" in
@@ -1306,6 +1306,7 @@ MapCreateCustom() {
 NAME: Despriptive name of map goes here
 CREATOR: Name of the map creator
 DESCRIPTION: Short and not exceeding 50 chars
+START LOCATION: Where person'll start?
 MAP:
        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
    #=========================================================================#
@@ -1367,21 +1368,22 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 }
 # PRE-CLEANUP tidying function for buggy custom maps
 CustomMapError() { # Used in MapCreate(), GX_Place() and NewSector()
+    local ERROR_MAP=$1
     clear
-    read -n 1 -p "Whoops! There is an error with your map file!
+    echo "Whoops! There is an error with your map file!
 Either it contains unknown characters or it uses incorrect whitespace.
 Recognized characters are: x . T @ H C
 Please run game with --map argument to create a new template as a guide.
 
 What to do?
-1) rename CUSTOM.map to CUSTOM_err.map or
-2) delete template file CUSTOM.map (deletion is irrevocable).
-Please select 1 or 2: " MAP_CLEAN_OPTS
+1) rename $ERROR_MAP to ${ERROR_MAP}.error or
+2) delete template file CUSTOM.map (deletion is irrevocable)."
+    read -n 1 -p "Please select 1 or 2: " MAP_CLEAN_OPTS
     case "$MAP_CLEAN_OPTS" in
-	1 ) mv "$GAMEDIR/CUSTOM.map" "$GAMEDIR/CUSTOM_err.map" ;
-	    echo -e "\nCustom map file moved to $GAMEDIR/CUSTOM_err.map" ;
+	1 ) mv "${ERROR_MAP}" "${ERROR_MAP}.error" ;
+	    echo -e "\nCustom map file moved to ${ERROR_MAP}.error" ;
 	    sleep 4 ;;
-	2 ) rm -f "$GAMEDIR/CUSTOM.map" ;
+	2 ) rm -f "${ERROR_MAP}" ;
 	    echo -e "\nCustom map deleted!" ;
 	    sleep 4 ;;
 	* ) Die "\nBad option! Quitting.." ;;

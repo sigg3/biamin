@@ -1350,9 +1350,8 @@ Please select 1 or 2: " MAP_CLEAN_OPTS
 
 SetupHighscore() { # Used in main() and Announce()
 	HIGHSCORE="$GAMEDIR/highscore" ;
-	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists
-	# Backwards compatibility: replaces old-style empty HS..
-	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE"
+	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
+	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
 }
 
 ### DISPLAY MAP
@@ -1528,7 +1527,7 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_GPS="$START_LOCATION"
 	CHAR_HOME="$START_LOCATION"
 	# If there IS a CUSTOM.map file, ask where the player would like to start
-	if [ -f "$GAMEDIR/CUSTOM.map" ] ; then
+	if [[ -f "$GAMEDIR/CUSTOM.map" ]] ; then
 	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK
@@ -2686,7 +2685,7 @@ GoIntoTown() { # Used in NewSector()
 	    t | T ) Tavern ;;
 	    m | M ) Marketplace ;;
 	    b | B ) GX_Bulletin "$BBSMSG" ;;
-	    * ) break ;;
+	    * ) break ;; # Leave town
 	esac
     done
 } # Return to NewSector()

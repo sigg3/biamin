@@ -1105,8 +1105,8 @@ EOT
 }
 
 GX_Marketplace_Grocer() {
-	clear
-	cat <<"EOT"
+    clear
+    cat <<"EOT"
                                                        __   __   _            
                                           || |  ;,   _(_ )_' _] /_\  || |     
            THE GROCER                     ||,'_&%0_ (______)  ] [_]  ||,l_____
@@ -1120,27 +1120,26 @@ GX_Marketplace_Grocer() {
     Price: 1 per item              _____  '----`    ____      __ '-^-^`  _____
    
 EOT
-	echo "$HR"
-	# TODO: Must fix the prices or add msg on current value of gold.
+    echo "$HR"
+    # TODO: Must fix the prices or add msg on current value of gold.
 }
 
+
+
 GX_Marketplace_Merchant() { # Used in GX_Marketplace
-	clear
-	cat <<"EOT"
+    case "$CHAR_RACE" in # define promt
+	2 ) local PROMT="galant Elf of the Forests! " ;;
+	3 ) local PROMT="fierce master Dwarf! " ;;
+	4 ) local PROMT="young master Hobbit! " ;;
+	1 | * ) local PROMT="weather-beaten Traveller!" ;;
+    esac
+    clear
+    cat <<"EOT"
                                                             .--^`~~.
                                                             ),-~~._/     
               THE MERCHANT                                  j-, -`;;     
                                                             .~_~  ,'       
-EOT
-echo -en "    \"Oye there, "
-case "$CHAR_RACE" in
-2 ) echo -n "galant Elf of the Forests!               " ;;
-3 ) echo -n "fierce master Dwarf!                     " ;;
-4 ) echo -n "young master Hobbit!                     " ;;
-1 | * ) echo -n "weather-beaten Traveller!                " ;;
-esac
-echo "__..\`#~-(.__"
-	cat <<"EOT"
+    "Oye there,                                         __..\`#~-(.__"
     Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
     to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
     in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
@@ -1154,10 +1153,51 @@ echo "__..\`#~-(.__"
                                              `-._____,'   /--|  \._`_.) 
                                                           \_/    
 EOT
-	echo "$HR"
-	
-# TODO add PRICING case statements at crate-height.
+
+    tput sc # save cursor position
+    tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
+    echo "$PROMT"
+    tput rc # restore cursor position
+    echo "$HR"    
+    # TODO add PRICING case statements at crate-height.
 }
+
+# GX_Marketplace_Merchant() { # Used in GX_Marketplace BACKUP
+# 	clear
+# 	cat <<"EOT"
+#                                                             .--^`~~.
+#                                                             ),-~~._/     
+#               THE MERCHANT                                  j-, -`;;     
+#                                                             .~_~  ,'       
+# EOT
+# echo -en "    \"Oye there, "
+# case "$CHAR_RACE" in
+# 2 ) echo -n "galant Elf of the Forests!               " ;;
+# 3 ) echo -n "fierce master Dwarf!                     " ;;
+# 4 ) echo -n "young master Hobbit!                     " ;;
+# 1 | * ) echo -n "weather-beaten Traveller!                " ;;
+# esac
+# echo "__..\`#~-(.__"
+# 	cat <<"EOT"
+#     Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
+#     to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
+#     in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
+#     possible prices! I buy everything      .-,        `._{__7-~-~-~~; `~-'|l  
+#     and sell only the best, 'tis true!     ,X.             :-'      |    ;  \  
+#     Want to trade?"                     __(___)_.~~,__    ;     (  `l   (__,_)
+#                                        [ _ _ _ _,)(. _]  ;      l    `,        
+#                                        [_ _ _ ,'    `.] ;       )     )       
+#                                        [ _ _ /        \ \,_____/\____,'     
+#                                        l_____l        4    ;_/  ,|_/__ 
+#                                              `-._____,'   /--|  \._`_.) 
+#                                                           \_/    
+# EOT
+# 	echo "$HR"
+	
+# # TODO add PRICING case statements at crate-height.
+# }
+
+
 
 # GFX MAP FUNCTIONS
 LoadCustomMap() { # Used in MapCreate()
@@ -1614,6 +1654,19 @@ DateFromTurn() {
 
     local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
 	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
+
+    # http://warhammeronline.wikia.com/wiki/Morrslieb
+    # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
+    case $( bc <<< "( $TURN / 25 )" ) in
+	0 | 1 | 2 | 3 ) MOON="New moon" ;;
+	4 | 5 | 6 )     MOON="Waxing crescent" ;;
+	7 | 8 | 9 )     MOON="First quarter" ;;
+	10 | 11 | 12 )  MOON="Waxing gibbous" ;;
+	13 | 14 | 15 )  MOON="Full moon" ;;
+	16 | 17 | 18 )  MOON="Waning gibbous" ;;
+	19 | 20 | 21 )  MOON="Third quarter" ;;
+	22 | 23 | 24 )  MOON="Waning crescent" ;;
+    esac
 
     WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 8" )]}
 
@@ -2633,17 +2686,19 @@ Marketplace() { # Used in GoIntoTown()
 	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR
 	case "$VAR" in
 	    g | G) Marketplace_Grocer;;
-	    m | M) GX_Marketplace_Merchant;
-		read -sn 1
-		;;
-	    *) break ;;
+	    m | M) Marketplace_Merchant;;
+	    *) break ;; # Leave marketplace
 	esac
     done
-    # TODO? Add stealing from market??? 
+    # IDEA? Add stealing from market??? 
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
     # Or he call the police (the guards?) and they throw player from town? (kstn)
 } # Return to GoIntoTown()
 
+Marketplace_Merchant(){
+    GX_Marketplace_Merchant
+    read -sn 1
+}
 
 Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.

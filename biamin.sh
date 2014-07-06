@@ -2075,8 +2075,8 @@ EOF
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
     GX_Monster_"$ENEMY"
-    printf "%-12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
-    printf "%-12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }   # Return to FightMode()
 
 
@@ -2342,14 +2342,12 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
 			sleep 3 # Important sleep here! It allows you to watch the enemy's health go from + to - :D
 			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && break 
-			NEXT_TURN="en"
 		    else
 			echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
-			NEXT_TURN="en"
 			sleep 2
 		    fi		    
 	    esac
-
+	    NEXT_TURN="en"
 	else # Enemy's turn
 	    FightTable
 	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
@@ -2827,7 +2825,6 @@ NewSector() { # Used in Intro()
     do
 	((TURN++)) # Nev turn, new date
 	DateFromTurn # Get year, month, day, weekday
-	# May be we'll need get-date-from-turn here ?
 	# Find out where we are - Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
@@ -2850,6 +2847,7 @@ NewSector() { # Used in Intro()
 		* ) CustomMapError ;;
 	    esac
             (( DEATH == 1 )) && break # If player was slain in fight mode
+	    GX_Place "$SCENARIO"
 	fi
 
 	# Food check # TODO add it to Rest() after finishing
@@ -2866,10 +2864,10 @@ NewSector() { # Used in Intro()
 	    CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
 	    echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
 	    if (( STARVATION > 0 )) ; then
-		if (( STARVATION >= 8 )) ; then
+		if (( STARVATION >= 8 )) ; then # Restore lost ability after overcoming starvation
 		    case "$CHAR_RACE" in
-			1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; # Restore lost ability after
-			2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; # overcoming starvation
+			1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; 
+			2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; 
 		    esac		    
 		fi
 		STARVATION=0

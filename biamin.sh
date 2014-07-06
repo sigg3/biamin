@@ -990,35 +990,35 @@ GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dic
     clear
     echo "$DICES" | awk ' BEGIN { FS = "" ; OFS = ""; }
 {   # First dice
-    if ('$1' == 1) { if (NR == 5) { $26 = "@"} } 
-    if ('$1' == 2) { if (NR == 3) { $30 = "@"; }
- 	             if (NR == 7) { $22 = "@"; } }
-    if ('$1' == 3) { if (NR == 3) { $30 = "@"; }
-            	     if (NR == 5) { $26 = "@"; }
-	             if (NR == 7) { $22 = "@"; } }
-    if ('$1' == 4) { if (NR == 3) { $22 = "@"; $30= "@"; }
-	             if (NR == 7) { $22 = "@"; $30= "@"; } }
-    if ('$1' == 5) { if (NR == 3) { $22 = "@"; $30= "@"; }
-	             if (NR == 5) { $26 = "@"; }
-	             if (NR == 7) { $22 = "@"; $30= "@"; } }
-    if ('$1' == 6) { if (NR == 3) { $22 = "@"; $30= "@"; }
-	             if (NR == 5) { $22 = "@"; $30= "@"; }
-	             if (NR == 7) { $22 = "@"; $30= "@"; } }
+    if ('$1' == 1) { if (NR == 5) { $26 = "'$GDICE_SYM'"} } 
+    if ('$1' == 2) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
+ 	             if (NR == 7) { $22 = "'$GDICE_SYM'"; } }
+    if ('$1' == 3) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
+            	     if (NR == 5) { $26 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; } }
+    if ('$1' == 4) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
+    if ('$1' == 5) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $26 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
+    if ('$1' == 6) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
     # Second dice
-    if ('$2' == 1) { if (NR == 5) { $53 = "@"} }
-    if ('$2' == 2) { if (NR == 3) { $57 = "@"; }
-	             if (NR == 7) { $49 = "@"; } }
-    if ('$2' == 3) { if (NR == 3) { $57 = "@"; }
-	             if (NR == 5) { $53 = "@"; }
-		     if (NR == 7) { $49 = "@"; } }
-    if ('$2' == 4) { if (NR == 3) { $49 = "@"; $57= "@"; }
-	             if (NR == 7) { $49 = "@"; $57= "@"; } }
-    if ('$2' == 5) { if (NR == 3) { $49 = "@"; $57= "@"; }
-	             if (NR == 5) { $53 = "@"; }
-		     if (NR == 7) { $49 = "@"; $57= "@"; } }
-    if ('$2' == 6) { if (NR == 3) { $49 = "@"; $57= "@"; }
- 	             if (NR == 5) { $49 = "@"; $57= "@"; }
-		     if (NR == 7) { $49 = "@"; $57= "@"; } }
+    if ('$2' == 1) { if (NR == 5) { $53 = "'$GDICE_SYM'"} }
+    if ('$2' == 2) { if (NR == 3) { $57 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $49 = "'$GDICE_SYM'"; } }
+    if ('$2' == 3) { if (NR == 3) { $57 = "'$GDICE_SYM'"; }
+	             if (NR == 5) { $53 = "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; } }
+    if ('$2' == 4) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
+    if ('$2' == 5) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $53 = "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
+    if ('$2' == 6) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+ 	             if (NR == 5) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
     # Display numbers too for great justice (or readability)
     if (NR == 10) { $26 = '$1'; $53 = '$2'; }
     print; } '
@@ -1533,19 +1533,17 @@ BiaminSetup() { # Used in MainMenu()
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK
 		read CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$CHAR_LOC")
-		if (( CHAR_LOC_LEN > 3 )) || (( CHAR_LOC_LEN < 1 )) ; then
-		    Die " Error! Wrong number of characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
-		else
-		    echo -n "Sanity check.."
-		    case "$CHAR_LOC_A" in
-			A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
-			* ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
-		    esac
-		    case "$CHAR_LOC_B" in
-			1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
-			* ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
-		    esac
-		fi
+		(( CHAR_LOC_LEN < 1 )) && Die " Error! Too less characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		(( CHAR_LOC_LEN > 3 )) && Die " Error! Too many characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
+		echo -n "Sanity check.."
+		case "$CHAR_LOC_A" in
+		    A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
+		    * ) Die "\n Error! Start location X-Axis $CHAR_LOC_A must be a CAPITAL alphanumeric A-R letter!" ;;
+		esac
+		case "$CHAR_LOC_B" in
+		    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
+		    * ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
+		esac
 		unset CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
 		# End of SANITY check, everything okay!
 		CHAR_GPS="$CHAR_LOC"
@@ -1734,7 +1732,7 @@ MainMenu() {
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ; 
  		    read -p " Enter character name (case sensitive): " CHAR ;
-		    [[ $CHAR ]] && BiaminSetup;; # Do nothing if CHAR is empty
+		    [[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
 	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
@@ -1779,7 +1777,6 @@ Credits() { # Used in MainMenu()
     case "$CREDITS_OPT" in
 	L | l ) License ;;
 	H | h ) GX_HowTo ;;
-	M | * ) ;;
     esac
     unset CREDITS_OPT
 }   # Return to MainMenu()
@@ -1918,11 +1915,11 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
     ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
     HOTZONE=() # Reset HOTZONE  
-    while (( $ITEMS_2_SCATTER > 0 )) ; do
+    while (( ITEMS_2_SCATTER > 0 )) ; do
 	ITEM_YX # Randomize ITEM_X and ITEM_Y
-	(( ITEM_X ==  MAP_X )) && (( ITEM_Y == MAP_Y )) && continue         # reroll if HOTZONE == CHAR_GPS
+	(( ITEM_X ==  MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                  # reroll if HOTZONE == CHAR_GPS
 	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
-	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, than init ${HOTZONE[ITEMS_2_SCATTER]},
+	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},
 	# --ITEMS_2_SCATTER - because array starts from ${HOTZONE[0]} #kstn
     done
 }
@@ -1947,7 +1944,7 @@ ItemWasFound() { # Used in NewSector()
 	4 ) GX_Item4 ;;				# Quick Rabbit Reaction (set in battle loop)
 	5 ) GX_Item5 ;;				# Flask of Terrible Odour (set in battle loop)
 	6 ) (( STRENGTH++ )) && GX_Item6 ;;	# Two-Handed Broadsword	(set now & setup)
-	7 | *) (( ACCURACY++ )) && GX_Item7 ;;	# Steady Hand Brew (set now & setup)
+	7 ) (( ACCURACY++ )) && GX_Item7 ;;	# Steady Hand Brew (set now & setup)
     esac
 
     local COUNTDOWN=180
@@ -1963,7 +1960,7 @@ ItemWasFound() { # Used in NewSector()
 
 ## GAME ACTION: MAP + MOVE
 MapNav() { # Used in NewSector()
-    if [ -z "$1" ] ; then	# If empty = toggle map (m) was pressed, else just move!
+    if [[ -z "$1" ]] ; then	# If empty = toggle map (m) was pressed, else just move!
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
 	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
@@ -2030,23 +2027,19 @@ EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     local FORMULA="$2"
     local SKILLABBREV="$3"
 
-    if (( DICE_SIZE <= 9 )) ; then
-	echo -n "Roll D$DICE_SIZE "
-    else
-	echo -n "Roll D$DICE_SIZE"
-    fi
+    (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
 
     case "$FORMULA" in
-	eq )    echo -n " = " ;;
-	gt )    echo -n " > " ;;
-	lt )    echo -n " < " ;;
-	ge )    echo -n " >=" ;;
-	le )    echo -n " <=" ;;
-	times ) echo -n " x " ;;
+	eq )    FORMULA="= " ;;
+	gt )    FORMULA="> " ;;
+	lt )    FORMULA="< " ;;
+	ge )    FORMULA=">=" ;;
+	le )    FORMULA="<=" ;;
+	times ) FORMULA="x " ;;
     esac
 
     # skill & roll
-    echo -n " $SKILLABBREV ( "
+    echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( "
     # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
     # determined in the if and cases of the Fight Loop, so don't repeat here.
 }
@@ -2090,8 +2083,10 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     # EN_DEFEATED_EXP   - Exp player get if he manage to kill the enemy
 
     case "$ENEMY" in
-	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=10  ; EN_DEFEATED_EXP=20   ;; # orig: str=2, acc=4
-	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=15  ; EN_DEFEATED_EXP=30   ;; # orig: str=3, acc=3
+	# orig: str=2, acc=4
+	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=10  ; EN_DEFEATED_EXP=20   ;; 
+	# orig: str=3, acc=3
+	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=15  ; EN_DEFEATED_EXP=30   ;; 
 	boar )    EN_STRENGTH=5 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=40   ;;
 	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; PL_FLEE_EXP=15  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=50   ;; 
 	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; PL_FLEE_EXP=25  ; EN_FLEE_EXP=50  ; EN_DEFEATED_EXP=100  ;;
@@ -2121,18 +2116,15 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     RollDice 100
     (( DICE <= EN_TOBACCO )) && RollDice 10 && EN_TOBACCO=$( bc <<< "scale=2;$ $DICE*(EN_TOBACCO/100)" ) || EN_TOBACCO=0
     RollDice 100
-    if (( DICE <= EN_FOOD )) ; then
-	# Loot: Food table for animal creatures
+    if (( DICE <= EN_FOOD )) ; then # Loot: Food table for animal creatures
 	RollDice 10
 	case "$ENEMY" in
-	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
-	    varg )    EN_FOOD=$( bc <<< "scale=2; $DICE*0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
+	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
+	    varg )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
 	    chthulu ) EN_FOOD=$DICE                             ;; # max 40 days, min 4 days   (is huge..)
-	    dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE*0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
+	    dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
 	esac
-	
-	# IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
-    fi
+    fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 
     # Adjustments for items
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
@@ -2142,7 +2134,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
 
     # DETERMINE INITIATIVE (will usually be enemy)
-    if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING=1 )) ; then
+    if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
 	echo "The $ENEMY has initiative"
 	NEXT_TURN="en"
     else
@@ -2167,8 +2159,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		RollDice 6
 		if (( DICE <= ACCURACY )) ; then
 		    RollDice 6
-		    if (( DICE >= EN_ACCURACY )) ; then
-			# "steal success" take loot
+		    if (( DICE >= EN_ACCURACY )) ; then # "steal success" take loot
 			echo -en "\nYou successfully stole the ${ENEMY}'s pouch, "
 			case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
 			    0 ) echo -e "but it feels rather light..\n" ;;
@@ -2249,7 +2240,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
 	FightTable
 
-	if [ "$NEXT_TURN" = "pl" ] ; then  # Player's turn
+	if [[ "$NEXT_TURN" == "pl" ]] ; then  # Player's turn
 	    read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT"
 	    RollDice 6
 	    FightTable
@@ -2287,9 +2278,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 			read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT"
 			RollDice 6
 			echo -en "\nROLL D6: $DICE"
-			DAMAGE=$(( DICE*STRENGTH ))
+			DAMAGE=$(( DICE * STRENGTH ))
 			echo -en "\tYour blow dishes out $DAMAGE damage points!"
-			EN_HEALTH=$(( EN_HEALTH-DAMAGE ))
+			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
 			sleep 3 # Important sleep here! It allows you to watch the enemy's health go from + to - :D
 			(( EN_HEALTH <= 0 )) && unset FIGHTMODE && break 
 			NEXT_TURN="en"
@@ -2302,8 +2293,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
 	else # Enemy's turn
 	    FightTable
-	    # Enemy tries to flee
-	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then
+	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 		RollDice 20
 		echo -e "Rolling for enemy flee: D20 < $EN_FLEE"
 		sleep 2
@@ -2317,7 +2307,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		FightTable # If enemy didn't manage to run
 	    fi
 
-	    echo "It's the $ENEMY's turn"
+	    echo "It's the ${ENEMY}'s turn"
 	    sleep 2
 	    RollDice 6
 	    if (( DICE <= EN_ACCURACY )); then
@@ -2342,15 +2332,12 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	case "$LUCK" in
 	    1)  # ENEMY managed to FLEE
 		echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
-		(( CHAR_EXP += EN_FLEE_EXP ))
-		;;
+		(( CHAR_EXP += EN_FLEE_EXP )) ;;
 	    2)  # died but saved by guardian angel or 1000 EXP
-		echo -e "\nWhen you come to, the $ENEMY has left the area ..."
-		;;
+		echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
 	    3)  # PLAYER managed to FLEE during fight!
 		echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
-		(( CHAR_EXP += PL_FLEE_EXP ))
-		;;
+		(( CHAR_EXP += PL_FLEE_EXP )) ;;
 	    *)  # ENEMY was slain!
 		echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!\n" 
 		(( CHAR_EXP += EN_DEFEATED_EXP ))
@@ -2481,9 +2468,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	# DICE GAME LOOP
 	while ( true ) ; do
 	    GX_DiceGame_Table
-	    
-	    # Check if we've still got gold for 1 stake...
-	    if (( $(bc <<< "$CHAR_GOLD < $DGAME_STAKES") )) ; then
+	    if (( $(bc <<< "$CHAR_GOLD < $DGAME_STAKES") )) ; then # Check if we've still got gold for 1 stake...
 		echo "You're out of gold, $CHAR_RACE_STR. Come back when you have some more!"
 		break # if not, leave immediately		
 	    fi		
@@ -2491,10 +2476,9 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    echo " " # Empty line for cosmetical purposes # TODO
 	    
 	    # Dice Game Instructions (mostly re: payout)
-#	    [[ "$DGAME_GUESS" -eq "i" || "$DGAME_GUESS" -eq "I" ]] && GX_DiceGame_Instructions && continue # Start loop from the beginning
 	    case "$DGAME_GUESS" in
-		"i" | "I" ) GX_DiceGame_Instructions ; continue ;; # Start loop from the beginning
-		1  |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 |  10 |  11 |  12 )
+		i | I ) GX_DiceGame_Instructions ; continue ;;     # Start loop from the beginning
+		1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 ) # Stake!
 		    if (( GAME_ROUND > 1 )) ; then # First round is already paid
 		    	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
 		    	echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]" && sleep 3
@@ -2518,7 +2502,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    # Run that through a loop of players num and % dice..
 	    DGAME_PLAYERS_COUNTER=$DGAME_PLAYERS
 	    DGAME_COMPETITION=0
-	    while (( DGAME_PLAYERS_COUNTER >=1 )) ; do
+	    while (( DGAME_PLAYERS_COUNTER >= 1 )) ; do
 		RollDice 100
 		(( DICE <= DGAME_COMP )) && (( DGAME_COMPETITION++ )) # Sharing!
 		(( DGAME_PLAYERS_COUNTER-- ))
@@ -2538,10 +2522,10 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    # IDEA: If we later add an item or charm for LUCK, add adjustments here.
 	    
 	    # Display roll result graphically
-	    GX_DiceGame $DGAME_DICE_1 $DGAME_DICE_2
+	    GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2"
 	    
 	    # Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
-	    case $DGAME_RESULT in
+	    case "$DGAME_RESULT" in
 	    2 | 12 ) DGAME_WINNINGS=$DGAME_POT ;;		       # 100%  # TODO
 	    3 | 11 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.85" ) ;; # 85%   # PLAY TEST THESE %s
 	    4 | 10 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.70" ) ;; # 70%
@@ -2564,7 +2548,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		DGAME_OTHER_WINNERS=0
 		
 		# Chances of any player picking the resulting number
-		case $DGAME_RESULT in
+		case "$DGAME_RESULT" in
 		    2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
 		    3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
 		    4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
@@ -2638,7 +2622,7 @@ Tavern() { # Used in GoIntoTown()
 		esac 
 		read -n 1;; # DEBUG replace to sleep 
  	    p | P ) MiniGame_Dice ;;
-	    * ) break ;; # Do nothing
+	    * ) break ;; # Leave tavern
 	esac
     done
 } # Return to GoIntoTown()
@@ -2648,8 +2632,8 @@ Marketplace() { # Used in GoIntoTown()
     while (true); do
 	GX_Marketplace
 	# Determine prices for 1 unit depending on currencies' respective values
-	local PRICE_IN_GOLD=$( bc <<< "scale=2;1/$VAL_GOLD" )
-	local PRICE_IN_TOBACCO=$( bc <<<  "scale=2;1/$VAL_TOBACCO" )		
+	local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
+	local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_!
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
@@ -2658,6 +2642,7 @@ Marketplace() { # Used in GoIntoTown()
 	    g | G )
 		GX_Marketplace
 		read -p "How many food items do you want to buy? " QUANTITY
+		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "$PRICE_IN_GOLD * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_GOLD > $COST") )); then
 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
@@ -2671,6 +2656,7 @@ Marketplace() { # Used in GoIntoTown()
 	    t | T )
 		GX_Marketplace
 		read -p "How much food you want to buy? " QUANTITY
+		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "${PRICE_IN_TOBACCO} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO > $COST") )); then
 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
@@ -2699,7 +2685,7 @@ GoIntoTown() { # Used in NewSector()
 	case "$ACTION" in
 	    t | T ) Tavern ;;
 	    m | M ) Marketplace ;;
-	    b | B ) GX_Bulletin $BBSMSG ;;
+	    b | B ) GX_Bulletin "$BBSMSG" ;;
 	    * ) break ;;
 	esac
     done
@@ -2718,11 +2704,11 @@ NewSector() { # Used in Intro()
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" ) # MAP_Y+2 MAP_X+2 - padding for borders
 	# Look for treasure @ current GPS location  - Checks current section for treasure
 	(( CHAR_ITEMS < 8 )) && [[ $(grep -E "(^| )$MAP_X-$MAP_Y( |$)" <<< "${HOTZONE[@]}") ]] && ItemWasFound
-	
-	if [[ $NODICE ]] ; then # Do not attack player at the first turn of after finding item
+
+	GX_Place "$SCENARIO"	
+	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
 	    unset NODICE 
 	else
-	    GX_Place "$SCENARIO"
 	    RollDice 100        # Find out if we're attacked 
 	    case "$SCENARIO" in # FightMode() if RollForEvent return 0
 		H ) RollForEvent 1  && FightMode ;;
@@ -2733,7 +2719,7 @@ NewSector() { # Used in Intro()
 		C ) RollForEvent 10 && FightMode ;;
 		* ) CustomMapError ;;
 	    esac
-        (( DEATH == 1 )) && break # If player was slain in fight mode
+            (( DEATH == 1 )) && break # If player was slain in fight mode
 	fi
 
 	# Food check # TODO add it to Rest() after finishing
@@ -2759,8 +2745,7 @@ NewSector() { # Used in Intro()
 		STARVATION=0
 	    fi
 	else
-	    (( STARVATION += 1 ))
-	    case "$STARVATION" in
+	    case $(( ++STARVATION )) in # ++STARVATION THEN check
 		1 ) echo "You're starving on the ${STARVATION}st day and feeling hungry .." ;;
 		2 ) echo "You're starving on the ${STARVATION}nd day and feeling famished .." ;;
 		3 ) echo "You're starving on the ${STARVATION}rd day and feeling weak .." ;;
@@ -2784,9 +2769,9 @@ NewSector() { # Used in Intro()
 	    RollDice 100
 	    if (( DICE <= 15 )); then 	# 15% chance for economic event transpiring
 		RollDice 12  # = Number of possible scenarios (+ default 0)		
-		BBSMSG=$DICE # Update BBSMSG
+		BBSMSG="$DICE" # Update BBSMSG
 		
-		case $DICE in
+		case "$DICE" in
 		    # Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
 		    1 )  WorldChangeEconomy + 1 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
 		    2 )  WorldChangeEconomy + 1 5  ;; # Hobbits on Strike (lesser inflation)
@@ -2860,17 +2845,17 @@ Announce() {
     SetupHighscore
 
     # Die if $HIGHSCORE is empty
-    [ ! -s "$HIGHSCORE" ] && Die "Sorry, can't do that just yet!\nThe highscore list is unfortunately empty right now."
+    [[ ! -s "$HIGHSCORE" ]] && Die "Sorry, can't do that just yet!\nThe highscore list is unfortunately empty right now."
 
     echo "TOP 10 BACK IN A MINUTE HIGHSCORES"
     HighscoreRead
     echo -en "\nSelect the highscore (1-10) you'd like to display or CTRL+C to cancel: "
     read SCORE_TO_PRINT
 
-    [[ $SCORE_TO_PRINT -lt 1 && $SCORE_TO_PRINT -gt 10 ]] && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
+    ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
 
     RollDice 6
-    case $DICE in
+    case "$DICE" in
 	1 ) ADJECTIVE="honorable" ;;
 	2 ) ADJECTIVE="fearless" ;;
 	3 ) ADJECTIVE="courageos" ;;
@@ -2882,15 +2867,15 @@ Announce() {
     ANNOUNCEMENT_TMP=$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< "$ANNOUNCEMENT_TMP"
 
-    case $highRACE in
+    case "$highRACE" in
 	1 ) highRACE="Human" ;;
 	2 ) highRACE="Elf" ;;
 	3 ) highRACE="Dwarf" ;;
 	4 ) highRACE="Hobbit" ;;
     esac
 
-    [[ $highBATTLES -eq 1 ]] && highBATTLES+=" battle" || highBATTLES+=" battles"
-    [[ $highITEMS -eq 1 ]]   && highITEMS+=" item"     || highITEMS+=" items"
+    (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
+    (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
 
     highCHAR=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$highCHAR") # Capitalize
     ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
@@ -2902,7 +2887,7 @@ Announce() {
     echo -e "\n$ANNOUNCEMENT\n" | fmt
     echo "$HR"
 
-    [[ $ANNOUNCEMENT_LENGHT -gt 160 ]] && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
+    ((ANNOUNCEMENT_LENGHT > 160)) && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
     exit 0
 }
 
@@ -2924,7 +2909,7 @@ CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
     echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
-    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
+    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
     case "$LAUNCHER" in
 	y | Y ) echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')\nalias biamin='$BIAMIN_RUNTIME/biamin.sh'" >> "$HOME/.bashrc";
 	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
@@ -2973,11 +2958,9 @@ case "$1" in
 	echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
 	exit 0 ;;
     --update ) # Update function
-    # Removes stranded repo files before proceeding..
+	# Removes stranded repo files before proceeding..
 	STRANDED_REPO_FILES=$(find "$GAMEDIR"/repo.* | wc -l)
-	if (( STRANDED_REPO_FILES >= 1 )); then
-		rm -f "$GAMEDIR/repo.*"
-	fi
+	(( STRANDED_REPO_FILES > 0 )) && rm -f "$GAMEDIR/repo.*"
 	REPO_SRC="https://gitorious.org/back-in-a-minute/code/raw/biamin.sh"
 	GX_BiaminTitle;
 	echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
@@ -3046,19 +3029,15 @@ case "$1" in
 	exit 0;;
 esac
 
-# Check whether gamedir exists..
-[[ ! -d "$GAMEDIR" ]] && {
-    echo "Game directory default is $GAMEDIR/" ;
-    echo "You can change this in $GAMEDIR/config. Creating directory .." ;
+if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists..
+    echo -e "Game directory default is $GAMEDIR/\nYou can change this in $GAMEDIR/config. Creating directory .."
     mkdir -p "$GAMEDIR/" || Die "ERROR! You do not have write permissions for $GAMEDIR .."
-}
+fi
 
-# Check whether $GAMEDIR/config exists..
-[[ ! -f "$GAMEDIR/config" ]] && {
+if [[ ! -f "$GAMEDIR/config" ]] ; then # Check whether $GAMEDIR/config exists..
     echo "Creating $GAMEDIR/config .." ;
-    echo "GAMEDIR: $GAMEDIR" > "$GAMEDIR/config" ;
-    echo "COLOR: NA" >> "$GAMEDIR/config" ;
-}
+    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$GAMEDIR/config" ;
+fi
 
 echo "Putting on the traveller's boots.."
 
@@ -3073,19 +3052,15 @@ case "$COLOR" in
     * ) ColorConfig ;;
 esac
 
-# Define colors if enabled
-if (( COLOR == 1 )); then
+if (( COLOR == 1 )); then # Define colors
     YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
     RESET='\033[0m'
-# TODO define here another seqences from MapNav()
-fi
+fi # TODO define here another seqences from MapNav()
 
 # Define escape sequences #TODO replace to tput or similar
 CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 
-# Direct termination signals to CleanUp
-trap CleanUp SIGHUP SIGINT SIGTERM
-
+trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
 SetupHighscore # Setup highscore file
 MainMenu       # Run main menu
 exit 0         # This should never happen:

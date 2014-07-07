@@ -2656,6 +2656,7 @@ Tavern() { # Used in GoIntoTown()
 				(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150
 				echo " and your HEALTH is $CHAR_HEALTH now"
 			    fi
+			    ((TURN++))
 			fi
 			;;
 		    t | T )
@@ -2670,6 +2671,7 @@ Tavern() { # Used in GoIntoTown()
 				(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150
 				echo " and your HEALTH is $CHAR_HEALTH now"
 			    fi
+			    ((TURN++))
 			fi
 			;;
 		esac 

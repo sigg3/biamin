@@ -1164,54 +1164,20 @@ EOT
     tput sc # save cursor position
     tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
     echo "$MERCHANT_GREET"
-    # TODO add PRICING case statements at crate-height.
+
+	# Specific prices
     tput cup 12 4  # move to y=12, x=4 ( upper left corner is 0 0 )
     echo "Price 1"
     tput cup 13 4  # move to y=13, x=4 ( upper left corner is 0 0 )
     echo "Price 2"
     tput cup 14 4  # move to y=14, x=4 ( upper left corner is 0 0 )
     echo "Price 3"
+    tput cup 15 4  # move to y=14, x=4 ( upper left corner is 0 0 )
+    echo "Price 4"
     tput rc # restore cursor position
     echo "$HR"    
 
 }
-
-# GX_Marketplace_Merchant() { # Used in GX_Marketplace BACKUP
-# 	clear
-# 	cat <<"EOT"
-#                                                             .--^`~~.
-#                                                             ),-~~._/     
-#               THE MERCHANT                                  j-, -`;;     
-#                                                             .~_~  ,'       
-# EOT
-# echo -en "    \"Oye there, "
-# case "$CHAR_RACE" in
-# 2 ) echo -n "galant Elf of the Forests!               " ;;
-# 3 ) echo -n "fierce master Dwarf!                     " ;;
-# 4 ) echo -n "young master Hobbit!                     " ;;
-# 1 | * ) echo -n "weather-beaten Traveller!                " ;;
-# esac
-# echo "__..\`#~-(.__"
-# 	cat <<"EOT"
-#     Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
-#     to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
-#     in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
-#     possible prices! I buy everything      .-,        `._{__7-~-~-~~; `~-'|l  
-#     and sell only the best, 'tis true!     ,X.             :-'      |    ;  \  
-#     Want to trade?"                     __(___)_.~~,__    ;     (  `l   (__,_)
-#                                        [ _ _ _ _,)(. _]  ;      l    `,        
-#                                        [_ _ _ ,'    `.] ;       )     )       
-#                                        [ _ _ /        \ \,_____/\____,'     
-#                                        l_____l        4    ;_/  ,|_/__ 
-#                                              `-._____,'   /--|  \._`_.) 
-#                                                           \_/    
-# EOT
-# 	echo "$HR"
-	
-# # TODO add PRICING case statements at crate-height.
-# }
-
-
 
 # GFX MAP FUNCTIONS
 LoadCustomMap() { # Used in MapCreate()
@@ -2693,7 +2659,32 @@ Marketplace() { # Used in GoIntoTown()
 } # Return to GoIntoTown()
 
 Marketplace_Merchant(){
-    GX_Marketplace_Merchant
+# If this is a "freshly entered" town, re-do prices
+if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ]; then
+	# "Name" the current merchant as char GPS location
+	MERCHANT="$CHAR_GPS"
+		
+	RollDice 100 # Roll for merchant friendliness
+	if (( DICE == 100 )) || (( DICE == 1 )) ; then # Very good prices, my friend!
+	# TODO Math to determine prices...
+	elif (( DICE <= 99 )) && (( DICE >= 71 )) ; then # Pretty good prices, for you!
+	# TODO Math to determine prices...
+			
+	elif (( DICE <= 70 )) && (( DICE >= 21 )) ; then # Good price
+	# TODO Math to determine prices...
+	elif (( DICE <= 20 )) ; then # Getting screwed
+	# TODO Math to determine prices...
+	fi
+	
+	# TODO something to consider:
+	#MERCHANT_TOBACCO_BUY
+	#MERCHANT_TOBACCO_SELL
+	#MERCHANT_GOLD_BUY
+	#MERCHANT_GOLD_SELL
+	#MERCHANT_FOOD_BUY
+	#MERCHANT_FOOD_SELL
+fi
+    GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
     read -sn 1
 }
 

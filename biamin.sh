@@ -2115,11 +2115,11 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     case "$SCENARIO" in
 	H ) ((DICE <= 2)) && ENEMY="chthulu" || ENEMY="dragon" ;; 
             # 1-7 (7/20)                         # 8-10 (3/20)                       # 17-20 (4/20)                      # 11-16 (6/20)
-	x ) ((DICE <= 7 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="goblin" || ((DICE >= 17)) && ENEMY="dragon" || ENEMY="varg"   
+	x ) ((DICE <= 7 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="goblin" || ((DICE >= 17)) && ENEMY="dragon" || ENEMY="varg"   ;;
 	. ) ((DICE <= 12)) && ENEMY="goblin"  || ((DICE >= 15)) && ENEMY="bandit" || ENEMY="boar"   ;; # boar   13-15 (2/20)
 	T ) ((DICE <= 11)) && ENEMY="bandit"  || ((DICE >= 14)) && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 12-13 (2/20)
 	    # 1-6 (6/20)                         # 7-10 (4/20)                       # 19-20 (2/20)                      # 11-18 (8/20)
-	@ ) ((DICE <=  6)) && ENEMY="goblin"  || ((DICE <= 10)) && ENEMY="boar"   || ((DICE >= 19)) && ENEMY="orc"    || ENEMY="bandit" 
+	@ ) ((DICE <=  6)) && ENEMY="goblin"  || ((DICE <= 10)) && ENEMY="boar"   || ((DICE >= 19)) && ENEMY="orc"    || ENEMY="bandit" ;;
 	C ) ((DICE ==  1)) && ENEMY="chthulu" || ((DICE >= 7))  && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 2-6 (5/20)
     esac
 

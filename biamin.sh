@@ -1163,9 +1163,16 @@ EOT
     tput sc # save cursor position
     tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
     echo "$PROMT"
+    # TODO add PRICING case statements at crate-height.
+    tput cup 12 4  # move to y=12, x=4 ( upper left corner is 0 0 )
+    echo "Price 1"
+    tput cup 13 4  # move to y=13, x=4 ( upper left corner is 0 0 )
+    echo "Price 2"
+    tput cup 14 4  # move to y=14, x=4 ( upper left corner is 0 0 )
+    echo "Price 3"
     tput rc # restore cursor position
     echo "$HR"    
-    # TODO add PRICING case statements at crate-height.
+
 }
 
 # GX_Marketplace_Merchant() { # Used in GX_Marketplace BACKUP

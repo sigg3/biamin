@@ -2440,6 +2440,7 @@ RollForHealing() { # Used in Rest()
 # GAME ACTION: REST
 # Game balancing can also be done here, if you think players receive too much/little health by resting.
 Rest() {  # Used in NewSector()
+    PLAYER_RESTING=1 # Set flag for FightMode()
     RollDice 100
     GX_Rest
     case "$SCENARIO" in
@@ -2452,13 +2453,13 @@ Rest() {  # Used in NewSector()
 	    ((TURN++))
 	    sleep 2
 	    ;;
-	x ) RollForEvent 60 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
-	. ) RollForEvent 30 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
-	T ) RollForEvent 15 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 15 "The vices of town life kept you up all night.." ;;
-	@ ) RollForEvent 35 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
-	C ) RollForEvent 5  "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
+	x ) RollForEvent 60 "fight" && FightMode || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
+	. ) RollForEvent 30 "fight" && FightMode || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
+	T ) RollForEvent 15 "fight" && FightMode || RollForHealing 15 "The vices of town life kept you up all night.." ;;
+	@ ) RollForEvent 35 "fight" && FightMode || RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
+	C ) RollForEvent 5  "fight" && FightMode || RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
     esac
-    PLAYER_RESTING=0
+    unset PLAYER_RESTING # Reset flag
     sleep 2
 }   # Return to NewSector()
 

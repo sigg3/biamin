@@ -1022,6 +1022,7 @@ GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dic
     # Display numbers too for great justice (or readability)
     if (NR == 10) { $26 = '$1'; $53 = '$2'; }
     print; } '
+    # Note: Don't spend too much time with this, I'm not happy about the graphics atm.. :P - sig.
 }   # Return to MiniGame_Dice()
 
 GX_DiceGame_Table() {
@@ -1133,11 +1134,11 @@ EOT
 
 
 GX_Marketplace_Merchant() { # Used in GX_Marketplace
-    case "$CHAR_RACE" in # define promt
-	2 ) local PROMT="galant Elf of the Forests! " ;;
-	3 ) local PROMT="fierce master Dwarf! " ;;
-	4 ) local PROMT="young master Hobbit! " ;;
-	1 | * ) local PROMT="weather-beaten Traveller!" ;;
+    case "$CHAR_RACE" in # Sets merchant friendly greeting
+	2 ) local MERCHANT_GREET="galant Elf of the Forests! " ;;
+	3 ) local MERCHANT_GREET="fierce master Dwarf! " ;;
+	4 ) local MERCHANT_GREET="young master Hobbit! " ;;
+	1 | * ) local MERCHANT_GREET="weather-beaten Traveller!" ;;
     esac
     clear
     cat <<"EOT"
@@ -1145,7 +1146,7 @@ GX_Marketplace_Merchant() { # Used in GX_Marketplace
                                                             ),-~~._/     
               THE MERCHANT                                  j-, -`;;     
                                                             .~_~  ,'       
-    "Oye there,                                         __..\`#~-(.__"
+    "Oye there,                                          __..`#~-(.__
     Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
     to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
     in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
@@ -1162,7 +1163,7 @@ EOT
 
     tput sc # save cursor position
     tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
-    echo "$PROMT"
+    echo "$MERCHANT_GREET"
     # TODO add PRICING case statements at crate-height.
     tput cup 12 4  # move to y=12, x=4 ( upper left corner is 0 0 )
     echo "Price 1"

@@ -795,172 +795,135 @@ EOT
 }
 
 GX_Bulletin() { # Requires $BBSMSG as arg, default val=0
-# Bulletin Header
-clear
-cat <<"EOT"
+    # # Display custom message (BBSMSG)
+    case $1 in		       # MAX 35 chars per line !!!
+	1 ) # Wild Fire Threatens Tobacco (serious)
+	    local BULLETIN=( 
+		"WILD FIRE THREATENS TOBACCO SUPPLY! "                                    
+		"Many Travellers have told of Wild   "
+		"Forest Fires that may threaten the  "
+		"steady Supply of Tobacco to the     "
+		"Markets of the Realm. Rumours say   "
+		"Harvest in Jeopardy & prices soar!  " ) ;;
+	2 ) # Hobbits on Strike
+	    local BULLETIN=(
+		"       TOBACCO TOO CHEAP!           "
+		"Traders Beware! Since last Harvest  "
+		"many Halflings of great Repute have "
+		"returned to Other Produce than Leaf "
+		"Villages report malcontent of low   "
+		"Tobacco Prices, refusing to sell.   ") ;;
+	3 ) # Tobacco Overproduction (serious)
+	    local BULLETIN=(
+		" GREATEST TOBACCO HARVEST IN AGES!  "
+		"Our Harvest may well prove to be ye "
+		"Most Abundant in many Cycles, and   "
+		"Hobbit Masters of Several Good Towns"
+		"report with Joye an Increase in     "
+		"Produce.           - The Hobbits    ") ;;
+	4 ) # Tobacco Import Increases
+	    local BULLETIN=(
+		"     ROYALE IMPORT OF TOBACCOS      "
+		"Facing a National Tobacco Famine ye "
+		"King orders large-scale Leaf Import "
+		"to satisfy His subjects. Several    "
+		"Honorable Traders have volunteered  "
+		"to Aide in the Import of Tobacco    ") ;;
+	5 ) # Gold Increases due to War (serious)
+	    local BULLETIN=(
+		"     KING DEMANDS GOLD FOR WAR      "
+		"By Royal Decree, A Treaty with The  "
+		"Kingdom of Kastian was Broken by ye "
+		"attack on Royal Emissaries in Acte  "
+		"of Shame. Our King requires Gold to "
+		"Summon an Army and Go to War! ~{K}~ ") ;;
+	6 ) # Gold Required for New Fashion
+	    local BULLETIN=(
+		"       GOLDEN FASHION SPREADS       "                                    
+		"The Rich Habits of ye Royal Court   "
+		"spreads to the Kingdom's Nobility.  "
+		"The Price of Gold heightens as the  "
+		"Ladies of the Court dress in Gowns  "
+		"made in the Finest of Gold Fabrics! ") ;;
+	7 ) # Discovery of New Promising Gold Field (serious)
+	    local BULLETIN=(
+		"         GOLDE VEIN PROMISING       "
+		"A new Vein of Gold discovered in ye "
+		"Royal Gold Mines promises a Flood   "
+		"of Golde to the Kingdom's Markets.  "
+		"Dwarven Advisors to ye King Himself "
+		"assure future Finds to be Great!    ") ;;
+	8 ) # Discovery of Artificial Gold Prices (them Dwarves!)
+	    local BULLETIN=(
+		"   GOLD PRICE MAY BE ARTEFICIAL     "
+		"A Gentleman in The King's Court has "
+		"reveal'd ye Price of Gold strangely "
+		"Highe, as a Result of fraudelent    "
+		"Reports by Dwarven Mines. Ye Dwarfs "
+		"remain quiet about such Speculation ") ;;
+	9 ) # Rumors of alchemy success
+	    local BULLETIN=(
+		"      ALCHEMISTS PROMISE GOLD       "
+		"  Zosimos ye Alchemist recently     "
+		"baffl'd the Royal Court proclaiming "
+		"Endeavours to create Gold would be  "
+		"sucessful by Year's End. Dwarven    "
+		"Sceptical about Artificial Golde.   ") ;;
+	10 ) # Water Pipe Fashion
+	    local BULLETIN=(
+		"    WATER PUFFING MORE HEALTHY      "
+		"Ye Eastern Watr Pipes for Tobaccos  "
+		"of Different Flavors Altogether are "
+		"sayd to be Ailing for Sore Throats, "
+		"Restoring Health. The Royale Courts "
+		"report Increase in Strawberry Tabac ") ;;
+	11 ) # King Buying Tracts of land, gold inflate (serious)
+	    local BULLETIN=(
+		"    KING TO PURCHASE MORE LAND      "
+		"By Royale Decree, to come to Our    "
+		"Esteem'd Neighbourdom Clausthall's  "
+		"Aid ye King hath decree'd to Buy    "
+		"huge Tracts of Land from ye House   "
+		"of Clausthaler. Gold demanded! ~{K}~") ;;
+	12 ) # Tobacco pest proven to be false (serious)
+	    local BULLETIN=(
+		"   RUMORS OF TOBACCO PEST FALSE     "
+		"Rumors of a Tobacco Pestilence that "
+		"destroys Entire Crops of Tabac have "
+		"proven false! Several Halfling Towns"
+		"expect Increase in Production due   "
+		"Favourable Weather and plenty Sun.  ") ;;
+	* ) # Default story on the board (no economic changes here)
+	    local BULLETIN=(
+		"     WIZARD CRAVE DRAGON (DEAD)     "
+		"An Honorable Wizard in Royal School "
+		"of Magic and Astronomy, promises a  "
+		"Rewarde to be pay'd in Golde for ye "
+		"Delivery of a Dragon to ye Schoole, "
+		"preferably deceased, for study.     ") ;;
+    esac
+    # Add generic consequence string
+    case $1 in
+	1 | 2 | 10 ) BULLETIN[6]="TOBACCO RAISED TO: $VAL_TOBACCO_STR" ;;
+	3 | 4 | 12 ) BULLETIN[6]="TOBACCO LOWERED TO: $VAL_TOBACCO_STR" ;;
+	5 | 6 | 11 ) BULLETIN[6]="GOLD RAISED TO: $VAL_GOLD_STR" ;;
+	7 | 8 | 9  ) BULLETIN[6]="GOLD LOWERED TO: $VAL_GOLD_STR" ;;
+	*          ) BULLETIN[6]="REWARD SET TO: 500 GOLD" ;;
+    esac
+    # Ok, let's draw !!!
+    clear
+    cat <<"EOT"
                  ___                                     ____  
                 (___) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (____)  
                  | T-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-T ||     
-EOT
-
-# Display custom message (BBSMSG)
-case $1 in
- 1 ) # Wild Fire Threatens Tobacco (serious)
-	cat <<"EOT"
- ^^              | | WILD FIRE THREATENS TOBACCO SUPPLY! | || 
+ ^^              | |                                     | ||   
     ^^           | |                                     | ||   ____________
-        ___      | | Many Travellers have told of Wild   | ||  /           /\
-     _ (   )_    | | Forest Fires that may threaten the  | || /           /||\
-   (  )      )   | | steady Supply of Tobacco to the     | ||/___________/ ||_\
- (__   ) (  ) )  | | Markets of the Realm. Rumours say   | ||  ||          || 
-(     __)  ___)  | | Harvest in Jeopardy & prices soar!  | || _||__________|| 
-EOT
- ;;
- 2 ) # Hobbits on Strike
-	cat <<"EOT"
- ^^              | |        TOBACCO TOO CHEAP!           | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | Traders Beware! Since last Harvest  | ||  /           /\
-     _ (   )_    | | many Halflings of great Repute have | || /           /||\
-   (  )      )   | | returned to Other Produce than Leaf | ||/___________/ ||_\
- (__   ) (  ) )  | | Villages report malcontent of low   | ||  ||          || 
-(     __)  ___)  | | Tobacco Prices, refusing to sell.   | || _||__________|| 
-EOT
- ;;
- 3 ) # Tobacco Overproduction (serious)
-	cat <<"EOT"
- ^^              | |  GREATEST TOBACCO HARVEST IN AGES!  | ||   
-    ^^           | |                                     | ||   ____________
-        ___      | | Our Harvest may well prove to be ye | ||  /           /\
-     _ (   )_    | | Most Abundant in many Cycles, and   | || /           /||\
-   (  )      )   | | Hobbit Masters of Several Good Towns| ||/___________/ ||_\
- (__   ) (  ) )  | | report with Joye an Increase in     | ||  ||          || 
-(     __)  ___)  | | Produce.           - The Hobbits    | || _||__________|| 
-EOT
- ;;
- 4 ) # Tobacco Import Increases
-	cat <<"EOT"
- ^^              | |      ROYALE IMPORT OF TOBACCOS      | || 
-    ^^           | |                                     | ||   ____________
-        ___      | | Facing a National Tobacco Famine ye | ||  /           /\
-     _ (   )_    | | King orders large-scale Leaf Import | || /           /||\
-   (  )      )   | | to satisfy His subjects. Several    | ||/___________/ ||_\
- (__   ) (  ) )  | | Honorable Traders have volunteered  | ||  ||          || 
-(     __)  ___)  | | to Aide in the Import of Tobacco    | || _||__________|| 
-EOT
- ;;
- 5 ) # Gold Increases due to War (serious)
-	cat <<"EOT"
- ^^              | |      KING DEMANDS GOLD FOR WAR      | ||   
-    ^^           | |                                     | ||   ____________
-        ___      | | By Royal Decree, A Treaty with The  | ||  /           /\
-     _ (   )_    | | Kingdom of Kastian was Broken by ye | || /           /||\
-   (  )      )   | | attack on Royal Emissaries in Acte  | ||/___________/ ||_\
- (__   ) (  ) )  | | of Shame. Our King requires Gold to | ||  ||          || 
-(     __)  ___)  | | Summon an Army and Go to War! ~{K}~ | || _||__________|| 
-EOT
- ;;
- 6 ) # Gold Required for New Fashion
-	cat <<"EOT"
- ^^              | |        GOLDEN FASHION SPREADS       | ||  
-    ^^           | |                                     | ||   ____________
-        ___      | | The Rich Habits of ye Royal Court   | ||  /           /\
-     _ (   )_    | | spreads to the Kingdom's Nobility.  | || /           /||\
-   (  )      )   | | The Price of Gold heightens as the  | ||/___________/ ||_\
- (__   ) (  ) )  | | Ladies of the Court dress in Gowns  | ||  ||          || 
-(     __)  ___)  | | made in the Finest of Gold Fabrics! | || _||__________|| 
-EOT
- ;;
- 7 ) # Discovery of New Promising Gold Field (serious)
-	cat <<"EOT"
- ^^              | |      NEW GOLDE VEIN PROMISING       | || 
-    ^^           | |                                     | ||   ____________
-        ___      | | A new Vein of Gold discovered in ye | ||  /           /\
-     _ (   )_    | | Royal Gold Mines promises a Flood   | || /           /||\
-   (  )      )   | | of Golde to the Kingdom's Markets.  | ||/___________/ ||_\
- (__   ) (  ) )  | | Dwarven Advisors to ye King Himself | ||  ||          || 
-(     __)  ___)  | | assure future Finds to be Great!    | || _||__________|| 
-EOT
- ;;
- 8 ) # Discovery of Artificial Gold Prices (them Dwarves!)
-	cat <<"EOT"
- ^^              | |    GOLD PRICE MAY BE ARTEFICIAL     | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | A Gentleman in The King's Court has | ||  /           /\
-     _ (   )_    | | reveal'd ye Price of Gold strangely | || /           /||\
-   (  )      )   | | Highe, as a Result of fraudelent    | ||/___________/ ||_\
- (__   ) (  ) )  | | Reports by Dwarven Mines. Ye Dwarfs | ||  ||          || 
-(     __)  ___)  | | remain quiet about such Speculation | || _||__________|| 
-EOT
- ;;
- 9 ) # Rumors of alchemy success
-	cat <<"EOT"
- ^^              | |       ALCHEMISTS PROMISE GOLD       | ||
-    ^^           | |                                     | ||   ____________
-        ___      | |   Zosimos ye Alchemist recently     | ||  /           /\
-     _ (   )_    | | baffl'd the Royal Court proclaiming | || /           /||\
-   (  )      )   | | Endeavours to create Gold would be  | ||/___________/ ||_\
- (__   ) (  ) )  | | sucessful by Year's End. Dwarven    | ||  ||          || 
-(     __)  ___)  | | Sceptical about Artificial Golde.   | || _||__________|| 
-EOT
- ;;
- 10 ) # Water Pipe Fashion
-	cat <<"EOT"
- ^^              | |     WATER PUFFING MORE HEALTHY      | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | Ye Eastern Watr Pipes for Tobaccos  | ||  /           /\
-     _ (   )_    | | of Different Flavors Altogether are | || /           /||\
-   (  )      )   | | sayd to be Ailing for Sore Throats, | ||/___________/ ||_\
- (__   ) (  ) )  | | Restoring Health. The Royale Courts | ||  ||          || 
-(     __)  ___)  | | report Increase in Strawberry Tabac | || _||__________|| 
-EOT
- ;;
- 11 ) # King Buying Tracts of land, gold inflate (serious)
-	cat <<"EOT"
- ^^              | |     KING TO PURCHASE MORE LAND      | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | By Royale Decree, to come to Our    | ||  /           /\
-     _ (   )_    | | Esteem'd Neighbourdom Clausthall's  | || /           /||\
-   (  )      )   | | Aid ye King hath decree'd to Buy    | ||/___________/ ||_\
- (__   ) (  ) )  | | huge Tracts of Land from ye House   | ||  ||          || 
-(     __)  ___)  | | of Clausthaler. Gold demanded! ~{K}~| || _||__________|| 
-EOT
- ;;
- 12 ) # Tobacco pest proven to be false (serious)
-	cat <<"EOT"
- ^^              | |    RUMORS OF TOBACCO PEST FALSE     | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | Rumors of a Tobacco Pestilence that | ||  /           /\
-     _ (   )_    | | destroys Entire Crops of Tabac have | || /           /||\
-   (  )      )   | | proven false! Several Halfling Towns| ||/___________/ ||_\
- (__   ) (  ) )  | | expect Increase in Production due   | ||  ||          || 
-(     __)  ___)  | | Favourable Weather and plenty Sun.  | || _||__________|| 
-EOT
- ;;
- * ) # Default story on the board (no economic changes here)
-	cat <<"EOT"
- ^^              | |      WIZARD CRAVE DRAGON (DEAD)     | ||
-    ^^           | |                                     | ||   ____________
-        ___      | | An Honorable Wizard in Royal School | ||  /           /\
-     _ (   )_    | | of Magic and Astronomy, promises a  | || /           /||\
-   (  )      )   | | Rewarde to be pay'd in Golde for ye | ||/___________/ ||_\
- (__   ) (  ) )  | | Delivery of a Dragon to ye Schoole, | ||  ||          || 
-(     __)  ___)  | | preferably deceased, for study.     | || _||__________|| 
- (_____)T^T      | | REWARD SET TO: 500 GOLD             | || 1 T  T  T  T  T!
-EOT
- ;;
-esac
-
-# Add generic consequence string
-case $1 in
- 1 | 2 | 10 ) echo " (_____)T^T      | | TOBACCO RAISED TO: $VAL_TOBACCO_STR             | || 1 T  T  T  T  T!" ;; 
- 3 | 4 | 12 ) echo " (_____)T^T      | | TOBACCO LOWERED TO: $VAL_TOBACCO_STR            | || 1 T  T  T  T  T!" ;; 
- 5 | 6 | 11 ) echo " (_____)T^T      | | GOLD RAISED TO: $VAL_GOLD_STR                | || 1 T  T  T  T  T!" ;; 
- 7 | 8 | 9 )  echo " (_____)T^T      | | GOLD LOWERED TO: $VAL_GOLD_STR               | || 1 T  T  T  T  T!" ;; 
-esac
-
-# Display footer
-cat <<"EOT"
+        ___      | |                                     | ||  /           /\
+     _ (   )_    | |                                     | || /           /||\
+   (  )      )   | |                                     | ||/___________/ ||_\
+ (__   ) (  ) )  | |                                     | ||  ||          || 
+(     __)  ___)  | |                                     | || _||__________|| 
+ (_____)T^T      | |                                     | || 1 T  T  T  T  T!
    |^|  |^|      | l___________,____________,____________j || 1_ 1 _| __  1_ !
 -  |^|  |^|     -| ||  -       &            &       -    | || 1   __  1  1  _1_
   '""" '"""'     | ||        ,-6------------6-.          | || 1  1  1  1   | `-'
@@ -969,8 +932,17 @@ cat <<"EOT"
        -         1 ll         -                          1 ll               -
             -~'"'""""'""~-                       --~""'"'"""""'~-
 EOT
-echo "$HR"
-PressAnyKey
+    echo "$HR"
+    tput sc # save cursor position
+    tput cup 3 21 # move to y=3, x=21 ( upper left corner is 0 0 )
+    local NUM=0
+    printf "%s" "${BULLETIN[((NUM++))]}" # TITLE
+    for i in 5 6 7 8 9 10 ; do
+	tput cup $i 21 # move to y=$i, x=21 ( upper left corner is 0 0 )
+	printf "%s" "${BULLETIN[((NUM++))]}" # TEXT
+    done
+    tput rc # restore cursor position
+    PressAnyKey
 } # End of GX_Bulletin()
 
 

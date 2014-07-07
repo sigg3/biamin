@@ -1165,7 +1165,7 @@ EOT
     tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
     echo "$MERCHANT_GREET"
 
-	# Specific prices
+    # Specific prices
     tput cup 12 4  # move to y=12, x=4 ( upper left corner is 0 0 )
     echo "Price 1"
     tput cup 13 4  # move to y=13, x=4 ( upper left corner is 0 0 )
@@ -1681,7 +1681,6 @@ DateFromTurn() {
 	*)  # Output example "3rd of Year-Turn in the 13th cycle"
 	    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle";;
     esac
-
 }
 
 TodaysDate() {
@@ -2411,7 +2410,7 @@ Rest() {  # Used in NewSector()
 		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
 	    ((TURN++))
-	    sleep 2
+	    sleep 2 		#  Do we need this sleem? Sleep at home more then at other places?
 	    ;;
 	x ) RollForEvent 60 "fight" && FightMode || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
 	. ) RollForEvent 30 "fight" && FightMode || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
@@ -2660,21 +2659,21 @@ Marketplace() { # Used in GoIntoTown()
 } # Return to GoIntoTown()
 
 Marketplace_Merchant(){
-# If this is a "freshly entered" town, re-do prices
-if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ]; then
+    # If this is a "freshly entered" town, re-do prices
+    if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
-		
+	
 	RollDice 100 # Roll for merchant friendliness
+	# true - is placeholder, because empty if-elif-else falls
 	if (( DICE == 100 )) || (( DICE == 1 )) ; then # Very good prices, my friend!
-	# TODO Math to determine prices...
+	    true  # TODO Math to determine prices...
 	elif (( DICE <= 99 )) && (( DICE >= 71 )) ; then # Pretty good prices, for you!
-	# TODO Math to determine prices...
-			
+	    true  # TODO Math to determine prices...	    
 	elif (( DICE <= 70 )) && (( DICE >= 21 )) ; then # Good price
-	# TODO Math to determine prices...
-	elif (( DICE <= 20 )) ; then # Getting screwed
-	# TODO Math to determine prices...
+	    true # TODO Math to determine prices...
+	else # (( DICE <= 20 )) ; then # Getting screwed
+	    true # TODO Math to determine prices...
 	fi
 	
 	# TODO something to consider:
@@ -2684,7 +2683,7 @@ if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ]; then
 	#MERCHANT_GOLD_SELL
 	#MERCHANT_FOOD_BUY
 	#MERCHANT_FOOD_SELL
-fi
+    fi
     GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
     read -sn 1
 }

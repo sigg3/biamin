@@ -1405,8 +1405,7 @@ SetupHighscore() { # Used in main() and Announce()
 ### DISPLAY MAP
 GX_Map() { # Used in MapNav()
     if ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ; then # Check for Gift of Sight
-	# Show ONLY the NEXT item viz. "Item to see" (ITEM2C)
-	# There always will be item in HOTZONE[0]!
+	# Show ONLY the NEXT item viz. "Item to see" (ITEM2C). There always will be item in HOTZONE[0]!
      	IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" # Retrieve item map positions e.g. 1-15 >> X=1 Y=15
 	# Remember, the player won't necessarily find items in HOTZONE array's sequence
     else # Lazy fix for awk - it falls when see undefined variable #kstn
@@ -1649,8 +1648,7 @@ DateFromTurn() {
     local MONTH_LENGTH=( 0 0 1 33 66 67 100 133 166 167 200 201 233 266 267 300 333 366 367 400 )
 
     local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
-	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
-
+	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)") # Last day of week is ${WEEKDAY_STR[0]} !!!
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
     case $( bc <<< "( $TURN % 25 )" ) in
@@ -1812,7 +1810,7 @@ HighscoreRead() {
     local i=1
     # Read values from highscore file (BashFAQ/001)
     while IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR; do
-	(( i > 10 )) && break
+	(( i > 10 )) && break	
 	case "$highRACE" in
 	    1 ) highRACE="Human" ;;
 	    2 ) highRACE="Elf" ;;
@@ -1927,21 +1925,16 @@ LoadGame() { # Used in MainMenu()
 	GX_LoadGame
 	for (( a=1; a <= LIMIT ; a++)); do
 	    [[ ! ${SHEETS[((a + OFFSET))]} ]] && break
-	awk '{ 
-                   # Character can consist from two and more words
-                   # not only "Corum" but "Corum Jhaelen Irsei" for instance 
-                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
-                  	                 CHARACTER = substr($0, RLENGTH+2); }
+ 	    awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance 
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
                		                 if ($2 == 2 ) { RACE="Elf"; }
              		                 if ($2 == 3 ) { RACE="Dwarf"; }
-            		                 if ($2 == 4 ) { RACE="Hobbit";} 
-                                        }
+            		                 if ($2 == 4 ) { RACE="Hobbit";} }
                    if (/^LOCATION:/)   { LOCATION = $2 }
                    if (/^HEALTH:/)     { HEALTH = $2 }
                    if (/^ITEMS:/)      { ITEMS = $2 }
-                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
-                 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
                  END { 
                  print " "'$a' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
                  }' ${SHEETS[((a + OFFSET))]} 
@@ -2120,28 +2113,14 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
     RollDice 20 # Determine enemy type
     case "$SCENARIO" in
-	H ) (( DICE <= 2 )) && ENEMY="chthulu" || ENEMY="dragon" ;; 
-	x ) if (( DICE <= 7  )) ; then
-			ENEMY="orc"    # 7/20
-		elif (( DICE > 7 )) && (( DICE < 10 )) ; then
-			ENEMY="goblin" # 3/20
-		elif (( DICE >= 17 )) ; then
-			ENEMY="dragon" # 4/20
-		else
-			ENEMY="varg"   # 6/20
-		fi ;;
-	. ) (( DICE <= 12 )) && ENEMY="goblin"  || (( DICE >= 15 )) && ENEMY="bandit" || ENEMY="boar"   ;; # boar   2/20
-	T ) (( DICE <= 11 )) && ENEMY="bandit"  || (( DICE >= 14 )) && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 2/20
-	@ ) if (( DICE <=  6 )) ; then
-			ENEMY="goblin" # 6/20
-		elif (( DICE >= 19 )) ; then
-			ENEMY="orc"    # 2/20
-		elif (( DICE > 6 )) && (( DICE < 11 )) ; then
-			ENEMY="boar"   # 4/20
-		else
-			ENEMY="bandit" # 8/20
-		fi ;;
-	C ) (( DICE ==  1 )) && ENEMY="chthulu" || (( DICE >= 7 ))  && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 5/20
+	H ) ((DICE <= 2)) && ENEMY="chthulu" || ENEMY="dragon" ;; 
+            # 1-7 (7/20)                         # 8-10 (3/20)                       # 17-20 (4/20)                      # 11-16 (6/20)
+	x ) ((DICE <= 7 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="goblin" || ((DICE >= 17)) && ENEMY="dragon" || ENEMY="varg"   
+	. ) ((DICE <= 12)) && ENEMY="goblin"  || ((DICE >= 15)) && ENEMY="bandit" || ENEMY="boar"   ;; # boar   13-15 (2/20)
+	T ) ((DICE <= 11)) && ENEMY="bandit"  || ((DICE >= 14)) && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 12-13 (2/20)
+	    # 1-6 (6/20)                         # 7-10 (4/20)                       # 19-20 (2/20)                      # 11-18 (8/20)
+	@ ) ((DICE <=  6)) && ENEMY="goblin"  || ((DICE <= 10)) && ENEMY="boar"   || ((DICE >= 19)) && ENEMY="orc"    || ENEMY="bandit" 
+	C ) ((DICE ==  1)) && ENEMY="chthulu" || ((DICE >= 7))  && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 2-6 (5/20)
     esac
 
     # ENEMY ATTRIBUTES

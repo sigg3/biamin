@@ -2176,7 +2176,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	case "$ENEMY" in
 	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
 	    varg )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
-	    chthulu ) EN_FOOD=$DICE                             ;; # max 40 days, min 4 days   (is huge..)
+	    chthulu ) EN_FOOD=$DICE                               ;; # max 40 days, min 4 days   (is huge..)
 	    dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
 	esac
     fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
@@ -2535,13 +2535,11 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    case "$DGAME_GUESS" in
 		i | I ) GX_DiceGame_Instructions ; continue ;;     # Start loop from the beginning
 		1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 ) # Stake!
-		    if (( GAME_ROUND > 1 )) ; then # First round is already paid
+		    if (( GAME_ROUND > 1 )) ; then                 # First round is already paid
 		    	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
 		    	echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]" && sleep 3
-		    fi
-		    ;;
-		*)  # or leave table
-		    echo "See you around, $CHAR_RACE_STR. Come back with more Gold!"
+		    fi ;;
+		*)  echo "See you around, $CHAR_RACE_STR. Come back with more Gold!" # or leave table
 		    break # leave immediately
 	    esac
 
@@ -2577,8 +2575,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    DGAME_RESULT=$( bc <<< "$DGAME_DICE_1 + $DGAME_DICE_2" )
 	    # IDEA: If we later add an item or charm for LUCK, add adjustments here.
 	    
-	    # Display roll result graphically
-	    GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2"
+	    GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2" # Display roll result graphically
 	    
 	    # Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
 	    case "$DGAME_RESULT" in
@@ -2691,8 +2688,9 @@ Marketplace() { # Used in GoIntoTown()
 	GX_Marketplace
 	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR
 	case "$VAR" in
-	    g | G) Marketplace_Grocer;;
-	    m | M) Marketplace_Merchant;;
+	    g | G) Marketplace_Grocer;; # Trade FOOD for GOLD and TOBACCO
+	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
+	    # Smbd who'll trade boars' tusks etc for GOLD/TOBACCO ???
 	    *) break ;; # Leave marketplace
 	esac
     done
@@ -2708,11 +2706,11 @@ Marketplace_Merchant(){
 
 Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.
+    # Determine prices for 1 unit depending on currencies' respective values
+    local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
+    local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
     while (true); do
 	GX_Marketplace_Grocer
-	# Determine prices for 1 unit depending on currencies' respective values
-	local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
-	local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_!
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"

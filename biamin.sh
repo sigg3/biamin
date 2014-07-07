@@ -2177,18 +2177,18 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
     (( CHAR_ITEMS >= 6 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
 
+    # IDEA: If player was attacked during the rest he and enemies can get + or - for night and moon phase here ???
+
     GX_Monster_$ENEMY
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
 
     # DETERMINE INITIATIVE (will usually be enemy)
     if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
+	# IDEA: different promts for different enemies ???
 	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
 	NEXT_TURN="en"
     else
 	echo -e "$CHAR has the initiative!\n"
-	# Sigge do we need add check for rest - if player was attacked during the rest he can flee,
-	# but if he was attaced during the rest - will he try to pickpocket enemy ? #kstn
-	# YES, this makes sense. We can't "benefit" from night attacks, except if we win battle:) -sig
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT
 	case "$FLEE_OPT" in
 	    f | F ) # flee
@@ -2291,7 +2291,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT"
 	    RollDice 6
 	    FightTable
-	    echo -n "ROLL D6: $DICE"
+	    echo -n "ROLL D6: $DICE "
 	    case "$FIGHT_PROMPT" in
 		f | F ) # Player tries to flee!
 		    RollDice 6
@@ -2398,6 +2398,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		    fi
 		fi
 		(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
+		# TODO check for boar's tusks etc (3.0)
 	esac
 
 	if (( PICKPOCKET > 0 )); then # check for stealing
@@ -2740,7 +2741,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 	esac
     done
     unset PRICE_IN_GOLD PRICE_IN_TOBACCO
-    # TODO? Add stealing from market??? 
+    # IDEA: Add stealing from market??? 
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
     # Or he call the police (the guards?) and they throw player from town? (kstn)
 } # Return to GoIntoTown()
@@ -2830,12 +2831,12 @@ NewSector() { # Used in Intro()
 	else
 	    RollDice 100        # Find out if we're attacked 
 	    case "$SCENARIO" in # FightMode() if RollForEvent return 0
-		H ) RollForEvent 1  && FightMode ;;
-		x ) RollForEvent 50 && FightMode ;;
-		. ) RollForEvent 20 && FightMode ;;
-		T ) RollForEvent 15 && FightMode ;;
-		@ ) RollForEvent 35 && FightMode ;;
-		C ) RollForEvent 10 && FightMode ;;
+		H ) RollForEvent 1  "fight" && FightMode ;;
+		x ) RollForEvent 50 "fight" && FightMode ;;
+		. ) RollForEvent 20 "fight" && FightMode ;;
+		T ) RollForEvent 15 "fight" && FightMode ;;
+		@ ) RollForEvent 35 "fight" && FightMode ;;
+		C ) RollForEvent 10 "fight" && FightMode ;;
 		* ) CustomMapError ;;
 	    esac
             (( DEATH == 1 )) && break # If player was slain in fight mode

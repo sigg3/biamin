@@ -2433,6 +2433,7 @@ RollForHealing() { # Used in Rest()
     RollDice 6
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
     (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
+    ((TURN++))
     sleep 2
 }   # Return to Rest()
 
@@ -2448,6 +2449,7 @@ Rest() {  # Used in NewSector()
 	    else
 		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
+	    ((TURN++))
 	    sleep 2
 	    ;;
 	x ) RollForEvent 60 "fight" && FightMode && PLAYER_RESTING=1 || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;

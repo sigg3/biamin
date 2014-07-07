@@ -2159,9 +2159,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
     # Loot: Determine loot type and size 
     RollDice 100
-    (( DICE <= EN_GOLD    )) && RollDice 10 && EN_GOLD=$( bc <<< "scale=2; $DICE*($EN_GOLD/100)" ) || EN_GOLD=0
+    (( DICE <= EN_GOLD    )) && RollDice 10 && EN_GOLD=$( bc <<< "scale=2; $DICE * ($EN_GOLD / 100)" ) || EN_GOLD=0
     RollDice 100
-    (( DICE <= EN_TOBACCO )) && RollDice 10 && EN_TOBACCO=$( bc <<< "scale=2;$ $DICE*(EN_TOBACCO/100)" ) || EN_TOBACCO=0
+    (( DICE <= EN_TOBACCO )) && RollDice 10 && EN_TOBACCO=$( bc <<< "scale=2; $DICE * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
     RollDice 100
     if (( DICE <= EN_FOOD )) ; then # Loot: Food table for animal creatures
 	RollDice 10
@@ -2182,7 +2182,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
     # DETERMINE INITIATIVE (will usually be enemy)
     if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
-	echo "The $ENEMY has initiative"
+	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
 	NEXT_TURN="en"
     else
 	echo -e "$CHAR has the initiative!\n"

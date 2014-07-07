@@ -1115,13 +1115,19 @@ GX_Marketplace_Grocer() {
     traveller, tell me what you need!     ||   ,;    -.__;-    `.    || | _)(_
                                           || .;        ""        `.  ||,'(____)
     If we don't have it, I suspect        |l;'  (      _|_     ,  `: |l_______ 
-    nobody else will neither."            |;'  ,;)_ _ _ o_ _ _,^.   \',~~~~~~~
+    nobody else will neither.             |;'  ,;)_ _ _ o_ _ _,^.   \',~~~~~~~
                                     ______,~,~ t(______________)_;~~~: _______
-    Price: 1 per item              _____  '----`    ____      __ '-^-^`  _____
+                                   _____  '----`    ____      __ '-^-^`  _____
    
 EOT
-    echo "$HR"
     # TODO: Must fix the prices or add msg on current value of gold.
+    tput sc # save cursor position
+    tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+    echo "1 FOOD costs $PRICE_IN_GOLD Gold"
+    tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+    echo "or $PRICE_IN_TOBACCO Tobacco.\""
+    tput rc # restore cursor position
+    echo "$HR"
 }
 
 
@@ -2707,8 +2713,8 @@ Marketplace_Merchant(){
 Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.
     # Determine prices for 1 unit depending on currencies' respective values
-    local PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
-    local PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
+    PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
+    PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
     while (true); do
 	GX_Marketplace_Grocer
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
@@ -2747,6 +2753,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 	    *) break;
 	esac
     done
+    unset PRICE_IN_GOLD PRICE_IN_TOBACCO
     # TODO? Add stealing from market??? 
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
     # Or he call the police (the guards?) and they throw player from town? (kstn)

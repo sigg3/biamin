@@ -1720,18 +1720,42 @@ TodaysDate() {
 ## WORLD EVENT functions
 
 WorldChangeEconomy() {  # Used in NewSector()
-	CHANGETYPE="$1" # In/Deflation (either + or - symbol)
-	UNITTYPE="$2"	# Tobacco/Gold
-	RollDice "$3"   # $3 == Severity, Roll for severity in fluctuation
-	FLUX=$( bc <<< "$DICE * $VAL_CHANGE" )
-	case "$UNITTYPE" in # Which market's affected?
-	    1 ) VAL_TOBACCO=$( bc <<< "$VAL_TOBACCO $CHANGETYPE $FLUX" ) # How is tobacco affected?
-		(( $(bc <<< "$VAL_TOBACCO <= 0") )) && VAL_TOBACCO=0.25	 # Adjusted for min 0.25 value
-		VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) ;;  # Used in GX_Bulletin()
-	    2 ) VAL_GOLD=$( bc <<< "$VAL_GOLD $CHANGETYPE $FLUX" )       # How is gold affected?
-		(( $(bc <<< "$VAL_GOLD <= 0") )) && VAL_GOLD=0.25	 # Adjusted for min 0.25 value
-		VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }'  <<< $VAL_GOLD ) ;; # Used in GX_Bulletin()
-	esac
+    RollDice 100	# Roll to 15% chance for economic event transpiring
+    (( DICE > 15 )) && return 0 # or leave immediately
+    RollDice 12         # = Number of possible scenarios (+ default 0)		
+    BBSMSG="$DICE"      # Update BBSMSG
+    
+    case "$DICE" in
+    	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
+    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
+    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
+    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
+    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
+    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
+    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
+    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
+    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
+    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
+    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
+    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
+    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
+    esac
+
+    FLUX=$( bc <<< "$DICE * $VAL_CHANGE" ) # Determine severity
+    # Which market's affected?
+    case "$UNIT" in 
+	"Tobacco" )  
+	    VAL_TOBACCO=$( bc <<< "$VAL_TOBACCO $CHANGE $FLUX" ) ;     # How is tobacco affected?	    
+	    (( $(bc <<< "$VAL_TOBACCO <= 0") )) && VAL_TOBACCO=0.25  ; # Adjusted for min 0.25 value
+	    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< "$VAL_TOBACCO" ) ;; # Used in GX_Bulletin()
+	"Gold"    )  
+	    VAL_GOLD=$( bc <<< "$VAL_GOLD $CHANGE $FLUX" ) ;           # How is gold affected?
+	    (( $(bc <<< "$VAL_GOLD <= 0") )) && VAL_GOLD=0.25	       # Adjusted for min 0.25 value
+	    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }'  <<< "$VAL_GOLD" ) ;; # Used in GX_Bulletin()
+	* ) Die "BUG in WorldChangeEconomy() with scenario $DICE" ;;
+    esac
+    WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
+    SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
 } # Return to NewSector()
 
 # Other WorldChangeFUNCTIONs go here:)
@@ -2862,32 +2886,8 @@ NewSector() { # Used in Intro()
 	fi
 	sleep 2 ### DEBUG
 
-	if (( --WORLDCHANGE_COUNTDOWN <= 0 )); then # --WorldChangeCounter THEN Check for WORLD EVENT: Economy
-	    RollDice 100
-	    if (( DICE <= 15 )); then 	# 15% chance for economic event transpiring
-		RollDice 12  # = Number of possible scenarios (+ default 0)		
-		BBSMSG="$DICE" # Update BBSMSG
-		
-		case "$DICE" in
-		    # Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-		    1 )  WorldChangeEconomy + 1 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-		    2 )  WorldChangeEconomy + 1 5  ;; # Hobbits on Strike (lesser inflation)
-		    3 )  WorldChangeEconomy - 1 12 ;; # Tobacco Overproduction (serious deflation)
-		    4 )  WorldChangeEconomy - 1 5  ;; # Tobacco Import Increase (lesser deflation)
-		    5 )  WorldChangeEconomy + 2 12 ;; # Gold Demand Increases due to War (serious inflation)
-		    6 )  WorldChangeEconomy + 2 5  ;; # Gold Required for New Fashion (lesser inflation)
-		    7 )  WorldChangeEconomy - 2 12 ;; # New Promising Gold Vein (serious deflation)
-		    8 )  WorldChangeEconomy - 2 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-		    9 )  WorldChangeEconomy - 2 4  ;; # Alchemists promise gold (lesser deflation)
-		    10 ) WorldChangeEconomy + 1 4  ;; # Water pipe fashion (lesser inflation)
-		    11 ) WorldChangeEconomy + 2 10 ;; # King Bought Tracts of Land (serious inflation)
-		    12 ) WorldChangeEconomy - 1 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
-		esac
-
-		SaveCurrentSheet         # Save world changes to charsheet
-		WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
-	    fi
-	fi
+	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
+	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"

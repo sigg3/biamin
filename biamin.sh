@@ -1335,12 +1335,6 @@ What to do?
     esac
 }
 
-SetupHighscore() { # Used in main() and Announce()
-	HIGHSCORE="$GAMEDIR/highscore" ;
-	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
-	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
-}
-
 ### DISPLAY MAP
 GX_Map() { # Used in MapNav()
     if ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ; then # Check for Gift of Sight
@@ -1567,6 +1561,27 @@ BiaminSetup() { # Used in MainMenu()
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     (( DISABLE_CHEATS == 1 )) && (( CHAR_HEALTH >= 150 )) && CHAR_HEALTH=150
     Intro
+}
+
+Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
+    SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
+    TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+    MapCreate          # Create session map in $MAP  
+    (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
+    WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
+    # Create strings for economical situation..
+    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
+    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) # locale's delimiter is ',' (cyrillic locale for instance) #kstn
+
+    GX_Intro
+
+    local COUNTDOWN=60
+    while (( COUNTDOWN >= 0 )) ; do
+    	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
+    done
+    unset COUNTDOWN
+    NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
+    NewSector
 }
 
 DateFromTurn() {
@@ -2899,25 +2914,11 @@ NewSector() { # Used in Intro()
     done
 }	# Return to MainMenu() (if player is dead)
 
-Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
-    SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
-    TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
-    MapCreate          # Create session map in $MAP  
-    (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
-    WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
-    # Create strings for economical situation..
-    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
-    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) # locale's delimiter is ',' (cyrillic locale for instance) #kstn
 
-    GX_Intro
-
-    local COUNTDOWN=60
-    while (( COUNTDOWN >= 0 )) ; do
-    	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
-    done
-    unset COUNTDOWN
-    NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
-    NewSector
+SetupHighscore() { # Used in main() and Announce()
+	HIGHSCORE="$GAMEDIR/highscore" ;
+	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
+	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
 }
 
 Announce() {

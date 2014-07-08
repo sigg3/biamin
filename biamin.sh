@@ -1752,7 +1752,7 @@ WorldChangeEconomy() {  # Used in NewSector()
 	    VAL_GOLD=$( bc <<< "$VAL_GOLD $CHANGE $FLUX" ) ;           # How is gold affected?
 	    (( $(bc <<< "$VAL_GOLD <= 0") )) && VAL_GOLD=0.25	       # Adjusted for min 0.25 value
 	    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }'  <<< "$VAL_GOLD" ) ;; # Used in GX_Bulletin()
-	* ) Die "BUG in WorldChangeEconomy() with scenario $DICE" ;;
+	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${DICE}<<<" ;;
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet         # Save world changes to charsheet # LAST!!!

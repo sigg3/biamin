@@ -1151,9 +1151,7 @@ EOT
 
 # GFX MAP FUNCTIONS
 LoadCustomMap() { # Used in MapCreate()
-    local LIMIT=9
-    local OFFSET=0
-    local NUM=0
+    local LIMIT=9 OFFSET=0 NUM=0
     while (true) ; do
 	GX_LoadGame
 	awk '{printf "  | %-15.-15s | %-15.-15s | %-30.-30s\n", $1, $2, $3, $4;}' <<< 'NAME CREATOR DESCRIPTION'
@@ -1899,8 +1897,7 @@ LoadGame() { # Used in MainMenu()
 	return 1   # BiaminSetup() will not be run after LoadGame()
     fi
 
-    local LIMIT=9
-    local OFFSET=0
+    local LIMIT=9 OFFSET=0
     while (true) ; do
 	GX_LoadGame
 	for (( a=1; a <= LIMIT ; a++)); do
@@ -1950,8 +1947,7 @@ ITEM_YX() { # Used in HotzonesDistribute() and GX_Map()
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     # Scatters special items across the map
     # bugfix to prevent finding item at 1st turn of 2 or more items at one turn
-    local MAP_X;
-    local MAP_Y;
+    local MAP_X MAP_Y
     read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
     ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
@@ -2064,9 +2060,7 @@ FightTable() {  # Used in FightMode()
 
 EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     # req.: dice-size | formula | skill-abbrevation
-    local DICE_SIZE="$1"
-    local FORMULA="$2"
-    local SKILLABBREV="$3"
+    local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
 
     (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
 

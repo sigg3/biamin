@@ -57,11 +57,13 @@ TODO 2.0 branch
 [x] AUTO-update (optional)
 [x] Dice game in tavern
 [?]	Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
+[?]		Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
 [ ] Replace bash's pseudo-random RANDOM to smth more random.
 
 TODO Post 2.0 branch
+[?] Gods ???
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?

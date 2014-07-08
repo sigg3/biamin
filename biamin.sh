@@ -1462,40 +1462,45 @@ BiaminSetup() { # Used in MainMenu()
 	TURN=0			# For the beginning player starts from 1st Jan 1 year. After starting date'll be random
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
+
+	# IDEA - why not difference all 4 races by various tobacco/gold offsets ? #kstn
+	#            gold            tobacco
+	#             \/                /\
+	# dwarves |  most         | the smallest
+	# man     |  more         | smaller
+	# elves   |  smaller      | more
+	# hobbits |  the smallest | most
+	#             
 	case "$CHAR_RACE" in
-	    2 ) echo "You chose to be an ELF" && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
-	    3 ) echo "You chose to be a DWARF" && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
-	    4 ) echo "You chose to be a HOBBIT" && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
-	    1 | * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
+	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
+	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
+	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
+	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
 	esac
 	
 	# WEALTH formula = D12 - (D6 * CLASS OFFSET)
 	# Determine Initial Wealth of GOLD 
 	RollDice 20 && CHAR_GOLD=$DICE
 	RollDice 6 && OFFSET_GOLD=$( bc <<< "$OFFSET_GOLD * $DICE" )
-	# Adjusting CHAR_GOLD to CHAR_RACE offsets
-	case $CHAR_RACE in
-	    1 | 3 ) CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $OFFSET_GOLD" ) ;; # Humans and dwarves
-	    2 | 4 ) CHAR_GOLD=$( bc <<< "$CHAR_GOLD - $OFFSET_GOLD" ) ;; # Elves and hobbits
-	esac
-
 	# Determine Initial Wealth of TOBACCO
 	RollDice 20 && CHAR_TOBACCO=$DICE 
 	RollDice 6 && OFFSET_TOBACCO=$( bc <<< "$OFFSET_TOBACCO * $DICE" )
-	# Adjusting CHAR_TOBACCO to CHAR_RACE offsets
-	case $CHAR_RACE in
-	    2 | 4 ) CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $OFFSET_TOBACCO" ) ;; # Humans and dwarves
-	    1 | 3 ) CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO - $OFFSET_TOBACCO" ) ;; # Elves and hobbits
+
+	# Adjusting CHAR_GOLD and CHAR_TOBACCO to CHAR_RACE offsets
+	case "$CHAR_RACE" in
+	    1 | 3 ) # Humans and dwarves
+		CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $OFFSET_GOLD" ) ;          # get more GOLD    # (1..20) + (2..12) # ( 3..32)
+		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO - $OFFSET_TOBACCO" ) ; # but less TOBACCO # (1..20) - (3..12) # (-2..17)
+		(( CHAR_TOBACCO < 0 )) && CHAR_TOBACCO=0 ;;                  # healthy bastard  #
+	    2 | 4 ) # Elves and hobbits
+		CHAR_GOLD=$( bc <<< "$CHAR_GOLD - $OFFSET_GOLD" ) ;          # get less GOLD    # (1..20) - (3..12) # (-2..17)
+		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $OFFSET_TOBACCO" ) ; # but more TOBACCO # (1..20) + (2..12) # ( 3..32)
+		(( CHAR_GOLD < 0 )) && CHAR_GOLD=0 ;;                        # poor bastard     #
 	esac
 
-	# Set negative values to 0 [not floating numbers]
-	(( CHAR_GOLD < 0 ))    && CHAR_GOLD=0    # poor bastard
-	(( CHAR_TOBACCO < 0 )) && CHAR_TOBACCO=0 # healthy bastard
-	
-	# Determine initial food stock (D20)
-	RollDice 20 && CHAR_FOOD=$DICE
-	(( CHAR_FOOD < 5 )) && CHAR_FOOD=5
-	
+	# Determine initial food stock (D16 + 4) - player has 5 food minimum
+	RollDice 16 && CHAR_FOOD=$(( DICE + 4 )) # [not floating number yet]
+    
 	# Set initial Value of Currencies
 	VAL_GOLD=1
 	VAL_TOBACCO=1

@@ -934,12 +934,10 @@ GX_Bulletin() { # Requires $BBSMSG as arg, default val=0
 EOT
     echo "$HR"
     tput sc # save cursor position
-    tput cup 3 21 # move to y=3, x=21 ( upper left corner is 0 0 )
     local NUM=0
-    printf "%s" "${BULLETIN[((NUM++))]}" # TITLE
-    for i in 5 6 7 8 9 10 ; do
+    for i in 3 5 6 7 8 9 10 ; do
 	tput cup $i 21 # move to y=$i, x=21 ( upper left corner is 0 0 )
-	printf "%s" "${BULLETIN[((NUM++))]}" # TEXT
+	printf "%s" "${BULLETIN[((NUM++))]}" # 3 - TITLE, 5-10 TEXT
     done
     tput rc # restore cursor position
     PressAnyKey
@@ -1757,7 +1755,7 @@ MainMenu() {
     done
 }
 # Highscore
-HighscoreRead() {
+HighscoreRead() { # Used in Announce() and HighScore()
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
     local HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n;"
     local i=1
@@ -2645,7 +2643,7 @@ Marketplace() { # Used in GoIntoTown()
     # Or he call the police (the guards?) and they throw player from town? (kstn)
 } # Return to GoIntoTown()
 
-Marketplace_Merchant(){
+Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
     if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location

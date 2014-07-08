@@ -1730,21 +1730,21 @@ WorldChangeEconomy() {  # Used in NewSector()
     
     case "$DICE" in
     	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
-    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
-    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
-    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
-    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
-    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
-    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
-    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
-    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
-    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
+    	1 )  local CHANGE="+" UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
+    	2 )  local CHANGE="+" UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
+    	3 )  local CHANGE="-" UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
+    	4 )  local CHANGE="-" UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
+    	5 )  local CHANGE="+" UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
+    	6 )  local CHANGE="+" UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
+    	7 )  local CHANGE="-" UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
+    	8 )  local CHANGE="-" UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
+    	9 )  local CHANGE="-" UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
+    	10 ) local CHANGE="+" UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
+    	11 ) local CHANGE="+" UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
+    	12 ) local CHANGE="-" UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
     esac
 
-    FLUX=$( bc <<< "$DICE * $VAL_CHANGE" ) # Determine severity
+    local FLUX=$( bc <<< "$DICE * $VAL_CHANGE" ) # Determine severity
     # Which market's affected?
     case "$UNIT" in 
 	"Tobacco" )  

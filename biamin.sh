@@ -2796,6 +2796,45 @@ GoIntoTown() { # Used in NewSector()
     done
 } # Return to NewSector()
 
+CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
+    # TODO may be it shold be renamed to smth more understandable? #kstn
+    # Food check # TODO add it to Rest() after finishing
+    # TODO not check for food at the 1st turn ???
+    # TODO set check to death from starvation
+    # TODO Tavern also should reset STARVATION and restore starvation penalties if any
+    if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
+	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
+	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
+	if (( STARVATION > 0 )) ; then
+	    if (( STARVATION >= 8 )) ; then # Restore lost ability after overcoming starvation
+		case "$CHAR_RACE" in
+		    1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; 
+		    2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; 
+		esac		    
+	    fi
+	    STARVATION=0
+	fi
+    else
+	case $(( ++STARVATION )) in # ++STARVATION THEN check
+	    1 ) echo "You're starving on the ${STARVATION}st day and feeling hungry .." ;;
+	    2 ) echo "You're starving on the ${STARVATION}nd day and feeling famished .." ;;
+	    3 ) echo "You're starving on the ${STARVATION}rd day and feeling weak .." ;;
+	    * ) echo "You're starving on the ${STARVATION}th day, feeling weaker and weaker .." ;;
+	esac
+
+	(( CHAR_HEALTH -= 5 ))
+	echo "-5 HEALTH: Your body is suffering from starvation .. (Health: $HEALTH)" # Light Starvation penalty - decrease 5HP/turn	    
+	
+	if (( STARVATION == 8 )); then # Extreme Starvation penalty
+	    case "$CHAR_RACE" in
+		1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (Strength: $STRENGTH)" ;; 
+		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
+	    esac
+	fi
+	# ADD CHECK HERE IF HEALTH <= 0 then "You have starved to death" sleep 2 && death..
+    fi
+    sleep 2 ### DEBUG
+}
 # THE GAME LOOP
 NewSector() { # Used in Intro()
     while (true) # While (player-is-alive) :) 
@@ -2827,49 +2866,7 @@ NewSector() { # Used in Intro()
 	    GX_Place "$SCENARIO"
 	fi
 
-	# Food check # TODO add it to Rest() after finishing
-	# TODO move it to separate function after finishing		
-	  # What's your plan? -Sig.
-	    # Look, we need check-for-starvation here and in Rest (one code in two places) 
-	    # So it seems to me that it should be separate function (like CheckForDeath) #kstn
-			# Sounds like a sound logic :) # sigge
-	# TODO not check for food at the 1st turn
-	# TODO set check to death from starvation
-	# TODO Probably due to this temporary placement in code it popped up on the Display Race Info page after a fight.. :P
-	# TODO Yes, it pops up sometimes when it's not (for the gamer experienced as) a new sector..?
-	if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
-	    CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
-	    echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
-	    if (( STARVATION > 0 )) ; then
-		if (( STARVATION >= 8 )) ; then # Restore lost ability after overcoming starvation
-		    case "$CHAR_RACE" in
-			1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; 
-			2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; 
-		    esac		    
-		fi
-		STARVATION=0
-	    fi
-	else
-	    case $(( ++STARVATION )) in # ++STARVATION THEN check
-		1 ) echo "You're starving on the ${STARVATION}st day and feeling hungry .." ;;
-		2 ) echo "You're starving on the ${STARVATION}nd day and feeling famished .." ;;
-		3 ) echo "You're starving on the ${STARVATION}rd day and feeling weak .." ;;
-		* ) echo "You're starving on the ${STARVATION}th day, feeling weaker and weaker .." ;;
-	    esac
-
-	    (( CHAR_HEALTH -= 5 ))
-	    echo "-5 HEALTH: Your body is suffering from starvation .. (Health: $HEALTH)" # Light Starvation penalty - decrease 5HP/turn	    
-
-	    if (( STARVATION == 8 )); then # Extreme Starvation penalty
-		case "$CHAR_RACE" in
-		    1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (Strength: $STRENGTH)" ;; 
-		    2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
-		esac
-	    fi
-	    # ADD CHECK HERE IF HEALTH <= 0 then "You have starved to death" sleep 2 && death..
-	fi
-	sleep 2 ### DEBUG
-
+	CheckForStarvation # Food check
 	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
 	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
 

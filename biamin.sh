@@ -901,9 +901,8 @@ GX_Bulletin() { # Requires $BBSMSG as arg, default val=0
 		"Rewarde to be pay'd in Golde for ye "
 		"Delivery of a Dragon to ye Schoole, "
 		"preferably deceased, for study.     ") ;;
-    esac
-    # Add generic consequence string
-    case $1 in
+    esac    
+    case $1 in # Add generic consequence string
 	1 | 2 | 10 ) BULLETIN[6]="TOBACCO RAISED TO: $VAL_TOBACCO_STR" ;;
 	3 | 4 | 12 ) BULLETIN[6]="TOBACCO LOWERED TO: $VAL_TOBACCO_STR" ;;
 	5 | 6 | 11 ) BULLETIN[6]="GOLD RAISED TO: $VAL_GOLD_STR" ;;
@@ -937,7 +936,7 @@ EOT
     local NUM=0
     for i in 3 5 6 7 8 9 10 ; do
 	tput cup $i 21 # move to y=$i, x=21 ( upper left corner is 0 0 )
-	printf "%s" "${BULLETIN[((NUM++))]}" # 3 - TITLE, 5-10 TEXT
+	printf "%s" "${BULLETIN[((NUM++))]}" # 3 - TITLE, 5-9 TEXT, 10 consequence string
     done
     tput rc # restore cursor position
     PressAnyKey
@@ -1196,7 +1195,6 @@ LoadCustomMap() { # Used in MapCreate()
     return 1; # Return to MapCreate() and load default map
 }
 
-
 # FILL THE $MAP file using either default or custom map
 MapCreate() {
     # CHECK for custom maps 
@@ -1206,7 +1204,7 @@ MapCreate() {
 	MAPS[((++i))]=$(basename "$loadMAP") # i++ THAN initialize SHEETS[$i]
     done
 
-    if [[ "${MAPS[@]}" ]] ; then # If there is/are  custom map/s
+    if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
 	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP
 	case "$MAP" in
@@ -1237,10 +1235,9 @@ MapCreate() {
                                                                        S
 EOT
 )
-
 }
-# Map template generator (CLI arg function)
-MapCreateCustom() {
+
+MapCreateCustom() { # Map template generator (CLI arg function)
     [[ ! -d "$GAMEDIR" ]] && Die "Please create $GAMEDIR/ directory before running" 
     
     cat <<"EOT" > "${GAMEDIR}/CUSTOM_MAP.template"
@@ -1484,8 +1481,7 @@ BiaminSetup() { # Used in MainMenu()
 	RollDice 20 && CHAR_TOBACCO=$DICE 
 	RollDice 6 && OFFSET_TOBACCO=$( bc <<< "$OFFSET_TOBACCO * $DICE" )
 
-	# Adjusting CHAR_GOLD and CHAR_TOBACCO to CHAR_RACE offsets
-	case "$CHAR_RACE" in
+	case "$CHAR_RACE" in # Adjusting CHAR_GOLD and CHAR_TOBACCO to CHAR_RACE offsets
 	    1 | 3 ) # Humans and dwarves
 		CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $OFFSET_GOLD" ) ;          # get more GOLD    # (1..20) + (2..12) # ( 3..32)
 		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO - $OFFSET_TOBACCO" ) ; # but less TOBACCO # (1..20) - (3..12) # (-2..17)
@@ -1537,8 +1533,7 @@ BiaminSetup() { # Used in MainMenu()
 	sleep 2
     fi # Finish check whether CHAR exists if not create CHARSHEET 
 
-    # Set abilities according to race (each equal to 12) + string var used frequently
-    case $CHAR_RACE in
+    case "$CHAR_RACE" in # Set abilities according to race (each equal to 12) + string var used frequently
 	1 ) HEALING=3 ; STRENGTH=3 ; ACCURACY=3 ; FLEE=3 ; CHAR_RACE_STR="human" ;; # human  (3,3,3,3)
 	2 ) HEALING=4 ; STRENGTH=3 ; ACCURACY=4 ; FLEE=1 ; CHAR_RACE_STR="elf"   ;; # elf    (4,3,4,1)
 	3 ) HEALING=2 ; STRENGTH=5 ; ACCURACY=3 ; FLEE=2 ; CHAR_RACE_STR="dwarf" ;; # dwarf  (2,5,3,2)
@@ -1546,18 +1541,8 @@ BiaminSetup() { # Used in MainMenu()
     esac
 
     # Adjust abilities according to items
-    if (( CHAR_ITEMS >= 2 )); then
-	((HEALING++))			# Adjusting for Emerald of Narcolepsy
-	if (( CHAR_ITEMS >= 4 )); then
-	    ((FLEE++))			# Adjusting for Fast Magic Boots
-	    if (( CHAR_ITEMS >= 7 )); then		
-		((STRENGTH++))		# Adjusting for Broadsword
-		if (( CHAR_ITEMS >= 8 )); then	
-		    ((ACCURACY++))	# Adjusting for Steady Hand Brew
-		fi
-	    fi
-	fi
-    fi
+    # Emerald of Narcolepsy                 Fast Magic Boots                   Broadsword                              Steady Hand Brew
+    ((CHAR_ITEMS > 1)) && ((HEALING++)) && ((CHAR_ITEMS > 3)) && ((FLEE++)) && ((CHAR_ITEMS > 6)) && ((STRENGTH++)) && ((CHAR_ITEMS > 7)) && ((ACCURACY++))	
 
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     (( DISABLE_CHEATS == 1 )) && (( CHAR_HEALTH >= 150 )) && CHAR_HEALTH=150
@@ -1730,23 +1715,23 @@ WorldChangeEconomy() {  # Used in NewSector()
     
     case "$DICE" in
     	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-    	1 )  local CHANGE="+" UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-    	2 )  local CHANGE="+" UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
-    	3 )  local CHANGE="-" UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
-    	4 )  local CHANGE="-" UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
-    	5 )  local CHANGE="+" UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
-    	6 )  local CHANGE="+" UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
-    	7 )  local CHANGE="-" UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
-    	8 )  local CHANGE="-" UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-    	9 )  local CHANGE="-" UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
-    	10 ) local CHANGE="+" UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
-    	11 ) local CHANGE="+" UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
-    	12 ) local CHANGE="-" UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
+    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
+    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
+    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
+    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
+    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
+    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
+    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
+    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
+    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
+    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
+    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
+    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
     esac
 
     local FLUX=$( bc <<< "$DICE * $VAL_CHANGE" ) # Determine severity
-    # Which market's affected?
-    case "$UNIT" in 
+    
+    case "$UNIT" in # Which market is affected?
 	"Tobacco" )  
 	    VAL_TOBACCO=$( bc <<< "$VAL_TOBACCO $CHANGE $FLUX" ) ;     # How is tobacco affected?	    
 	    (( $(bc <<< "$VAL_TOBACCO <= 0") )) && VAL_TOBACCO=0.25  ; # Adjusted for min 0.25 value
@@ -2704,7 +2689,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
     while (true); do
 	GX_Marketplace_Grocer
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
-	echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_!
+	# echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_! # Added to GX_
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
 	read -sn1 -p "       Trade for (G)old        Trade for (T)obacco       (N)ot interested" MARKETVAR
 	case "$MARKETVAR" in

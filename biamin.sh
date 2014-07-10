@@ -229,7 +229,8 @@ ___                          (         \__ 1                _/             \   \
                                |  |  |_    1    \___________________________  
                                |__| ___\   1                                \___
 EOT
-    echo "$HR" && PressAnyKey
+    echo "$HR" ## && PressAnyKey #BUGFIX
+    echo "                        Press (A)ny key to continue.." 
 }
 
 GX_Races() {
@@ -254,13 +255,13 @@ EOF
 }
 
 GX_Calendar() { # Used in DisplayCharsheet()
-	# TODO The Idea is simply put to have a calendar on the right side
-	# and some info about the current month on the left (or vice-versa)
+    # TODO The Idea is simply put to have a calendar on the right side
+    # and some info about the current month on the left (or vice-versa)
 
-	clear
-	echo "CALENDAR placeholder"
-	echo "$HR"
-	PressAnyKey
+    clear
+    echo "CALENDAR placeholder"
+    echo "$HR"
+    PressAnyKey
 }
 
 GX_Castle() {
@@ -1563,7 +1564,8 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
 
     local COUNTDOWN=60
     while (( COUNTDOWN >= 0 )) ; do
-    	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
+#    	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
+    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
     unset COUNTDOWN
     NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()

@@ -1609,26 +1609,27 @@ DateFromTurn() {
     YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
     local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" ) # month and days
     (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
-    local MONTH_NUM=$( awk '{  
-                    if ($0 == 1 )   { print "1"; exit; }
-                    if ($0 <= 33 )  { print "2"; exit; }
-                    if ($0 <= 66 )  { print "3"; exit; }
-                    if ($0 == 67 )  { print "4"; exit; }
-                    if ($0 <= 100 ) { print "5"; exit; }
-                    if ($0 <= 133 ) { print "6"; exit; }
-                    if ($0 <= 166 ) { print "7"; exit; }
-                    if ($0 == 167 ) { print "8"; exit; }
-                    if ($0 <= 200 ) { print "9"; exit; }
-                    if ($0 == 201 ) { print "10"; exit; }
-                    if ($0 <= 233 ) { print "11"; exit; }
-                    if ($0 <= 266 ) { print "12"; exit; }
-                    if ($0 == 267 ) { print "13"; exit; }
-                    if ($0 <= 300 ) { print "14"; exit; }
-                    if ($0 <= 333 ) { print "15"; exit; }
-                    if ($0 <= 366 ) { print "16"; exit; }
-                    if ($0 == 367 ) { print "17"; exit; }
-                    if ($0 <= 400 ) { print "18"; exit; }
-                    }' <<< "$REMAINDER" )
+
+    if   ((REMAINDER == 1))  ; then local MONTH_NUM="1"
+    elif ((REMAINDER <= 33)) ; then local MONTH_NUM="2"
+    elif ((REMAINDER <= 66)) ; then local MONTH_NUM="3"
+    elif ((REMAINDER == 67)) ; then local MONTH_NUM="4"
+    elif ((REMAINDER <= 100)); then local MONTH_NUM="5"
+    elif ((REMAINDER <= 133)); then local MONTH_NUM="6"
+    elif ((REMAINDER <= 166)); then local MONTH_NUM="7"
+    elif ((REMAINDER == 167)); then local MONTH_NUM="8"
+    elif ((REMAINDER <= 200)); then local MONTH_NUM="9"
+    elif ((REMAINDER == 201)); then local MONTH_NUM="10"
+    elif ((REMAINDER <= 233)); then local MONTH_NUM="11"
+    elif ((REMAINDER <= 266)); then local MONTH_NUM="12"
+    elif ((REMAINDER == 267)); then local MONTH_NUM="13"
+    elif ((REMAINDER <= 300)); then local MONTH_NUM="14"
+    elif ((REMAINDER <= 333)); then local MONTH_NUM="15"
+    elif ((REMAINDER <= 366)); then local MONTH_NUM="16"
+    elif ((REMAINDER == 367)); then local MONTH_NUM="17"
+    else local MONTH_NUM="18"
+    fi
+
     case "$MONTH_NUM" in
 	1 | 4 | 8 | 10 | 13 | 17 ) DAY=${MONTH_STR[$MONTH_NUM]} ;; # 'Witching Day' etc. 
 	*)  MONTH=${MONTH_STR[$MONTH_NUM]}

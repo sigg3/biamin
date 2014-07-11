@@ -1926,30 +1926,34 @@ LoadGame() { # Used in MainMenu()
 # GAME ITEMS
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     # Scatters special items across the map
-    # bugfix to prevent finding item at 1st turn of 2 or more items at one turn
     local MAP_X MAP_Y
     read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
-    ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
+    local ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
     HOTZONE=() # Reset HOTZONE  
     while (( ITEMS_2_SCATTER > 0 )) ; do
-	ITEM_Y=$((RANDOM%15+1)) # Randomize ITEM_Y # TODO replace to RollDice
-	ITEM_X=$((RANDOM%18+1)) # Randomize ITEM_X # TODO replace to RollDice
+	local ITEM_Y=$(RollDice2 15) # Randomize ITEM_Y 
+	local ITEM_X=$(RollDice2 18) # Randomize ITEM_X 
 	(( ITEM_X ==  MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                  # reroll if HOTZONE == CHAR_GPS
 	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
 	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},
 	# --ITEMS_2_SCATTER - because array starts from ${HOTZONE[0]} #kstn
     done
 }
+
 ################### GAME SYSTEM #################
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
-
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
     RANDOM=$(date '+%N') # Reseed random number generator using nano seconds    
     DICE=$((RANDOM%$DICE_SIZE+1))
+}
+
+RollDice2() { # Temporary wrapper for RollDice()
+    RollDice $1
+    echo "$DICE" # Great idea Sigge! Thanks!
 }
 
 ## GAME FUNCTIONS: ITEMS IN LOOP

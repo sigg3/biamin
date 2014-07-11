@@ -1796,7 +1796,7 @@ HighScore() { # Used in MainMenu()
     GX_HighScore
     echo ""
     # Show 10 highscore entries or die if Highscore list is empty
-    [ -s "$HIGHSCORE" ] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
+    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
     echo "" # empty line TODO fix it
     read -sn 1 -p "                    Press the any key to go to (M)ain menu"
 }   # Return to MainMenu()
@@ -1815,7 +1815,7 @@ PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
     # TODO add option to use wget if systen hasn't curl (Debian for instance) -kstn
     # TODO I'm not sure. I was told to use curl because it has greater compatibility than wget..? - s3
     echo " Download GNU GPL Version 3 ..."
-    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I didn't know we could do that :)
+    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
     echo " Download CC BY-NC-SA 4.0 ..."
     CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
     if [[ $GPL && $CC ]] ; then 
@@ -1833,13 +1833,14 @@ $CC"  > "$GAMEDIR/LICENSE"
 	return 1
     fi
 }
-
+    
 ShowLicense() { # Used in License()
-	case "$PAGER" in
-		0 ) echo -en "\n License file available at $GAMEDIR/LICENSE\n" && PressAnyKey ;;
-		* ) "$PAGER" "$GAMEDIR/LICENSE" ;;
-	esac
+    case "$PAGER" in
+	0 ) echo -en "\n License file available at $GAMEDIR/LICENSE\n" && PressAnyKey ;;
+	* ) "$PAGER" "$GAMEDIR/LICENSE" ;;
+    esac
 }
+
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     GX_BiaminTitle
@@ -1876,7 +1877,7 @@ LoadGame() { # Used in MainMenu()
 	SHEETS[((++i))]="$loadSHEET" # $i++ THAN initialize SHEETS[$i]
     done
 
-    if [[ ! ${SHEETS[@]} ]] ; then # If no one sheet was found
+    if [[ ! "${SHEETS[@]}" ]] ; then # If no one sheet was found
 	GX_LoadGame
 	echo " Sorry! No character sheets in $GAMEDIR/"
 	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
@@ -1913,11 +1914,11 @@ LoadGame() { # Used in MainMenu()
 	esac
     done
     echo "" # TODO empty line - fix it later
-    if [[ ! ${SHEETS[$NUM]} ]] ; then
+    if [[ ! "${SHEETS[$NUM]}" ]] ; then
 	unset NUM SHEETS i
 	return 1 # BiaminSetup() will not be run after LoadGame()
     else
-	CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' ${SHEETS[$NUM]} );
+	CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${SHEETS[$NUM]}" );
 	unset NUM SHEETS i
 	return 0 # BiaminSetup() will be run after LoadGame()
     fi
@@ -1934,7 +1935,7 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     while (( ITEMS_2_SCATTER > 0 )) ; do
 	local ITEM_Y=$(RollDice2 15) # Randomize ITEM_Y 
 	local ITEM_X=$(RollDice2 18) # Randomize ITEM_X 
-	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                  # reroll if HOTZONE == CHAR_GPS
+	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
 	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
 	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},
 	# --ITEMS_2_SCATTER - because array starts from ${HOTZONE[0]} #kstn
@@ -1972,7 +1973,7 @@ ItemWasFound() { # Used in NewSector()
     local COUNTDOWN=180
     while (( COUNTDOWN > 0 )); do
 	echo -en "${CLEAR_LINE}                      Press any letter to continue  ($COUNTDOWN)"
-	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
+	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
     # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feauture
     (( ++CHAR_ITEMS < 8 )) && HotzonesDistribute # Increase CHAR_ITEMS , THEN check (( CHAR_ITEMS < 8 ))
@@ -2041,7 +2042,6 @@ FightTable() {  # Used in FightMode()
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }   # Return to FightMode()
-
 
 EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     # req.: dice-size | formula | skill-abbrevation
@@ -2838,10 +2838,8 @@ NewSector() { # Used in Intro()
 		* ) MapNav "$ACTION"; break ;;	# Move directly (if not WASD, then loitering :)
 	    esac
 	done
-	
     done
-}	# Return to MainMenu() (if player is dead)
-
+}   # Return to MainMenu() (if player is dead)
 
 SetupHighscore() { # Used in main() and Announce()
 	HIGHSCORE="$GAMEDIR/highscore" ;

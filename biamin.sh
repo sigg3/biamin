@@ -1764,7 +1764,6 @@ MainMenu() {
 	    h | H ) HighScore ;;
 	    c | C ) Credits ;;
 	    q | Q ) CleanUp ;;
-	    * ) ;;
 	esac
     done
 }
@@ -1925,12 +1924,6 @@ LoadGame() { # Used in MainMenu()
 }   # return to MainMenu()
 
 # GAME ITEMS
-# Randomizer for Item Positions
-ITEM_YX() { # Used in HotzonesDistribute() and GX_Map()
-    ITEM_Y=$((RANDOM%15+1))
-    ITEM_X=$((RANDOM%18+1))
-}
-
 HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     # Scatters special items across the map
     # bugfix to prevent finding item at 1st turn of 2 or more items at one turn
@@ -1940,7 +1933,8 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
     HOTZONE=() # Reset HOTZONE  
     while (( ITEMS_2_SCATTER > 0 )) ; do
-	ITEM_YX # Randomize ITEM_X and ITEM_Y
+	ITEM_Y=$((RANDOM%15+1)) # Randomize ITEM_Y # TODO replace to RollDice
+	ITEM_X=$((RANDOM%18+1)) # Randomize ITEM_X # TODO replace to RollDice
 	(( ITEM_X ==  MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                  # reroll if HOTZONE == CHAR_GPS
 	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
 	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},

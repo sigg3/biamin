@@ -2229,7 +2229,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		local COUNTDOWN=20
 		while (( COUNTDOWN > 0 )); do
 		    echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
-    		    read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
+    		    read -sn 1 -t 1 && break || ((COUNTDOWN--))
 		done
 		unset COUNTDOWN
 		#echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
@@ -2506,9 +2506,8 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    # Run that through a loop of players num and % dice..
 	    DGAME_PLAYERS_COUNTER=$DGAME_PLAYERS
 	    DGAME_COMPETITION=0
-	    while (( DGAME_PLAYERS_COUNTER >= 1 )) ; do
-		RollDice 100
-		(( DICE <= DGAME_COMP )) && (( DGAME_COMPETITION++ )) # Sharing!
+	    while (( DGAME_PLAYERS_COUNTER > 0 )) ; do		
+		(( $(RollDice2 100) <= DGAME_COMP )) && (( DGAME_COMPETITION++ )) # Sharing!
 		(( DGAME_PLAYERS_COUNTER-- ))
 	    done
 	    
@@ -2521,7 +2520,8 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    esac
 	    sleep 1
 	    
-	    RollDice 6 && DGAME_DICE_1=$DICE && RollDice 6 && DGAME_DICE_2=$DICE
+	    DGAME_DICE_1=$(RollDice2 6) 
+	    DGAME_DICE_2=$(RollDice2 6) 
 	    DGAME_RESULT=$( bc <<< "$DGAME_DICE_1 + $DGAME_DICE_2" )
 	    # IDEA: If we later add an item or charm for LUCK, add adjustments here.
 	    
@@ -2561,8 +2561,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		esac
 		
 		while (( DGAME_COMPETITION >= 1 )) ; do
-		    RollDice 100
-		    (( DICE <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
+		    (( $(RollDice 100) <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
 		    (( DGAME_COMPETITION-- ))
 		done
 		
@@ -2863,8 +2862,7 @@ Announce() {
 
     ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
 
-    RollDice 6
-    case "$DICE" in
+    case $(RollDice2 6) in
 	1 ) ADJECTIVE="honorable" ;;
 	2 ) ADJECTIVE="fearless" ;;
 	3 ) ADJECTIVE="courageos" ;;

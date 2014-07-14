@@ -1293,6 +1293,27 @@ Die() {
     echo -e "$1" && exit 1
 }
 
+MakePromt() {
+    awk '   BEGIN { FS =";" }
+        {
+            MAXLEN = 79;
+            COUNT = NF; 
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO; 
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO
+        }
+        END { print STR; }' <<<$@ || Die "Too long promt >>>$@<<<"
+}
+
 CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"

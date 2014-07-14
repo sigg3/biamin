@@ -1712,12 +1712,10 @@ TodaysDate() {
 ## WORLD EVENT functions
 
 WorldChangeEconomy() {  # Used in NewSector()
-    RollDice 100	# Roll to 15% chance for economic event transpiring
-    (( DICE > 15 )) && return 0 # or leave immediately
-    RollDice 12         # = Number of possible scenarios (+ default 0)		
-    BBSMSG="$DICE"      # Update BBSMSG
+    (( $(RollDice2 100) > 15 )) && return 0 # Roll to 15% chance for economic event transpiring or leave immediately
+    BBSMSG=$(RollDice2 12) # = Number of possible scenarios (+ default 0) and Update BBSMSG
     
-    case "$DICE" in
+    case "$BBSMSG" in
     	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
     	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
     	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
@@ -1977,7 +1975,7 @@ ItemWasFound() { # Used in NewSector()
 	echo -en "${CLEAR_LINE}                      Press any letter to continue  ($COUNTDOWN)"
 	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
-    # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feauture
+    # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feature
     (( ++CHAR_ITEMS < 8 )) && HotzonesDistribute # Increase CHAR_ITEMS , THEN check (( CHAR_ITEMS < 8 ))
     SaveCurrentSheet # Save CHARSHEET items
     NODICE=1         # No fighting if item is found..
@@ -2119,12 +2117,10 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     esac
 
     # Loot: Determine loot type and size 
-    RollDice 100
-    (( DICE <= EN_GOLD    )) && RollDice 10 && EN_GOLD=$( bc <<< "scale=2; $DICE * ($EN_GOLD / 100)" ) || EN_GOLD=0
-    RollDice 100
-    (( DICE <= EN_TOBACCO )) && RollDice 10 && EN_TOBACCO=$( bc <<< "scale=2; $DICE * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
-    RollDice 100
-    if (( DICE <= EN_FOOD )) ; then # Loot: Food table for animal creatures
+    #RollDice 100
+    (( $(RollDice2 100) <= EN_GOLD    )) && EN_GOLD=$( bc <<< "scale=2; $(RollDice2 10) * ($EN_GOLD / 100)" )     || EN_GOLD=0
+    (( $(RollDice2 100) <= EN_TOBACCO )) && EN_TOBACCO=$( bc <<< "scale=2; $(RollDice2 10) * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
+    if (( $(RollDice2 100) <= EN_FOOD )) ; then # Loot: Food table for animal creatures
 	RollDice 10
 	case "$ENEMY" in
 	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
@@ -2135,8 +2131,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 
     # Adjustments for items
-    (( CHAR_ITEMS >= 5 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
-    (( CHAR_ITEMS >= 6 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
+    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
 
     # IDEA: If player was attacked during the rest he and enemies can get + or - for night and moon phase here ???
 
@@ -2202,7 +2198,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 
     sleep 1
 
-    (( CHAR_ITEMS >= 5 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
 
     # GAME LOOP: FIGHT LOOP
     while (( FIGHTMODE > 0 )) # If player didn't manage to run

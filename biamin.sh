@@ -1475,12 +1475,13 @@ BiaminSetup() { # Used in MainMenu()
 	esac
 	
 	# WEALTH formula = D12 - (D6 * CLASS OFFSET)
+	# ??? D12??? May be D20??? Where is mistake - in comment or in code ??? #kstn 
 	# Determine Initial Wealth of GOLD 
-	RollDice 20 && CHAR_GOLD=$DICE
-	RollDice 6 && OFFSET_GOLD=$( bc <<< "$OFFSET_GOLD * $DICE" )
+	CHAR_GOLD=$(RollDice2 20)
+	OFFSET_GOLD=$( bc <<< "$OFFSET_GOLD * $(RollDice2 6)" )
 	# Determine Initial Wealth of TOBACCO
-	RollDice 20 && CHAR_TOBACCO=$DICE 
-	RollDice 6 && OFFSET_TOBACCO=$( bc <<< "$OFFSET_TOBACCO * $DICE" )
+	CHAR_TOBACCO=$(RollDice2 20)
+	OFFSET_TOBACCO=$( bc <<< "$OFFSET_TOBACCO * $(RollDice2 6)" )
 
 	case "$CHAR_RACE" in # Adjusting CHAR_GOLD and CHAR_TOBACCO to CHAR_RACE offsets
 	    1 | 3 ) # Humans and dwarves
@@ -1494,8 +1495,7 @@ BiaminSetup() { # Used in MainMenu()
 	esac
 
 	# Determine initial food stock (D16 + 4) - player has 5 food minimum
-	RollDice 16 && CHAR_FOOD=$(( DICE + 4 )) # [not floating number yet]
-    
+	CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" )
 	# Set initial Value of Currencies
 	VAL_GOLD=1
 	VAL_TOBACCO=1
@@ -1505,6 +1505,7 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_GPS="$START_LOCATION"
 	CHAR_HOME="$START_LOCATION"
 	# If there IS a CUSTOM.map file, ask where the player would like to start
+	# TODO move it to LoadCustomMap()
 	if [[ "$CUSTOM_MAP" ]] ; then
 	    START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
 	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"

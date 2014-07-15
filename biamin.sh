@@ -1293,6 +1293,10 @@ Die() {
     echo -e "$1" && exit 1
 }
 
+Capitalize() { # Capitalize $1
+    awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" 
+}
+
 MakePromt() {
     awk '   BEGIN { FS =";" }
         {
@@ -2067,7 +2071,6 @@ FightTable() {  # Used in FightMode()
 EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     # req.: dice-size | formula | skill-abbrevation
     local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
-
     (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
 
     case "$FORMULA" in
@@ -2085,11 +2088,29 @@ EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     # determined in the if and cases of the Fight Loop, so don't repeat here.
 }
 
+Death() { # Used in FightMode() and also should be used in check-for-starvation
+    GX_Death
+    # echo " The $TODAYS_DATE_STR:"
+    echo " The $BIAMIN_DATE_STR:"
+    echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
+    local COUNTDOWN=20
+    while (( COUNTDOWN > 0 )); do
+	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
+    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
+    done
+    unset COUNTDOWN
+    #echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
+    echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$YEAR" >> "$HIGHSCORE"
+    rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
+    unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
+    DEATH=1 
+}
+
 FightMode() {	  # FIGHT MODE! (secondary loop for fights)
-                  # Used in NewSector() and Rest()
-    LUCK=0        # Used to assess the match in terms of EXP..
-    FIGHTMODE=1	  # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
-    PICKPOCKET=0  # Flag for succesful pickpocket
+                        # Used in NewSector() and Rest()
+    local LUCK=0        # Used to assess the match in terms of EXP..
+    FIGHTMODE=1	        # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
+    local PICKPOCKET=0  # Flag for succesful pickpocket
 
     RollDice 20 # Determine enemy type
     case "$SCENARIO" in
@@ -2122,8 +2143,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
     esac
     
-    # Capitalize enemy to Enemy, used in FightTable()
-    ENEMY_NAME=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$ENEMY") 
+    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize enemy to Enemy, used in FightTable()
     
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
@@ -2138,16 +2158,14 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     esac
 
     # Loot: Determine loot type and size 
-    #RollDice 100
-    (( $(RollDice2 100) <= EN_GOLD    )) && EN_GOLD=$( bc <<< "scale=2; $(RollDice2 10) * ($EN_GOLD / 100)" )     || EN_GOLD=0
+    (( $(RollDice2 100) <= EN_GOLD    )) && EN_GOLD=$( bc <<< "scale=2; $(RollDice2 10) * ($EN_GOLD / 100)" )      || EN_GOLD=0
     (( $(RollDice2 100) <= EN_TOBACCO )) && EN_TOBACCO=$( bc <<< "scale=2; $(RollDice2 10) * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
     if (( $(RollDice2 100) <= EN_FOOD )) ; then # Loot: Food table for animal creatures
-	RollDice 10
 	case "$ENEMY" in
-	    boar )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
-	    varg )    EN_FOOD=$( bc <<< "scale=2; $DICE * 0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
-	    chthulu ) EN_FOOD=$DICE                               ;; # max 40 days, min 4 days   (is huge..)
-	    dragon )  EN_FOOD=$( bc <<< "scale=2; $DICE * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
+	    boar )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
+	    varg )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
+	    chthulu ) EN_FOOD=$(RollDice2 10)                               ;; # max 40 days, min 4 days   (is huge..)
+	    dragon )  EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
 	esac
     fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 
@@ -2155,65 +2173,59 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
     (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
 
-    # IDEA: If player was attacked during the rest he and enemies can get + or - for night and moon phase here ???
+    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ???
 
     GX_Monster_$ENEMY
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
 
     # DETERMINE INITIATIVE (will usually be enemy)
     if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
+	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
 	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
-	NEXT_TURN="en"
     else
+	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT
+	GX_Monster_$ENEMY 
 	case "$FLEE_OPT" in
 	    f | F ) # flee
-		GX_Monster_$ENEMY # FightTable # Cosmetic fix # What about this? #kstn
 		echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
-		RollDice 6
-		(( DICE <= FLEE )) && { 
-		    echo "You rolled $DICE and managed to run away!";
-		    LUCK=3;
-		    unset FIGHTMODE; } || {
-		    echo "You rolled $DICE and lost your initiative.." ;
-		    NEXT_TURN="en" ;  } ;;
-	    p | P ) # Pickpocket
-		GX_Monster_$ENEMY # FightTable # Cosmetic fix # What about this? #kstn
-		RollDice 6
-		if (( DICE <= ACCURACY )) ; then
-		    RollDice 6
-		    if (( DICE >= EN_ACCURACY )) ; then # "steal success" take loot
-			echo -en "\nYou successfully stole the ${ENEMY}'s pouch, "
-			case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
-			    0 ) echo -e "but it feels rather light..\n" ;;
-			    1 ) echo -e "and it feels heavy!\n"; PICKPOCKET=1 ;;
-			esac
-			# Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
-			read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT
-			case "$FLEE_OPT" in
-			    f | F) # Player tries to flee after successful pickpocketing
-				if (( 2 > 1 )); then # DEBUG: during testing flee always succeed!
-				    LUCK=3;
-				    unset FIGHTMODE;
-				else
-				    echo "flee fall"
-				    NEXT_TURN="en"
-				fi
-				;;
-			    *) NEXT_TURN="pl" ;; # fight				
-			esac
-		    else
-			echo "You were unable to pickpocket from the ${ENEMY}!"
-			NEXT_TURN="en"
-		    fi
+		if (( $(RollDice2 6) <= FLEE )) ; then
+		    echo "You rolled $DICE and managed to run away!"
+		    LUCK=3
+		    unset FIGHTMODE
 		else
-		    echo "You were unable to pickpocket from the ${ENEMY}!"
+		    echo "You rolled $DICE and lost your initiative.." 
 		    NEXT_TURN="en"
-		fi
-		;;
-	    * ) NEXT_TURN="pl" ;; # fight
+		fi ;;
+	    p | P ) # Pickpocket
+	    	if (( $(RollDice2 6) <= ACCURACY )) && (( $(RollDice2 6) >= EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
+	    	    echo -en "\nYou successfully stole the ${ENEMY}'s pouch, " # "steal success" take loot
+	    	    case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
+	    		0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
+	    		1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
+	    	    esac
+	    	    # Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
+	    	    read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT
+	    	    case "$FLEE_OPT" in
+	    		f | F) # Player tries to flee after successful pickpocketing
+	    		    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
+	    		    if (( $(RollDice2 6) <= FLEE )) ; then
+	    			echo "You rolled $DICE and managed to run away!"
+	    			LUCK=3
+	    			unset FIGHTMODE
+	    		    else
+	    			echo "You rolled $DICE and lost your initiative.." 
+	    			NEXT_TURN="en"
+	    		    fi
+	    		    ;;
+	    	    esac
+	    	else # Pickpocket falls
+	    	    echo "You were unable to pickpocket from the ${ENEMY}!"
+	    	    NEXT_TURN="en"
+	    	fi
+	    	;;
 	esac
     fi
 
@@ -2243,21 +2255,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    else # DEATH!
 		echo "Gain 1000 Experience Points to achieve magic healing!"
 		sleep 4		
-		GX_Death
-		# echo " The $TODAYS_DATE_STR:"
-		echo " The $BIAMIN_DATE_STR:"
-		echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
-		local COUNTDOWN=20
-		while (( COUNTDOWN > 0 )); do
-		    echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
-    		    read -sn 1 -t 1 && break || ((COUNTDOWN--))
-		done
-		unset COUNTDOWN
-		#echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
-		echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$YEAR" >> "$HIGHSCORE"
-		rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
-		unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
-		DEATH=1 
+		Death # Moved to separate function because we will also need it in check-for-starvation
 	    fi
 	    unset FIGHTMODE # At any case finally dead or resurrected player can't countinue fight
 	    break	    # Exit fight loop
@@ -2272,7 +2270,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    echo -n "ROLL D6: $DICE "
 	    case "$FIGHT_PROMPT" in
 		f | F ) # Player tries to flee!
-		    RollDice 6
+		    RollDice 6 	# ????? Do we need it ??? #kstn
 		    EchoFightFormula 6 le F
 		    unset FIGHT_PROMPT
 		    if (( DICE <= FLEE )); then
@@ -2294,6 +2292,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 			fi
 		    else
 			echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
+			sleep 1
 		    fi
 		    ;;
 		*)  # Player fights
@@ -2301,9 +2300,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		    if (( DICE <= ACCURACY )); then
 			echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
 			read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT"
-			RollDice 6
+			DAMAGE=$(( $(RollDice2 6) * STRENGTH ))
 			echo -en "\nROLL D6: $DICE"
-			DAMAGE=$(( DICE * STRENGTH ))
 			echo -en "\tYour blow dishes out $DAMAGE damage points!"
 			EN_HEALTH=$(( EN_HEALTH - DAMAGE ))
 			sleep 3 # Important sleep here! It allows you to watch the enemy's health go from + to - :D
@@ -2317,10 +2315,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	else # Enemy's turn
 	    FightTable
 	    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
-		RollDice 20
 		echo -e "Rolling for enemy flee: D20 < $EN_FLEE"
 		sleep 2
-		if (( DICE < EN_FLEE )); then
+		if (( $(RollDice2 20) < EN_FLEE )); then
 		    echo -e "ROLL D20: ${DICE}\tThe $ENEMY uses an opportunity to flee!"
 		    LUCK=1
 		    unset FIGHTMODE
@@ -2328,15 +2325,12 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		    break # bugfix: Fled enemy continue fighting..
 		fi		
 		FightTable # If enemy didn't manage to run
-	    fi
-
+	    fi  # Enemy does not lose turn for trying for flee
 	    echo "It's the ${ENEMY}'s turn"
 	    sleep 2
-	    RollDice 6
-	    if (( DICE <= EN_ACCURACY )); then
+	    if (( $(RollDice2 6) <= EN_ACCURACY )); then
 		echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
-		RollDice 6
-		DAMAGE=$(( DICE * EN_STRENGTH ))
+		DAMAGE=$(( $(RollDice2 6) * EN_STRENGTH ))
 		echo "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
 		CHAR_HEALTH=$(( CHAR_HEALTH - DAMAGE ))
 		SaveCurrentSheet
@@ -2348,7 +2342,6 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	fi
     done
     # FIGHT LOOP ends
-
     # After the figthing 
     if (( DEATH != 1 )) ; then   # VICTORY!
 	GX_Monster_$ENEMY
@@ -2365,7 +2358,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!\n" 
 		(( CHAR_EXP += EN_DEFEATED_EXP ))
 		(( CHAR_KILLS++ ))
-		if (( PICKPOCKET != 1 )); then # Check for loot 
+		if (( PICKPOCKET == 0 )); then # Check for loot 
 		    echo -n "Searching the dead ${ENEMY}'s corpse, you find "
 		    if (( $(bc <<< "($EN_GOLD + $EN_TOBACCO) == 0") )) ; then
 			echo "mostly just lint .."
@@ -2375,27 +2368,35 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 			echo "$EN_GOLD gold and $EN_TOBACCO tobacco"			
 		    fi
 		fi
-		(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
-		# TODO check for boar's tusks etc (3.0)
+		(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD") ;;
+	    # TODO check for boar's tusks etc (3.0)
 	esac
 
-	if (( PICKPOCKET > 0 )); then # check for stealing
-	    echo -n "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco"
-	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )
-	    CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" )
-	    case "$ENEMY" in
-		orc ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing an $ENEMY!" ;;
-		*   ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing a $ENEMY!" ;;
-	    esac
-	    (( CHAR_EXP += EN_PICKPOCKET_EXP ))
-	    sleep 2
-	fi
+	case "$PICKPOCKET" in # check for stealing
+	    1 ) # loot and EXP
+		echo -n "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
+		CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) ;
+		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) ;
+		case "$ENEMY" in
+		    orc ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing an $ENEMY!" ;;
+		    *   ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing a $ENEMY!" ;;
+		esac
+		(( CHAR_EXP += EN_PICKPOCKET_EXP )) ;
+		sleep 2 ;;
+	    2)  # no loot but EXP
+		echo -n "In the pouch lifted from the ${ENEMY}, you find nothing but ..." ;
+		echo -n "gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing" ;
+		(( CHAR_EXP += EN_PICKPOCKET_EXP )) 
+		;;
+	    *)  ;; # no pickpocketing so do nothing
+	esac
 
 	(( CHAR_BATTLES++ ))
 	SaveCurrentSheet
 	sleep 4
 	DisplayCharsheet
     fi    
+
 }   # END FightMode. Return to NewSector() or to Rest()
 
 

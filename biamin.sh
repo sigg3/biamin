@@ -2468,8 +2468,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	DGAME_PLAYERS=$((RANDOM%6)) # 0-5 players
 	(( DGAME_PLAYERS == 0 )) && read -sn1 -p "There's no one at the table. May be you should come back later?" && return 0  # leave
 	# Determine stake size
-	RollDice 6
-	DGAME_STAKES=$( bc <<< "$DICE * $VAL_CHANGE" ) # min 0.25, max 1.5
+	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # min 0.25, max 1.5
 	# Check if player can afford it
 	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then
 	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 
@@ -2830,7 +2829,7 @@ NewSector() { # Used in Intro()
 		C ) RollForEvent 10 "fight" && FightMode ;;
 		* ) CustomMapError ;;
 	    esac
-            (( DEATH == 1 )) && break # If player was slain in fight mode
+	    CheckForDeath && break # If player was slain in fight mode
 	    GX_Place "$SCENARIO"
 	fi
 
@@ -2906,7 +2905,7 @@ Announce() {
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
 
-    highCHAR=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$highCHAR") # Capitalize
+    highCHAR=$(Capitalize "$highCHAR") # Capitalize
     
     if [[ "$highMONTH" ]] ; then # fix for "Witching Day", etc
 	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."

@@ -210,7 +210,7 @@ EOT
     echo "$HR"
 }
 
-GX_Intro() {
+GX_Intro() { # Used in Intro()
     clear
     cat <<"EOT"
                                                                          
@@ -231,6 +231,11 @@ ___                          (         \__ 1                _/             \   \
 EOT
     echo "$HR" ## && PressAnyKey #BUGFIX
     echo "                        Press (A)ny key to continue.." 
+    local COUNTDOWN=60
+    while (( COUNTDOWN >= 0 )) ; do
+    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
+    done
+    unset COUNTDOWN
 }
 
 GX_Races() {
@@ -1185,11 +1190,8 @@ LoadCustomMap() { # Used in MapCreate()
 		clear
 		echo "$MAP"
 		read -sn1 -p "Play this map? [Y/N]: " VAR
-		case "$VAR" in
-		    y | Y ) CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0;; # Return to MapCreate()
-		    * )     unset MAP ;;
-		esac
-		;;
+		[[ "$VAR" == "y" || "$VAR" == "Y" ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0;; # Return to MapCreate()
+		unset MAP ;;
 	    *     )  break;; 
 	esac
     done
@@ -1208,9 +1210,7 @@ MapCreate() {
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
 	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP
-	case "$MAP" in
-	    c | C) LoadCustomMap && return 0;; #leave
-	esac
+	[[ "$MAP" == "C" || "$MAP" == "c" ]] && LoadCustomMap && return 0  #leave
     fi
     MAP=$(cat <<EOT
        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
@@ -1577,7 +1577,7 @@ BiaminSetup() { # Used in MainMenu()
 }
 
 Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
-    SHORTNAME=$(awk '{ print substr(toupper($0), 1, 1) substr($0, 2); }' <<< "$CHAR") # Create capitalized FIGHT CHAR name
+    SHORTNAME=$(Capitalize "$CHAR") # Create capitalized FIGHT CHAR name
     TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
@@ -1585,15 +1585,7 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     # Create strings for economical situation..
     VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
     VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) # locale's delimiter is ',' (cyrillic locale for instance) #kstn
-
-    GX_Intro
-
-    local COUNTDOWN=60
-    while (( COUNTDOWN >= 0 )) ; do
-#    	read -sn 1 -t 1 && COUNTDOWN=-1 || ((COUNTDOWN--))
-    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
-    done
-    unset COUNTDOWN
+    GX_Intro # With countdown
     NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
     NewSector
 }
@@ -2038,7 +2030,7 @@ MapNav() { # Used in NewSector()
 # GAME ACTION: DISPLAY CHARACTER SHEET
 DisplayCharsheet() { # Used in NewSector() and FightMode()
     MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
-    local RACE=$(awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$CHAR_RACE_STR") # Capitalize
+    local RACE=$(Capitalize "$CHAR_RACE_STR") # Capitalize
     GX_CharSheet
     cat <<EOF
  Character:                 $CHAR ($RACE)
@@ -2860,9 +2852,9 @@ NewSector() { # Used in Intro()
 }   # Return to MainMenu() (if player is dead)
 
 SetupHighscore() { # Used in main() and Announce()
-	HIGHSCORE="$GAMEDIR/highscore" ;
-	[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
-	grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
+    HIGHSCORE="$GAMEDIR/highscore" ;
+    [[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
+    grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
 }
 
 Announce() {

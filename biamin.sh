@@ -1701,18 +1701,18 @@ TodaysDate() {
     esac
     # Adjust month
     case "$TODAYS_MONTH" in
-	1 ) TODAYS_MONTH="After-Witching" ;;
-	2 ) TODAYS_MONTH="Year-Turn" ;;
-	3 ) TODAYS_MONTH="Plough Month" ;;
-	4 ) TODAYS_MONTH="Sigmar Month" ;;
-	5 ) TODAYS_MONTH="Summer Month" ;;
-	6 ) TODAYS_MONTH="Fore-Mystery" ;;
-	7 ) TODAYS_MONTH="After-Mystery" ;;
-	8 ) TODAYS_MONTH="Harvest Month" ;;
-	9 ) TODAYS_MONTH="Brew Month" ;;
- 	10 ) TODAYS_MONTH="Chill Month" ;;
- 	11 ) TODAYS_MONTH="Ulric Month" ;;
- 	12 ) TODAYS_MONTH="Fore-Witching" ;;
+	1 ) TODAYS_MONTH="After-Frost" ;;         # Winter
+	2 ) TODAYS_MONTH="Marrsuckur" ;;          # Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
+	3 ) TODAYS_MONTH="Plough-Tide" ;;         # Spring
+	4 ) TODAYS_MONTH="Anorlukis" ;;           # Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
+	5 ) TODAYS_MONTH="Summer-Tide" ;;         # Summer
+	6 ) TODAYS_MONTH="Summer-Turn" ;;         # Summer
+	7 ) TODAYS_MONTH="Merentimes" ;;          # Summer [Elvish] "Meren" - Happiness
+	8 ) TODAYS_MONTH="Harvest Month" ;;       # Autumn
+	9 ) TODAYS_MONTH="Ringorin" ;;            # Autumn [Elvish] "Ringorn" - circle, life, produce
+ 	10 ) TODAYS_MONTH="Brew-Tasting Tide" ;;  # Autumn
+ 	11 ) TODAYS_MONTH="Winter Month" ;;       # Winter
+ 	12 ) TODAYS_MONTH="Midwinter Offering" ;; # Winter [Norse] "Vinterblot" Viking winter sacrifice
  	* ) TODAYS_MONTH="Biamin Festival" ;;  # rarely happens, if ever :(
     esac
     case "$TODAYS_YEAR" in

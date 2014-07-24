@@ -2742,7 +2742,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 
 GoIntoTown() { # Used in NewSector()
     while (true); do
-    GX_Place "$SCENARIO" # GX_Town 
+	GX_Place "$SCENARIO" # GX_Town 
         # Add separate GX for this? 
         # What about add separate GX for Town and use current GX_Town() here? #kstn
 	echo -n "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town"	
@@ -2792,6 +2792,7 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
 	    esac
 	fi
 	# ADD CHECK HERE IF HEALTH <= 0 then "You have starved to death" sleep 2 && death..
+	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death # 
     fi
     sleep 2 ### DEBUG
 }
@@ -2826,6 +2827,7 @@ NewSector() { # Used in Intro()
 	fi
 
 	CheckForStarvation # Food check
+	CheckForDeath && break # If player was starved to death
 	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
 	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
 

@@ -1108,7 +1108,7 @@ EOT
 
 
 
-GX_Marketplace_Merchant() { # Used in GX_Marketplace
+GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hipster)
     case "$CHAR_RACE" in # Sets merchant friendly greeting
 	2 ) local MERCHANT_GREET="galant Elf of the Forests! " ;;
 	3 ) local MERCHANT_GREET="fierce master Dwarf! " ;;
@@ -1606,16 +1606,18 @@ DateFromTurn() {
 	"World Still Day"
 	"Fore-Witching")
     local MONTH_LENGTH=( 0 0 1 33 66 67 100 133 166 167 200 201 233 266 267 300 333 366 367 400 )
-
-    local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
-	"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)") # Last day of week is ${WEEKDAY_STR[0]} !!!
+	
+    #local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
+	#"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
+	# Weekdays (eq. MON-SUN)
+	local WEEKDAY_STR=("Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday" "Ringday") # Last day of week is ${WEEKDAY_STR[0]}
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
     case $( bc <<< "( $TURN % 25 )" ) in
-	0 | 1 | 2 | 3 ) MOON="New moon" ;;
-	4 | 5 | 6 )     MOON="Waxing crescent" ;;
+	0 | 1 | 2 | 3 ) MOON="Old moon" ;;
+	4 | 5 | 6 )     MOON="Growing crescent" ;;
 	7 | 8 | 9 )     MOON="First quarter" ;;
-	10 | 11 | 12 )  MOON="Waxing gibbous" ;;
+	10 | 11 | 12 )  MOON="Growing gibbous" ;;
 	13 | 14 | 15 )  MOON="Full moon" ;;
 	16 | 17 | 18 )  MOON="Waning gibbous" ;;
 	19 | 20 | 21 )  MOON="Third quarter" ;;

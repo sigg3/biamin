@@ -15,17 +15,18 @@ TODO GPL repo
 [x] Create LEGACY for -gpl repo once it hits 1.4
 [x] Add updater to -gpl 1.4, refers to separate repo.
 [x] Updated sprites in wait for 1.4
-[?] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
+[-] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
 
-TODO LEGACY branch
+TODO LEGACY branch ("original")
 [x] Remove update_biamin.sh from LEGACY
 [x] Add updater function once it hits 1.4 that refers to separate repo.
 [x] Add LEGACY to $VERSION once it hits 1.4.
 [x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
 [x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
-[?] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
+[-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
+	This requires changing code and blog stuff:P
 
-TODO 2.0 branch
+TODO 2.0 branch ("survival")
 [ ] Implement EchoFightFormula in FightMode from LEGACY
 [ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
@@ -33,6 +34,8 @@ TODO 2.0 branch
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
 [x] ASCII GX_Monster_dragon
+[ ] ASCII GX_Monster_imp
+[ ] ASCII GX_Monster_cavebear
 [x] ASCII GX_Tavern
 [x] 	ASCII GX_DiceGame_Table && _Instructions
 [.]     ASCII GX_DiceGame
@@ -45,7 +48,8 @@ TODO 2.0 branch
 [ ] Pickpocket tuning
 [x] Add boar
 [x] Add dragon
-[ ] Add 2 more enemies (e.g. imp and cave bear)
+[ ] Add imp
+[ ] Add cave bear
 [.] Rewrite CUSTOM map functionality to allow >1 map
 [.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
@@ -60,17 +64,25 @@ TODO 2.0 branch
 [?]		Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
-[ ] Replace bash's pseudo-random RANDOM to smth more random.
+[ ] Calendar() -- Used in DisplayCharsheet()
+[ ] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
+[ ]		ASCII GX_Calendar
+[ ]		ASCII add moon phase case statements to Rest()
+[ ]		ASCII GX_Rest divide into phases
+[ ] 
 
-TODO Post 2.0 branch
-[?] Gods ???
+TODO ideas for 3.0 branch ("rpg")
+[ ] Moonphase consequences
+[ ] 	Vargs more likely to be encountered in mountains (for example)
+[ ] Replace bash's pseudo-random RANDOM to smth more random.
+[-] Gods ???  (I'm putting this under Mythology)
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
 [?]	Hurricane - see lower
-[?] Quests?    >> Post 2.0
+[?] Quests?
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
-[?] Messenger? >> Post 2.0
+[?] Messenger?
 [?] Date - internal date not attached to real - one turn - one day
 [?] Weather - changes every turn.
 [?]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
@@ -78,7 +90,6 @@ TODO Post 2.0 branch
 [?]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)
 [?]	Wind (+/- FLEE from animal enemies - varg, boar)
 [?]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
-[?]	Any other...?
 [?]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
 [?] Seasons - winter, spring, summer, autumn
 [?]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
@@ -102,7 +113,10 @@ TODO Post 2.0 branch
 [?] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
 
 BLOG/Misc.
+[.] Creation, Mythology, Gods (for 2.0)
+[ ] wiki
 [x] LEGACY announcement
+[ ] 2.0 announcement
 [.] Re-write About page
 [x] Update download page
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)

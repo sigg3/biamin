@@ -1614,7 +1614,8 @@ DateFromTurn() {
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
     case $( bc <<< "( $TURN % 25 )" ) in
-	0 | 1 | 2 | 3 ) MOON="Old moon" ;;
+	0 | 2 )         MOON="Old moon" ;; # Old moon was used more frequently before (but they are interchangeable)
+	1 | 3 )         MOON="New moon" ;;
 	4 | 5 | 6 )     MOON="Growing crescent" ;;
 	7 | 8 | 9 )     MOON="First quarter" ;;
 	10 | 11 | 12 )  MOON="Growing gibbous" ;;

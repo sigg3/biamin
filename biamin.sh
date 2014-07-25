@@ -1610,7 +1610,7 @@ DateFromTurn() {
     #local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
 	#"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
 	# Weekdays (eq. MON-SUN)
-	local WEEKDAY_STR=("Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday" "Ringday") # Last day of week is ${WEEKDAY_STR[0]}
+	local WEEKDAY_STR=("Moonday" "Brenday" "Market day" "Midweek" "Braigday" "Melethday" "Washday" "Ringday (Holiday)") # Last day of week is ${WEEKDAY_STR[0]}
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
     case $( bc <<< "( $TURN % 25 )" ) in

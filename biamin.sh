@@ -1190,7 +1190,7 @@ LoadCustomMap() { # Used in MapCreate()
 		clear
 		echo "$MAP"
 		read -sn1 -p "Play this map? [Y/N]: " VAR
-		[[ "$VAR" == "y" || "$VAR" == "Y" ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0;; # Return to MapCreate()
+		[[ "$VAR" == "y" || "$VAR" == "Y" ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0; # Return to MapCreate()
 		unset MAP ;;
 	    *     )  break;; 
 	esac

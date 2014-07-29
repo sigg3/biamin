@@ -1297,7 +1297,7 @@ Capitalize() { # Capitalize $1
     awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" 
 }
 
-MakePromt() {
+MakePromt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'
     awk '   BEGIN { FS =";" }
         {
             MAXLEN = 79;
@@ -1315,7 +1315,7 @@ MakePromt() {
             for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
             STR = STR SEPARATOR INTRO
         }
-        END { print STR; }' <<<$@ || Die "Too long promt >>>$@<<<"
+        END { print STR; }' <<< "$@" || Die "Too long promt >>>$@<<<"
 }
 
 CleanUp() { # Used in MainMenu(), NewSector(),
@@ -1775,7 +1775,7 @@ WorldChangeEconomy() {  # Used in NewSector()
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "      (P)lay      (L)oad game      (H)ighscore      (C)redits      (Q)uit" TOPMENU_OPT
+	read -sn 1 -p "$(MakePromt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ; 
  		    read -p " Enter character name (case sensitive): " CHAR ;

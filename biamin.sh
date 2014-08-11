@@ -387,22 +387,135 @@ EOT
 }
 
 GX_Rest() {
-    clear
-    cat <<"EOT"
+clear
+local RESTPHASE=$( echo "$MOON" | tr -d ' ' )
+case "$RESTPHASE" in
+  OldMoon | NewMoon ) cat <<"EOT"
 
 
-                                                          _.._    
-                               *         Z Z Z   *       -'-. '.             *
-                                                             \  \          
-         YOU TRY TO GET                                .      | |
-         SOME MUCH NEEDED REST    *                    ;.___.'  /     *    
-                                    Z Z    *            '.__ _.'          * 
-                            *                                               
+                                                            .  - . 
+                               *         Z Z Z   *       ,         `         *
+                                                                     .      
+         YOU TRY TO GET           *                    '                
+         SOME MUCH NEEDED REST       Z Z                              '     
+                                           *           .             . 
+         It is dark, the Moon is                                         *    
+                                                         `  .   .  '       * 
+                                       *      
 
+EOT
+  tput sc
+  tput cup 8 33
+  [ "$RESTPHASE" = "OldMoon" ] && echo "Old" || echo "Young"
+  tput rc
+  ;;
+  GrowingCrescent ) cat <<"EOT"
+
+
+                                                                ~-.
+                               *         Z Z Z   *                `'.        *
+                                                                   ` :     
+         YOU TRY TO GET                                             ' :
+         SOME MUCH NEEDED REST    *                                 ) :    
+                                        Z Z   *                     ; '
+         It is a Growing Crescent Moon              *             ,','   *    
+                                                               _.,'         * 
 
 
 EOT
-    echo "$HR"
+  ;;
+  FirstQuarter ) cat <<"EOT"
+
+
+                                                               ,~-.
+                               *         Z Z Z   *             :   `.        *
+                                                               '     `.     
+         YOU TRY TO GET           *                            :      :
+         SOME MUCH NEEDED REST      Z Z                        '      :     
+                                           *                   :     ;'
+         The Moon is in its First Quarter                      '    ;'   *    
+                                                   *           l.,~'       * 
+
+
+EOT
+  ;;
+  GrowingGibbous | WaxingGibbous ) cat <<"EOT"
+
+
+                                                           ,-~ ~-. 
+                               *         Z Z Z   *       ;'        `.        *
+                                                        ,           `:.     
+         YOU TRY TO GET           *                     .             :
+         SOME MUCH NEEDED REST      Z Z                 .             :     
+                                           *            .            ;'
+         The Moon is Waxing                             `           ;'   *    
+                                                         ` -.___.,~'         * 
+                                                 *
+
+EOT
+  ;;
+  FullMoon ) cat <<"EOT"
+                                                            .    .
+                                                 *      .            .
+                                                     .     ,.----.      .  
+                               *         Z Z Z          ,;^        `.         *
+                                                   .   :            `:.   .  
+         YOU TRY TO GET                               ;               :   
+         SOME MUCH NEEDED REST                    .   :               :   .  
+                                    Z Z    *          `:             ;'    
+         It is a Full Moon  *                      .   `:           ;'   .    *
+                                                         `~..___.,~'          
+                                                       .             .      *
+                                         *                .      . 
+EOT
+  ;;
+  WaningGibbous ) cat <<"EOT"
+
+
+                                                           ,.---. 
+                               *         Z Z Z   *      ,;^      `.          *
+                                                       :           .       
+         YOU TRY TO GET                               ;             .  
+         SOME MUCH NEEDED REST    *                   :             .       
+                                    Z Z    *          `:           ;   
+         The Moon is Waning   *                        `:         ;      *    
+                                                         `~..___,'         * 
+
+
+EOT
+  ;;
+  ThirdQuarter | LastQuarter ) cat <<"EOT"
+
+                                                              
+                                                          ,~-.  
+                               *         Z Z Z   *      ,^   t                *
+                                                       .     '
+         YOU TRY TO GET                               ;      :
+         SOME MUCH NEEDED REST    *     Z Z           :      '
+                                             *        `.     :     
+         The Moon is in the Last Quarter               `.    '           *    
+                                                         `~._;             * 
+                                                 *       
+
+EOT
+  ;;
+  WaningCrescent ) cat <<"EOT"
+
+                                                            _
+                                                         ,;`      
+                               *         Z Z Z   *     .:.                *
+                                                      .:.                  
+         YOU TRY TO GET           *                   ; .                
+         SOME MUCH NEEDED REST      Z Z               l .                     
+                                           *          `  .               
+         It is a Waning Crescent Moon                  `: .               *    
+                                                         `-:._                * 
+
+
+EOT
+  ;;
+esac
+	echo "$HR"
 }
 
 GX_Monster_chthulu() {
@@ -1614,15 +1727,15 @@ DateFromTurn() {
     # http://warhammeronline.wikia.com/wiki/Morrslieb
     # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
     case $( bc <<< "( $TURN % 25 )" ) in
-	0 | 2 )         MOON="Old moon" ;; # Old moon was used more frequently before (but they are interchangeable)
-	1 | 3 )         MOON="New moon" ;;
-	4 | 5 | 6 )     MOON="Growing crescent" ;;
-	7 | 8 | 9 )     MOON="First quarter" ;;
-	10 | 11 | 12 )  MOON="Growing gibbous" ;;
-	13 | 14 | 15 )  MOON="Full moon" ;;
-	16 | 17 | 18 )  MOON="Waning gibbous" ;;
-	19 | 20 | 21 )  MOON="Third quarter" ;;
-	22 | 23 | 24 )  MOON="Waning crescent" ;;
+	0 | 2 )         MOON="Old Moon" ;; # Old moon was used more frequently before (but they are interchangeable)
+	1 | 3 )         MOON="New Moon" ;;
+	4 | 5 | 6 )     MOON="Growing Crescent" ;;
+	7 | 8 | 9 )     MOON="First Quarter" ;;
+	10 | 11 | 12 )  MOON="Growing Gibbous" ;;
+	13 | 14 | 15 )  MOON="Full Moon" ;;
+	16 | 17 | 18 )  MOON="Waning Gibbous" ;;
+	19 | 20 | 21 )  MOON="Third Quarter" ;;
+	22 | 23 | 24 )  MOON="Waning Crescent" ;;
     esac
 
     WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 8" )]}

@@ -67,8 +67,8 @@ TODO 2.0 branch ("survival")
 [.] Calendar() -- Used in DisplayCharsheet()
 [ ] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
 [.]		ASCII GX_Calendar
-[ ]		ASCII add moon phase case statements to Rest()
-[ ]		ASCII GX_Rest divide into phases
+[x]		ASCII add moon phase case statements to Rest()
+[x]		ASCII GX_Rest divide into phases
 [ ] 
 
 TODO ideas for 3.0 branch ("rpg")

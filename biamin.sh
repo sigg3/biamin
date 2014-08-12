@@ -387,10 +387,9 @@ EOT
 }
 
 GX_Rest() {
-clear
-local RESTPHASE=$( echo "$MOON" | tr -d ' ' )
-case "$RESTPHASE" in
-  OldMoon | NewMoon ) cat <<"EOT"
+    clear
+    case "$MOON" in
+	"Old Moon" | "New Moon" ) cat <<"EOT"
 
 
                                                             .  - . 
@@ -404,12 +403,12 @@ case "$RESTPHASE" in
                                        *      
 
 EOT
-  tput sc
-  tput cup 8 33
-  [ "$RESTPHASE" = "OldMoon" ] && echo "Old" || echo "Young"
-  tput rc
-  ;;
-  GrowingCrescent ) cat <<"EOT"
+	    tput sc
+	    tput cup 8 33
+	    [[ "$MOON" == "Old Moon" ]] && echo "Old" || echo "Young"
+	    tput rc
+	    ;;
+	"Growing Crescent" ) cat <<"EOT"
 
 
                                                                 ~-.
@@ -423,8 +422,8 @@ EOT
 
 
 EOT
-  ;;
-  FirstQuarter ) cat <<"EOT"
+	    ;;
+	"First Quarter" ) cat <<"EOT"
 
 
                                                                ,~-.
@@ -438,8 +437,8 @@ EOT
 
 
 EOT
-  ;;
-  GrowingGibbous | WaxingGibbous ) cat <<"EOT"
+	    ;;
+	"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
 
 
                                                            ,-~ ~-. 
@@ -453,8 +452,8 @@ EOT
                                                  *
 
 EOT
-  ;;
-  FullMoon ) cat <<"EOT"
+	    ;;
+	"Full Moon" ) cat <<"EOT"
                                                             .    .
                                                  *      .            .
                                                      .     ,.----.      .  
@@ -468,8 +467,8 @@ EOT
                                                        .             .      *
                                          *                .      . 
 EOT
-  ;;
-  WaningGibbous ) cat <<"EOT"
+	    ;;
+	"Waning Gibbous" ) cat <<"EOT"
 
 
                                                            ,.---. 
@@ -483,8 +482,8 @@ EOT
 
 
 EOT
-  ;;
-  ThirdQuarter | LastQuarter ) cat <<"EOT"
+	    ;;
+	"Third Quarter" | "Last Quarter" ) cat <<"EOT"
 
                                                               
                                                           ,~-.  
@@ -498,8 +497,8 @@ EOT
                                                  *       
 
 EOT
-  ;;
-  WaningCrescent ) cat <<"EOT"
+	    ;;
+	"Waning Crescent" ) cat <<"EOT"
 
                                                             _
                                                          ,;`      
@@ -513,9 +512,9 @@ EOT
 
 
 EOT
-  ;;
-esac
-	echo "$HR"
+	    ;;
+    esac
+    echo "$HR"
 }
 
 GX_Monster_chthulu() {

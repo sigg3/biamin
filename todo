@@ -65,11 +65,13 @@ TODO 2.0 branch ("survival")
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
 [.] Calendar() -- Used in DisplayCharsheet()
-[ ] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
-[.]		ASCII GX_Calendar
+[.] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
+[X]		ASCII GX_Calendar
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
-[ ] 
+[x] Almanac
+[.] Almanac_Moon
+[.] Almanac_Notes
 
 TODO ideas for 3.0 branch ("rpg")
 [ ] Moonphase consequences

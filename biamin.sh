@@ -729,6 +729,30 @@ EOT
     echo "$HR"
 }
 
+GX_Monster_bear() { # Cave bear, really, "bear" is just shorter:)
+clear
+cat <<"EOT"
+                                                               
+                                               ,--~~.._                
+                                          _.,;'        `-.....__          
+                                  ,..-~~^"                      `~~~~-.._       
+                                ,^ l`)                                    :.
+                              ,'                                           `:.
+         SUDDENLY,            )`~                    (  `                   `:.
+         A MIGHTY CAVE       ,^        ;              \                      ::
+         BEAR APPEARS       r  ,~^,    ,_             )  ,         ,         ::
+                            `~^ ,',--'"' `j          /            ,         ,:'
+                               `''        (         /   ;        ,        ,.:`
+         It kicks the ground              :        ;             ;       ..;'
+         and charges. Brace yourself.     ;'      ;~--'.~^~-__..;      .;'
+                                          `:    ;\   .;         .:    ,;  \
+                                          .;   ;  ;   :         :.   ./    \    
+                                       _,'    ;  _;  ;           :.   : `   }
+                                    ,;'_..__,' .;_._}          ,,::.:-'"--~'
+EOT
+echo "$HR"
+}
+
 GX_Item0() {
     clear
     cat <<"EOT"

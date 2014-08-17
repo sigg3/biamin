@@ -1,7 +1,7 @@
 #!/bin/bash
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
-VERSION="1.8" # 12 items on TODO. Change to 2.0 when list is x'd out
+VERSION="1.9" # 12 items on TODO. Change to 2.0 when list is x'd out
 WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
@@ -172,21 +172,32 @@ EOT
     echo "$HR"
 }
 
-GX_CharSheet() {
+GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
+	[ -z "$1" ] && local DISP=1 || local DISP="$1"
     clear
     cat <<"EOT"
  
                                /T\                           /""""""""\ 
       o-+----------------------------------------------+-o  /  _ ++ _  \
         |/                                            \|   |  / \  / \  \
-        |  C  H  A  R  A  C  T  E  R     S  H E  E  T  |   | | , | |, | |
+        |                                              |   | | , | |, | |
         |                                              |   | |   |_|  | |
-        |\             s t a t i s t i c s            /|    \|   ...; |; 
+        |\                                            /|    \|   ...; |; 
       o-+----------------------------------------------+-o    \______/
 
 EOT
-    echo "$HR"
+	tput sc
+	tput cup 4 11
+	if (( DISP == 1 )) ; then
+	echo "C  H  A  R  A  C  T  E  R     S  H E  E  T"
+	tput cup 6 23
+	echo "s t a t i s t i c s"
+	else
+	echo "         A   L   M   A   N   A   C"
+	fi
+	tput rc
 }
+
 
 GX_Death() {
     clear
@@ -386,136 +397,163 @@ EOT
     echo "$HR"
 }
 
-GX_Rest() {
-    clear
-    case "$MOON" in
-	"Old Moon" | "New Moon" ) cat <<"EOT"
+GX_Moon() { # Used in GX_Rest and Almanac_Moon
+case "$MOON" in
+"Old Moon" | "New Moon" ) cat <<"EOT"
 
 
-                                                            .  - . 
-                               *         Z Z Z   *       ,         `         *
-                                                                     .      
-         YOU TRY TO GET           *                    '                
-         SOME MUCH NEEDED REST       Z Z                              '     
-                                           *           .             . 
-         It is dark, the Moon is                                         *    
-                                                         `  .   .  '       * 
-                                       *      
+                                                           .  - . 
+                                                        ,         ` 
+                                                                    .
+                                                      '
+                                                                     '
+                                                      .             .
 
-EOT
-	    tput sc
-	    tput cup 8 33
-	    [[ "$MOON" == "Old Moon" ]] && echo "Old" || echo "Young"
-	    tput rc
-	    ;;
-	"Growing Crescent" ) cat <<"EOT"
-
-
-                                                                ~-.
-                               *         Z Z Z   *                `'.        *
-                                                                   ` :     
-         YOU TRY TO GET                                             ' :
-         SOME MUCH NEEDED REST    *                                 ) :    
-                                        Z Z   *                     ; '
-         It is a Growing Crescent Moon              *             ,','   *    
-                                                               _.,'         * 
+                                                        `  .   .  '
 
 
 EOT
-	    ;;
-	"First Quarter" ) cat <<"EOT"
+;;
+"Growing Crescent" ) cat <<"EOT"
 
 
-                                                               ,~-.
-                               *         Z Z Z   *             :   `.        *
-                                                               '     `.     
-         YOU TRY TO GET           *                            :      :
-         SOME MUCH NEEDED REST      Z Z                        '      :     
-                                           *                   :     ;'
-         The Moon is in its First Quarter                      '    ;'   *    
-                                                   *           l.,~'       * 
-
-
-EOT
-	    ;;
-	"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
-
-
-                                                           ,-~ ~-. 
-                               *         Z Z Z   *       ;'        `.        *
-                                                        ,           `:.     
-         YOU TRY TO GET           *                     .             :
-         SOME MUCH NEEDED REST      Z Z                 .             :     
-                                           *            .            ;'
-         The Moon is Waxing                             `           ;'   *    
-                                                         ` -.___.,~'         * 
-                                                 *
-
-EOT
-	    ;;
-	"Full Moon" ) cat <<"EOT"
-                                                            .    .
-                                                 *      .            .
-                                                     .     ,.----.      .  
-                               *         Z Z Z          ,;^        `.         *
-                                                   .   :            `:.   .  
-         YOU TRY TO GET                               ;               :   
-         SOME MUCH NEEDED REST                    .   :               :   .  
-                                    Z Z    *          `:             ;'    
-         It is a Full Moon  *                      .   `:           ;'   .    *
-                                                         `~..___.,~'          
-                                                       .             .      *
-                                         *                .      . 
-EOT
-	    ;;
-	"Waning Gibbous" ) cat <<"EOT"
-
-
-                                                           ,.---. 
-                               *         Z Z Z   *      ,;^      `.          *
-                                                       :           .       
-         YOU TRY TO GET                               ;             .  
-         SOME MUCH NEEDED REST    *                   :             .       
-                                    Z Z    *          `:           ;   
-         The Moon is Waning   *                        `:         ;      *    
-                                                         `~..___,'         * 
+                                                               ~-.
+                                                                 `'.
+                                                                  ` : 
+                                                                   ' :
+                                                                   ) :
+                                                                   ; '
+                                                                 ,','
+                                                              _.,'
 
 
 EOT
-	    ;;
-	"Third Quarter" | "Last Quarter" ) cat <<"EOT"
+;;
+"First Quarter" ) cat <<"EOT"
 
-                                                              
-                                                          ,~-.  
-                               *         Z Z Z   *      ,^   t                *
-                                                       .     '
-         YOU TRY TO GET                               ;      :
-         SOME MUCH NEEDED REST    *     Z Z           :      '
-                                             *        `.     :     
-         The Moon is in the Last Quarter               `.    '           *    
-                                                         `~._;             * 
-                                                 *       
 
-EOT
-	    ;;
-	"Waning Crescent" ) cat <<"EOT"
-
-                                                            _
-                                                         ,;`      
-                               *         Z Z Z   *     .:.                *
-                                                      .:.                  
-         YOU TRY TO GET           *                   ; .                
-         SOME MUCH NEEDED REST      Z Z               l .                     
-                                           *          `  .               
-         It is a Waning Crescent Moon                  `: .               *    
-                                                         `-:._                * 
+                                                              ,~-.
+                                                              :   `. 
+                                                              '     `. 
+                                                              :      :
+                                                              '      :
+                                                              :     ;'
+                                                              '    ;'
+                                                              l.,~'
 
 
 EOT
-	    ;;
-    esac
-    echo "$HR"
+;;
+"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
+
+
+                                                          ,-~ ~-. 
+                                                        ;'        `. 
+                                                       ,           `:. 
+                                                       .             :
+                                                       .             :
+                                                       .            ;'
+                                                       `           ;'
+                                                        ` -.___.,~'
+
+
+EOT
+;;
+"Full Moon" ) cat <<"EOT"
+                                                           .    .
+                                                       .            .
+                                                    .     ,.----.      .
+                                                       ,;^        `.
+                                                  .   :            `:.   .
+                                                     ;               :
+                                                 .   :               :   .
+                                                     `:             ;'
+                                                  .   `:           ;'   .
+                                                        `~..___.,~'
+                                                      .             .
+                                                         .      .
+EOT
+;;
+"Waning Gibbous" ) cat <<"EOT"
+
+
+                                                          ,.---. 
+                                                       ,;^      `.
+                                                      :           .
+                                                     ;             .
+                                                     :             .
+                                                     `:           ;
+                                                      `:         ;
+                                                        `~..___,'
+
+
+EOT
+;;
+"Third Quarter" | "Last Quarter" ) cat <<"EOT"
+
+
+                                                         ,~-. 
+                                                       ,^   t
+                                                      .     '
+                                                     ;      :
+                                                     :      '
+                                                     `.     :
+                                                      `.    '
+                                                        `~._;
+
+
+EOT
+;;
+"Waning Crescent" ) cat <<"EOT"
+
+                                                           _
+                                                        ,;`  
+                                                      .:. 
+                                                     .:. 
+                                                     ; . 
+                                                     l . 
+                                                     `  . 
+                                                      `: . 
+                                                        `-:._ 
+
+
+EOT
+;;
+esac
 }
+
+GX_Rest() { # Relies on GX_Moon for ASCII
+clear
+GX_Moon # Draw moon
+
+tput sc
+# Add universal text
+tput cup 5 9  && echo "YOU TRY TO GET           *"
+tput cup 6 9  && echo "SOME MUCH NEEDED REST       Z Z"
+
+# Add MOON specific text
+tput cup 8 9
+case "$MOON" in
+"Old Moon" | "New Moon" ) echo "It is dark, the Moon is" && tput cup 8 33
+                          [[ "$MOON" == "Old Moon" ]] && echo "Olde" || echo "Young" ;;
+"Growing Crescent" )      echo "It is a Growing Crescent Moon" ;;
+"First Quarter" )         echo "The Moon is in its First Quarter" ;;
+"Growing Gibbous" | "Waxing Gibbous" ) echo "The Moon is Waxing" ;;
+"Full Moon" )             echo "It is a Full Moon" ;;
+"Waning Gibbous" )        echo "The Moon is Waning" ;;
+"Third Quarter" | "Last Quarter" ) echo "The Moon is in the Last Quarter" ;;
+"Waning Crescent" )        echo "It is a Waning Crescent Moon" ;;
+esac
+
+# Finally, sprinkle with stars:
+tput cup 3 31 && echo "*         Z Z Z   *"
+tput cup 3 77 && echo "*"
+tput cup 7 43 && echo "*"
+[ "$MOON" != "Full Moon" ] && tput cup 8 74 && echo "*"
+tput cup 9 76 && echo "*"
+tput rc
+}
+
 
 GX_Monster_chthulu() {
     clear
@@ -1525,7 +1563,8 @@ VAL_GOLD: $VAL_GOLD
 VAL_TOBACCO: $VAL_TOBACCO
 VAL_CHANGE: $VAL_CHANGE
 STARVATION: $STARVATION
-TURN: $TURN" > "$CHARSHEET"
+TURN: $TURN
+ALMANAC: $ALMANAC" > "$CHARSHEET"
 }
 
 
@@ -1550,6 +1589,8 @@ BiaminSetup() { # Used in MainMenu()
 	grep -q -E '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
 	# Time 
 	grep -q -E '^TURN:' "$CHARSHEET"        || echo "TURN: 0" >> $CHARSHEET
+	# Almanac
+	grep -q -E '^ALMANAC:' "$CHARSHEET"     || echo "ALMANAC: 0" >> $CHARSHEET
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '
@@ -1572,13 +1613,13 @@ BiaminSetup() { # Used in MainMenu()
                    if (/^VAL_TOBACCO:/){ VAL_TOBACCO = $2 }
                    if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
                    if (/^STARVATION:/) { STARVATION = $2 }
-                   # new
-                   if (/^TURN:/)    { TURN= $2 }
+                   if (/^TURN:/)        { TURN= $2 }
+                   if (/^ALMANAC:/)     { ALMANAC = $2 }
                  }
                  END { 
-                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";"
+                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" ALMANAC ";"
                  }' $CHARSHEET )
-	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN <<< "$CHAR_TMP"
+	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN ALMANAC <<< "$CHAR_TMP"
 	unset CHAR_TMP
 	# If character is dead, don't fool around..
 	(( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
@@ -1592,14 +1633,15 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
-	TURN=0			# For the beginning player starts from 1st Jan 1 year. After starting date'll be random
+	TURN=0			# Player starts from translated _real date_. Afterwards, turns increment.
+	ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
 
 	# IDEA - why not difference all 4 races by various tobacco/gold offsets ? #kstn
-	#            gold            tobacco
-	#             \/                /\
-	# dwarves |  most         | the smallest
+	#            gold            tobacco                                      # Good idea, implement it
+	#             \/                /\                                        # as long as u detail the math
+	# dwarves |  most         | the smallest                                  # below :) - Sigge
 	# man     |  more         | smaller
 	# elves   |  smaller      | more
 	# hobbits |  the smallest | most
@@ -1690,7 +1732,7 @@ BiaminSetup() { # Used in MainMenu()
 
 Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(Capitalize "$CHAR") # Create capitalized FIGHT CHAR name
-    TodaysDate	       # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+    (( TURN == 0 )) && TodaysDate # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
     (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
@@ -1702,94 +1744,77 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     NewSector
 }
 
-DateFromTurn() {
-    local YEAR_LENGHT=400
-    local MONTH_STR=("Biamin Festival" # rarely happens, if ever :(
-	"Witching Day"
-	"After-Witching" "Year-Turn" 
-	"Mid-Spring Day"
-	"Plough Month" "Sigmar Month" 
-	"Sun Still Day"
-	"Summer Month" "Fore-Mystery" 
-	"Mystery Day"
-	"After-Mystery" "Harvest Month" 
-	"Mid-Autumn Day"
-	"Brew Month" "Chill Month" "Ulric Month" 
-	"World Still Day"
-	"Fore-Witching")
-    local MONTH_LENGTH=( 0 0 1 33 66 67 100 133 166 167 200 201 233 266 267 300 333 366 367 400 )
-	
-    #local WEEKDAY_STR=("Festag (Holiday)" "Wellentag (Work day)" "Aubentag (Levy day)" "Marktag (Market day)"
-    #"Backertag (Bake day)" "Bezahltag (Tax day)" "Konistag (King day)" "Angestag (Start week)")
-    # Weekdays (eq. MON-SUN)
-    local WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Market day" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
-    # http://warhammeronline.wikia.com/wiki/Morrslieb
-    # Where Mannslieb is full every 25 days, on a constant and predictable cycle, 
-    case $( bc <<< "( $TURN % 25 )" ) in
-	0 | 2 )         MOON="Old Moon" ;; # Old moon was used more frequently before (but they are interchangeable)
-	1 | 3 )         MOON="New Moon" ;;
-	4 | 5 | 6 )     MOON="Growing Crescent" ;;
-	7 | 8 | 9 )     MOON="First Quarter" ;;
-	10 | 11 | 12 )  MOON="Growing Gibbous" ;;
-	13 | 14 | 15 )  MOON="Full Moon" ;;
-	16 | 17 | 18 )  MOON="Waning Gibbous" ;;
-	19 | 20 | 21 )  MOON="Third Quarter" ;;
-	22 | 23 | 24 )  MOON="Waning Crescent" ;;
+DateFromTurn() { # Some vars used in Almanac()
+    local YEAR_LENGHT=365 # Gregorian calendar without leap years
+    local MONTH_STR=("After-Frost" "Marrsuckur" "Plough-Tide" "Anorlukis" "Summer-Tide" "Summer-Turn" "Merentimes" "Harvest-Month" "Ringorin" "Brew-Tasting Tide" "Winter Month" "Midwinter Offering")
+	# MONTHS ARE  31 28 31 30  31  30  31  31  30  31  30  31  DAYS
+	MONTH_LENGTH=(31 59 90 120 151 181 212 243 273 304 334 365)
+    WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
+
+	# Find out which cycle we're in
+    case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
+	0 | 1 )             MOON="New Moon"         ;;
+	2 | 3 | 4 | 5 )     MOON="Growing Crescent" ;;
+    6 | 7 | 8 | 9 )     MOON="First Quarter"    ;;
+	10 | 11 | 12 | 13 ) MOON="Growing Gibbous"  ;;
+	14 | 15 | 16 | 17 ) MOON="Full Moon"        ;;
+	18 | 19 | 20 | 21 ) MOON="Waning Gibbous"   ;;
+	22 | 23 | 24 | 25 ) MOON="Third Quarter"    ;;
+	26 | 27 | 28 | 29 ) MOON="Waning Crescent"  ;;
+	* )                 MOON="Old Moon"         ;; # Same as New Moon
     esac
+    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 7" )]}
 
-    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 8" )]}
-
+	
     YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
     local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" ) # month and days
     (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
 
-    if   ((REMAINDER == 1))  ; then local MONTH_NUM="1"
-    elif ((REMAINDER <= 33)) ; then local MONTH_NUM="2"
-    elif ((REMAINDER <= 66)) ; then local MONTH_NUM="3"
-    elif ((REMAINDER == 67)) ; then local MONTH_NUM="4"
-    elif ((REMAINDER <= 100)); then local MONTH_NUM="5"
-    elif ((REMAINDER <= 133)); then local MONTH_NUM="6"
-    elif ((REMAINDER <= 166)); then local MONTH_NUM="7"
-    elif ((REMAINDER == 167)); then local MONTH_NUM="8"
-    elif ((REMAINDER <= 200)); then local MONTH_NUM="9"
-    elif ((REMAINDER == 201)); then local MONTH_NUM="10"
-    elif ((REMAINDER <= 233)); then local MONTH_NUM="11"
-    elif ((REMAINDER <= 266)); then local MONTH_NUM="12"
-    elif ((REMAINDER == 267)); then local MONTH_NUM="13"
-    elif ((REMAINDER <= 300)); then local MONTH_NUM="14"
-    elif ((REMAINDER <= 333)); then local MONTH_NUM="15"
-    elif ((REMAINDER <= 366)); then local MONTH_NUM="16"
-    elif ((REMAINDER == 367)); then local MONTH_NUM="17"
-    else local MONTH_NUM="18"
+	# Find out which month we're in
+    if   ((REMAINDER <= 31)) ; then MONTH_NUM="1"
+    elif ((REMAINDER <= 59)) ; then MONTH_NUM="2"
+    elif ((REMAINDER == 90)) ; then MONTH_NUM="3"
+    elif ((REMAINDER <= 120)); then MONTH_NUM="4"
+    elif ((REMAINDER <= 151)); then MONTH_NUM="5"
+    elif ((REMAINDER <= 181)); then MONTH_NUM="6"
+    elif ((REMAINDER == 212)); then MONTH_NUM="7"
+    elif ((REMAINDER <= 243)); then MONTH_NUM="8"
+    elif ((REMAINDER == 273)); then MONTH_NUM="9"
+    elif ((REMAINDER <= 304)); then MONTH_NUM="10"
+    elif ((REMAINDER <= 334)); then MONTH_NUM="11"
+    else MONTH_NUM="12"
     fi
 
-    case "$MONTH_NUM" in
-	1 | 4 | 8 | 10 | 13 | 17 ) DAY=${MONTH_STR[$MONTH_NUM]} ;; # 'Witching Day' etc. 
-	*)  MONTH=${MONTH_STR[$MONTH_NUM]}
-	    DAY=$( bc <<< "$REMAINDER - ${MONTH_LENGTH[$MONTH_NUM]}" )
-	    case "$DAY" in # Adjust date
-		1 | 21 | 31 ) DAY+="st" ;;
-		2 | 22 | 32 ) DAY+="nd" ;;
-		3 | 23 | 33 ) DAY+="rd" ;;
- 		* )           DAY+="th" ;;
-	    esac
-    esac
+	MONTH=${MONTH_STR[$MONTH_NUM]}
+	DAY=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM]}" )  # BUG! This becomes a negative
+	DAY_NUM=$DAY # Save for Almanac
+	case "$DAY" in # Add day postfix
+	 1 | 21 | 31 ) DAY+="st" ;;
+	 2 | 22 | 32 ) DAY+="nd" ;;
+	 3 | 23 | 33 ) DAY+="rd" ;;
+ 	 * )           DAY+="th" ;;
+	esac
     (( YEAR > 99 )) && YEAR=$( bc <<< "$YEAR % 100" ) # FIX for year > 100
+ 
+	# Determine Century, used in Almanac() calculations
+	# The thought was originally: century, cycle, age.. Table it for now
+    CENTURY=$( bc <<< "$YEAR+200" ) # We start in year 2nn, actually :)
+    if   (( CENTURY <= 299 )) ; then CENTURY=200
+    elif (( CENTURY <= 399 )) ; then CENTURY=300
+    elif (( CENTURY <= 499 )) ; then CENTURY=400
+    else CENTURY=500 # You won't survive this long.. 180,000+ turns
+    fi
+    
+	# Add year postfix
     case "$YEAR" in 
 	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) YEAR+="st";;
 	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) YEAR+="nd";;
 	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) YEAR+="rd";;
 	*) YEAR+="th";;
     esac
-
-    case "$MONTH_NUM" in
-	1 | 4 | 8 | 10 | 13 | 17 ) 
-	    # Output example "Witching Day in the 13th cycle"
-	    MONTH=""; # !!! Do not remove - fix for HighScore
-	    BIAMIN_DATE_STR="The $DAY in the $YEAR Cycle";;
-	*)  # Output example "3rd of Year-Turn in the 13th cycle"
-	    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle";;
-    esac
+    
+    # Output example "3rd of Year-Turn in the 13th cycle"
+	BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
 }
 
 TodaysDate() {
@@ -1797,8 +1822,6 @@ TodaysDate() {
     # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
     # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
 
-    # TODO: Decouple biamin date from real date once CREATION is set in charsheet
-    # Add check here, IF CREATION is not set, CREATION && DATE in CHARSHEET is TodaysDate
     # if [[ $CREATION == 0 ]] ; then # first run
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
     # else
@@ -1828,7 +1851,7 @@ TodaysDate() {
  	10 ) TODAYS_MONTH="Brew-Tasting Tide" ;;  # Autumn
  	11 ) TODAYS_MONTH="Winter Month" ;;       # Winter
  	12 ) TODAYS_MONTH="Midwinter Offering" ;; # Winter [Norse] "Vinterblot" Viking winter sacrifice
- 	* ) TODAYS_MONTH="Biamin Festival" ;;  # rarely happens, if ever :(
+ 	* ) TODAYS_MONTH="Biamin Festival" ;;     # rarely happens, if ever :(
     esac
     case "$TODAYS_YEAR" in
 	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) TODAYS_YEAR+="st";;
@@ -2084,9 +2107,9 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
-RollDice2() { # Temporary wrapper for RollDice()
+RollDice2() { # Temp wrapper for RollDice()
     RollDice $1
-    echo "$DICE" # Great idea Sigge! Thanks!
+    echo "$DICE"
 }
 
 ## GAME FUNCTIONS: ITEMS IN LOOP
@@ -2161,12 +2184,360 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
+	if (( ALMANAC == 0 )) ; then # Player does not have Almanac
 	read -sn 1 -p "      (D)isplay Race Info        (A)ny key to continue          (Q)uit" CHARSHEET_OPT
 	case "$CHARSHEET_OPT" in
 		d | D ) GX_Races && PressAnyKey ;;
 		q | Q ) CleanUp ;;
 	esac
+	else # Player has "unlocked" Almanac
+	read -sn 1 -p "    (D)isplay Race Info       (A)lmanac       (C)ontinue      (Q)uit     " CHARSHEET_OPT
+	case "$CHARSHEET_OPT" in
+		d | D ) GX_Races && PressAnyKey ;;
+		a | A ) Almanac ;;
+		q | Q ) CleanUp ;;
+	esac
+	fi
 }
+
+# GAME ACTION: USE ALMANAC (MOON info, NOTES, MAIN info)
+Almanac_Moon() { # Used in Almanac()
+GX_CharSheet 2 # Display GX Header with ALMANAC header
+# Substitute "NOTES" with MOON string in banner
+tput sc
+case "$MOON" in
+"Full Moon" | "New Moon" | "Old Moon" ) tput cup 6 27 && echo " ${MOON^^} "                  ;;
+"First Quarter" | "Third Quarter" ) tput cup 6 16 && echo "THE MOON IS IN THE ${MOON^^}"     ;;
+"Waning Gibbous" | "Growing Gibbous" | "Waning Crescent" ) tput cup 6 25 && echo "${MOON^^}" ;;
+"Growing Crescent" ) tput cup 6 24 && echo "${MOON^^}"                                       ;;
+esac
+tput rc
+
+GX_Moon # Draw Moon
+
+# Add "picture frame" ASCII to Moon
+local VERTI_FRAME="||"
+local HORIZ_FRAME="_______________________"
+tput sc
+tput cup 9 50 && echo "$HORIZ_FRAME"
+tput cup 10 48 && echo ".j                       l." # spaces rem "Full Moon" dots..
+local framey=11
+while (( framey < 19 )) ; do
+	tput cup $framey 48 && echo "$VERTI_FRAME"
+	tput cup $framey 73 && echo "$VERTI_FRAME"
+	(( framey++ ))
+done
+tput cup 19 49 && echo -n "l" && echo -n "$HORIZ_FRAME" && echo "j"
+if [ "$MOON" = "Full Moon" ] ; then # Remove "shiny" dots ..
+tput cup 20 57 && echo "        "
+tput cup 11 52 && echo " "
+tput cup 11 71 && echo " "
+tput cup 13 50 && echo " "
+tput cup 17 50 && echo " "
+tput cup 17 72 && echo " "
+fi
+tput rc
+
+# TODO Add Left-aligned text "box" (without borders)
+# Follow template:
+# 1. Name of phase
+# 2. Mythological significance (Gods etc.)
+# 3. Normal consequences
+#      - Wildlife & people ("What stirs under a $MOON"?)
+#        e.g. People can "go crazy" + werewolves under Full Moon
+# 4. Special consequences
+#       - Abilities (e.g. +1 LUCK)
+#       - Omens (bad fortune, death, starvation)
+# 5. Relation to Wandering Moon
+
+echo "$HR"
+} # Return to Almanac()
+
+Almanac_Notes() {
+GX_CharSheet 2 # Display GX banner with ALMANAC header
+tput sc
+tput cup 6 28 # add"NOTES" subheader
+echo "N O T E S"
+tput rc
+[ -z "$CHAR_NOTES" ] && echo -e " In the back of your almanac, there is a page reserved for Your Notes.\n There is only room for 10 lines, but you may erase obsolete information.\n"
+
+# TODO
+# Add creation of mktemp CHAR.notes file that is referenced in $CHARSHEET
+# OR add NOTE0-NOTE9 in .sheet file.
+# Add opportunity to list (default action in Almanac_Notes), (A)dd or (E)rase notes.
+# Notes are "named" by numbers 0-9.
+# Notes may not exceed arbitrary ASCII-friendly length.
+# Notes must be superficially "cleaned" OR we can simply "list" them with cat <<"EOT".
+# 	Just deny user to input EOT :)
+echo "$HR"
+} # Return to Almanac()
+
+
+Almanac() { # Almanac (calendar). Used in DisplayCharsheet()
+# TODO The Almanac must be "unlocked" in gameplay, e.g. bought from Merchant. This is random (20% chance he has one)
+# TODO Add ALMANAC=0 in default charsheets
+# TODO When Almanac is found ALMANAC=1 is saved.
+# TODO when ALMANAC=1 add NOTES 0-9 in charsheet.
+
+GX_CharSheet 2 # Display GX banner with ALMANAC header
+# Add DATE string subheader
+[ $(echo ${#WEEKDAY_STR} ) -gt 9 ] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="${WEEKDAY_STR} ${BIAMIN_DATE_STR}"
+local ALMANAC_SUB_LEN=$( echo "${#ALMANAC_SUB}-18" | bc )
+tput sc
+case "$ALMANAC_SUB_LEN" in
+35 | 34 ) tput cup 6 15 ;;
+33 | 32 ) tput cup 6 16 ;;
+31 | 30 ) tput cup 6 17 ;;
+29 | 28 ) tput cup 6 18 ;;
+27 | 26 ) tput cup 6 19 ;;
+25 | 24 ) tput cup 6 20 ;;
+esac
+echo "$ALMANAC_SUB" | sed 's/ in the [0-9][0-9].. Cycle//g'
+tput rc
+
+# Calculate which day the first of the month is
+# Source: en.wikipedia.org/wiki/Determination_of_the_day_of_the_week
+local FIMON="$MONTH_NUM" # add _REMAINDER to DateFromTurn()
+case "$FIMON" in # month table (without leap years)
+1 | 10 )     local FIMON=0 ;;
+2 | 3 | 11 ) local FIMON=3 ;;
+4 | 7 )      local FIMON=6 ;;
+5 )          local FIMON=1 ;;
+6 )          local FIMON=4 ;;
+8 )          local FIMON=2 ;;
+9 | 12 )     local FIMON=5 ;;
+esac
+
+local FIYEA="${YEAR%??}"
+case "$FIYEA" in # last 2 # of year
+00 | 06 | 17 | 23 | 28 | 34 | 45 | 51 | 56 | 62 | 73 | 79 | 84 | 90 )      local FIYEA=0 ;;
+01 | 07 | 12 | 18 | 29 | 35 | 40 | 46 | 57 | 63 | 68 | 74 | 85 | 91 | 96 ) local FIYEA=1 ;;
+02 | 13 | 19 | 24 | 30 | 41 | 47 | 52 | 58 | 69 | 75 | 80 | 86 | 97 )      local FIYEA=2 ;;
+03 | 08 | 14 | 25 | 31 | 36 | 42 | 53 | 59 | 64 | 70 | 81 | 87 | 92 | 98 ) local FIYEA=3 ;;
+09 | 15 | 20 | 26 | 37 | 43 | 48 | 54 | 65 | 71 | 76 | 82 | 93 | 99 )      local FIYEA=4 ;;
+04 | 10 | 21 | 27 | 32 | 38 | 49 | 55 | 60 | 66 | 77 | 83 | 88 | 94 )      local FIYEA=5 ;;
+05 | 11 | 16 | 22 | 33 | 39 | 44 | 50 | 61 | 67 | 72 | 78 | 89 | 95 )      local FIYEA=6 ;;
+esac
+
+local FICEN="$CENTURY"
+case "$FICEN" in # centuries
+100 | 500 | 900 | 1300 | 1700 )       local FICEN=4 ;; # TODO: Trim it
+200 | 600 | 1000 | 1400 | 1800 )      local FICEN=2 ;; # This table
+300 | 700 | 1100 | 1500 | 1900 )      local FICEN=0 ;; # is currently
+90 | 400 | 800 | 1200 | 1600 | 2000 ) local FICEN=6 ;; # way too big :P
+esac
+
+# LEGEND: d+m+y+(y/4)+c mod 7
+# If the result is 0, the date was a Ringday (Sunday), 1 Moonday (Monday) etc.
+FIRSTDAY=$( echo "1+$FIMON+$FIYEA+($FIYEA/4)+$FICEN" | bc )
+FIRSTDAY=$( echo "$FIRSTDAY-($FIRSTDAY/7)*7" | bc ) # modulo 7 of $FIRSTDAY
+
+# DRAW CALENDAR
+cat <<"EOT"
+                                                     ringday
+           Mo Be Mi Ba Me Wa Ri              washday    o    moonday  
+                                                     o . . o
+                                         melethday  o . x . o  brenday
+                                                     o . . o
+                                             braigday   o   midweek
+                                                       .^.
+
+EOT
+tput sc # save cursor pos
+local YPOS=11
+local MTYPE=${MONTH_LENGTH[$MONTH_NUM]}
+(( DAY_NUM <= 9 )) && local CALDATE="_$DAY_NUM" || local CALDATE="$DAY_NUM"
+while (( YPOS <= 16 )) ; do
+	local CALKEY="$FIRSTDAY-$YPOS-$MTYPE"
+	tput cup $YPOS 11
+	case "$CALKEY" in                                                          # Month starts on $FIRSTDAY
+	"0-11-31" | "0-11-30" | "0-11-28" ) local CALSTR="                  _1" ;; # Ringday
+	"0-12-31" | "0-12-30" | "0-12-28" ) local CALSTR="_2 _3 _4 _5 _6 _7 _8" ;;
+	"0-13-31" | "0-13-30" | "0-13-28" ) local CALSTR="_9 10 11 12 13 14 15" ;;
+	"0-14-31" | "0-14-30" | "0-14-28" ) local CALSTR="16 17 18 19 20 21 22" ;;
+	"0-15-28" )                         local CALSTR="23 24 25 26 27 28"    ;;
+	"0-15-31" | "0-15-30" )             local CALSTR="23 24 25 26 27 28 29" ;;
+	"0-16-30" )                         local CALSTR="30"                   ;;
+	"0-16-31" )                         local CALSTR="30 31"                ;;
+	"1-11-31" | "1-11-30" | "1-11-28")  local CALSTR="_1 _2 _3 _4 _5 _6 _7" ;; # Moonday
+	"1-12-31" | "1-12-30" | "1-12-28")  local CALSTR="_8 _9 10 11 12 13 14" ;;
+	"1-13-31" | "1-13-30" | "1-13-28")  local CALSTR="15 16 17 18 19 20 21" ;;
+	"1-14-31" | "1-14-30" | "1-14-28")  local CALSTR="22 23 24 25 26 27 28" ;;
+	"1-15-30" )                         local CALSTR="29 30"                ;;
+	"1-15-31" )                         local CALSTR="29 30 31"             ;;
+	"2-11-31" | "2-11-30" | "2-11-28" ) local CALSTR="   _1 _2 _3 _4 _5 _6" ;; # Brenday
+	"2-12-31" | "2-12-30" | "2-12-28" ) local CALSTR="_7 _8 _9 10 11 12 13" ;;
+	"2-13-31" | "2-13-30" | "2-13-28" ) local CALSTR="14 15 16 17 18 19 20" ;;
+	"2-14-31" | "2-14-30" | "2-14-28" ) local CALSTR="21 22 23 24 25 26 27" ;;
+	"2-15-28" )                         local CALSTR="28"                   ;;
+	"2-15-30" )                         local CALSTR="28 29 30"             ;;
+	"2-15-31" )                         local CALSTR="28 29 30 31"          ;;
+	"3-11-31" | "3-11-30" | "3-11-28" ) local CALSTR="      _1 _2 _3 _4 _5" ;; # Midweek
+	"3-12-31" | "3-12-30" | "3-12-28" ) local CALSTR="_6 _7 _8 _9 10 11 12" ;;
+	"3-13-31" | "3-13-30" | "3-13-28" ) local CALSTR="13 14 15 16 17 18 19" ;;
+	"3-14-31" | "3-14-30" | "3-14-28" ) local CALSTR="20 21 22 23 24 25 26" ;;
+	"3-15-28" )                         local CALSTR="27 28"                ;;
+	"3-15-30" )                         local CALSTR="27 28 29 30"          ;;
+	"3-15-31" )                         local CALSTR="27 28 29 30 31"       ;;
+	"4-11-31" | "4-11-30" | "4-11-28" ) local CALSTR="         _1 _2 _3 _4" ;; # Braigday
+	"4-12-31" | "4-12-30" | "4-12-28" ) local CALSTR="_5 _6 _7 _8 _9 10 11" ;;
+	"4-13-31" | "4-13-30" | "4-13-28" ) local CALSTR="12 13 14 15 16 17 18" ;;
+	"4-14-31" | "4-14-30" | "4-14-28" ) local CALSTR="19 20 21 22 23 24 25" ;;
+	"4-15-28" )                         local CALSTR="26 27 28"             ;;
+	"4-15-30" )                         local CALSTR="26 27 28 29 30"       ;;
+	"4-15-31" )                         local CALSTR="26 27 28 29 30 31"    ;;
+	"5-11-31" | "5-11-30" | "5-11-28" ) local CALSTR="            _1 _2 _3" ;; # Melethday
+	"5-12-31" | "5-12-30" | "5-12-28" ) local CALSTR="_4 _5 _6 _7 _8 _9 10" ;;
+	"5-13-31" | "5-13-30" | "5-13-28" ) local CALSTR="11 12 13 14 15 16 17" ;;
+	"5-14-31" | "5-14-30" | "5-14-28" ) local CALSTR="18 19 20 21 22 23 24" ;;
+	"5-15-28" )                         local CALSTR="25 26 27 28"          ;;
+	"5-15-30" )                         local CALSTR="25 26 27 28 29 30"    ;;
+	"5-15-31" )                         local CALSTR="25 26 27 28 29 30 31" ;;
+	"6-11-31" | "6-11-30" | "6-11-28" ) local CALSTR="               _1 _2" ;; # Washday
+	"6-12-31" | "6-12-30" | "6-12-28" ) local CALSTR="_3 _4 _5 _6 _7 _8 _9" ;;
+	"6-13-31" | "6-13-30" | "6-13-28" ) local CALSTR="10 11 12 13 14 15 16" ;;
+	"6-14-31" | "6-14-30" | "6-14-28" ) local CALSTR="17 18 19 20 21 22 23" ;;
+	"6-15-28" )                         local CALSTR="24 25 26 27 28"       ;;
+	"6-15-31" | "6-15-30" )             local CALSTR="24 25 26 27 28 29 30" ;;
+	"6-16-31" )                         local CALSTR="31"                   ;;
+	* ) local CALSTR="X" ;; # Don't draw anything
+	esac
+	if [ "$CALSTR" != "X" ] ; then
+		if (( DAY_NUM <= 9 )) ; then # TODO check compatibility of grey bg color here..
+		echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m_$DAY_NUM\e[0m")/'' | tr '_' ' '
+		else
+		echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m$DAY_NUM\e[0m")/'' | tr '_' ' '
+		fi
+	fi
+	(( YPOS++ ))
+done
+tput rc
+
+# Add MONTH HEADER to CALENDAR
+local MONTH_STR_LEN=$( echo "${#MONTH}" )
+tput sc
+case "$MONTH_STR_LEN" in
+18 | 17 ) tput cup 9 13 ;;
+13 ) tput cup 9 14      ;;
+12 | 11 ) tput cup 9 15 ;;
+10 | 9 ) tput cup 9 16  ;;
+8 )  tput cup 9 17      ;;
+esac
+echo "${MONTH^}"
+tput rc
+
+# Magnify WEEKDAY in HEPTOGRAM
+tput sc
+case "$WEEKDAY_STR" in
+"Ringday (Holiday)" ) tput cup 9 53 ;;
+"Moonday" ) tput cup 10 61          ;;
+"Brenday" ) tput cup 12 63          ;;
+"Midweek" ) tput cup 14 60          ;;
+"Braigday" )  tput cup 14 45        ;;
+"Melethday" ) tput cup 12 41        ;;
+"Washday" ) tput cup 10 45          ;;
+esac
+[ $(echo ${#WEEKDAY_STR} ) -gt 9 ] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
+tput rc
+
+# Add MOON PHASE to HEPTOGRAM (bottom)
+tput sc
+case "$MOON" in
+"Old Moon" | "New Moon" | "Full Moon" )                      tput cup 16 52 ;;
+"First Quarter" | "Third Quarter" | "Waning Gibbous" )       tput cup 16 50 ;;
+"Growing Gibbous" | "Waning Crescent" | "Growing Crescent" ) tput cup 16 49 ;;
+esac
+echo "${MOON^^}"
+tput rc
+
+# Add DEFAULT Trivia header
+local TRIVIA_HEADER="$WEEKDAY_STR - "
+case "$WEEKDAY_STR" in
+"Ringday (Holiday)" ) local TRIVIA_HEADER+="Day of Festivities and Rest" ;;
+"Moonday" ) local TRIVIA_HEADER+="Mor's Day (Day of the Moon)"           ;;
+"Brenday" ) local TRIVIA_HEADER+="Brenia's Day (God of Courage)"         ;;
+"Midweek" ) local TRIVIA_HEADER+="Middle of the Week (Day of Balance)"   ;;
+"Braigday" ) local TRIVIA_HEADER+="Braig's Day (God of Wilderness)"      ;;
+"Melethday" ) local TRIVIA_HEADER+="Melethril's Day (God of Love)"       ;;
+"Washday" ) local TRIVIA_HEADER+="Final Workday of the Week"             ;;
+esac
+
+# Add PARTICULAR Trivia body
+# Database of significant constellations of dates, months and phases
+
+# CUSTOM Powerful combinations (may overrule the above AND have gameplay consequences)
+local TRIVIA_KEY="$DAY+$MONTH_REMINDER+$MOON"
+case "$TRIVIA_KEY" in
+"12+12+Full Moon" ) local TRIVIA1="Very holy" && local TRIVIA2="Yes, indeed. [+1 LUCK]" ;;
+esac
+# TODO IDEA These powerful combos can adjust things like luck, animal attacks etc.
+# TODO make custom trivia a separate function instead..
+
+if [ -z "$TRIVIA1" ] && [ -z "$TRIVIA2" ] ; then
+# CUSTOM Common Folk Astrology (TRIVIA1)
+local TRIVIA_KEY="$WEEKDAY_STR+$MOON"
+case "$TRIVIA_KEY" in
+"Moonday+Full Moon" ) local TRIVIA1="A Full Moon on Moon's day is considered a powerful combination." ;;
+"Moonday+Waning Crescent" ) local TRIVIA1="An aging Crescent on Moon's Day makes evil magic more powerful." ;;
+"Brenday+New Moon" )  local TRIVIA1="New Moon on Brenia's day means your courage will be needed." ;;
+"Midweek+Old Moon" )  local TRIVIA1="An old moon midweek is the cause of imbalance. Show great care." ;;
+"Ringday (Holiday)+New Moon" ) local TRIVIA1="New Moon on Ringday is a blessed combination. Be joyeful!" ;;
+esac
+
+# CUSTOM Month and Moon combinations (TRIVIA2)
+local TRIVIA_KEY="$MONTH+$MOON"
+case "$TRIVIA_KEY" in
+"Harvest Month+Growing Crescent" ) local TRIVIA2="A Growing Crescent in Harvest Month foretells a Good harvest!" ;;
+"Ringorin+Old Moon" ) local TRIVIA2="An Old Moon in Ringorin means the ancestors are watching. Tread Careful." ;;
+"Ringorin+New Moon" ) local TRIVIA2="A New Moon in Ringorin is a good omen for the future if the aim is true." ;;
+"Marrsuckur+Waning Crescent" ) local TRIVIA2="A crescent declining during Marrow-sucker sometimes foretell Starvation." ;;
+esac
+fi
+
+
+# DEFAULT Trivia Bodies (fallback)
+if [ -z "$TRIVIA1" ] ; then # display default info about the day
+case "$WEEKDAY_STR" in
+"Ringday (Holiday)" ) local TRIVIA1="Men and Halflings celebrate Ringday as the end and beginning of the week."   ;;
+"Moonday" )           local TRIVIA1="Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   ;;
+"Brenday" )           local TRIVIA1="Visit the Temple on Brenia's Day to honor those who perished in warfare."    ;;
+"Midweek" )           local TRIVIA1="In some places, Midweek Eve is celebrated with village dances and ale."      ;;
+"Braigday" )          local TRIVIA1="Historically, a day of hunting. Nobility still hunt every Braig's Day."      ;;
+"Melethday" )         local TRIVIA1="Commonly considered Lovers' Day, it is also a day of mischief and trickery." ;;
+"Washday" )           local TRIVIA1="Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      ;;
+esac
+fi
+
+if [ -z "$TRIVIA2" ] ; then # display default info about the month
+local TRIVIA2="$MONTH - "
+case "$MONTH" in
+"After-Frost")         local TRIVIA2+="1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       ;;
+"Marrsuckur" )         local TRIVIA2+="2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     ;;
+"Plough-Tide" )        local TRIVIA2+="3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       ;;
+"Anorlukis" )          local TRIVIA2+="4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       ;;
+"Summer-Tide" )        local TRIVIA2+="5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" ;;
+"Summer-Turn" )        local TRIVIA2+="6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   ;;
+"Merentimes" )         local TRIVIA2+="7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   ;;
+"Harvest Month" )      local TRIVIA2+="8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        ;;
+"Ringorin" )           local TRIVIA2+="9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              ;;
+"Brew-Tasting Tide" )  local TRIVIA2+="10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    ;;
+"Winter Month" )       local TRIVIA2+="11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       ;;
+"Midwinter Offering" ) local TRIVIA2+="12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  ;;
+esac
+fi
+
+# Output Trivia (mind the space before sentences)
+echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
+
+echo "$HR"
+read -p "                (M)oon phase        (N)otes        (R)eturn          " -sn1 ALM_OPT
+case "$ALM_OPT" in
+  M | m ) Almanac_Moon ;;
+  N | n ) Almanac_Notes ;;
+esac
+unset ALM_OPT
+} # Return to DisplayCharsheet()
+
 
 # FIGHT MODE! (secondary loop for fights)
 FightTable() {  # Used in FightMode()
@@ -2801,8 +3172,15 @@ Marketplace_Merchant() {
 	#MERCHANT_GOLD_SELL
 	#MERCHANT_FOOD_BUY
 	#MERCHANT_FOOD_SELL
+	
+	if (( ALMANAC == 0 )) ; then # Player still hasn't bought/found Almanac
+		RollDice 20
+		(( DICE <= 5 )) && ALMANAC_OFFER=1 || ALMANAC_OFFER=0
+	fi # TODO Add Almanac as a special item to buy IF ALMANAC_OFFER == 1
+	
     fi
     GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
+						    # TODO if ALMANAC_OFFER=1 then he offers Almanac too or only?
     read -sn 1
 }
 

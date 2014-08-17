@@ -35,7 +35,7 @@ TODO 2.0 branch ("survival")
 [x] ASCII GX_Monster_boar 
 [x] ASCII GX_Monster_dragon
 [ ] ASCII GX_Monster_imp
-[ ] ASCII GX_Monster_cavebear
+[x] ASCII GX_Monster_bear
 [x] ASCII GX_Tavern
 [x] 	ASCII GX_DiceGame_Table && _Instructions
 [.]     ASCII GX_DiceGame

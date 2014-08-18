@@ -732,7 +732,6 @@ EOT
 GX_Monster_bear() { # Cave bear, really, "bear" is just shorter:)
 clear
 cat <<"EOT"
-                                                               
                                                ,--~~.._                
                                           _.,;'        `-.....__          
                                   ,..-~~^"                      `~~~~-.._       

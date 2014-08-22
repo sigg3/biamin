@@ -2928,9 +2928,7 @@ GX_Place() {     # Used in NewSector() and MapNav()
     esac
 }   # Return to NewSector() or MapNav()
 
-CheckForDeath() { # Used in NewSector()
-    (( DEATH == 1 )) && unset DEATH && HighScore && return 0
-}
+CheckForDeath() { (( DEATH == 1 )) && unset DEATH && HighScore && return 0 ;} # Used in NewSector()
 
 MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	echo -en "${CLEAR_LINE}"

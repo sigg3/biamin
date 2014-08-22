@@ -1946,7 +1946,7 @@ HighScore() { # Used in MainMenu()
     # Show 10 highscore entries or die if Highscore list is empty
     [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
     echo "" # empty line TODO fix it
-    read -sn 1 -p "                    Press the any key to go to (M)ain menu"
+    read -sn 1 -p "$(MakePromt 'Press the any key to go to (M)ain menu')"
 }   # Return to MainMenu()
 
 Credits() { # Used in MainMenu()

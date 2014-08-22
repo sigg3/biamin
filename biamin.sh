@@ -1670,31 +1670,17 @@ BiaminSetup() { # Used in MainMenu()
 	# hobbits |  the smallest | most
 	#             
 	case "$CHAR_RACE" in
-	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
-	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
-	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=3 && OFFSET_TOBACCO=2 ;;
-	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=2 && OFFSET_TOBACCO=3 ;;
+	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=-3 && OFFSET_TOBACCO=2 ;;
+	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=2 && OFFSET_TOBACCO=-3 ;;
+	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=-3 && OFFSET_TOBACCO=2 ;;
+	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=2 && OFFSET_TOBACCO=-3 ;;
 	esac
-	
-	# WEALTH formula = D12 - (D6 * CLASS OFFSET)
-	# ??? D12??? May be D20??? Where is mistake - in comment or in code ??? #kstn 
-	# Determine Initial Wealth of GOLD 
-	CHAR_GOLD=$(RollDice2 20)
-	OFFSET_GOLD=$( bc <<< "$OFFSET_GOLD * $(RollDice2 6)" )
-	# Determine Initial Wealth of TOBACCO
-	CHAR_TOBACCO=$(RollDice2 20)
-	OFFSET_TOBACCO=$( bc <<< "$OFFSET_TOBACCO * $(RollDice2 6)" )
 
-	case "$CHAR_RACE" in # Adjusting CHAR_GOLD and CHAR_TOBACCO to CHAR_RACE offsets
-	    1 | 3 ) # Humans and dwarves
-		CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $OFFSET_GOLD" ) ;          # get more GOLD    # (1..20) + (2..12) # ( 3..32)
-		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO - $OFFSET_TOBACCO" ) ; # but less TOBACCO # (1..20) - (3..12) # (-2..17)
-		(( CHAR_TOBACCO < 0 )) && CHAR_TOBACCO=0 ;;                  # healthy bastard  #
-	    2 | 4 ) # Elves and hobbits
-		CHAR_GOLD=$( bc <<< "$CHAR_GOLD - $OFFSET_GOLD" ) ;          # get less GOLD    # (1..20) - (3..12) # (-2..17)
-		CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $OFFSET_TOBACCO" ) ; # but more TOBACCO # (1..20) + (2..12) # ( 3..32)
-		(( CHAR_GOLD < 0 )) && CHAR_GOLD=0 ;;                        # poor bastard     #
-	esac
+	# WEALTH formula = D20 + (D6 * CLASS OFFSET)
+	CHAR_GOLD=$(    bc <<< "$(RollDice2 20) + ($OFFSET_GOLD    * $(RollDice2 6))" )
+	CHAR_TOBACCO=$( bc <<< "$(RollDice2 20) + ($OFFSET_TOBACCO * $(RollDice2 6))" )
+	(( CHAR_TOBACCO < 0 )) && CHAR_TOBACCO=0 # healthy bastard
+	(( CHAR_GOLD < 0 ))    && CHAR_GOLD=0    # poor bastard
 
 	# Determine initial food stock (D16 + 4) - player has 5 food minimum
 	CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" )

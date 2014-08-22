@@ -1756,11 +1756,19 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
 DateFromTurn() { # Some vars used in Almanac(
     local YEAR_LENGHT=365 # Gregorian calendar without leap years
     local MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dummy ${MONTH_STR[0]
-	"After-Frost" "Marrsuckur" "Plough-Tide" 
-	"Anorlukis" "Summer-Tide" "Summer-Turn" 
-	"Merentimes" "Harvest-Month" "Ringorin" 
-	"Brew-Tasting Tide" "Winter Month" "Midwinter Offering")
-    # MONTHS ARE            31 28 31 30  31  30  31  31  30  31  30  31   DAYS
+	"After-Frost"			# Winter
+	"Marrsuckur"			# Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
+	"Plough-Tide"			# Spring
+	"Anorlukis"			# Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
+	"Summer-Tide"			# Summer
+	"Summer-Turn"			# Summer
+	"Merentimes"			# Summer [Elvish] "Meren" - Happiness
+	"Harvest-Month"			# Autumn
+	"Ringorin"			# Autumn [Elvish] "Ringorn" - circle, life, produce
+	"Brew-Tasting Tide"		# Autumn
+	"Winter Month"			# Winter
+	"Midwinter Offering")		# Winter [Norse] "Vinterblot" Viking winter sacrifice
+    # MONTHS ARE          31 28 31 30  31  30  31  31  30  31  30  31   DAYS
     local MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
     local WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
     # Find out which YEAR we're in
@@ -1809,13 +1817,8 @@ TodaysDate() {
     # TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
     # NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
     
-    # Adjust date
-    case "$TODAYS_DATE" in
-	1 | 21 | 31 ) TODAYS_DATE+="st" ;;
-	2 | 22 ) TODAYS_DATE+="nd" ;;
-	3 | 23 ) TODAYS_DATE+="rd" ;;
- 	* ) TODAYS_DATE+="th" ;;
-    esac
+    
+    TODAYS_DATE=$(Ordial "$TODAYS_DATE") # Adjust date
     # Adjust month
     case "$TODAYS_MONTH" in
 	1 ) TODAYS_MONTH="After-Frost" ;;         # Winter
@@ -1832,12 +1835,7 @@ TodaysDate() {
  	12 ) TODAYS_MONTH="Midwinter Offering" ;; # Winter [Norse] "Vinterblot" Viking winter sacrifice
  	* ) TODAYS_MONTH="Biamin Festival" ;;     # rarely happens, if ever :(
     esac
-    case "$TODAYS_YEAR" in
-	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) TODAYS_YEAR+="st";;
-	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) TODAYS_YEAR+="nd";;
-	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) TODAYS_YEAR+="rd";;
-	*) TODAYS_YEAR+="th";;
-    esac
+    TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }

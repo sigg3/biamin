@@ -52,10 +52,7 @@ DISABLE_CHEATS=0                                                       #
 # Horizontal ruler used almost everywhere in the game
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
-# Centered "Press Any Key to continue" string
-PressAnyKey() {
-	read -sn 1 -p "                        Press (A)ny key to continue.."
-}
+PressAnyKey() { read -sn 1 -p "$(MakePromt 'Press (A)ny key to continue..')" ; } # Centered "Press Any Key to continue" string
 
 GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo(), CleanUp() and License() !
     clear

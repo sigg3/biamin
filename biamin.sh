@@ -1462,12 +1462,15 @@ EOT
 #                          1. FUNCTIONS                                #
 #                    All program functions go here!                    #
 
-Die() {
-    echo -e "$1" && exit 1
-}
+Die() { echo -e "$1" && exit 1 ;}
 
-Capitalize() { # Capitalize $1
-    awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" 
+Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" ;} # Capitalize $1
+
+Ordial() { # Add postfix to $1 (NUMBER)
+    grep -Eq '[^1]?1$' <<< "$1" && echo "${1}st" && return 0;
+    grep -Eq '[^1]?2$' <<< "$1" && echo "${1}nd" && return 0;
+    grep -Eq '[^1]?3$' <<< "$1" && echo "${1}rd" && return 0;
+    echo "${1}th" && return 0;
 }
 
 MakePromt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'
@@ -1767,77 +1770,47 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     NewSector
 }
 
-DateFromTurn() { # Some vars used in Almanac()
+DateFromTurn() { # Some vars used in Almanac(
     local YEAR_LENGHT=365 # Gregorian calendar without leap years
-    local MONTH_STR=("After-Frost" "Marrsuckur" "Plough-Tide" "Anorlukis" "Summer-Tide" "Summer-Turn" "Merentimes" "Harvest-Month" "Ringorin" "Brew-Tasting Tide" "Winter Month" "Midwinter Offering")
-	# MONTHS ARE  31 28 31 30  31  30  31  31  30  31  30  31  DAYS
-	MONTH_LENGTH=(31 59 90 120 151 181 212 243 273 304 334 365)
-    WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
-
-	# Find out which cycle we're in
-    case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
-	0 | 1 )             MOON="New Moon"         ;;
-	2 | 3 | 4 | 5 )     MOON="Growing Crescent" ;;
-    6 | 7 | 8 | 9 )     MOON="First Quarter"    ;;
-	10 | 11 | 12 | 13 ) MOON="Growing Gibbous"  ;;
-	14 | 15 | 16 | 17 ) MOON="Full Moon"        ;;
-	18 | 19 | 20 | 21 ) MOON="Waning Gibbous"   ;;
-	22 | 23 | 24 | 25 ) MOON="Third Quarter"    ;;
-	26 | 27 | 28 | 29 ) MOON="Waning Crescent"  ;;
-	* )                 MOON="Old Moon"         ;; # Same as New Moon
-    esac
-    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 7" )]}
-
-	
+    local MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dummy ${MONTH_STR[0]
+	"After-Frost" "Marrsuckur" "Plough-Tide" 
+	"Anorlukis" "Summer-Tide" "Summer-Turn" 
+	"Merentimes" "Harvest-Month" "Ringorin" 
+	"Brew-Tasting Tide" "Winter Month" "Midwinter Offering")
+    # MONTHS ARE            31 28 31 30  31  30  31  31  30  31  30  31   DAYS
+    local MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
+    local WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
+    # Find out which YEAR we're in
     YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
-    local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" ) # month and days
+    local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" )           # month and days
     (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
-
-	# Find out which month we're in
-    if   ((REMAINDER <= 31)) ; then MONTH_NUM="1"
-    elif ((REMAINDER <= 59)) ; then MONTH_NUM="2"
-    elif ((REMAINDER <= 90)) ; then MONTH_NUM="3"
-    elif ((REMAINDER <= 120)); then MONTH_NUM="4"
-    elif ((REMAINDER <= 151)); then MONTH_NUM="5"
-    elif ((REMAINDER <= 181)); then MONTH_NUM="6"
-    elif ((REMAINDER <= 212)); then MONTH_NUM="7"
-    elif ((REMAINDER <= 243)); then MONTH_NUM="8"
-    elif ((REMAINDER <= 273)); then MONTH_NUM="9"
-    elif ((REMAINDER <= 304)); then MONTH_NUM="10"
-    elif ((REMAINDER <= 334)); then MONTH_NUM="11"
-    else MONTH_NUM="12"
-    fi
-
-	MONTH=${MONTH_STR[$MONTH_NUM]}
-	DAY=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM]}" )  # BUG! This becomes a negative
-	DAY_NUM=$DAY # Save for Almanac
-	case "$DAY" in # Add day postfix
-	 1 | 21 | 31 ) DAY+="st" ;;
-	 2 | 22 | 32 ) DAY+="nd" ;;
-	 3 | 23 | 33 ) DAY+="rd" ;;
- 	 * )           DAY+="th" ;;
-	esac
     (( YEAR > 99 )) && YEAR=$( bc <<< "$YEAR % 100" ) # FIX for year > 100
- 
-	# Determine Century, used in Almanac() calculations
-	# The thought was originally: century, cycle, age.. Table it for now
-    CENTURY=$( bc <<< "$YEAR+200" ) # We start in year 2nn, actually :)
-    if   (( CENTURY <= 299 )) ; then CENTURY=200
-    elif (( CENTURY <= 399 )) ; then CENTURY=300
-    elif (( CENTURY <= 499 )) ; then CENTURY=400
-    else CENTURY=500 # You won't survive this long.. 180,000+ turns
-    fi
-    
-	# Add year postfix
-    case "$YEAR" in 
-	1 | 21 | 31 | 41 | 51 | 61 | 71 | 81 | 91 ) YEAR+="st";;
-	2 | 22 | 32 | 42 | 52 | 62 | 72 | 82 | 92 ) YEAR+="nd";;
-	3 | 23 | 33 | 43 | 53 | 63 | 73 | 83 | 93 ) YEAR+="rd";;
-	*) YEAR+="th";;
+    # # Determine Century, used in Almanac() calculations
+    # # The thought was originally: century, cycle, age.. Table it for now
+    CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
+    YEAR=$(Ordial "$YEAR") # Add year postfix
+    # Find out which MONTH we're in
+    for i in {1..12}; do ((REMAINDER <= ${MONTH_LENGTH["$i"]})) && MONTH_NUM=$i && break; done
+    MONTH=${MONTH_STR["$MONTH_NUM"]}
+    # Find out which DAY we're in
+    DAY_NUM=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM - 1]}" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
+    DAY=$(Ordial "$DAY_NUM") # Add day postfix
+    # Find out which WEEKDAY we're in
+    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 7" )]}
+    # Find out which MOON cycle we're in
+    case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
+    	0 | 1 )             MOON="New Moon"         ;;
+    	2 | 3 | 4 | 5 )     MOON="Growing Crescent" ;;
+    	6 | 7 | 8 | 9 )     MOON="First Quarter"    ;;
+    	10 | 11 | 12 | 13 ) MOON="Growing Gibbous"  ;;
+    	14 | 15 | 16 | 17 ) MOON="Full Moon"        ;;
+    	18 | 19 | 20 | 21 ) MOON="Waning Gibbous"   ;;
+    	22 | 23 | 24 | 25 ) MOON="Third Quarter"    ;;
+    	26 | 27 | 28 | 29 ) MOON="Waning Crescent"  ;;
+    	* )                 MOON="Old Moon"         ;; # Same as New Moon
     esac
-    
     # Output example "3rd of Year-Turn in the 13th cycle"
-	BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
+    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
 }
 
 TodaysDate() {

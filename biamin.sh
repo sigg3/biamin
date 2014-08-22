@@ -1600,20 +1600,20 @@ BiaminSetup() { # Used in MainMenu()
 	echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn
 	
 	# Sequence for updating older charsheets to later additions (compatibility)
-	grep -q -E '^HOME:' "$CHARSHEET"        || echo "HOME: $START_LOCATION" >> $CHARSHEET
-	grep -q -E '^GOLD:' "$CHARSHEET"        || echo "GOLD: 10" >> $CHARSHEET
-	grep -q -E '^TOBACCO:' "$CHARSHEET"     || echo "TOBACCO: 10" >> $CHARSHEET
-	grep -q -E '^FOOD:' "$CHARSHEET"        || echo "FOOD: 10" >> $CHARSHEET
-	grep -q -E '^BBSMSG:' "$CHARSHEET"      || echo "BBSMSG: 0" >> $CHARSHEET
-	grep -q -E '^STARVATION:' "$CHARSHEET"  || echo "STARVATION: 0" >> $CHARSHEET
+	grep -Eq '^HOME:' "$CHARSHEET"        || echo "HOME: $START_LOCATION" >> $CHARSHEET
+	grep -Eq '^GOLD:' "$CHARSHEET"        || echo "GOLD: 10" >> $CHARSHEET
+	grep -Eq '^TOBACCO:' "$CHARSHEET"     || echo "TOBACCO: 10" >> $CHARSHEET
+	grep -Eq '^FOOD:' "$CHARSHEET"        || echo "FOOD: 10" >> $CHARSHEET
+	grep -Eq '^BBSMSG:' "$CHARSHEET"      || echo "BBSMSG: 0" >> $CHARSHEET
+	grep -Eq '^STARVATION:' "$CHARSHEET"  || echo "STARVATION: 0" >> $CHARSHEET
 	# TODO use  OFFSET_{GOLD,TOBACCO} 
-	grep -q -E '^VAL_GOLD:' "$CHARSHEET"    || echo "VAL_GOLD: 1" >> $CHARSHEET
-	grep -q -E '^VAL_TOBACCO:' "$CHARSHEET" || echo "VAL_TOBACCO: 1" >> $CHARSHEET
-	grep -q -E '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
+	grep -Eq '^VAL_GOLD:' "$CHARSHEET"    || echo "VAL_GOLD: 1" >> $CHARSHEET
+	grep -Eq '^VAL_TOBACCO:' "$CHARSHEET" || echo "VAL_TOBACCO: 1" >> $CHARSHEET
+	grep -Eq '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
 	# Time 
-	grep -q -E '^TURN:' "$CHARSHEET"        || echo "TURN: 0" >> $CHARSHEET
+	grep -Eq '^TURN:' "$CHARSHEET"        || echo "TURN: 0" >> $CHARSHEET
 	# Almanac
-	grep -q -E '^ALMANAC:' "$CHARSHEET"     || echo "ALMANAC: 0" >> $CHARSHEET
+	grep -Eq '^ALMANAC:' "$CHARSHEET"     || echo "ALMANAC: 0" >> $CHARSHEET
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
 	# But one local variable at any case is better that to open one file eight times
 	local CHAR_TMP=$(awk '

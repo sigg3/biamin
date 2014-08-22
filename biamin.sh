@@ -2163,20 +2163,15 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
-    if (( ALMANAC == 0 )) ; then # Player does not have Almanac
-	read -sn 1 -p "      (D)isplay Race Info        (A)ny key to continue          (Q)uit" CHARSHEET_OPT
-	case "$CHARSHEET_OPT" in
-	    d | D ) GX_Races && PressAnyKey ;;
-	    q | Q ) CleanUp ;;
-	esac
-    else # Player has "unlocked" Almanac
-	read -sn 1 -p "    (D)isplay Race Info       (A)lmanac       (C)ontinue      (Q)uit     " CHARSHEET_OPT
-	case "$CHARSHEET_OPT" in
-	    d | D ) GX_Races && PressAnyKey ;;
-	    a | A ) Almanac ;;
-	    q | Q ) CleanUp ;;
-	esac
-    fi
+    case "$ALMANAC" in
+	1) read -sn 1 -p "$(MakePromt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT ;; # Player has "unlocked" Almanac
+	*) read -sn 1 -p "$(MakePromt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT ;; # Player does not have Almanac
+    esac
+    case "$CHARSHEET_OPT" in
+	d | D ) GX_Races && PressAnyKey ;;
+	a | A ) [[ "$ALMANAC" -eq 1 ]] && Almanac ;;
+	q | Q ) CleanUp ;;
+    esac
 }
 
 # GAME ACTION: USE ALMANAC (MOON info, NOTES, MAIN info)

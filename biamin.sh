@@ -2065,8 +2065,7 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     local ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
     HOTZONE=() # Reset HOTZONE  
     while (( ITEMS_2_SCATTER > 0 )) ; do
-	local ITEM_Y=$(RollDice2 15) # Randomize ITEM_Y 
-	local ITEM_X=$(RollDice2 18) # Randomize ITEM_X 
+	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)                          # Randomize ITEM_Y and ITEM_X 
 	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
 	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
 	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},

@@ -3418,6 +3418,15 @@ MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dumm
 MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
 WEEK_LENGTH=7 # How many days are in week?
 WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
+WEEKDAY_TRIVIA=(
+    "Day of Festivities and Rest"         # Ringday (Holiday)
+    "Mor's Day (Day of the Moon)"         # Moonday
+    "Brenia's Day (God of Courage)"       # Brenday
+    "Middle of the Week (Day of Balance)" # Midweek
+    "Braig's Day (God of Wilderness)"     # Braigday
+    "Melethril's Day (God of Love)"       # Melethday
+    "Final Workday of the Week")          # Washday
+
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in
     -a | --announce )     Announce ;;

@@ -1468,10 +1468,11 @@ Die() { echo -e "$1" && exit 1 ;}
 Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" ;} # Capitalize $1
 
 Ordial() { # Add postfix to $1 (NUMBER)
-    grep -Eq '[^1]?1$' <<< "$1" && echo "${1}st" && return 0;
-    grep -Eq '[^1]?2$' <<< "$1" && echo "${1}nd" && return 0;
-    grep -Eq '[^1]?3$' <<< "$1" && echo "${1}rd" && return 0;
-    echo "${1}th" && return 0;
+    grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
+    grep -Eq '[^1]?2$'  <<< "$1" && echo "${1}nd" && return 0
+    grep -Eq '[^1]?3$'  <<< "$1" && echo "${1}rd" && return 0
+    grep -Eq '^[0-9]+$' <<< "$1" && echo "${1}th" && return 0
+    Die "Bug in Ordial with ARG $1"
 }
 
 MakePromt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'

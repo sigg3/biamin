@@ -1616,7 +1616,7 @@ BiaminSetup() { # Used in MainMenu()
 	grep -Eq '^VAL_TOBACCO:' "$CHARSHEET" || echo "VAL_TOBACCO: 1" >> $CHARSHEET
 	grep -Eq '^VAL_CHANGE:' "$CHARSHEET"  || echo "VAL_CHANGE: 0.25" >> $CHARSHEET
 	# Time 
-	grep -Eq '^TURN:' "$CHARSHEET"        || echo "TURN: 0" >> $CHARSHEET
+	grep -Eq '^TURN:' "$CHARSHEET"        || echo "TURN: $(TurnFromDate)" >> $CHARSHEET
 	# Almanac
 	grep -Eq '^ALMANAC:' "$CHARSHEET"     || echo "ALMANAC: 0" >> $CHARSHEET
 	# TODO I don't know why, but "read -r VAR1 VAR2 VAR3 <<< $(awk $FILE)" not works :(
@@ -1661,7 +1661,7 @@ BiaminSetup() { # Used in MainMenu()
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
-	TURN=0			# Player starts from translated _real date_. Afterwards, turns increment.
+	TURN=$(TurnFromDate) # Player starts from translated _real date_. Afterwards, turns increment.
 	ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
@@ -1759,23 +1759,6 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
 }
 
 DateFromTurn() { # Some vars used in Almanac(
-    local YEAR_LENGHT=365 # Gregorian calendar without leap years
-    local MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dummy ${MONTH_STR[0]
-	"After-Frost"			# Winter
-	"Marrsuckur"			# Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
-	"Plough-Tide"			# Spring
-	"Anorlukis"			# Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
-	"Summer-Tide"			# Summer
-	"Summer-Turn"			# Summer
-	"Merentimes"			# Summer [Elvish] "Meren" - Happiness
-	"Harvest-Month"			# Autumn
-	"Ringorin"			# Autumn [Elvish] "Ringorn" - circle, life, produce
-	"Brew-Tasting Tide"		# Autumn
-	"Winter Month"			# Winter
-	"Midwinter Offering")		# Winter [Norse] "Vinterblot" Viking winter sacrifice
-    # MONTHS ARE          31 28 31 30  31  30  31  31  30  31  30  31   DAYS
-    local MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
-    local WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
     # Find out which YEAR we're in
     YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
     local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" )           # month and days
@@ -1786,13 +1769,13 @@ DateFromTurn() { # Some vars used in Almanac(
     CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
     YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
-    for i in {1..12}; do ((REMAINDER <= ${MONTH_LENGTH["$i"]})) && MONTH_NUM=$i && break; done
+    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= ${MONTH_LENGTH["$i"]})) && MONTH_NUM=$i && break; done
     MONTH=${MONTH_STR["$MONTH_NUM"]}
     # Find out which DAY we're in
     DAY_NUM=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM - 1]}" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
     DAY=$(Ordial "$DAY_NUM") # Add day postfix
     # Find out which WEEKDAY we're in
-    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % 7" )]}
+    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % $WEEK_LENGTH" )]}
     # Find out which MOON cycle we're in
     case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
     	0 | 1 )             MOON="New Moon"         ;;
@@ -1807,6 +1790,13 @@ DateFromTurn() { # Some vars used in Almanac(
     esac
     # Output example "3rd of Year-Turn in the 13th cycle"
     BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
+}
+
+TurnFromDate() { # Creation() ?
+    local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
+    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
+    TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + ${MONTH_LENGTH[$TODAYS_MONTH]} + $TODAYS_DATE")
+    echo $TURN
 }
 
 TodaysDate() {
@@ -3408,6 +3398,26 @@ if [[ ! "$PAGER" ]] ; then # Define PAGER (for ShowLicense() )
     for PAGER in less more ; do PAGER=$(which "$PAGER" 2>/dev/null); [[ "$PAGER" ]] && break; done
 fi
 
+# Load global calendar variables (used in DateFromTurn() and Almanac())
+YEAR_LENGHT=365 # Gregorian calendar without leap years
+YEAR_MONTHES=12 # How many monthes are in year?
+MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dummy ${MONTH_STR[0]
+    "After-Frost"	      # Winter
+    "Marrsuckur"	      # Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
+    "Plough-Tide"             # Spring
+    "Anorlukis"	     	      # Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
+    "Summer-Tide"	      # Summer
+    "Summer-Turn"	      # Summer
+    "Merentimes"	      # Summer [Elvish] "Meren" - Happiness
+    "Harvest-Month"	      # Autumn
+    "Ringorin"		      # Autumn [Elvish] "Ringorn" - circle, life, produce
+    "Brew-Tasting Tide"	      # Autumn
+    "Winter Month"	      # Winter
+    "Midwinter Offering")     # Winter [Norse] "Vinterblot" Viking winter sacrifice
+# MONTHS ARE    31 28 31 30  31  30  31  31  30  31  30  31   DAYS
+MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
+WEEK_LENGTH=7 # How many days are in week?
+WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in
     -a | --announce )     Announce ;;

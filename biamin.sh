@@ -1767,10 +1767,10 @@ DateFromTurn() { # Some vars used in Almanac(
     CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
     YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
-    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= $(MonthLength "$i") )) && MONTH_NUM=$i && break; done
+    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
     MONTH=$(MonthString "$MONTH_NUM")
     # Find out which DAY we're in
-    DAY_NUM=$( bc <<< "$REMAINDER - $(MonthLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
+    DAY_NUM=$( bc <<< "$REMAINDER - $(MonthTotalLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
     DAY=$(Ordial "$DAY_NUM") # Add day postfix
     # Find out which WEEKDAY we're in
     WEEKDAY_NUM=$( bc <<< "$TURN % $WEEK_LENGTH" )
@@ -1811,25 +1811,9 @@ TodaysDate() {
     # TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
     # NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
     
-    
-    TODAYS_DATE=$(Ordial "$TODAYS_DATE") # Adjust date
-    # Adjust month
-    case "$TODAYS_MONTH" in
-	1 ) TODAYS_MONTH="After-Frost" ;;         # Winter
-	2 ) TODAYS_MONTH="Marrsuckur" ;;          # Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
-	3 ) TODAYS_MONTH="Plough-Tide" ;;         # Spring
-	4 ) TODAYS_MONTH="Anorlukis" ;;           # Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
-	5 ) TODAYS_MONTH="Summer-Tide" ;;         # Summer
-	6 ) TODAYS_MONTH="Summer-Turn" ;;         # Summer
-	7 ) TODAYS_MONTH="Merentimes" ;;          # Summer [Elvish] "Meren" - Happiness
-	8 ) TODAYS_MONTH="Harvest Month" ;;       # Autumn
-	9 ) TODAYS_MONTH="Ringorin" ;;            # Autumn [Elvish] "Ringorn" - circle, life, produce
- 	10 ) TODAYS_MONTH="Brew-Tasting Tide" ;;  # Autumn
- 	11 ) TODAYS_MONTH="Winter Month" ;;       # Winter
- 	12 ) TODAYS_MONTH="Midwinter Offering" ;; # Winter [Norse] "Vinterblot" Viking winter sacrifice
- 	* ) TODAYS_MONTH="Biamin Festival" ;;     # rarely happens, if ever :(
-    esac
-    TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")
+    TODAYS_DATE=$(Ordial "$TODAYS_DATE")        # Adjust date
+    TODAYS_MONTH=$(MonthString "$TODAYS_MONTH") # Adjust month
+    TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")        # Adjust year
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }
@@ -2380,7 +2364,7 @@ EOT
 	 "Melethday" ) tput cup 12 41        ;;
 	 "Washday" ) tput cup 10 45          ;;
      esac
-     [[ $(awk '{print length;}' <<< "$WEEKDAY_STR") -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
+     [[ $(awk '{print length;}' <<< $(WeekdayString "$WEEKDAY_NUM") ) -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
      tput rc
 
      # Add MOON PHASE to HEPTOGRAM (bottom)
@@ -2393,7 +2377,7 @@ EOT
      echo "${MOON^^}"
      tput rc
 
-     local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY") - $(WeekdayTriviaShort"$WEEKDAY")" # Add DEFAULT Trivia header
+     local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY_NUM") - $(WeekdayTriviaShort "$WEEKDAY_NUM")" # Add DEFAULT Trivia header
 
      # Add PARTICULAR Trivia body
      # Database of significant constellations of dates, months and phases
@@ -2429,7 +2413,7 @@ EOT
 
 
      # DEFAULT Trivia Bodies (fallback)
-     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY")                         # display default info about the day
+     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY_NUM")                     # display default info about the day
      [[ -z "$TRIVIA2" ]] && local TRIVIA2="$(MonthString $MONTH_NUM) - $(MonthTrivia $MONTH_NUM)" # display default info about the month
 
      # Output Trivia (mind the space before sentences)
@@ -3365,25 +3349,26 @@ YEAR_LENGHT=365 # Gregorian calendar without leap years
 YEAR_MONTHES=12 # How many monthes are in year?
 
 MONTH_STR=(
-    # Month name      lenght  #Month trivia
-    "Biamin Festival"    0   "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
-    "After-Frost"        31  "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
-    "Marrsuckur"         59  "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
-    "Plough-Tide"        90  "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
-    "Anorlukis"          120 "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       
-    "Summer-Tide"        151 "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" 
-    "Summer-Turn"        181 "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   
-    "Merentimes"         212 "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   
-    "Harvest Month"      243 "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        
-    "Ringorin"           273 "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              
-    "Brew-Tasting Tide"  304 "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
-    "Winter Month"       334 "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
-    "Midwinter Offering" 365 "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
+    # Month name #Month lenght #Month total lenght  #Month trivia
+    "Biamin Festival"    0  0   "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
+    "After-Frost"        31 31  "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
+    "Marrsuckur"         28 59  "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
+    "Plough-Tide"        31 90  "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
+    "Anorlukis"          30 120 "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       
+    "Summer-Tide"        31 151 "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" 
+    "Summer-Turn"        30 181 "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   
+    "Merentimes"         31 212 "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   
+    "Harvest Month"      31 243 "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        
+    "Ringorin"           30 273 "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              
+    "Brew-Tasting Tide"  31 304 "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
+    "Winter Month"       30 334 "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
+    "Midwinter Offering" 31 365 "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
 )
 
-MonthString() { echo ${MONTH_STR[((  $1 * 3      ))]} ;}
-MonthLength() { echo ${MONTH_STR[(( ($1 * 3) + 1 ))]} ;}
-MonthTrivia() { echo ${MONTH_STR[(( ($1 * 3) + 2 ))]} ;}
+MonthString()      { echo ${MONTH_STR[((  $1 * 4      ))]} ;}
+MonthLength()      { echo ${MONTH_STR[(( ($1 * 4) + 1 ))]} ;}
+MonthTotalLength() { echo ${MONTH_STR[(( ($1 * 4) + 2 ))]} ;}
+MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 4) + 3 ))]} ;}
 
 WEEK_LENGTH=7 # How many days are in week?
 WEEKDAY_STR=(

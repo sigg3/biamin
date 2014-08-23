@@ -6,8 +6,12 @@ WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
 # BEGIN CONFIGURATION                                                  #
-# Default dir for config, change at runtime (no trailing slash!)       #
-GAMEDIR="$HOME/.biamin"                                                #
+# Default dir for config,saves, etc, change at runtime                 #
+GAMEDIR="$HOME/.biamin" # (no trailing slash!)                         #
+# Default file for config, change at runtime                           #
+CONFIG="$GAMEDIR/config"                                               #
+# Default file for highscore, change at runtime                        #
+HIGHSCORE="$GAMEDIR/highscore"                                         #
 #                                                                      #
 # Disable BASH history for this session                                #
 unset HISTFILE                                                         #
@@ -3315,19 +3319,11 @@ NewSector() { # Used in Intro()
     done
 }   # Return to MainMenu() (if player is dead)
 
-SetupHighscore() { # Used in main() and Announce()
-    HIGHSCORE="$GAMEDIR/highscore" ;
-    [[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Create empty "$GAMEDIR/highscore" if not exists	
-    grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS..
-}
-
 Announce() {
     # Simply outputs a 160 char text you can cut & paste to social media.
     
     # TODO: Once date is decoupled from system date (with CREATION and DATE), create new message. E.g.
     # $CHAR died $DATE having fought $BATTLES ($KILLS victoriously) etc...
-
-    SetupHighscore
 
     # Die if $HIGHSCORE is empty
     [[ ! -s "$HIGHSCORE" ]] && Die "Sorry, can't do that just yet!\nThe highscore list is unfortunately empty right now."
@@ -3415,6 +3411,20 @@ CreateBiaminLauncher() {
 #                                                                      #
 #                        2. RUNTIME BLOCK                              #
 #                   All running code goes here!                        #
+
+# Make place for game (BEFORE CLI opts! Mostly because of Higscore
+if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists...
+    echo -e "Game directory default is $GAMEDIR/\nYou can change this in $CONFIG. Creating directory ..."
+    mkdir -p "$GAMEDIR/" || Die "ERROR! You do not have write permissions for $GAMEDIR ..."
+fi
+
+if [[ ! -f "$CONFIG" ]] ; then # Check whether $CONFIG exists...
+    echo "Creating ${CONFIG} ..." ;
+    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$CONFIG" ;
+fi
+
+[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # # Check whether $HIGHSCORE exists...
+grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS...
 
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in
@@ -3517,16 +3527,7 @@ case "$1" in
 	exit 0;;
 esac
 
-if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists..
-    echo -e "Game directory default is $GAMEDIR/\nYou can change this in $GAMEDIR/config. Creating directory .."
-    mkdir -p "$GAMEDIR/" || Die "ERROR! You do not have write permissions for $GAMEDIR .."
-fi
-
-if [[ ! -f "$GAMEDIR/config" ]] ; then # Check whether $GAMEDIR/config exists..
-    echo "Creating $GAMEDIR/config .." ;
-    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$GAMEDIR/config" ;
-fi
-
+# OK lets play!
 echo "Putting on the traveller's boots.."
 
 # Load variables from $GAMEDIR/config. NB variables should not be empty !
@@ -3547,9 +3548,7 @@ fi # TODO define here another seqences from MapNav()
 
 # Define escape sequences #TODO replace to tput or similar
 CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
-
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
-SetupHighscore # Setup highscore file
 MainMenu       # Run main menu
 exit 0         # This should never happen:
                # .. but why be 'tardy when you can be tidy?

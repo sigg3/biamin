@@ -1962,25 +1962,11 @@ $CC"  > "$GAMEDIR/LICENSE"
     fi
 }
     
-ShowLicense() { # Used in License()
-    case "$PAGER" in
-	0 ) echo -en "\n License file available at $GAMEDIR/LICENSE\n" && PressAnyKey ;;
-	* ) "$PAGER" "$GAMEDIR/LICENSE" ;;
-    esac
-}
+ShowLicense() { [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -en "\n License file available at $GAMEDIR/LICENSE\n" ; PressAnyKey ;} } # Used in License()
 
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     GX_BiaminTitle
-    if [ -z "$PAGER" ] ; then				# If $PAGER is not set
-	if [ -f "/usr/bin/less" ] ; then
-	    local PAGER="/usr/bin/less"		# try less
-	elif [ -f "/usr/bin/more" ] ; then
-	    local PAGER="/usr/bin/more"		# or try more
-	else
-	    local PAGER="0"		# or fallback gracefully (see ShowLicense in case PAGER is 0)
-	fi
-    fi
     if [ -f "$GAMEDIR/LICENSE" ]; then
 	ShowLicense
     else
@@ -3411,12 +3397,16 @@ if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists...
 fi
 
 if [[ ! -f "$CONFIG" ]] ; then # Check whether $CONFIG exists...
-    echo "Creating ${CONFIG} ..." ;
-    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$CONFIG" ;
+    echo "Creating ${CONFIG} ..."
+    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$CONFIG"
 fi
 
-[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # # Check whether $HIGHSCORE exists...
+[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Check whether $HIGHSCORE exists...
 grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && echo "" > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS...
+
+if [[ ! "$PAGER" ]] ; then # Define PAGER (for ShowLicense() )
+    for PAGER in less more ; do PAGER=$(which "$PAGER" 2>/dev/null); [[ "$PAGER" ]] && break; done
+fi
 
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in

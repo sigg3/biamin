@@ -399,8 +399,8 @@ EOT
 }
 
 GX_Moon() { # Used in GX_Rest and Almanac_Moon
-case "$MOON" in
-"Old Moon" | "New Moon" ) cat <<"EOT"
+    case "$MOON" in
+	"Old Moon" | "New Moon" ) cat <<"EOT"
 
 
                                                            .  - . 
@@ -414,8 +414,8 @@ case "$MOON" in
 
 
 EOT
-;;
-"Growing Crescent" ) cat <<"EOT"
+	    ;;
+	"Growing Crescent" ) cat <<"EOT"
 
 
                                                                ~-.
@@ -429,8 +429,8 @@ EOT
 
 
 EOT
-;;
-"First Quarter" ) cat <<"EOT"
+	    ;;
+	"First Quarter" ) cat <<"EOT"
 
 
                                                               ,~-.
@@ -444,8 +444,8 @@ EOT
 
 
 EOT
-;;
-"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
+	    ;;
+	"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
 
 
                                                           ,-~ ~-. 
@@ -459,8 +459,8 @@ EOT
 
 
 EOT
-;;
-"Full Moon" ) cat <<"EOT"
+	    ;;
+	"Full Moon" ) cat <<"EOT"
                                                            .    .
                                                        .            .
                                                     .     ,.----.      .
@@ -474,8 +474,8 @@ EOT
                                                       .             .
                                                          .      .
 EOT
-;;
-"Waning Gibbous" ) cat <<"EOT"
+	    ;;
+	"Waning Gibbous" ) cat <<"EOT"
 
 
                                                           ,.---. 
@@ -489,8 +489,8 @@ EOT
 
 
 EOT
-;;
-"Third Quarter" | "Last Quarter" ) cat <<"EOT"
+	    ;;
+	"Third Quarter" | "Last Quarter" ) cat <<"EOT"
 
 
                                                          ,~-. 
@@ -504,8 +504,8 @@ EOT
 
 
 EOT
-;;
-"Waning Crescent" ) cat <<"EOT"
+	    ;;
+	"Waning Crescent" ) cat <<"EOT"
 
                                                            _
                                                         ,;`  
@@ -519,40 +519,40 @@ EOT
 
 
 EOT
-;;
-esac
+	    ;;
+    esac
 }
 
 GX_Rest() { # Relies on GX_Moon for ASCII
-clear
-GX_Moon # Draw moon
+    clear
+    GX_Moon # Draw moon
 
-tput sc
-# Add universal text
-tput cup 5 9  && echo "YOU TRY TO GET           *"
-tput cup 6 9  && echo "SOME MUCH NEEDED REST       Z Z"
+    tput sc
+    # Add universal text
+    tput cup 5 9  && echo "YOU TRY TO GET           *"
+    tput cup 6 9  && echo "SOME MUCH NEEDED REST       Z Z"
 
-# Add MOON specific text
-tput cup 8 9
-case "$MOON" in
-"Old Moon" | "New Moon" ) echo "It is dark, the Moon is" && tput cup 8 33
-                          [[ "$MOON" == "Old Moon" ]] && echo "Olde" || echo "Young" ;;
-"Growing Crescent" )      echo "It is a Growing Crescent Moon" ;;
-"First Quarter" )         echo "The Moon is in its First Quarter" ;;
-"Growing Gibbous" | "Waxing Gibbous" ) echo "The Moon is Waxing" ;;
-"Full Moon" )             echo "It is a Full Moon" ;;
-"Waning Gibbous" )        echo "The Moon is Waning" ;;
-"Third Quarter" | "Last Quarter" ) echo "The Moon is in the Last Quarter" ;;
-"Waning Crescent" )        echo "It is a Waning Crescent Moon" ;;
-esac
+    # Add MOON specific text
+    tput cup 8 9
+    case "$MOON" in
+	"Old Moon" | "New Moon" ) echo "It is dark, the Moon is" && tput cup 8 33
+            [[ "$MOON" == "Old Moon" ]] && echo "Olde" || echo "Young" ;;
+	"Growing Crescent" )      echo "It is a Growing Crescent Moon" ;;
+	"First Quarter" )         echo "The Moon is in its First Quarter" ;;
+	"Growing Gibbous" | "Waxing Gibbous" ) echo "The Moon is Waxing" ;;
+	"Full Moon" )             echo "It is a Full Moon" ;;
+	"Waning Gibbous" )        echo "The Moon is Waning" ;;
+	"Third Quarter" | "Last Quarter" ) echo "The Moon is in the Last Quarter" ;;
+	"Waning Crescent" )        echo "It is a Waning Crescent Moon" ;;
+    esac
 
-# Finally, sprinkle with stars:
-tput cup 3 31 && echo "*         Z Z Z   *"
-tput cup 3 77 && echo "*"
-tput cup 7 43 && echo "*"
-[ "$MOON" != "Full Moon" ] && tput cup 8 74 && echo "*"
-tput cup 9 76 && echo "*"
-tput rc
+    # Finally, sprinkle with stars:
+    tput cup 3 31 && echo "*         Z Z Z   *"
+    tput cup 3 77 && echo "*"
+    tput cup 7 43 && echo "*"
+    [ "$MOON" != "Full Moon" ] && tput cup 8 74 && echo "*"
+    tput cup 9 76 && echo "*"
+    tput rc
 }
 
 
@@ -1770,12 +1770,13 @@ DateFromTurn() { # Some vars used in Almanac(
     YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
     for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= ${MONTH_LENGTH["$i"]})) && MONTH_NUM=$i && break; done
-    MONTH=${MONTH_STR["$MONTH_NUM"]}
+    MONTH=$(MonthString "$MONTH_NUM")
     # Find out which DAY we're in
     DAY_NUM=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM - 1]}" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
     DAY=$(Ordial "$DAY_NUM") # Add day postfix
     # Find out which WEEKDAY we're in
-    WEEKDAY=${WEEKDAY_STR[$( bc <<< "$TURN % $WEEK_LENGTH" )]}
+    WEEKDAY_NUM=$( bc <<< "$TURN % $WEEK_LENGTH" )
+    WEEKDAY=$(WeekdayString "$WEEKDAY_NUM")
     # Find out which MOON cycle we're in
     case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
     	0 | 1 )             MOON="New Moon"         ;;
@@ -1795,7 +1796,7 @@ DateFromTurn() { # Some vars used in Almanac(
 TurnFromDate() { # Creation() ?
     local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + ${MONTH_LENGTH[$TODAYS_MONTH]} + $TODAYS_DATE")
+    TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE")
     echo $TURN
 }
 
@@ -2216,7 +2217,7 @@ Almanac_Notes() {
 } # Return to Almanac()
 
 
-Almanac() { # Almanac (calendar). Used in DisplayCharsheet()
+Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     # TODO The Almanac must be "unlocked" in gameplay, e.g. bought from Merchant. This is random (20% chance he has one)
     # TODO Add ALMANAC=0 in default charsheets
     # TODO When Almanac is found ALMANAC=1 is saved.
@@ -2394,16 +2395,7 @@ EOT
      tput rc
 
      # Add DEFAULT Trivia header
-     local TRIVIA_HEADER="$WEEKDAY_STR - "
-     case "$WEEKDAY_STR" in
-	 "Ringday (Holiday)" ) local TRIVIA_HEADER+="Day of Festivities and Rest" ;;
-	 "Moonday" ) local TRIVIA_HEADER+="Mor's Day (Day of the Moon)"           ;;
-	 "Brenday" ) local TRIVIA_HEADER+="Brenia's Day (God of Courage)"         ;;
-	 "Midweek" ) local TRIVIA_HEADER+="Middle of the Week (Day of Balance)"   ;;
-	 "Braigday" ) local TRIVIA_HEADER+="Braig's Day (God of Wilderness)"      ;;
-	 "Melethday" ) local TRIVIA_HEADER+="Melethril's Day (God of Love)"       ;;
-	 "Washday" ) local TRIVIA_HEADER+="Final Workday of the Week"             ;;
-     esac
+     local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY") - $(WeekdayTriviaShort"$WEEKDAY")"
 
      # Add PARTICULAR Trivia body
      # Database of significant constellations of dates, months and phases
@@ -2439,17 +2431,7 @@ EOT
 
 
      # DEFAULT Trivia Bodies (fallback)
-     if [ -z "$TRIVIA1" ] ; then # display default info about the day
-	 case "$WEEKDAY_STR" in
-	     "Ringday (Holiday)" ) local TRIVIA1="Men and Halflings celebrate Ringday as the end and beginning of the week."   ;;
-	     "Moonday" )           local TRIVIA1="Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   ;;
-	     "Brenday" )           local TRIVIA1="Visit the Temple on Brenia's Day to honor those who perished in warfare."    ;;
-	     "Midweek" )           local TRIVIA1="In some places, Midweek Eve is celebrated with village dances and ale."      ;;
-	     "Braigday" )          local TRIVIA1="Historically, a day of hunting. Nobility still hunt every Braig's Day."      ;;
-	     "Melethday" )         local TRIVIA1="Commonly considered Lovers' Day, it is also a day of mischief and trickery." ;;
-	     "Washday" )           local TRIVIA1="Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      ;;
-	 esac
-     fi
+     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY"); # display default info about the day
 
      if [ -z "$TRIVIA2" ] ; then # display default info about the month
 	 local TRIVIA2="$MONTH - "
@@ -3401,31 +3383,43 @@ fi
 # Load global calendar variables (used in DateFromTurn() and Almanac())
 YEAR_LENGHT=365 # Gregorian calendar without leap years
 YEAR_MONTHES=12 # How many monthes are in year?
-MONTH_STR=("Biamin Festival"  # Arrays numeration starts from 0, so we need dummy ${MONTH_STR[0]
-    "After-Frost"	      # Winter
-    "Marrsuckur"	      # Spring [Norse] "Mörsugur" hist. Viking month ~"Marrow-sucker month"
-    "Plough-Tide"             # Spring
-    "Anorlukis"	     	      # Spring [Elvish] "Anor" (sun) + "lukis" from lat. lucin (lux)
-    "Summer-Tide"	      # Summer
-    "Summer-Turn"	      # Summer
-    "Merentimes"	      # Summer [Elvish] "Meren" - Happiness
-    "Harvest-Month"	      # Autumn
-    "Ringorin"		      # Autumn [Elvish] "Ringorn" - circle, life, produce
-    "Brew-Tasting Tide"	      # Autumn
-    "Winter Month"	      # Winter
-    "Midwinter Offering")     # Winter [Norse] "Vinterblot" Viking winter sacrifice
-# MONTHS ARE    31 28 31 30  31  30  31  31  30  31  30  31   DAYS
-MONTH_LENGTH=(0 31 59 90 120 151 181 212 243 273 304 334 365) # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
+
+MONTH_STR=(
+    # Month name      lenght  #Month trivia
+    "Biamin Festival"    0   "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
+    "After-Frost"        31  "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
+    "Marrsuckur"         59  "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
+    "Plough-Tide"        90  "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
+    "Anorlukis"          120 "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       
+    "Summer-Tide"        151 "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" 
+    "Summer-Turn"        181 "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   
+    "Merentimes"         212 "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   
+    "Harvest Month"      243 "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        
+    "Ringorin"           273 "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              
+    "Brew-Tasting Tide"  304 "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
+    "Winter Month"       334 "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
+    "Midwinter Offering" 365 "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
+)
+
+MonthString() { echo ${MONTH_STR[((  $1 * 2      ))]} ;}
+MonthLength() { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;}
+MonthTrivia() { echo ${MONTH_STR[(( ($1 * 2) + 2 ))]} ;}
+
 WEEK_LENGTH=7 # How many days are in week?
-WEEKDAY_STR=("Ringday (Holiday)" "Moonday" "Brenday" "Midweek" "Braigday" "Melethday" "Washday") # Last day of week is ${WEEKDAY_STR[0]}
-WEEKDAY_TRIVIA=(
-    "Day of Festivities and Rest"         # Ringday (Holiday)
-    "Mor's Day (Day of the Moon)"         # Moonday
-    "Brenia's Day (God of Courage)"       # Brenday
-    "Middle of the Week (Day of Balance)" # Midweek
-    "Braig's Day (God of Wilderness)"     # Braigday
-    "Melethril's Day (God of Love)"       # Melethday
-    "Final Workday of the Week")          # Washday
+WEEKDAY_STR=(
+    # Weekday    # Short trivia                       # Long trivia
+    "Ringday (Holiday)" "Day of Festivities and Rest" "Men and Halflings celebrate Ringday as the end and beginning of the week."   
+    "Moonday"   "Mor's Day (Day of the Moon)"         "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   
+    "Brenday"   "Brenia's Day (God of Courage)"       "Visit the Temple on Brenia's Day to honor those who perished in warfare."    
+    "Midweek"   "Middle of the Week (Day of Balance)" "In some places, Midweek Eve is celebrated with village dances and ale."      
+    "Braigday"  "Braig's Day (God of Wilderness)"     "Historically, a day of hunting. Nobility still hunt every Braig's Day."      
+    "Melethday" "Melethril's Day (God of Love)"       "Commonly considered Lovers' Day, it is also a day of mischief and trickery." 
+    "Washday"   "Final Workday of the Week"           "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      
+)
+
+WeekdayString()      { echo ${WEEKDAY_STR[((  $1 * 3      ))]} ;}
+WeekdayTriviaShort() { echo ${WEEKDAY_STR[(( ($1 * 3) + 1 ))]} ;}
+WeekdayTriviaLong()  { echo ${WEEKDAY_STR[(( ($1 * 3) + 2 ))]} ;}
 
 # Parse CLI arguments if any # TODO use getopts ?
 case "$1" in

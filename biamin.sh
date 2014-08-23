@@ -1338,14 +1338,12 @@ LoadCustomMap() { # Used in MapCreate()
 	    NUM=$(( a + OFFSET ))
 	    [[ ! ${MAPS[$NUM]} ]] && break	    
 	    [[ ${MAPS[$NUM]} == "Deleted" ]] && echo "  | Deleted" && continue
-	    cat "${GAMEDIR}/${MAPS[$NUM]}" | awk '{
-                   if (/^NAME:/)        { RLENGTH = match($0,/: /); NAME = substr($0, RLENGTH+2); }
+	    awk '{ if (/^NAME:/)        { RLENGTH = match($0,/: /); NAME = substr($0, RLENGTH+2); }
                    if (/^CREATOR:/)     { RLENGTH = match($0,/: /); CREATOR = substr($0, RLENGTH+2); }
                    if (/^DESCRIPTION:/) { RLENGTH = match($0,/: /); DESCRIPTION = substr($0, RLENGTH+2); }
                    FILE = "'${MAPS[$NUM]}'";
-                   gsub(".map$", "", FILE);
-                   }
-            END { printf "%s | %-15.15s | %-15.15s | %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}'
+                   gsub(".map$", "", FILE); }
+             END { printf "%s | %-15.15s | %-15.15s | %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}' "${GAMEDIR}/${MAPS[$NUM]}"
 	    # I remember that it should be centered, but I haven't any ideas how to do it now :( kstn
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
@@ -2225,8 +2223,9 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
-    [ $(echo ${#WEEKDAY_STR} ) -gt 9 ] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="${WEEKDAY_STR} ${BIAMIN_DATE_STR}"
-    local ALMANAC_SUB_LEN=$( echo "${#ALMANAC_SUB}-18" | bc )
+
+    [[ $(awk '{print length;}' <<< "$WEEKDAY_STR") -gt 9 ]] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="${WEEKDAY_STR} ${BIAMIN_DATE_STR}"
+    local ALMANAC_SUB_LEN=$(awk '{print length - 18}' <<< "$ALMANAC_SUB")
     tput sc
     case "$ALMANAC_SUB_LEN" in
 	35 | 34 ) tput cup 6 15 ;;
@@ -2273,8 +2272,8 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 
     # LEGEND: d+m+y+(y/4)+c mod 7
     # If the result is 0, the date was a Ringday (Sunday), 1 Moonday (Monday) etc.
-    FIRSTDAY=$( echo "1+$FIMON+$FIYEA+($FIYEA/4)+$FICEN" | bc )
-    FIRSTDAY=$( echo "$FIRSTDAY-($FIRSTDAY/7)*7" | bc ) # modulo 7 of $FIRSTDAY
+    FIRSTDAY=$(bc <<< "1+$FIMON+$FIYEA+($FIYEA/4)+$FICEN")
+    FIRSTDAY=$(bc <<<"$FIRSTDAY-($FIRSTDAY/7)*7") # modulo 7 of $FIRSTDAY
 
     # DRAW CALENDAR
     cat <<"EOT"
@@ -2289,7 +2288,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 EOT
     tput sc # save cursor pos
     local YPOS=11
-    local MTYPE=${MONTH_LENGTH[$MONTH_NUM]}
+    local MTYPE=$(MonthLength "$MONTH_NUM")
     (( DAY_NUM <= 9 )) && local CALDATE="_$DAY_NUM" || local CALDATE="$DAY_NUM"
     while (( YPOS <= 16 )) ; do
 	local CALKEY="$FIRSTDAY-$YPOS-$MTYPE"
@@ -2372,7 +2371,7 @@ EOT
 
      # Magnify WEEKDAY in HEPTOGRAM
      tput sc
-     case "$WEEKDAY_STR" in
+     case $(WeekdayString "$WEEKDAY_NUM") in
 	 "Ringday (Holiday)" ) tput cup 9 53 ;;
 	 "Moonday" ) tput cup 10 61          ;;
 	 "Brenday" ) tput cup 12 63          ;;
@@ -2381,7 +2380,7 @@ EOT
 	 "Melethday" ) tput cup 12 41        ;;
 	 "Washday" ) tput cup 10 45          ;;
      esac
-     [ $(echo ${#WEEKDAY_STR} ) -gt 9 ] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
+     [[ $(awk '{print length;}' <<< "$WEEKDAY_STR") -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
      tput rc
 
      # Add MOON PHASE to HEPTOGRAM (bottom)
@@ -2394,8 +2393,7 @@ EOT
      echo "${MOON^^}"
      tput rc
 
-     # Add DEFAULT Trivia header
-     local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY") - $(WeekdayTriviaShort"$WEEKDAY")"
+     local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY") - $(WeekdayTriviaShort"$WEEKDAY")" # Add DEFAULT Trivia header
 
      # Add PARTICULAR Trivia body
      # Database of significant constellations of dates, months and phases
@@ -2436,7 +2434,6 @@ EOT
 
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
-
      echo "$HR"
      read -sn 1 -p "$(MakePromt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT
      case "$ALM_OPT" in

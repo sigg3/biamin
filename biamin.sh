@@ -2431,31 +2431,14 @@ EOT
 
 
      # DEFAULT Trivia Bodies (fallback)
-     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY"); # display default info about the day
-
-     if [ -z "$TRIVIA2" ] ; then # display default info about the month
-	 local TRIVIA2="$MONTH - "
-	 case "$MONTH" in
-	     "After-Frost")         local TRIVIA2+="1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       ;;
-	     "Marrsuckur" )         local TRIVIA2+="2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     ;;
-	     "Plough-Tide" )        local TRIVIA2+="3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       ;;
-	     "Anorlukis" )          local TRIVIA2+="4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       ;;
-	     "Summer-Tide" )        local TRIVIA2+="5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" ;;
-	     "Summer-Turn" )        local TRIVIA2+="6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   ;;
-	     "Merentimes" )         local TRIVIA2+="7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   ;;
-	     "Harvest Month" )      local TRIVIA2+="8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        ;;
-	     "Ringorin" )           local TRIVIA2+="9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              ;;
-	     "Brew-Tasting Tide" )  local TRIVIA2+="10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    ;;
-	     "Winter Month" )       local TRIVIA2+="11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       ;;
-	     "Midwinter Offering" ) local TRIVIA2+="12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  ;;
-	 esac
-     fi
+     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY")                         # display default info about the day
+     [[ -z "$TRIVIA2" ]] && local TRIVIA2="$(MonthString $MONTH_NUM) - $(MonthTrivia $MONTH_NUM)" # display default info about the month
 
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
 
      echo "$HR"
-     read -p "                (M)oon phase        (N)otes        (R)eturn          " -sn1 ALM_OPT
+     read -sn 1 -p "$(MakePromt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT
      case "$ALM_OPT" in
 	 M | m ) Almanac_Moon ;;
 	 N | n ) Almanac_Notes ;;

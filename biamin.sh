@@ -1767,10 +1767,10 @@ DateFromTurn() { # Some vars used in Almanac(
     CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
     YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
-    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= ${MONTH_LENGTH["$i"]})) && MONTH_NUM=$i && break; done
+    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= $(MonthLength "$i") )) && MONTH_NUM=$i && break; done
     MONTH=$(MonthString "$MONTH_NUM")
     # Find out which DAY we're in
-    DAY_NUM=$( bc <<< "$REMAINDER-${MONTH_LENGTH[$MONTH_NUM - 1]}" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
+    DAY_NUM=$( bc <<< "$REMAINDER - $(MonthLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
     DAY=$(Ordial "$DAY_NUM") # Add day postfix
     # Find out which WEEKDAY we're in
     WEEKDAY_NUM=$( bc <<< "$TURN % $WEEK_LENGTH" )
@@ -3381,9 +3381,9 @@ MONTH_STR=(
     "Midwinter Offering" 365 "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
 )
 
-MonthString() { echo ${MONTH_STR[((  $1 * 2      ))]} ;}
-MonthLength() { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;}
-MonthTrivia() { echo ${MONTH_STR[(( ($1 * 2) + 2 ))]} ;}
+MonthString() { echo ${MONTH_STR[((  $1 * 3      ))]} ;}
+MonthLength() { echo ${MONTH_STR[(( ($1 * 3) + 1 ))]} ;}
+MonthTrivia() { echo ${MONTH_STR[(( ($1 * 3) + 2 ))]} ;}
 
 WEEK_LENGTH=7 # How many days are in week?
 WEEKDAY_STR=(

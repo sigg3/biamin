@@ -1895,11 +1895,21 @@ MainMenu() {
 	read -sn 1 -p "$(MakePromt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ; 
- 		    read -p " Enter character name (case sensitive): " CHAR ;
-		    [[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
+ 		read -p " Enter character name (case sensitive): " CHAR ;
+		[[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
 	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
-	    h | H ) HighScore ;;
-	    c | C ) Credits ;;
+	    h | H ) GX_HighScore ;	      # HighScore
+		echo "";
+		# Show 10 highscore entries or die if Highscore list is empty
+		[[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
+		echo "" ; # empty line TODO fix it
+		read -sn 1 -p "$(MakePromt 'Press the any key to go to (M)ain menu')" ;;
+	    c | C ) GX_Credits ; # Credits
+		read -sn 1 -p "$(MakePromt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT"
+		case "$CREDITS_OPT" in
+		    L | l ) License ;;
+		    H | h ) GX_HowTo ;;
+		esac ;;
 	    q | Q ) CleanUp ;;
 	esac
     done
@@ -1928,25 +1938,6 @@ HighscoreRead() { # Used in Announce() and HighScore()
     echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
     unset HIGHSCORE_TMP
 }
-
-HighScore() { # Used in MainMenu()
-    GX_HighScore
-    echo ""
-    # Show 10 highscore entries or die if Highscore list is empty
-    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
-    echo "" # empty line TODO fix it
-    read -sn 1 -p "$(MakePromt 'Press the any key to go to (M)ain menu')"
-}   # Return to MainMenu()
-
-Credits() { # Used in MainMenu()
-    GX_Credits
-    read -sn 1 -p "             (H)owTo             (L)icense             (M)ain menu" "CREDITS_OPT"
-    case "$CREDITS_OPT" in
-	L | l ) License ;;
-	H | h ) GX_HowTo ;;
-    esac
-    unset CREDITS_OPT
-}   # Return to MainMenu()
 
 PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
     # TODO add option to use wget if systen hasn't curl (Debian for instance) -kstn

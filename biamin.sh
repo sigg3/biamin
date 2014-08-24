@@ -1465,6 +1465,8 @@ Die() { echo -e "$1" && exit 1 ;}
 
 Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" ;} # Capitalize $1
 
+Strlen() { awk '{print length;}' <<< "$1" ;} # Return lenght of string $1. "Strlen" is traditional name :)
+
 Ordial() { # Add postfix to $1 (NUMBER)
     grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
     grep -Eq '[^1]?2$'  <<< "$1" && echo "${1}nd" && return 0
@@ -2177,6 +2179,7 @@ Almanac_Moon() { # Used in Almanac()
     # 5. Relation to Wandering Moon
 
     echo "$HR"
+    read -sn 1
 } # Return to Almanac()
 
 Almanac_Notes() {
@@ -2208,10 +2211,9 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
 
-    [[ $(awk '{print length;}' <<< "$WEEKDAY_STR") -gt 9 ]] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="${WEEKDAY_STR} ${BIAMIN_DATE_STR}"
-    local ALMANAC_SUB_LEN=$(awk '{print length - 18}' <<< "$ALMANAC_SUB")
+    [[ $(Strlen "$WEEKDAY_STR") -gt 9 ]] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) ${BIAMIN_DATE_STR}"
     tput sc
-    case "$ALMANAC_SUB_LEN" in
+    case $(awk '{print length - 18}' <<< "$ALMANAC_SUB") in
 	35 | 34 ) tput cup 6 15 ;;
 	33 | 32 ) tput cup 6 16 ;;
 	31 | 30 ) tput cup 6 17 ;;
@@ -2224,8 +2226,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 
     # Calculate which day the first of the month is
     # Source: en.wikipedia.org/wiki/Determination_of_the_day_of_the_week
-    local FIMON="$MONTH_NUM" # add _REMAINDER to DateFromTurn()
-    case "$FIMON" in # month table (without leap years)
+    case "$MONTH_NUM" in # month table (without leap years) # add _REMAINDER to DateFromTurn()
 	1 | 10 )     local FIMON=0 ;;
 	2 | 3 | 11 ) local FIMON=3 ;;
 	4 | 7 )      local FIMON=6 ;;
@@ -2256,8 +2257,8 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 
     # LEGEND: d+m+y+(y/4)+c mod 7
     # If the result is 0, the date was a Ringday (Sunday), 1 Moonday (Monday) etc.
-    FIRSTDAY=$(bc <<< "1+$FIMON+$FIYEA+($FIYEA/4)+$FICEN")
-    FIRSTDAY=$(bc <<<"$FIRSTDAY-($FIRSTDAY/7)*7") # modulo 7 of $FIRSTDAY
+    FIRSTDAY=$(bc <<< "(1 + $FIMON + $FIYEA + ($FIYEA/4) + $FICEN) % 7")
+    #FIRSTDAY=$(bc <<<"$FIRSTDAY-($FIRSTDAY/7)*7") # modulo 7 of $FIRSTDAY
 
     # DRAW CALENDAR
     cat <<"EOT"
@@ -2341,9 +2342,10 @@ EOT
      tput rc
 
      # Add MONTH HEADER to CALENDAR
-     local MONTH_STR_LEN=$( echo "${#MONTH}" )
+     # local MONTH_STR_LEN=$( echo "${#MONTH}" )
      tput sc
-     case "$MONTH_STR_LEN" in
+     # case "$MONTH_STR_LEN" in
+     case $(Strlen $(MonthString "$MONTH_NUM")) in
 	 18 | 17 ) tput cup 9 13 ;;
 	 13 ) tput cup 9 14      ;;
 	 12 | 11 ) tput cup 9 15 ;;
@@ -2364,7 +2366,8 @@ EOT
 	 "Melethday" ) tput cup 12 41        ;;
 	 "Washday" ) tput cup 10 45          ;;
      esac
-     [[ $(awk '{print length;}' <<< $(WeekdayString "$WEEKDAY_NUM") ) -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
+     #[[ $(Strlen $(WeekdayString "$WEEKDAY_NUM") ) -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
+     ((WEEKDAY_NUM == 0))  && echo "RINGDAY" || echo "$(Capitalize $(WeekdayString "$WEEKDAY_NUM"))"
      tput rc
 
      # Add MOON PHASE to HEPTOGRAM (bottom)

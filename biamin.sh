@@ -1465,7 +1465,9 @@ Die() { echo -e "$1" && exit 1 ;}
 
 Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" ;} # Capitalize $1
 
-Strlen() { awk '{print length;}' <<< "$1" ;} # Return lenght of string $1. "Strlen" is traditional name :)
+Toupper() { awk '{ print toupper($0); }' <<< "$*" ;} # Convert $* to uppercase
+
+Strlen() { awk '{print length;}' <<< "$*" ;} # Return lenght of string $*. "Strlen" is traditional name :)
 
 Ordial() { # Add postfix to $1 (NUMBER)
     grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
@@ -1493,7 +1495,7 @@ MakePromt() { # Make centered to 79px promt from $@. Arguments should be separat
             for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
             STR = STR SEPARATOR INTRO
         }
-        END { print STR; }' <<< "$@" || Die "Too long promt >>>$@<<<"
+        END { print STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
 }
 
 CleanUp() { # Used in MainMenu(), NewSector(),
@@ -2211,7 +2213,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
 
-    [[ $(Strlen "$WEEKDAY_STR") -gt 9 ]] && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) ${BIAMIN_DATE_STR}"
+    ((WEEKDAY_NUM == 0)) && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) ${BIAMIN_DATE_STR}"
     tput sc
     case $(awk '{print length - 18}' <<< "$ALMANAC_SUB") in
 	35 | 34 ) tput cup 6 15 ;;
@@ -2258,8 +2260,6 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     # LEGEND: d+m+y+(y/4)+c mod 7
     # If the result is 0, the date was a Ringday (Sunday), 1 Moonday (Monday) etc.
     FIRSTDAY=$(bc <<< "(1 + $FIMON + $FIYEA + ($FIYEA/4) + $FICEN) % 7")
-    #FIRSTDAY=$(bc <<<"$FIRSTDAY-($FIRSTDAY/7)*7") # modulo 7 of $FIRSTDAY
-
     # DRAW CALENDAR
     cat <<"EOT"
                                                      ringday
@@ -2342,9 +2342,7 @@ EOT
      tput rc
 
      # Add MONTH HEADER to CALENDAR
-     # local MONTH_STR_LEN=$( echo "${#MONTH}" )
      tput sc
-     # case "$MONTH_STR_LEN" in
      case $(Strlen $(MonthString "$MONTH_NUM")) in
 	 18 | 17 ) tput cup 9 13 ;;
 	 13 ) tput cup 9 14      ;;
@@ -2366,8 +2364,7 @@ EOT
 	 "Melethday" ) tput cup 12 41        ;;
 	 "Washday" ) tput cup 10 45          ;;
      esac
-     #[[ $(Strlen $(WeekdayString "$WEEKDAY_NUM") ) -gt 9 ]] && echo "RINGDAY" || echo "${WEEKDAY_STR^^}"
-     ((WEEKDAY_NUM == 0))  && echo "RINGDAY" || echo "$(Capitalize $(WeekdayString "$WEEKDAY_NUM"))"
+     ((WEEKDAY_NUM == 0))  && echo "RINGDAY" || echo "$(Toupper $(WeekdayString "$WEEKDAY_NUM"))"
      tput rc
 
      # Add MOON PHASE to HEPTOGRAM (bottom)
@@ -2377,7 +2374,7 @@ EOT
 	 "First Quarter" | "Third Quarter" | "Waning Gibbous" )       tput cup 16 50 ;;
 	 "Growing Gibbous" | "Waning Crescent" | "Growing Crescent" ) tput cup 16 49 ;;
      esac
-     echo "${MOON^^}"
+     echo "$(Toupper $MOON)"
      tput rc
 
      local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY_NUM") - $(WeekdayTriviaShort "$WEEKDAY_NUM")" # Add DEFAULT Trivia header
@@ -2386,38 +2383,31 @@ EOT
      # Database of significant constellations of dates, months and phases
 
      # CUSTOM Powerful combinations (may overrule the above AND have gameplay consequences)
-     local TRIVIA_KEY="$DAY+$MONTH_REMINDER+$MOON"
-     case "$TRIVIA_KEY" in
+     case "$DAY+$MONTH_REMINDER+$MOON" in
 	 "12+12+Full Moon" ) local TRIVIA1="Very holy" && local TRIVIA2="Yes, indeed. [+1 LUCK]" ;;
      esac
      # TODO IDEA These powerful combos can adjust things like luck, animal attacks etc.
      # TODO make custom trivia a separate function instead..
 
      if [ -z "$TRIVIA1" ] && [ -z "$TRIVIA2" ] ; then
-	 # CUSTOM Common Folk Astrology (TRIVIA1)
-	 local TRIVIA_KEY="$WEEKDAY_STR+$MOON"
-	 case "$TRIVIA_KEY" in
+	 case "$(WeekdayString $WEEKDAY_NUM)+$MOON" in
 	     "Moonday+Full Moon" ) local TRIVIA1="A Full Moon on Moon's day is considered a powerful combination." ;;
 	     "Moonday+Waning Crescent" ) local TRIVIA1="An aging Crescent on Moon's Day makes evil magic more powerful." ;;
 	     "Brenday+New Moon" )  local TRIVIA1="New Moon on Brenia's day means your courage will be needed." ;;
 	     "Midweek+Old Moon" )  local TRIVIA1="An old moon midweek is the cause of imbalance. Show great care." ;;
 	     "Ringday (Holiday)+New Moon" ) local TRIVIA1="New Moon on Ringday is a blessed combination. Be joyeful!" ;;
+	     * ) local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY_NUM") ;;                     # display default info about the day
 	 esac
 
 	 # CUSTOM Month and Moon combinations (TRIVIA2)
-	 local TRIVIA_KEY="$MONTH+$MOON"
-	 case "$TRIVIA_KEY" in
+	 case "$(MonthString $MONTH_NUM)+$MOON" in
 	     "Harvest Month+Growing Crescent" ) local TRIVIA2="A Growing Crescent in Harvest Month foretells a Good harvest!" ;;
 	     "Ringorin+Old Moon" ) local TRIVIA2="An Old Moon in Ringorin means the ancestors are watching. Tread Careful." ;;
 	     "Ringorin+New Moon" ) local TRIVIA2="A New Moon in Ringorin is a good omen for the future if the aim is true." ;;
 	     "Marrsuckur+Waning Crescent" ) local TRIVIA2="A crescent declining during Marrow-sucker sometimes foretell Starvation." ;;
+	     * ) local TRIVIA2="$(MonthString $MONTH_NUM) - $(MonthTrivia $MONTH_NUM)" ;; # display default info about the month
 	 esac
      fi
-
-
-     # DEFAULT Trivia Bodies (fallback)
-     [[ -z "$TRIVIA1" ]] && local TRIVIA1=$(WeekdayTriviaLong "$WEEKDAY_NUM")                     # display default info about the day
-     [[ -z "$TRIVIA2" ]] && local TRIVIA2="$(MonthString $MONTH_NUM) - $(MonthTrivia $MONTH_NUM)" # display default info about the month
 
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"

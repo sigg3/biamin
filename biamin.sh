@@ -1771,7 +1771,7 @@ DateFromTurn() { # Some vars used in Almanac(
     CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
     YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
-    for i in $(seq 1 $YEAR_MONTHES); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
+    for ((i=1; i <= YEAR_MONTHES; i++)); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
     MONTH=$(MonthString "$MONTH_NUM")
     # Find out which DAY we're in
     DAY_NUM=$( bc <<< "$REMAINDER - $(MonthTotalLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
@@ -2212,10 +2212,9 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
-
-    ((WEEKDAY_NUM == 0)) && local ALMANAC_SUB="Ringday ${BIAMIN_DATE_STR}" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) ${BIAMIN_DATE_STR}"
+    ((WEEKDAY_NUM == 0)) && local ALMANAC_SUB="Ringday $DAY of $MONTH" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) $DAY of $MONTH"
     tput sc
-    case $(awk '{print length - 18}' <<< "$ALMANAC_SUB") in
+    case $(Strlen "$ALMANAC_SUB") in
 	35 | 34 ) tput cup 6 15 ;;
 	33 | 32 ) tput cup 6 16 ;;
 	31 | 30 ) tput cup 6 17 ;;
@@ -2223,7 +2222,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 	27 | 26 ) tput cup 6 19 ;;
 	25 | 24 ) tput cup 6 20 ;;
     esac
-    echo "$ALMANAC_SUB" | sed 's/ in the [0-9][0-9].. Cycle//g'
+    echo "$ALMANAC_SUB"
     tput rc
 
     # Calculate which day the first of the month is

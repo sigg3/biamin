@@ -2151,11 +2151,9 @@ Almanac_Moon() { # Used in Almanac()
     tput sc
     tput cup 9 50 && echo "$HORIZ_FRAME"
     tput cup 10 48 && echo ".j                       l." # spaces rem "Full Moon" dots..
-    local framey=11
-    while (( framey < 19 )) ; do
+    for framey in {11..18} ; do
 	tput cup $framey 48 && echo "$VERTI_FRAME"
 	tput cup $framey 73 && echo "$VERTI_FRAME"
-	(( framey++ ))
     done
     tput cup 19 49 && echo -n "l" && echo -n "$HORIZ_FRAME" && echo "j"
     if [ "$MOON" = "Full Moon" ] ; then # Remove "shiny" dots ..

@@ -174,7 +174,7 @@ EOT
 }
 
 GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
-	[ -z "$1" ] && local DISP=1 || local DISP="$1"
+    [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
     clear
     cat <<"EOT"
  
@@ -187,16 +187,14 @@ GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
       o-+----------------------------------------------+-o    \______/
 
 EOT
-	tput sc
-	tput cup 4 11
-	if (( DISP == 1 )) ; then
-	echo "C  H  A  R  A  C  T  E  R     S  H E  E  T"
-	tput cup 6 23
-	echo "s t a t i s t i c s"
-	else
-	echo "         A   L   M   A   N   A   C"
-	fi
-	tput rc
+    tput sc
+    if (( DISP == 1 )) ; then
+	Mvaddstr 4 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T"
+	Mvaddstr 6 23 "s t a t i s t i c s"
+    else
+	Mvaddstr 4 11 "         A   L   M   A   N   A   C"
+    fi
+    tput rc
 }
 
 
@@ -274,7 +272,6 @@ EOF
 GX_Calendar() { # Used in DisplayCharsheet()
     # TODO The Idea is simply put to have a calendar on the right side
     # and some info about the current month on the left (or vice-versa)
-
     clear
     echo "CALENDAR placeholder"
     echo "$HR"
@@ -529,8 +526,8 @@ GX_Rest() { # Relies on GX_Moon for ASCII
 
     tput sc
     # Add universal text
-    tput cup 5 9  && echo "YOU TRY TO GET           *"
-    tput cup 6 9  && echo "SOME MUCH NEEDED REST       Z Z"
+    Mvaddstr 5 9 "YOU TRY TO GET           *"
+    Mvaddstr 6 9 "SOME MUCH NEEDED REST       Z Z"
 
     # Add MOON specific text
     tput cup 8 9
@@ -547,11 +544,11 @@ GX_Rest() { # Relies on GX_Moon for ASCII
     esac
 
     # Finally, sprinkle with stars:
-    tput cup 3 31 && echo "*         Z Z Z   *"
-    tput cup 3 77 && echo "*"
-    tput cup 7 43 && echo "*"
-    [ "$MOON" != "Full Moon" ] && tput cup 8 74 && echo "*"
-    tput cup 9 76 && echo "*"
+    Mvaddstr 3 31 "*         Z Z Z   *"
+    Mvaddstr 3 77 "*"
+    Mvaddstr 7 43 "*"
+    [ "$MOON" != "Full Moon" ] && Mvaddstr 8 74 "*"
+    Mvaddstr 9 76 "*"
     tput rc
 }
 
@@ -1115,8 +1112,7 @@ EOT
     tput sc # save cursor position
     local NUM=0
     for i in 3 5 6 7 8 9 10 ; do
-	tput cup $i 21 # move to y=$i, x=21 ( upper left corner is 0 0 )
-	printf "%s" "${BULLETIN[((NUM++))]}" # 3 - TITLE, 5-9 TEXT, 10 consequence string
+	Mvaddstr $i 21 "${BULLETIN[((NUM++))]}" # 3 - TITLE, 5-9 TEXT, 10 consequence string
     done
     tput rc # restore cursor position
     PressAnyKey
@@ -1283,12 +1279,7 @@ EOT
 
 
 GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hipster)
-    case "$CHAR_RACE" in # Sets merchant friendly greeting
-	2 ) local MERCHANT_GREET="galant Elf of the Forests! " ;;
-	3 ) local MERCHANT_GREET="fierce master Dwarf! " ;;
-	4 ) local MERCHANT_GREET="young master Hobbit! " ;;
-	1 | * ) local MERCHANT_GREET="weather-beaten Traveller!" ;;
-    esac
+    MERCHANT_GREET=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") #${MERCHANT_GREET[0] is dummy!
     clear
     cat <<"EOT"
                                                             .--^`~~.
@@ -1311,21 +1302,14 @@ GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hip
 EOT
 
     tput sc # save cursor position
-    tput cup 4 16 # move to y=4, x=16 ( upper left corner is 0 0 )
-    echo "$MERCHANT_GREET"
-
+    Mvaddstr 4 16 "${MERCHANT_GREET[$CHAR_RACE]}" # move to y=4, x=16 ( upper left corner is 0 0 )
     # Specific prices
-    tput cup 12 4  # move to y=12, x=4 ( upper left corner is 0 0 )
-    echo "Price 1"
-    tput cup 13 4  # move to y=13, x=4 ( upper left corner is 0 0 )
-    echo "Price 2"
-    tput cup 14 4  # move to y=14, x=4 ( upper left corner is 0 0 )
-    echo "Price 3"
-    tput cup 15 4  # move to y=14, x=4 ( upper left corner is 0 0 )
-    echo "Price 4"
+    Mvaddstr 12 4 "Price 1" # move to y=12, x=4 ( upper left corner is 0 0 )
+    Mvaddstr 13 4 "Price 2" # move to y=13, x=4 ( upper left corner is 0 0 )
+    Mvaddstr 14 4 "Price 3" # move to y=14, x=4 ( upper left corner is 0 0 )
+    Mvaddstr 15 4 "Price 4" # move to y=14, x=4 ( upper left corner is 0 0 )
     tput rc # restore cursor position
     echo "$HR"    
-
 }
 
 # GFX MAP FUNCTIONS
@@ -1468,6 +1452,8 @@ Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" 
 Toupper() { awk '{ print toupper($0); }' <<< "$*" ;} # Convert $* to uppercase
 
 Strlen() { awk '{print length;}' <<< "$*" ;} # Return lenght of string $*. "Strlen" is traditional name :)
+
+Mvaddstr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "Mvaddstr" is name similar function from ncurses.h
 
 Ordial() { # Add postfix to $1 (NUMBER)
     grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
@@ -1798,7 +1784,7 @@ DateFromTurn() { # Some vars used in Almanac(
 TurnFromDate() { # Creation() ?
     local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE")
+    local TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE")
     echo $TURN
 }
 
@@ -2040,10 +2026,7 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
-RollDice2() { # Temp wrapper for RollDice()
-    RollDice $1
-    echo "$DICE"
-}
+RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
 
 ## GAME FUNCTIONS: ITEMS IN LOOP
 ItemWasFound() { # Used in NewSector()
@@ -2134,10 +2117,10 @@ Almanac_Moon() { # Used in Almanac()
     # Substitute "NOTES" with MOON string in banner
     tput sc
     case "$MOON" in
-	"Full Moon" | "New Moon" | "Old Moon" ) tput cup 6 27 && echo " ${MOON^^} "                  ;;
-	"First Quarter" | "Third Quarter" ) tput cup 6 16 && echo "THE MOON IS IN THE ${MOON^^}"     ;;
-	"Waning Gibbous" | "Growing Gibbous" | "Waning Crescent" ) tput cup 6 25 && echo "${MOON^^}" ;;
-	"Growing Crescent" ) tput cup 6 24 && echo "${MOON^^}"                                       ;;
+	"Full Moon" | "New Moon" | "Old Moon" )                    Mvaddstr 6 27 " ${MOON^^} "                  ;;
+	"First Quarter" | "Third Quarter")                         Mvaddstr 6 16 "THE MOON IS IN THE ${MOON^^}" ;;
+	"Waning Gibbous" | "Growing Gibbous" | "Waning Crescent" ) Mvaddstr 6 25 "${MOON^^}"                    ;;
+	"Growing Crescent" )                                       Mvaddstr 6 24 "${MOON^^}"                    ;;
     esac
     tput rc
 
@@ -2147,20 +2130,20 @@ Almanac_Moon() { # Used in Almanac()
     local VERTI_FRAME="||"
     local HORIZ_FRAME="_______________________"
     tput sc
-    tput cup 9 50 && echo "$HORIZ_FRAME"
-    tput cup 10 48 && echo ".j                       l." # spaces rem "Full Moon" dots..
+    Mvaddstr  9 50 "$HORIZ_FRAME"
+    Mvaddstr 10 48 ".j                       l." # spaces rem "Full Moon" dots..
     for framey in {11..18} ; do
-	tput cup $framey 48 && echo "$VERTI_FRAME"
-	tput cup $framey 73 && echo "$VERTI_FRAME"
+	Mvaddstr $framey 48 "$VERTI_FRAME"
+	Mvaddstr $framey 73 "$VERTI_FRAME"
     done
     tput cup 19 49 && echo -n "l" && echo -n "$HORIZ_FRAME" && echo "j"
     if [ "$MOON" = "Full Moon" ] ; then # Remove "shiny" dots ..
-	tput cup 20 57 && echo "        "
-	tput cup 11 52 && echo " "
-	tput cup 11 71 && echo " "
-	tput cup 13 50 && echo " "
-	tput cup 17 50 && echo " "
-	tput cup 17 72 && echo " "
+	Mvaddstr 20 57 "        "
+	Mvaddstr 11 52 " "
+	Mvaddstr 11 71 " "
+	Mvaddstr 13 50 " "
+	Mvaddstr 17 50 " "
+	Mvaddstr 17 72 " "
     fi
     tput rc
 
@@ -2183,8 +2166,7 @@ Almanac_Moon() { # Used in Almanac()
 Almanac_Notes() {
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     tput sc
-    tput cup 6 28 # add"NOTES" subheader
-    echo "N O T E S"
+    Mvaddstr 6 28 "N O T E S" # add"NOTES" subheader
     tput rc
     [ -z "$CHAR_NOTES" ] && echo -e " In the back of your almanac, there is a page reserved for Your Notes.\n There is only room for 10 lines, but you may erase obsolete information.\n"
 
@@ -2211,14 +2193,13 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     ((WEEKDAY_NUM == 0)) && local ALMANAC_SUB="Ringday $DAY of $MONTH" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) $DAY of $MONTH"
     tput sc
     case $(Strlen "$ALMANAC_SUB") in
-	35 | 34 ) tput cup 6 15 ;;
-	33 | 32 ) tput cup 6 16 ;;
-	31 | 30 ) tput cup 6 17 ;;
-	29 | 28 ) tput cup 6 18 ;;
-	27 | 26 ) tput cup 6 19 ;;
-	25 | 24 ) tput cup 6 20 ;;
-    esac
-    echo "$ALMANAC_SUB"
+	35 | 34 ) Mvaddstr 6 15 "$ALMANAC_SUB" ;;
+	33 | 32 ) Mvaddstr 6 16 "$ALMANAC_SUB" ;;
+	31 | 30 ) Mvaddstr 6 17 "$ALMANAC_SUB" ;;
+	29 | 28 ) Mvaddstr 6 18 "$ALMANAC_SUB" ;;
+	27 | 26 ) Mvaddstr 6 19 "$ALMANAC_SUB" ;;
+	25 | 24 ) Mvaddstr 6 20 "$ALMANAC_SUB" ;;
+    esac 
     tput rc
 
     # Calculate which day the first of the month is
@@ -2339,13 +2320,12 @@ EOT
      # Add MONTH HEADER to CALENDAR
      tput sc
      case $(Strlen $(MonthString "$MONTH_NUM")) in
-	 18 | 17 ) tput cup 9 13 ;;
-	 13 ) tput cup 9 14      ;;
-	 12 | 11 ) tput cup 9 15 ;;
-	 10 | 9 ) tput cup 9 16  ;;
-	 8 )  tput cup 9 17      ;;
-     esac
-     echo "${MONTH^}"
+	 18 | 17 ) Mvaddstr 9 13 "${MONTH^}" ;;
+	 13      ) Mvaddstr 9 14 "${MONTH^}" ;;
+	 12 | 11 ) Mvaddstr 9 15 "${MONTH^}" ;;
+	 10 | 9  ) Mvaddstr 9 16 "${MONTH^}" ;;
+	 8       ) Mvaddstr 9 17 "${MONTH^}" ;;
+     esac 
      tput rc
 
      # Magnify WEEKDAY in HEPTOGRAM
@@ -2365,11 +2345,10 @@ EOT
      # Add MOON PHASE to HEPTOGRAM (bottom)
      tput sc
      case "$MOON" in
-	 "Old Moon" | "New Moon" | "Full Moon" )                      tput cup 16 52 ;;
-	 "First Quarter" | "Third Quarter" | "Waning Gibbous" )       tput cup 16 50 ;;
-	 "Growing Gibbous" | "Waning Crescent" | "Growing Crescent" ) tput cup 16 49 ;;
+	 "Old Moon" | "New Moon" | "Full Moon" )                      Mvaddstr 16 52 "$(Toupper $MOON)" ;;
+	 "First Quarter" | "Third Quarter" | "Waning Gibbous" )       Mvaddstr 16 50 "$(Toupper $MOON)" ;;
+	 "Growing Gibbous" | "Waning Crescent" | "Growing Crescent" ) Mvaddstr 16 49 "$(Toupper $MOON)" ;;
      esac
-     echo "$(Toupper $MOON)"
      tput rc
 
      local TRIVIA_HEADER="$(WeekdayString "$WEEKDAY_NUM") - $(WeekdayTriviaShort "$WEEKDAY_NUM")" # Add DEFAULT Trivia header

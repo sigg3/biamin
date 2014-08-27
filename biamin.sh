@@ -1522,18 +1522,15 @@ What to do?
 
 ### DISPLAY MAP
 GX_Map() { # Used in MapNav()
-    if ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ; then # Check for Gift of Sight
-	# Show ONLY the NEXT item viz. "Item to see" (ITEM2C). There always will be item in HOTZONE[0]!
-     	IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" # Retrieve item map positions e.g. 1-15 >> X=1 Y=15
-	# Remember, the player won't necessarily find items in HOTZONE array's sequence
-    else # Lazy fix for awk - it falls when see undefined variable #kstn
-	ITEM2C_Y=0 && ITEM2C_X=0 
-    fi
+    local ITEM2C_Y=0 ITEM2C_X=0 # Lazy fix for awk - it falls when see undefined variable #kstn
+    # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
+    # Remember, the player won't necessarily find items in HOTZONE array's sequence.
+    # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
+    [[ ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ]] && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" 
 
     clear
     awk 'BEGIN { FS = "   " ; OFS = "   "; }
-    {
-      # place "o" (player) on map
+    { # place "o" (player) on map
       if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
          if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
          else                 { $'$(( MAP_X + 1 ))'="o";   } 
@@ -1557,8 +1554,7 @@ GX_Map() { # Used in MapNav()
 	    gsub(/o/, "'$(printf "%s" "${YELLOW}o${RESET}")'")
 	    }
          }
-      print;
-    }' <<< "$MAP"
+      print; }' <<< "$MAP"
 }
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
@@ -3191,7 +3187,7 @@ NewSector() { # Used in Intro()
 		r | R ) Rest;                   # Player may be attacked during the rest :)
 		    CheckForDeath && break 2 ;; # If player was slain during the rest
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
-		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin $BBSMSG ;;
+		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;
 		m | M ) MapNav; break ;;        # Go to Map then move
 		* ) MapNav "$ACTION"; break ;;	# Move directly (if not WASD, then loitering :)

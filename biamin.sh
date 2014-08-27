@@ -1938,7 +1938,7 @@ Press any key to go back to main menu!";
 		return 0;;
 	esac
     fi
-    [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -en "\n License file available at $GAMEDIR/LICENSE\n" ; PressAnyKey ;} # ShowLicense()
+    [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -e "\n License file available at $GAMEDIR/LICENSE" ; PressAnyKey ;} # ShowLicense()
 }   # Return to Credits() 
 
 LoadGame() { # Used in MainMenu()

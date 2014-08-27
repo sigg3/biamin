@@ -2939,7 +2939,7 @@ Tavern() { # Used in GoIntoTown()
 		read -sn1 -p "      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit" CUR
 		case "$CUR" in
 		    g | G ) 
-			if (( $(bc <<< "$CHAR_GOLD == 0") )); then # check for money
+			if (( $(bc <<< "$CHAR_GOLD <= 1") )); then # check for money
 			    echo "You don't have enough Gold to rent a room in the Tavern"
 			else
 			    GX_Rest
@@ -2954,7 +2954,7 @@ Tavern() { # Used in GoIntoTown()
 			fi
 			;;
 		    t | T )
-			if (( $(bc <<< "$CHAR_TOBACCO == 0") )); then # check for money
+			if (( $(bc <<< "$CHAR_TOBACCO <= 1") )); then # check for money
 			    echo "You don't have enough Tobacco to rent a room in the Tavern"
 			else
 			    GX_Rest

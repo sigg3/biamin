@@ -2210,8 +2210,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 	9 | 12 )     local FIMON=5 ;;
     esac
 
-    local FIYEA="${YEAR%??}"
-    case "$FIYEA" in # last 2 # of year
+    case $(bc <<< "$YEAR % 100") in # last 2 of year
 	00 | 06 | 17 | 23 | 28 | 34 | 45 | 51 | 56 | 62 | 73 | 79 | 84 | 90 )      local FIYEA=0 ;;
 	01 | 07 | 12 | 18 | 29 | 35 | 40 | 46 | 57 | 63 | 68 | 74 | 85 | 91 | 96 ) local FIYEA=1 ;;
 	02 | 13 | 19 | 24 | 30 | 41 | 47 | 52 | 58 | 69 | 75 | 80 | 86 | 97 )      local FIYEA=2 ;;

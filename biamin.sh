@@ -1939,26 +1939,24 @@ $CC"  > "$GAMEDIR/LICENSE"
     fi
 }
     
-ShowLicense() { [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -en "\n License file available at $GAMEDIR/LICENSE\n" ; PressAnyKey ;} } # Used in License()
-
 License() { # Used in Credits()
     # Displays license if present or runs PrepareLicense && then display it..
     GX_BiaminTitle
-    if [ -f "$GAMEDIR/LICENSE" ]; then
-	ShowLicense
-    else
+    if [[ ! -f "$GAMEDIR/LICENSE" ]]; then
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
 	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
 	case "$DL_LICENSE_OPT" in
-	    YES ) PrepareLicense && ShowLicense ;;
+	    YES ) PrepareLicense ;;
 	    * )   echo -e "
 Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
 Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
 More info:\t<${WEBURL}about#license>
 Press any key to go back to main menu!";
-		read -sn 1;;
+		read -sn 1;
+		return 0;;
 	esac
     fi
+    [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -en "\n License file available at $GAMEDIR/LICENSE\n" ; PressAnyKey ;} # ShowLicense()
 }   # Return to Credits() 
 
 LoadGame() { # Used in MainMenu()

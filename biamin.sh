@@ -2220,8 +2220,7 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
 	05 | 11 | 16 | 22 | 33 | 39 | 44 | 50 | 61 | 67 | 72 | 78 | 89 | 95 )      local FIYEA=6 ;;
     esac
 
-    local FICEN="$CENTURY"
-    case "$FICEN" in # centuries
+    case "$CENTURY" in # centuries
 	100 | 500 | 900 | 1300 | 1700 )       local FICEN=4 ;; # TODO: Trim it
 	200 | 600 | 1000 | 1400 | 1800 )      local FICEN=2 ;; # This table
 	300 | 700 | 1100 | 1500 | 1900 )      local FICEN=0 ;; # is currently
@@ -2715,11 +2714,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    2)  # no loot but EXP
 		echo -n "In the pouch lifted from the ${ENEMY}, you find nothing but ..." ;
 		echo -n "gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing" ;
-		(( CHAR_EXP += EN_PICKPOCKET_EXP )) 
-		;;
-	    *)  ;; # no pickpocketing so do nothing
+		(( CHAR_EXP += EN_PICKPOCKET_EXP )) ;
+		sleep 2 ;;
 	esac
-
 	(( CHAR_BATTLES++ ))
 	SaveCurrentSheet
 	sleep 4

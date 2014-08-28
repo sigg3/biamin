@@ -1700,11 +1700,10 @@ BiaminSetup() { # Used in MainMenu()
 		    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
 		    * ) Die "\n Error! Start location Y-Axis $CHAR_LOC_B is too big or too small!";;
 		esac
-		unset CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
 		# End of SANITY check, everything okay!
 		CHAR_GPS="$CHAR_LOC"
 		CHAR_HOME="$CHAR_LOC"
-		unset CHAR_LOC
+		unset CHAR_LOC CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B
 	    fi # or CHAR_GPS and CHAR_HOME not changed from START_LOCATION
 	fi
 	echo " Creating fresh character sheet for $CHAR ..."

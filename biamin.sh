@@ -1942,25 +1942,12 @@ Press any key to go back to main menu!";
 }   # Return to Credits() 
 
 LoadGame() { # Used in MainMenu()
-    local i=0 # Count of all sheets. We could use ${#array_name[@]}, but I'm not sure if MacOS'll understand that. So let's invent bicycle!
+    local SHEETS FILES i=0 LIMIT=9 OFFSET=0 NUM=0 a # Declare all needed local variables
     # xargs ls -t - sort by date, last played char'll be the first in array
-    for loadSHEET in $(find "$GAMEDIR"/ -name '*.sheet' | xargs ls -t) ; do # Find all sheets and add to array if any
-	SHEETS[((++i))]="$loadSHEET" # $i++ THAN initialize SHEETS[$i]
-    done
-
-    if [[ ! "${SHEETS[@]}" ]] ; then # If no one sheet was found
-	GX_LoadGame
-	echo " Sorry! No character sheets in $GAMEDIR/"
-	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
-	return 1   # BiaminSetup() will not be run after LoadGame()
-    fi
-
-    local LIMIT=9 OFFSET=0
-    while (true) ; do
-	GX_LoadGame
-	for (( a=1; a <= LIMIT ; a++)); do
-	    [[ ! ${SHEETS[((a + OFFSET))]} ]] && break
- 	    awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance 
+    for loadSHEET in $(find "$GAMEDIR/" -name '*.sheet') ; do # Find all sheets and add to array if any
+	((++i)) 
+	FILES[$i]="$loadSHEET"
+   	SHEETS[$i]=$(awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance 
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
                		                 if ($2 == 2 ) { RACE="Elf"; }
@@ -1971,28 +1958,33 @@ LoadGame() { # Used in MainMenu()
                    if (/^ITEMS:/)      { ITEMS = $2 }
                    if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
                  END { 
-                 print " "'$a' ". \"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
-                 }' ${SHEETS[((a + OFFSET))]} 
-	done
-	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT characters. Use (P)revious or (N)ext to list," # Don't show it if there are chars < LIMIT
-	echo -en "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
-	read -n 1 NUM # TODO replace to read -p after debug
-	case "$NUM" in
-	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
-	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
-	    [1-9] ) NUM=$((NUM + OFFSET)); break;;                   # Set NUM = selected charsheet num
-	    *     ) NUM=0; break;; # Unset NUM to prevent fall in [[ ! ${SHEETS[$NUM]} ]] if user press ESC, KEY_UP etc. ${SHEETS[0]} is always empty
-	esac
+                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
+                 }' "$loadSHEET")
     done
-    echo "" # TODO empty line - fix it later
-    if [[ ! "${SHEETS[$NUM]}" ]] ; then
-	unset NUM SHEETS i
-	return 1 # BiaminSetup() will not be run after LoadGame()
-    else
-	CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${SHEETS[$NUM]}" );
-	unset NUM SHEETS i
-	return 0 # BiaminSetup() will be run after LoadGame()
+    GX_LoadGame 		# Just one time!
+    tput sc
+    if [[ ! "${SHEETS[@]}" ]] ; then # If no one sheet was found
+    	echo " Sorry! No character sheets in $GAMEDIR/"
+    	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
+    	return 1   # BiaminSetup() will not be run after LoadGame()
     fi
+    while (true) ; do
+	tput rc 		# Restore cursor position
+	tput ed			# Clear to the end of screen
+    	for (( a=1; a <= LIMIT ; a++)); do [[ ${SHEETS[((a + OFFSET))]} ]] && echo "${a}. ${SHEETS[((a + OFFSET))]}" || break ; done
+    	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT characters. Use (P)revious or (N)ext to list," # Don't show it if there are chars < LIMIT
+    	echo -en "\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: "
+    	read -sn 1 NUM # TODO replace to read -p after debug
+    	case "$NUM" in
+    	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
+    	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
+    	    [1-9] ) NUM=$((NUM + OFFSET)); break;;                   # Set NUM = selected charsheet num
+    	    *     ) break;; # NUM == 0 to prevent fall in [[ ! ${FILES[$NUM]} ]] if user press ESC, KEY_UP etc. ${FILES[0]} is always empty
+    	esac
+     done
+    echo "" # TODO empty line - fix it later
+    [[ ! "${SHEETS[$NUM]}" ]] && return 1 # BiaminSetup() will not be run after LoadGame()
+    CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${FILES[$NUM]}" );
 }   # return to MainMenu()
 
 # GAME ITEMS

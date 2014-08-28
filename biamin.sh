@@ -1447,11 +1447,11 @@ EOT
 
 Die() { echo -e "$1" && exit 1 ;}
 
-Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$1" ;} # Capitalize $1
+Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1
 
 Toupper() { awk '{ print toupper($0); }' <<< "$*" ;} # Convert $* to uppercase
 
-Strlen() { awk '{print length;}' <<< "$*" ;} # Return lenght of string $*. "Strlen" is traditional name :)
+Strlen() { awk '{print length($0);}' <<< "$*" ;} # Return lenght of string $*. "Strlen" is traditional name :)
 
 MvAddStr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "mvaddstr" is name similar function from ncurses.h
 
@@ -1751,7 +1751,7 @@ DateFromTurn() { # Some vars used in Almanac(
     # # Determine Century, used in Almanac() calculations
     # # The thought was originally: century, cycle, age.. Table it for now
     CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
-    YEAR=$(Ordial "$YEAR") # Add year postfix
+#    YEAR=$(Ordial "$YEAR") # Add year postfix
     # Find out which MONTH we're in
     for ((i=1; i <= YEAR_MONTHES; i++)); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
     MONTH=$(MonthString "$MONTH_NUM")
@@ -1774,7 +1774,7 @@ DateFromTurn() { # Some vars used in Almanac(
     	* )                 MOON="Old Moon"         ;; # Same as New Moon
     esac
     # Output example "3rd of Year-Turn in the 13th cycle"
-    BIAMIN_DATE_STR="$DAY of $MONTH in the $YEAR Cycle"
+    BIAMIN_DATE_STR="$DAY of $MONTH in the $(Ordial $YEAR) Cycle"
 }
 
 TurnFromDate() { # Creation() ?
@@ -2420,7 +2420,7 @@ Death() { # Used in FightMode() and also should be used in check-for-starvation
     done
     unset COUNTDOWN
     #echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
-    echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$YEAR" >> "$HIGHSCORE"
+    echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
     DEATH=1 

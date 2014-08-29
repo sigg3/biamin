@@ -2232,74 +2232,104 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
                                                        .^.
 
 EOT
-    tput sc # save cursor pos
+
+    # DRAWING CALENDAR
+    #    local WEEKDAY_NUM=$FIRSTDAY
+    local MONTH_LENGTH=$(MonthLength "$MONTH_NUM")
+    local ARRAY=()
+    local COUNT=0    
+
+    SPACES=$(( (FIRSTDAY + 6) % 7 ))
+    while ((SPACES--)); do 
+	ARRAY[((COUNT))]+="   ";
+    done
+
+    for i in $(seq 1 "$MONTH_LENGTH") ; do
+	ARRAY[((COUNT))]+=$(printf '%2s ' $i;)
+	[[ $(awk '{print length;}' <<< "${ARRAY[$COUNT]}") -eq 21 ]] && ((COUNT++));
+    done
+
+    tput sc
+    COUNT=0
     local YPOS=11
-    local MTYPE=$(MonthLength "$MONTH_NUM")
-    (( DAY_NUM <= 9 )) && local CALDATE="_$DAY_NUM" || local CALDATE="$DAY_NUM"
-    while (( YPOS <= 16 )) ; do
-	local CALKEY="$FIRSTDAY-$YPOS-$MTYPE"
-	tput cup $YPOS 11
-	case "$CALKEY" in                                                          # Month starts on $FIRSTDAY
-	    "0-11-31" | "0-11-30" | "0-11-28" ) local CALSTR="                  _1" ;; # Ringday
-	    "0-12-31" | "0-12-30" | "0-12-28" ) local CALSTR="_2 _3 _4 _5 _6 _7 _8" ;;
-	    "0-13-31" | "0-13-30" | "0-13-28" ) local CALSTR="_9 10 11 12 13 14 15" ;;
-	    "0-14-31" | "0-14-30" | "0-14-28" ) local CALSTR="16 17 18 19 20 21 22" ;;
-	    "0-15-28" )                         local CALSTR="23 24 25 26 27 28"    ;;
-	    "0-15-31" | "0-15-30" )             local CALSTR="23 24 25 26 27 28 29" ;;
-	    "0-16-30" )                         local CALSTR="30"                   ;;
-	    "0-16-31" )                         local CALSTR="30 31"                ;;
-	    "1-11-31" | "1-11-30" | "1-11-28")  local CALSTR="_1 _2 _3 _4 _5 _6 _7" ;; # Moonday
-	    "1-12-31" | "1-12-30" | "1-12-28")  local CALSTR="_8 _9 10 11 12 13 14" ;;
-	    "1-13-31" | "1-13-30" | "1-13-28")  local CALSTR="15 16 17 18 19 20 21" ;;
-	    "1-14-31" | "1-14-30" | "1-14-28")  local CALSTR="22 23 24 25 26 27 28" ;;
-	    "1-15-30" )                         local CALSTR="29 30"                ;;
-	    "1-15-31" )                         local CALSTR="29 30 31"             ;;
-	    "2-11-31" | "2-11-30" | "2-11-28" ) local CALSTR="   _1 _2 _3 _4 _5 _6" ;; # Brenday
-	    "2-12-31" | "2-12-30" | "2-12-28" ) local CALSTR="_7 _8 _9 10 11 12 13" ;;
-	    "2-13-31" | "2-13-30" | "2-13-28" ) local CALSTR="14 15 16 17 18 19 20" ;;
-	    "2-14-31" | "2-14-30" | "2-14-28" ) local CALSTR="21 22 23 24 25 26 27" ;;
-	    "2-15-28" )                         local CALSTR="28"                   ;;
-	    "2-15-30" )                         local CALSTR="28 29 30"             ;;
-	    "2-15-31" )                         local CALSTR="28 29 30 31"          ;;
-	    "3-11-31" | "3-11-30" | "3-11-28" ) local CALSTR="      _1 _2 _3 _4 _5" ;; # Midweek
-	    "3-12-31" | "3-12-30" | "3-12-28" ) local CALSTR="_6 _7 _8 _9 10 11 12" ;;
-	    "3-13-31" | "3-13-30" | "3-13-28" ) local CALSTR="13 14 15 16 17 18 19" ;;
-	    "3-14-31" | "3-14-30" | "3-14-28" ) local CALSTR="20 21 22 23 24 25 26" ;;
-	    "3-15-28" )                         local CALSTR="27 28"                ;;
-	    "3-15-30" )                         local CALSTR="27 28 29 30"          ;;
-	    "3-15-31" )                         local CALSTR="27 28 29 30 31"       ;;
-	    "4-11-31" | "4-11-30" | "4-11-28" ) local CALSTR="         _1 _2 _3 _4" ;; # Braigday
-	    "4-12-31" | "4-12-30" | "4-12-28" ) local CALSTR="_5 _6 _7 _8 _9 10 11" ;;
-	    "4-13-31" | "4-13-30" | "4-13-28" ) local CALSTR="12 13 14 15 16 17 18" ;;
-	    "4-14-31" | "4-14-30" | "4-14-28" ) local CALSTR="19 20 21 22 23 24 25" ;;
-	    "4-15-28" )                         local CALSTR="26 27 28"             ;;
-	    "4-15-30" )                         local CALSTR="26 27 28 29 30"       ;;
-	    "4-15-31" )                         local CALSTR="26 27 28 29 30 31"    ;;
-	    "5-11-31" | "5-11-30" | "5-11-28" ) local CALSTR="            _1 _2 _3" ;; # Melethday
-	    "5-12-31" | "5-12-30" | "5-12-28" ) local CALSTR="_4 _5 _6 _7 _8 _9 10" ;;
-	    "5-13-31" | "5-13-30" | "5-13-28" ) local CALSTR="11 12 13 14 15 16 17" ;;
-	    "5-14-31" | "5-14-30" | "5-14-28" ) local CALSTR="18 19 20 21 22 23 24" ;;
-	    "5-15-28" )                         local CALSTR="25 26 27 28"          ;;
-	    "5-15-30" )                         local CALSTR="25 26 27 28 29 30"    ;;
-	    "5-15-31" )                         local CALSTR="25 26 27 28 29 30 31" ;;
-	    "6-11-31" | "6-11-30" | "6-11-28" ) local CALSTR="               _1 _2" ;; # Washday
-	    "6-12-31" | "6-12-30" | "6-12-28" ) local CALSTR="_3 _4 _5 _6 _7 _8 _9" ;;
-	    "6-13-31" | "6-13-30" | "6-13-28" ) local CALSTR="10 11 12 13 14 15 16" ;;
-	    "6-14-31" | "6-14-30" | "6-14-28" ) local CALSTR="17 18 19 20 21 22 23" ;;
-	    "6-15-28" )                         local CALSTR="24 25 26 27 28"       ;;
-	    "6-15-31" | "6-15-30" )             local CALSTR="24 25 26 27 28 29 30" ;;
-	    "6-16-31" )                         local CALSTR="31"                   ;;
-	    * ) local CALSTR="X" ;; # Don't draw anything
-     esac
-     if [ "$CALSTR" != "X" ] ; then
-	 if (( DAY_NUM <= 9 )) ; then # TODO check compatibility of grey bg color here..
-	     echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m_$DAY_NUM\e[0m")/'' | tr '_' ' '
-	 else
-	     echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m$DAY_NUM\e[0m")/'' | tr '_' ' '
-	 fi
-     fi
-     (( YPOS++ ))
-     done
+    while (true) ; do
+	tput cup $YPOS 11 
+	printf "%s\n" "${ARRAY[$COUNT]}";
+	[[ ${ARRAY[((++COUNT))]} ]] || break
+	(( YPOS++ ))
+    done
+    tput rc
+    # DONE DRAVING CALENDAR
+
+    tput sc # save cursor pos
+    # local YPOS=11
+    # local MTYPE=$(MonthLength "$MONTH_NUM")
+    # (( DAY_NUM <= 9 )) && local CALDATE="_$DAY_NUM" || local CALDATE="$DAY_NUM"
+    # while (( YPOS <= 16 )) ; do
+    # 	local CALKEY="$FIRSTDAY-$YPOS-$MTYPE"
+    # 	tput cup $YPOS 11
+    # 	case "$CALKEY" in                                                          # Month starts on $FIRSTDAY
+    # 	    "0-11-31" | "0-11-30" | "0-11-28" ) local CALSTR="                  _1" ;; # Ringday
+    # 	    "0-12-31" | "0-12-30" | "0-12-28" ) local CALSTR="_2 _3 _4 _5 _6 _7 _8" ;;
+    # 	    "0-13-31" | "0-13-30" | "0-13-28" ) local CALSTR="_9 10 11 12 13 14 15" ;;
+    # 	    "0-14-31" | "0-14-30" | "0-14-28" ) local CALSTR="16 17 18 19 20 21 22" ;;
+    # 	    "0-15-28" )                         local CALSTR="23 24 25 26 27 28"    ;;
+    # 	    "0-15-31" | "0-15-30" )             local CALSTR="23 24 25 26 27 28 29" ;;
+    # 	    "0-16-30" )                         local CALSTR="30"                   ;;
+    # 	    "0-16-31" )                         local CALSTR="30 31"                ;;
+    # 	    "1-11-31" | "1-11-30" | "1-11-28")  local CALSTR="_1 _2 _3 _4 _5 _6 _7" ;; # Moonday
+    # 	    "1-12-31" | "1-12-30" | "1-12-28")  local CALSTR="_8 _9 10 11 12 13 14" ;;
+    # 	    "1-13-31" | "1-13-30" | "1-13-28")  local CALSTR="15 16 17 18 19 20 21" ;;
+    # 	    "1-14-31" | "1-14-30" | "1-14-28")  local CALSTR="22 23 24 25 26 27 28" ;;
+    # 	    "1-15-30" )                         local CALSTR="29 30"                ;;
+    # 	    "1-15-31" )                         local CALSTR="29 30 31"             ;;
+    # 	    "2-11-31" | "2-11-30" | "2-11-28" ) local CALSTR="   _1 _2 _3 _4 _5 _6" ;; # Brenday
+    # 	    "2-12-31" | "2-12-30" | "2-12-28" ) local CALSTR="_7 _8 _9 10 11 12 13" ;;
+    # 	    "2-13-31" | "2-13-30" | "2-13-28" ) local CALSTR="14 15 16 17 18 19 20" ;;
+    # 	    "2-14-31" | "2-14-30" | "2-14-28" ) local CALSTR="21 22 23 24 25 26 27" ;;
+    # 	    "2-15-28" )                         local CALSTR="28"                   ;;
+    # 	    "2-15-30" )                         local CALSTR="28 29 30"             ;;
+    # 	    "2-15-31" )                         local CALSTR="28 29 30 31"          ;;
+    # 	    "3-11-31" | "3-11-30" | "3-11-28" ) local CALSTR="      _1 _2 _3 _4 _5" ;; # Midweek
+    # 	    "3-12-31" | "3-12-30" | "3-12-28" ) local CALSTR="_6 _7 _8 _9 10 11 12" ;;
+    # 	    "3-13-31" | "3-13-30" | "3-13-28" ) local CALSTR="13 14 15 16 17 18 19" ;;
+    # 	    "3-14-31" | "3-14-30" | "3-14-28" ) local CALSTR="20 21 22 23 24 25 26" ;;
+    # 	    "3-15-28" )                         local CALSTR="27 28"                ;;
+    # 	    "3-15-30" )                         local CALSTR="27 28 29 30"          ;;
+    # 	    "3-15-31" )                         local CALSTR="27 28 29 30 31"       ;;
+    # 	    "4-11-31" | "4-11-30" | "4-11-28" ) local CALSTR="         _1 _2 _3 _4" ;; # Braigday
+    # 	    "4-12-31" | "4-12-30" | "4-12-28" ) local CALSTR="_5 _6 _7 _8 _9 10 11" ;;
+    # 	    "4-13-31" | "4-13-30" | "4-13-28" ) local CALSTR="12 13 14 15 16 17 18" ;;
+    # 	    "4-14-31" | "4-14-30" | "4-14-28" ) local CALSTR="19 20 21 22 23 24 25" ;;
+    # 	    "4-15-28" )                         local CALSTR="26 27 28"             ;;
+    # 	    "4-15-30" )                         local CALSTR="26 27 28 29 30"       ;;
+    # 	    "4-15-31" )                         local CALSTR="26 27 28 29 30 31"    ;;
+    # 	    "5-11-31" | "5-11-30" | "5-11-28" ) local CALSTR="            _1 _2 _3" ;; # Melethday
+    # 	    "5-12-31" | "5-12-30" | "5-12-28" ) local CALSTR="_4 _5 _6 _7 _8 _9 10" ;;
+    # 	    "5-13-31" | "5-13-30" | "5-13-28" ) local CALSTR="11 12 13 14 15 16 17" ;;
+    # 	    "5-14-31" | "5-14-30" | "5-14-28" ) local CALSTR="18 19 20 21 22 23 24" ;;
+    # 	    "5-15-28" )                         local CALSTR="25 26 27 28"          ;;
+    # 	    "5-15-30" )                         local CALSTR="25 26 27 28 29 30"    ;;
+    # 	    "5-15-31" )                         local CALSTR="25 26 27 28 29 30 31" ;;
+    # 	    "6-11-31" | "6-11-30" | "6-11-28" ) local CALSTR="               _1 _2" ;; # Washday
+    # 	    "6-12-31" | "6-12-30" | "6-12-28" ) local CALSTR="_3 _4 _5 _6 _7 _8 _9" ;;
+    # 	    "6-13-31" | "6-13-30" | "6-13-28" ) local CALSTR="10 11 12 13 14 15 16" ;;
+    # 	    "6-14-31" | "6-14-30" | "6-14-28" ) local CALSTR="17 18 19 20 21 22 23" ;;
+    # 	    "6-15-28" )                         local CALSTR="24 25 26 27 28"       ;;
+    # 	    "6-15-31" | "6-15-30" )             local CALSTR="24 25 26 27 28 29 30" ;;
+    # 	    "6-16-31" )                         local CALSTR="31"                   ;;
+    # 	    * ) local CALSTR="X" ;; # Don't draw anything
+    #  esac
+    #  if [ "$CALSTR" != "X" ] ; then
+    # 	 if (( DAY_NUM <= 9 )) ; then # TODO check compatibility of grey bg color here..
+    # 	     echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m_$DAY_NUM\e[0m")/'' | tr '_' ' '
+    # 	 else
+    # 	     echo "$CALSTR" | sed ''/"$CALDATE"/s//$(printf "\e[100m$DAY_NUM\e[0m")/'' | tr '_' ' '
+    # 	 fi
+    #  fi
+    #  (( YPOS++ ))
+    #  done
+
      tput rc
 
      # Add MONTH HEADER to CALENDAR

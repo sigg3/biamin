@@ -2537,47 +2537,34 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	echo -e "$CHAR has the initiative!\n"
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT
 	GX_Monster_$ENEMY 
-	case "$FLEE_OPT" in
-	    f | F ) # flee
-		echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
-		if (( $(RollDice2 6) <= FLEE )) ; then
-		    echo "You rolled $DICE and managed to run away!"
-		    LUCK=3
-		    unset FIGHTMODE
-		else
-		    echo "You rolled $DICE and lost your initiative.." 
-		    NEXT_TURN="en"
-		fi ;;
-	    p | P ) # Pickpocket
-	    	if (( $(RollDice2 6) <= ACCURACY )) && (( $(RollDice2 6) >= EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
-	    	    echo -en "\nYou successfully stole the ${ENEMY}'s pouch, " # "steal success" take loot
-	    	    case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
-	    		0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
-	    		1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
-	    	    esac
-	    	    # Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
-	    	    read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT
-	    	    case "$FLEE_OPT" in
-	    		f | F) # Player tries to flee after successful pickpocketing
-	    		    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
-	    		    if (( $(RollDice2 6) <= FLEE )) ; then
-	    			echo "You rolled $DICE and managed to run away!"
-	    			LUCK=3
-	    			unset FIGHTMODE
-	    		    else
-	    			echo "You rolled $DICE and lost your initiative.." 
-	    			NEXT_TURN="en"
-	    		    fi
-	    		    ;;
-	    	    esac
-	    	else # Pickpocket falls
-	    	    echo "You were unable to pickpocket from the ${ENEMY}!"
-	    	    NEXT_TURN="en"
-	    	fi
-	    	;;
-	esac
+	# Firstly check for pickpocketing
+	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "p" ]]; then
+	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
+		echo "You were unable to pickpocket from the ${ENEMY}!" # Pickpocket falls
+		NEXT_TURN="en"
+	    else 
+		echo -en "\nYou successfully stole the ${ENEMY}'s pouch, " # "steal success" take loot
+		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
+	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
+	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
+		esac
+		# Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
+		read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT
+	    fi
+	fi
+	# And secondly for flee
+	if [[ "$FLEE_OPT" == "f" || "$FLEE_OPT" == "F" ]]; then	       
+	    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
+	    if (( $(RollDice2 6) <= FLEE )) ; then
+		echo "You rolled $DICE and managed to run away!"
+		LUCK=3
+		unset FIGHTMODE
+	    else
+		echo "You rolled $DICE and lost your initiative.." 
+		NEXT_TURN="en"
+	    fi 
+	fi
     fi
-
     sleep 1
 
     (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn

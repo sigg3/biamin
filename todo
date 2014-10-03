@@ -27,14 +27,14 @@ TODO LEGACY branch ("original")
 	This requires changing code and blog stuff:P
 
 TODO 2.0 branch ("survival")
-[ ] Implement EchoFightFormula in FightMode from LEGACY
+[?] Implement EchoFightFormula in FightMode from LEGACY
 [ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [ ] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
 [x] ASCII GX_Monster_dragon
-[ ] ASCII GX_Monster_imp
+[x] ASCII GX_Monster_imp
 [x] ASCII GX_Monster_bear
 [x] ASCII GX_Tavern
 [x] 	ASCII GX_DiceGame_Table && _Instructions
@@ -42,14 +42,14 @@ TODO 2.0 branch ("survival")
 [x] ASCII GX_Marketplace
 [x]	ASCII GX_Grocer
 [x]	ASCII GX_Tradesman (RENAMED to Merchant)
-[ ] ASCII GX_ for 2 more enemies (10 total)
+[x] ASCII GX_ for 2 more enemies (10 total)
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [x] ASCII Finish look of GX_Bulletin (left side)
 [ ] Pickpocket tuning
 [x] Add boar
 [x] Add dragon
-[ ] Add imp
-[ ] Add cave bear
+[x] Add imp
+[x] Add cave bear
 [.] Rewrite CUSTOM map functionality to allow >1 map
 [.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
@@ -60,8 +60,6 @@ TODO 2.0 branch ("survival")
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
 [x] Dice game in tavern
-[?]	Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
-[?]		Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
 [.] Calendar() -- Used in DisplayCharsheet()
@@ -74,6 +72,8 @@ TODO 2.0 branch ("survival")
 [.] Almanac_Notes
 
 TODO ideas for 3.0 branch ("rpg")
+[?]	Dicegame Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
+[?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [ ] Moonphase consequences
 [ ] 	Vargs more likely to be encountered in mountains (for example)
 [ ] Replace bash's pseudo-random RANDOM to smth more random.

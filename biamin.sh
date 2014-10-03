@@ -1186,7 +1186,7 @@ GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dic
     # Display numbers too for great justice (or readability)
     if (NR == 10) { $26 = '$1'; $53 = '$2'; }
     print; } '
-    # Note: Don't spend too much time with this, I'm not happy about the graphics atm.. :P - sig.
+echo "$HR"
 }   # Return to MiniGame_Dice()
 
 GX_DiceGame_Table() {
@@ -2084,7 +2084,7 @@ MapNav() { # Used in NewSector()
     esac
     MAP_X=$(awk '{print substr("ABCDEFGHIJKLMNOPQR", '$MAP_X', 1)}' <<< "$MAP_X") # Translate MAP_X numeric back to A-R
     CHAR_GPS="$MAP_X$MAP_Y" 	# Set new [A-R][1-15] to CHAR_GPS
-    sleep 3 # Merged with sleep from 'case "$DEST"' section
+    sleep 1.5 # Merged with sleep from 'case "$DEST"' section
 }   # Return NewSector()
 
 # GAME ACTION: DISPLAY CHARACTER SHEET
@@ -2936,7 +2936,8 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		esac
 		
 		while (( DGAME_COMPETITION >= 1 )) ; do
-		    (( $(RollDice 100) <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
+			RollDice 100 # bugfix
+		    (( DICE <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
 		    (( DGAME_COMPETITION-- ))
 		done
 		

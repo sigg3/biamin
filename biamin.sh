@@ -2480,16 +2480,14 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     FIGHTMODE=1	        # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
     local PICKPOCKET=0  # Flag for succesful pickpocket
 
-    RollDice 20 # Determine enemy type
+    RollDice 100 # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
     case "$SCENARIO" in
-	H ) ((DICE <= 2)) && ENEMY="chthulu" || ENEMY="dragon" ;; 
-            # 1-7 (7/20)                         # 8-10 (3/20)                       # 17-20 (4/20)                      # 11-16 (6/20)
-	x ) ((DICE <= 7 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="goblin" || ((DICE >= 17)) && ENEMY="dragon" || ENEMY="varg"   ;;
-	. ) ((DICE <= 12)) && ENEMY="goblin"  || ((DICE >= 15)) && ENEMY="bandit" || ENEMY="boar"   ;; # boar   13-15 (2/20)
-	T ) ((DICE <= 11)) && ENEMY="bandit"  || ((DICE >= 14)) && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 12-13 (2/20)
-	    # 1-6 (6/20)                         # 7-10 (4/20)                       # 19-20 (2/20)                      # 11-18 (8/20)
-	@ ) ((DICE <=  6)) && ENEMY="goblin"  || ((DICE <= 10)) && ENEMY="boar"   || ((DICE >= 19)) && ENEMY="orc"    || ENEMY="bandit" ;;
-	C ) ((DICE ==  1)) && ENEMY="chthulu" || ((DICE >= 7))  && ENEMY="mage"   || ENEMY="dragon" ;; # dragon 2-6 (5/20)
+    H ) ((DICE <= 10)) && ENEMY="chthulu" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="imp"    ;;
+    T ) ((DICE <= 35)) && ENEMY="mage"    || ((DICE <= 90)) && ENEMY="bandit" || ENEMY="dragon" ;;
+    C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="dragon" ;;
+    x ) ((DICE <= 20)) && ENEMY="orc"     || ((DICE <= 40)) && ENEMY="varg"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 55)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="bear" ;;
+    . ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 70)) && ENEMY="boar" || ((DICE <= 75)) && ENEMY="bear"   || ENEMY="imp"  ;;
+    @ ) ((DICE <= 10)) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="bear"   || ENEMY="imp"  ;;
     esac
 
     # ENEMY ATTRIBUTES
@@ -2503,15 +2501,17 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=10  ; EN_DEFEATED_EXP=20   ;; 
 	# orig: str=3, acc=3
 	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=15  ; EN_DEFEATED_EXP=30   ;; 
-	boar )    EN_STRENGTH=5 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=40   ;;
+	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=40   ;;
 	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; PL_FLEE_EXP=15  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=50   ;; 
 	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; PL_FLEE_EXP=25  ; EN_FLEE_EXP=50  ; EN_DEFEATED_EXP=100  ;;
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=35  ; EN_FLEE_EXP=75  ; EN_DEFEATED_EXP=150  ;;
 	dragon )  EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=100 ; EN_FLEE_THRESHOLD=50 ; PL_FLEE_EXP=45  ; EN_FLEE_EXP=90  ; EN_DEFEATED_EXP=180  ;;
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
+	bear )    EN_STRENGTH=5 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=70  ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=50   ;; # TODO: test and confirm these
+    imp )     EN_STRENGTH=2 ; EN_ACCURACY=1 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; PL_FLEE_EXP=2   ; EN_FLEE_EXP=5   ; EN_DEFEATED_EXP=10   ;; # TODO: test and confirm these
     esac
     
-    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize enemy to Enemy, used in FightTable()
+    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightTable()
     
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
@@ -2522,7 +2522,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	varg )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=70   ; EN_PICKPOCKET_EXP=0   ;;
 	mage )    EN_GOLD=50 ; EN_TOBACCO=60 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=100 ;; # 5.0 gold, 6.0 tobacco  >  Min: 0.5 Gold, 0.6 Tobacco
 	dragon )  EN_GOLD=30 ; EN_TOBACCO=0  ; EN_FOOD=30   ; EN_PICKPOCKET_EXP=100 ;; 
-	chthulu ) EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=90   ; EN_PICKPOCKET_EXP=400 ;; 
+	chthulu ) EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=90   ; EN_PICKPOCKET_EXP=400 ;;
+	bear )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=100  ; EN_PICKPOCKET_EXP=0   ;;
+	imp )     EN_GOLD=5  ; EN_TOBACCO=0  ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=10  ;;
     esac
 
     # Loot: Determine loot type and size 
@@ -2530,10 +2532,11 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     (( $(RollDice2 100) <= EN_TOBACCO )) && EN_TOBACCO=$( bc <<< "scale=2; $(RollDice2 10) * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
     if (( $(RollDice2 100) <= EN_FOOD )) ; then # Loot: Food table for animal creatures
 	case "$ENEMY" in
-	    boar )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.5" )  ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
+	    boar )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.5"  ) ;; # max 20 days, min 2 days   (has the most eatable foodstuff)
 	    varg )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.13" ) ;; # max  5 days, min 0.5 day  (tough, sinewy meat and less eatable)
 	    chthulu ) EN_FOOD=$(RollDice2 10)                               ;; # max 40 days, min 4 days   (is huge..)
 	    dragon )  EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
+	    bear )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.4"  ) ;; # max    days, min   day    (is considered gourmet by some)
 	esac
     fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 
@@ -2541,7 +2544,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
     (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
 
-    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ???
+    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
 
     GX_Monster_$ENEMY
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..

@@ -750,6 +750,25 @@ EOT
 echo "$HR"
 }
 
+GX_Monster_imp() { # This imp is a whimp
+clear
+cat <<"EOT"
+
+
+                                                         __,__,         
+                                                     ,-. \   (__,       
+         AN YMPE SWOOPS DOWN!                       ;- 7) )     (           
+                                                    `~.  \/  _ _ (      
+         The imp is a common                    ,,~._,-.  ,^y Y Y 
+         nuisance for travellers.                 ``-~_?  l             
+                                                     (_  ,'             
+         Luckily, they are easily defeated.           _;((              
+
+
+EOT
+echo "$HR"
+}
+
 GX_Item0() {
     clear
     cat <<"EOT"

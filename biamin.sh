@@ -56,7 +56,7 @@ DISABLE_CHEATS=0                                                       #
 # Horizontal ruler used almost everywhere in the game
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
-PressAnyKey() { read -sn 1 -p "$(MakePromt 'Press (A)ny key to continue..')" ; } # Centered "Press Any Key to continue" string
+PressAnyKey() { read -sn 1 -p "$(MakePrompt 'Press (A)ny key to continue..')" ; } # Centered "Press Any Key to continue" string
 
 GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo(), CleanUp() and License() !
     clear
@@ -1482,7 +1482,7 @@ Ordial() { # Add postfix to $1 (NUMBER)
     Die "Bug in Ordial with ARG $1"
 }
 
-MakePromt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'
+MakePrompt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'
     awk '   BEGIN { FS =";" }
         {
             MAXLEN = 79;
@@ -1869,7 +1869,7 @@ WorldChangeEconomy() {  # Used in NewSector()
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "$(MakePromt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT
+	read -sn 1 -p "$(MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ; 
  		read -p " Enter character name (case sensitive): " CHAR ;
@@ -1880,9 +1880,9 @@ MainMenu() {
 		# Show 10 highscore entries or die if Highscore list is empty
 		[[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
 		echo "" ; # empty line TODO fix it
-		read -sn 1 -p "$(MakePromt 'Press the any key to go to (M)ain menu')" ;;
+		read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" ;;
 	    c | C ) GX_Credits ; # Credits
-		read -sn 1 -p "$(MakePromt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT"
+		read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT"
 		case "$CREDITS_OPT" in
 		    L | l ) License ;;
 		    H | h ) GX_HowTo ;;
@@ -2107,8 +2107,8 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
     case "$ALMANAC" in
-	1) read -sn 1 -p "$(MakePromt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT ;; # Player has "unlocked" Almanac
-	*) read -sn 1 -p "$(MakePromt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT ;; # Player does not have Almanac
+	1) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT ;; # Player has "unlocked" Almanac
+	*) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT ;; # Player does not have Almanac
     esac
     case "$CHARSHEET_OPT" in
 	d | D ) GX_Races && PressAnyKey ;;
@@ -2420,7 +2420,7 @@ EOT
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
      echo "$HR"
-     read -sn 1 -p "$(MakePromt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT
+     read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT
      case "$ALM_OPT" in
 	 M | m ) Almanac_Moon ;;
 	 N | n ) Almanac_Notes ;;
@@ -3030,17 +3030,11 @@ Marketplace_Merchant() {
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
 	
-	RollDice 100 # Roll for merchant friendliness
-	# true - is placeholder, because empty if-elif-else falls
-	if (( DICE == 100 )) || (( DICE == 1 )) ; then # Very good prices, my friend!
-	    true  # TODO Math to determine prices...
-	elif (( DICE <= 99 )) && (( DICE >= 71 )) ; then # Pretty good prices, for you!
-	    true  # TODO Math to determine prices...	    
-	elif (( DICE <= 70 )) && (( DICE >= 21 )) ; then # Good price
-	    true # TODO Math to determine prices...
-	else # (( DICE <= 20 )) ; then # Getting screwed
-	    true # TODO Math to determine prices...
-	fi
+	# Determine what this merchant is trying to obtain (for his purposes)
+	# What MERCHANT_WANTS determines the buy/sell price of all items
+	RollDice 100
+	(( DICE <= 33 )) && MERCHANT_WANTS="FOOD" || (( DICE <= 66 )) && MERCHANT_WANTS="TOBACCO" || MERCHANT_WANTS="GOLD"
+	# TODO v. 3: This will later have 1 more category: ITEMS (where he buys e.g. tusks, fur, etc.) 
 	
 	# TODO something to consider:
 	#MERCHANT_TOBACCO_BUY
@@ -3071,7 +3065,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	# echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_! # Added to GX_
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
-	read -sn1 -p "       Trade for (G)old        Trade for (T)obacco       (N)ot interested" MARKETVAR
+	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR
 	case "$MARKETVAR" in
 	    g | G )
 		GX_Marketplace_Grocer

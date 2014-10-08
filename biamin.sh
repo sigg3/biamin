@@ -2028,7 +2028,7 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-    RANDOM=$(date '+%N') # Reseed random number generator using nano seconds    
+#    RANDOM=$(date '+%N') # Reseed random number generator using nano seconds    # BUG!!! Falls in OpenBSD #kstn
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
@@ -3289,6 +3289,8 @@ Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
 	n | N ) COLOR=0 ; echo -e "\nDisabling color! Edit $GAMEDIR/config to change this setting.";;
 	* )     COLOR=1 ; echo -e "\nEnabling color!" ;;
     esac
+
+    # BUG! Falls in OpenBSD. TODO replace to awk. #kstn
     sed -i"~" "/^COLOR:/s/^.*$/COLOR: $COLOR/g" "$GAMEDIR/config" # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
     sleep 2
 }

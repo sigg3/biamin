@@ -2028,7 +2028,7 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-#    RANDOM=$(date '+%N') # Reseed random number generator using nano seconds    # BUG!!! Falls in OpenBSD #kstn
+    RANDOM=$(date '+%s') # Reseed random number generator using seconds since the Epoch # BUGFIX '+%N' falls in OpenBSD, so '+%s' is suitable imho
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

@@ -3032,20 +3032,20 @@ Marketplace_Merchant() {
 	
 	# STANDARD PRICES
 	# Prices for 1 UNIT (Gold, Tobacco, Food, Item) in CURRENCY (Gold, Tobacco) or TRADE (Food, Item)
-	MERCHANT[2]=$( bc <<< "($VAL_GOLD/$VAL_TOBACCO)-0.$PROFIT_MARGIN" ) # GxT  e.g. Merchant buys Tobacco from Player with Gold
-	MERCHANT[3]=$( bc <<< "($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG       Merchant sells Tobacco to Player for Gold
+	MERCHANT[2]=$( bc <<< "scale=2;($VAL_GOLD/$VAL_TOBACCO)-0.$PROFIT_MARGIN" ) # GxT  e.g. Merchant buys Tobacco from Player with Gold
+	MERCHANT[3]=$( bc <<< "scale=2;($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG       Merchant sells Tobacco to Player for Gold
 	
 	RollDice 100
-	MERCHANT[4]=$( bc <<< "(1/$VAL_GOLD)*($DICE/100)" )                 # GxF
-	MERCHANT[5]=$( bc <<< "${MERCHANT[4]}-0.$PROFIT_MARGIN" )           # FxG  e.g. Merchant sells Food to Player for Gold
+	MERCHANT[4]=$( bc <<< "scale=2;(1/$VAL_GOLD)*($DICE/100)" )                 # GxF
+	MERCHANT[5]=$( bc <<< "scale=2;${MERCHANT[4]}-0.$PROFIT_MARGIN" )           # FxG  e.g. Merchant sells Food to Player for Gold
 	RollDice 100
-	MERCHANT[6]=$( bc <<< "(1/$VAL_TOBACCO)*($DICE/100)" )              # TxF
-	MERCHANT[7]=$( bc <<< "${MERCHANT[6]}-0.$PROFIT_MARGIN" )           # FxT
+	MERCHANT[6]=$( bc <<< "scale=2;(1/$VAL_TOBACCO)*($DICE/100)" )              # TxF
+	MERCHANT[7]=$( bc <<< "scale=2;${MERCHANT[6]}-0.$PROFIT_MARGIN" )           # FxT
 	
-	MERCHANT[8]=$( bc <<< "(1/$VAL_GOLD)*2.$PROFIT_MARGIN" )            # GxI
-	MERCHANT[9]=$( bc <<< "${MERCHANT[8]}-0.$PROFIT_MARGIN" )           # IxG  NOT IMPLEMENTED
-	MERCHANT[10]=$( bc <<< "(1/$VAL_TOBACCO)*2.$PROFIT_MARGIN" )        # TxI
-	MERCHANT[11]=$( bc <<< "${MERCHANT[10]}-0.$PROFIT_MARGIN" )         # IxT  NOT IMPLEMENTED
+	MERCHANT[8]=$( bc <<< "scale=2;(1/$VAL_GOLD)*2.$PROFIT_MARGIN" )            # GxI
+	MERCHANT[9]=$( bc <<< "scale=2;${MERCHANT[8]}-0.$PROFIT_MARGIN" )           # IxG  NOT IMPLEMENTED
+	MERCHANT[10]=$( bc <<< "scale=2;(1/$VAL_TOBACCO)*2.$PROFIT_MARGIN" )        # TxI
+	MERCHANT[11]=$( bc <<< "scale=2;${MERCHANT[10]}-0.$PROFIT_MARGIN" )         # IxT  NOT IMPLEMENTED
     # And for some reason, Merchant refuses to trade items for food or vice-versa.
 
 	# SPECIFIC PRICES based on MERCHANT[1]
@@ -3056,7 +3056,7 @@ Marketplace_Merchant() {
 	* )         local SPECIAL_PRICE=( 8 9 10 11 )     ;;
 	esac
     for MERCi in ${SPECIAL_PRICE[@]} ; do
- 	MERCHANT[$MERCi]=$( bc <<< "${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
+ 	MERCHANT[$MERCi]=$( bc <<< "scale=2;${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
     done
 
 	fi

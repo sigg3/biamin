@@ -3070,7 +3070,23 @@ Marketplace_Merchant() {
 
 	fi
     GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
-						    # TODO if ALMANAC_OFFER=1 then he offers Almanac too or only?
+    
+    # TODO stuff v2+v3
+    # New Merchant setup: Player can choose what to trade in, but the merchant has an agenda, which affects prices.
+    # The above only sorts out the prices. We also need a system of STOCK.
+    # E.g. how much food does he have (if any)? How many items (if any)? (Gold and Tobacco can be infinite, since they are currencies.)
+    # 
+    # MERCHANT ITEMS from MERCHANT'S POV
+    # Simple and most likely useless potions.
+    # One idea: Each potion/item comes with a + and a -. So charm comes with +1 ACCURACY but -1 STRENGTH.
+    # This requires a list of potions/items/charms etc. for sale.
+    #
+    # MERCHANT ITEMS from Players POV
+    # Player can sell his items (this will be stuff he scavenges, like fur, tusks, etc. from slain enemies/pickpocketing).
+    #
+    # It will in turn require an encumbrance system :P
+    # For now, the RESET_MERCH_AFTER_PURCHASE=1 will disable items as soon as the player has bought almanac. (Workaround)
+    
     read -sn 1
 }
 

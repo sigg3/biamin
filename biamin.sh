@@ -3021,35 +3021,54 @@ Marketplace() { # Used in GoIntoTown()
     done
     # IDEA? Add stealing from market??? 
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-    # Or he call the police (the guards?) and they throw player from town? (kstn)
+    # Or he call the police (the guards?) and they throw player from town? (kstn) # We're getting way ahead of ourselves:) Let's just make what we have work first:)
 } # Return to GoIntoTown()
 
 Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
-    if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
+    if [ -z "$MERCHANT" ] || [ "$MERCHANT[0]" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
-	MERCHANT="$CHAR_GPS"
+	MERCHANT[0]="$CHAR_GPS"
 	
-	# Determine what this merchant is trying to obtain (for his purposes)
-	# What MERCHANT_WANTS determines the buy/sell price of all items
+	# Determine what this merchant trades in
+	# Has some influence on what the player gets for it or pays for it.
+	RollDice 3
+	(( DICE == 1 )) && MERCHANT[1]="food" || (( DICE == 2 )) && MERCHANT[1]="tobacco" || MERCHANT[1]="gold" # || MERCHANT[1]="items" (must make items first)
+
+	(( ALMANAC == 0 )) && MERCHANT[1]="items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
+	
+	RollDice 9 && local PROFIT_MARGIN=$DICE
+	
+	# STANDARD PRICES
+	# Prices for 1 UNIT (Gold, Tobacco, Food, Item) in CURRENCY (Gold, Tobacco) or TRADE (Food, Item)
+	MERCHANT[2]=$( bc <<< "($VAL_GOLD/$VAL_TOBACCO)-0.$PROFIT_MARGIN" ) # GxT  e.g. Merchant buys Tobacco from Player with Gold
+	MERCHANT[3]=$( bc <<< "($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG
+	
 	RollDice 100
-	(( DICE <= 33 )) && MERCHANT_WANTS="FOOD" || (( DICE <= 66 )) && MERCHANT_WANTS="TOBACCO" || MERCHANT_WANTS="GOLD"
-	# TODO v. 3: This will later have 1 more category: ITEMS (where he buys e.g. tusks, fur, etc.) 
+	MERCHANT[4]=$( bc <<< "(1/$VAL_GOLD)*($DICE/100)" )                 # GxF
+	MERCHANT[5]=$( bc <<< "${MERCHANT[4]}-0.$PROFIT_MARGIN" )           # FxG  e.g. Merchant sells Food to Player for Gold
+	RollDice 100
+	MERCHANT[6]=$( bc <<< "(1/$VAL_TOBACCO)*($DICE/100)" )              # TxF
+	MERCHANT[7]=$( bc <<< "${MERCHANT[6]}-0.$PROFIT_MARGIN" )           # FxT
 	
-	# TODO something to consider:
-	#MERCHANT_TOBACCO_BUY
-	#MERCHANT_TOBACCO_SELL
-	#MERCHANT_GOLD_BUY
-	#MERCHANT_GOLD_SELL
-	#MERCHANT_FOOD_BUY
-	#MERCHANT_FOOD_SELL
-	
-	if (( ALMANAC == 0 )) ; then # Player still hasn't bought/found Almanac
-		RollDice 20
-		(( DICE <= 5 )) && ALMANAC_OFFER=1 || ALMANAC_OFFER=0
-	fi # TODO Add Almanac as a special item to buy IF ALMANAC_OFFER == 1
-	
-    fi
+	MERCHANT[8]=$( bc <<< "(1/$VAL_GOLD)*2.$PROFIT_MARGIN" )            # GxI
+	MERCHANT[9]=$( bc <<< "${MERCHANT[8]}-0.$PROFIT_MARGIN" )           # IxG  NOT IMPLEMENTED
+	MERCHANT[10]=$( bc <<< "(1/$VAL_TOBACCO)*2.$PROFIT_MARGIN" )        # TxI
+	MERCHANT[11]=$( bc <<< "${MERCHANT[10]}-0.$PROFIT_MARGIN" )         # IxT  NOT IMPLEMENTED
+    # And for some reason, Merchant refuses to trade items for food or vice-versa.
+
+	# SPECIFIC PRICES based on MERCHANT[1]
+	case "${MERCHANT[1]}" in
+	"food" )    local SPECIAL_PRICE=( 4 5 6 7 )       ;;
+	"tobacco" ) local SPECIAL_PRICE=( 2 3 6 7 10 11 ) ;;
+	"gold" )	local SPECIAL_PRICE=( 2 3 4 5 8 9 )   ;;
+	* )         local SPECIAL_PRICE=( 8 9 10 11 )     ;;
+	esac
+    for MERCi in ${SPECIAL_PRICE[@]} ; do
+ 	MERCHANT[$MERCi]=$( bc <<< "${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
+    done
+
+	fi
     GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
 						    # TODO if ALMANAC_OFFER=1 then he offers Almanac too or only?
     read -sn 1

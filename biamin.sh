@@ -1298,20 +1298,19 @@ EOT
 
 
 GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hipster)
-    MERCHANT_GREET=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") #${MERCHANT_GREET[0] is dummy!
     clear
     cat <<"EOT"
                                                             .--^`~~.
                                                             ),-~~._/     
               THE MERCHANT                                  j-, -`;;     
                                                             .~_~  ,'       
-    "Oye there,                                          __..`#~-(.__
-    Me and my Caravan travel far and wide             ,~'    `.\/,'  `\    
-    to provide the Finest Merchandise                /  ,-.   |  |  .  \ .,,  
-    in the Realm, and at the best                    \  \ _)__;~~l__|\  `[ } 
-    possible prices! I buy everything      .-,        `._{__7-~-~-~~; `~-'|l  
-    and sell only the best, 'tis true!     ,X.             :-'      |    ;  \  
-    Want to trade?"                     __(___)_.~~,__    ;     (  `l   (__,_)
+                                                         __..`#~-(.__
+                                                      ,~'    `.\/,'  `\    
+                                                     /  ,-.   |  |  .  \ .,,  
+                                                     \  \ _)__;~~l__|\  `[ } 
+                                           .-,        `._{__7-~-~-~~; `~-'|l  
+                                           ,X.             :-'      |    ;  \  
+                                        __(___)_.~~,__    ;     (  `l   (__,_)
                                        [ _ _ _ _,)(. _]  ;      l    `,        
                                        [_ _ _ ,'    `.] ;       )     )       
                                        [ _ _ /        \ \,_____/\____,'     
@@ -1319,16 +1318,7 @@ GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hip
                                              `-._____,'   /--|  \._`_.) 
                                                           \_/    
 EOT
-
-    tput sc # save cursor position
-    MvAddStr 4 16 "${MERCHANT_GREET[$CHAR_RACE]}" # move to y=4, x=16 ( upper left corner is 0 0 )
-    # Specific prices
-    MvAddStr 12 4 "Price 1" # move to y=12, x=4 ( upper left corner is 0 0 )
-    MvAddStr 13 4 "Price 2" # move to y=13, x=4 ( upper left corner is 0 0 )
-    MvAddStr 14 4 "Price 3" # move to y=14, x=4 ( upper left corner is 0 0 )
-    MvAddStr 15 4 "Price 4" # move to y=14, x=4 ( upper left corner is 0 0 )
-    tput rc # restore cursor position
-    echo "$HR"    
+    echo "$HR"
 }
 
 # GFX MAP FUNCTIONS
@@ -3032,9 +3022,10 @@ Marketplace_Merchant() {
 	
 	# Determine what this merchant trades in
 	# Has some influence on what the player gets for it or pays for it.
-	RollDice 3
-	(( DICE == 1 )) && MERCHANT[1]="food" || (( DICE == 2 )) && MERCHANT[1]="tobacco" || MERCHANT[1]="gold" # || MERCHANT[1]="items" (must make items first)
+	RollDice 4
+	(( DICE == 1 )) && MERCHANT[1]="food" || (( DICE == 2 )) && MERCHANT[1]="tobacco" || (( DICE == 3 )) && MERCHANT[1]="gold" || MERCHANT[1]="items"
 
+	# Temporary workaround for Almanac while we don't have items..
 	(( ALMANAC == 0 )) && MERCHANT[1]="items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
 	
 	RollDice 9 && local PROFIT_MARGIN=$DICE
@@ -3042,7 +3033,7 @@ Marketplace_Merchant() {
 	# STANDARD PRICES
 	# Prices for 1 UNIT (Gold, Tobacco, Food, Item) in CURRENCY (Gold, Tobacco) or TRADE (Food, Item)
 	MERCHANT[2]=$( bc <<< "($VAL_GOLD/$VAL_TOBACCO)-0.$PROFIT_MARGIN" ) # GxT  e.g. Merchant buys Tobacco from Player with Gold
-	MERCHANT[3]=$( bc <<< "($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG
+	MERCHANT[3]=$( bc <<< "($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG       Merchant sells Tobacco to Player for Gold
 	
 	RollDice 100
 	MERCHANT[4]=$( bc <<< "(1/$VAL_GOLD)*($DICE/100)" )                 # GxF
@@ -3069,7 +3060,55 @@ Marketplace_Merchant() {
     done
 
 	fi
-    GX_Marketplace_Merchant # TODO add prices from Marketplace_Merchant() in GX_Marketplace_Merchant()
+	
+	# Merchant Loop
+	while (true) ; do
+    GX_Marketplace_Merchant
+    local M_Y=4
+    local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
+	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
+	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
+    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking to trade?" )  && (( M_Y++ )) # [0-4] are dummies
+	while (( M_Y <= 10 )) ; do
+		MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
+		(( M_Y++ ))
+	done
+	tput rc
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+    GX_Marketplace_Merchant
+    tput sc
+    	case "$MERCHANTVAR" in
+		F | f ) local MERCHANDISE="Food"
+				MvAddStr 7 4 "${MERCHANT[5]} Gold or ${MERCHANT[7]} Tobacco."           # FxG, FxT (sell for gold/tobacco)
+				MvAddStr 10 4 "for ${MERCHANT[4]} Gold or ${MERCHANT[6]} Tobacco each!" # GxF, TxF (buy  for food/tobacco)
+				;;
+		T | t ) local MERCHANDISE="Tobacco"
+				MvAddStr 7 4 "${MERCHANT[3]} Gold or ${MERCHANT[6]} Food."              # TxG, TxF
+				MvAddStr 10 4 "for ${MERCHANT[2]} Gold or ${MERCHANT[7]} Food each!"    # GxT, FxT
+				;;
+		G | g ) local MERCHANDISE="Gold"
+				MvAddStr 7 4 "${MERCHANT[2]} Tobacco or ${MERCHANT[4]} Food."           # GxT, GxF
+				MvAddStr 10 4 "for ${MERCHANT[3]} Tobacco or ${MERCHANT[5]} Food each!" # TxG, FxG
+				;;
+		I | i ) local MERCHANDISE="Item" ;;		
+		* ) break ;;
+	esac
+	if [ "$MERCHANDISE" = "Item" ] ; then
+	MvAddStr 4 4 "You are in for a treat!" # TODO random item stock (unless Almanac == 0)
+	MvAddStr 6 4 "I managed to acquire a special"
+	MvAddStr 7 4 "hand-made and leatherbound"
+    MvAddStr 8 4 "Almanac. It is only"
+    MvAddStr 9 4 "${MERCHANT[8]} Gold or ${MERCHANT[10]} Tobacco!"
+    MvAddStr 11 4 "Go ahead! Touch it!"
+	else
+	MvAddStr 4 4 "But of course! Here are my prices:"
+	MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
+	MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
+	fi
+	tput rc
+	read -sn 1 # DEBUG
+    done
+    
     
     # TODO stuff v2+v3
     # New Merchant setup: Player can choose what to trade in, but the merchant has an agenda, which affects prices.
@@ -3087,8 +3126,7 @@ Marketplace_Merchant() {
     # It will in turn require an encumbrance system :P
     # For now, the RESET_MERCH_AFTER_PURCHASE=1 will disable items as soon as the player has bought almanac. (Workaround)
     
-    read -sn 1
-}
+} # Return to Marketplace
 
 Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.

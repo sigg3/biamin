@@ -56,7 +56,7 @@ DISABLE_CHEATS=0                                                       #
 # Horizontal ruler used almost everywhere in the game
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
-PressAnyKey() { read -sn 1 -p "$(MakePrompt 'Press (A)ny key to continue..')" ; } # Centered "Press Any Key to continue" string
+PressAnyKey() { read -sn 1 -p "$(MakePrompt 'Press (A)ny key to continue..')" 2>&1; } # Centered "Press Any Key to continue" string
 
 GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo(), CleanUp() and License() !
     clear
@@ -140,7 +140,7 @@ GX_HowTo() {
    For more information please visit <$WEBURL>
 $HR
 EOF
-    read -sn 1 -p "                    Press any key to return to (M)ain Menu"
+    read -sn 1 -p "                    Press any key to return to (M)ain Menu" 2>&1
 }
 
 GX_HighScore() {
@@ -1364,7 +1364,7 @@ LoadCustomMap() { # Used in MapCreate()
 		fi
 		clear
 		echo "$MAP"
-		read -sn1 -p "Play this map? [Y/N]: " VAR
+		read -sn1 -p "Play this map? [Y/N]: " VAR 2>&1
 		[[ "$VAR" == "y" || "$VAR" == "Y" ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0; # Return to MapCreate()
 		unset MAP ;;
 	    *     )  break;; 
@@ -1384,7 +1384,7 @@ MapCreate() {
 
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
-	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP
+	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP 2>&1
 	[[ "$MAP" == "C" || "$MAP" == "c" ]] && LoadCustomMap && return 0  #leave
     fi
     MAP=$(cat <<EOT
@@ -1527,7 +1527,7 @@ Please run game with --map argument to create a new template as a guide.
 What to do?
 1) rename $ERROR_MAP to ${ERROR_MAP}.error or
 2) delete template file CUSTOM.map (deletion is irrevocable)."
-    read -n 1 -p "Please select 1 or 2: " MAP_CLEAN_OPTS
+    read -n 1 -p "Please select 1 or 2: " MAP_CLEAN_OPTS 2>&1
     case "$MAP_CLEAN_OPTS" in
 	1 ) mv "${ERROR_MAP}" "${ERROR_MAP}.error" ;
 	    echo -e "\nCustom map file moved to ${ERROR_MAP}.error" ;
@@ -1667,7 +1667,7 @@ BiaminSetup() { # Used in MainMenu()
 	TURN=$(TurnFromDate) # Player starts from translated _real date_. Afterwards, turns increment.
 	ALMANAC=0
 	GX_Races
-	read -sn 1 -p " Select character race (1-4): " CHAR_RACE
+	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
 
 	# IDEA - why not difference all 4 races by various tobacco/gold offsets ? #kstn
 	#            gold            tobacco                                      # Good idea, implement it
@@ -1704,7 +1704,7 @@ BiaminSetup() { # Used in MainMenu()
 	# TODO move it to LoadCustomMap()
 	if [[ "$CUSTOM_MAP" ]] ; then
 	    START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
-	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC"
+	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " "CHAR_LOC" 2>&1
 	    if [[ ! -z "$CHAR_LOC" ]]; then
 		# Use user input as start location.. but first SANITY CHECK
 		read CHAR_LOC_LEN CHAR_LOC_A CHAR_LOC_B <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$CHAR_LOC")
@@ -1869,10 +1869,10 @@ WorldChangeEconomy() {  # Used in NewSector()
 MainMenu() {
     while (true) ; do # Forever, because we exit through CleanUp()
 	GX_Banner 		
-	read -sn 1 -p "$(MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT
+	read -sn 1 -p "$(MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT 2>&1
 	case "$TOPMENU_OPT" in
 	    p | P ) GX_Banner ; 
- 		read -p " Enter character name (case sensitive): " CHAR ;
+ 		read -p " Enter character name (case sensitive): " CHAR 2>&1 ;
 		[[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
 	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
 	    h | H ) GX_HighScore ;	      # HighScore
@@ -1880,9 +1880,9 @@ MainMenu() {
 		# Show 10 highscore entries or die if Highscore list is empty
 		[[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
 		echo "" ; # empty line TODO fix it
-		read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" ;;
+		read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" 2>&1 ;;
 	    c | C ) GX_Credits ; # Credits
-		read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT"
+		read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT" 2>&1 ;
 		case "$CREDITS_OPT" in
 		    L | l ) License ;;
 		    H | h ) GX_HowTo ;;
@@ -1944,7 +1944,7 @@ License() { # Used in Credits()
     GX_BiaminTitle
     if [[ ! -f "$GAMEDIR/LICENSE" ]]; then
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
-	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT"
+	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT" 2>&1
 	case "$DL_LICENSE_OPT" in
 	    YES ) PrepareLicense ;;
 	    * )   echo -e "
@@ -1983,7 +1983,7 @@ LoadGame() { # Used in MainMenu()
     tput sc
     if [[ ! "${SHEETS[@]}" ]] ; then # If no one sheet was found
     	echo " Sorry! No character sheets in $GAMEDIR/"
-    	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
+    	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" 2>&1 # St. Anykey - patron of cyberneticists :)
     	return 1   # BiaminSetup() will not be run after LoadGame()
     fi
     while (true) ; do
@@ -2064,7 +2064,7 @@ MapNav() { # Used in NewSector()
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
 	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
-	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST
+	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1
     else  # The player did NOT toggle map, just moved without looking from NewSector()..
 	DEST="$1"
 	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
@@ -2107,8 +2107,8 @@ DisplayCharsheet() { # Used in NewSector() and FightMode()
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
     case "$ALMANAC" in
-	1) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT ;; # Player has "unlocked" Almanac
-	*) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT ;; # Player does not have Almanac
+	1) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT 2>&1 ;; # Player has "unlocked" Almanac
+	*) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT 2>&1 ;; # Player does not have Almanac
     esac
     case "$CHARSHEET_OPT" in
 	d | D ) GX_Races && PressAnyKey ;;
@@ -2420,7 +2420,7 @@ EOT
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
      echo "$HR"
-     read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT
+     read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT 2>&1
      case "$ALM_OPT" in
 	 M | m ) Almanac_Moon ;;
 	 N | n ) Almanac_Notes ;;
@@ -2557,7 +2557,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     else
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
-	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT
+	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
 	GX_Monster_$ENEMY 
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "p" ]]; then
@@ -2571,7 +2571,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
 		esac
 		# Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
-		read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT
+		read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT 2>&1
 	    fi
 	fi
 	# And secondly for flee
@@ -2622,7 +2622,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	FightTable
 
 	if [[ "$NEXT_TURN" == "pl" ]] ; then  # Player's turn
-	    read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT"
+	    read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT" 2>&1
 	    RollDice 6
 	    FightTable
 	    echo -n "ROLL D6: $DICE "
@@ -2657,7 +2657,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 		    unset FIGHT_PROMPT
 		    if (( DICE <= ACCURACY )); then
 			echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
-			read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT"
+			read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT" 2>&1
 			DAMAGE=$(( $(RollDice2 6) * STRENGTH ))
 			echo -en "\nROLL D6: $DICE"
 			echo -en "\tYour blow dishes out $DAMAGE damage points!"
@@ -2820,19 +2820,19 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 
 	# How many players currently at the table
 	DGAME_PLAYERS=$((RANDOM%6)) # 0-5 players
-	(( DGAME_PLAYERS == 0 )) && read -sn1 -p "There's no one at the table. May be you should come back later?" && return 0  # leave
+	(( DGAME_PLAYERS == 0 )) && read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0  # leave
 	# Determine stake size
 	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # min 0.25, max 1.5
 	# Check if player can afford it
 	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then
-	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 
+	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
 	    return 0 # leave
 	fi
 
 	GX_DiceGame_Table
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
-	    1 ) read -sn1 -p "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME ;;
-	    * ) read -sn1 -p "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME	    
+	    1 ) read -sn1 -p "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME 2>&1 ;;
+	    * ) read -sn1 -p "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME 2>&1 ;;	    
 	esac
 	case "$JOIN_DICE_GAME" in
 	    j | J | y | Y ) ;; # Game on! Do nothing.
@@ -2853,7 +2853,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		echo "You're out of gold, $CHAR_RACE_STR. Come back when you have some more!"
 		break # if not, leave immediately		
 	    fi		
-	    read -p "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: " DGAME_GUESS
+	    read -p "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: " DGAME_GUESS 2>&1
 	    echo " " # Empty line for cosmetical purposes # TODO
 	    
 	    # Dice Game Instructions (mostly re: payout)
@@ -2963,11 +2963,11 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 Tavern() { # Used in GoIntoTown()
     while (true); do
 	GX_Tavern # Tavern gained +30 HEALTH - Town*2
-	read -sn1 -p "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit" VAR
+	read -sn1 -p "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit" VAR 2>&1
 	case "$VAR" in
 	    r | R) 
 		GX_Tavern
-		read -sn1 -p "      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit" CUR
+		read -sn1 -p "      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit" CUR 2>&1
 		case "$CUR" in
 		    g | G ) 
 			if (( $(bc <<< "$CHAR_GOLD <= 1") )); then # check for money
@@ -3011,7 +3011,7 @@ Marketplace() { # Used in GoIntoTown()
     # The PRICE of a unit (food, ale) is always 1.
     while (true); do
 	GX_Marketplace
-	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR
+	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR 2>&1
 	case "$VAR" in
 	    g | G) Marketplace_Grocer;; # Trade FOOD for GOLD and TOBACCO
 	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
@@ -3065,11 +3065,11 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	# echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_! # Added to GX_
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
-	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR
+	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR 2>&1
 	case "$MARKETVAR" in
 	    g | G )
 		GX_Marketplace_Grocer
-		read -p "How many food items do you want to buy? " QUANTITY
+		read -p "How many food items do you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "$PRICE_IN_GOLD * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_GOLD > $COST") )); then
@@ -3083,7 +3083,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 		;;
 	    t | T )
 		GX_Marketplace_Grocer
-		read -p "How much food you want to buy? " QUANTITY
+		read -p "How much food you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "${PRICE_IN_TOBACCO} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO > $COST") )); then
@@ -3198,9 +3198,9 @@ NewSector() { # Used in Intro()
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
 	    case "$SCENARIO" in # Determine promt
-		T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION ;;
-		H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION ;;
-		* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION ;;
+		T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION 2>&1;;
+		H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION 2>&1;;
+		* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION 2>&1;;
 	    esac
 
 	    case "$ACTION" in
@@ -3278,7 +3278,7 @@ ColorConfig() {
 Please note that a colored symbol is easier to see on the world map.
 Back in a minute was designed for white text on black background.
 Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
-    read -sn1 -p "Do you want color? [Y/N]: " COLOR_CONFIG
+    read -sn1 -p "Do you want color? [Y/N]: " COLOR_CONFIG 2>&1
     case "$COLOR_CONFIG" in
 	n | N ) COLOR=0 ; echo -e "\nDisabling color! Edit $GAMEDIR/config to change this setting.";;
 	* )     COLOR=1 ; echo -e "\nEnabling color!" ;;
@@ -3293,7 +3293,7 @@ CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
     echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
-    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER
+    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
     case "$LAUNCHER" in
 	y | Y ) echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')\nalias biamin='$BIAMIN_RUNTIME/biamin.sh'" >> "$HOME/.bashrc";
 	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
@@ -3383,7 +3383,7 @@ case "$1" in
 	echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 	exit 0;;
     --map )
-	read -n1 -p "Create custom map template? [Y/N]: " CUSTOM_MAP_PROMPT
+	read -n1 -p "Create custom map template? [Y/N]: " CUSTOM_MAP_PROMPT 2>&1
 	case "$CUSTOM_MAP_PROMPT" in
 		y | Y) echo -e "\nCreating custom map template.." ; MapCreateCustom ;;
 		*)     echo -e "\nNot doing anything! Quitting.."
@@ -3440,7 +3440,7 @@ case "$1" in
 	    1)  echo "Your version ($VERSION) is newer than $REPOVERSION" ; rm -f "$REPO";;
 	    2)  echo "Newer version $REPOVERSION is available!"
 		echo "Updating will NOT destroy character sheets, highscore or current config."
- 		read -sn1 -p "Update to Biamin version $REPOVERSION? [Y/N] " CONFIRMUPDATE
+ 		read -sn1 -p "Update to Biamin version $REPOVERSION? [Y/N] " CONFIRMUPDATE 2>&1
 		case "$CONFIRMUPDATE" in
 		    y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPOVERSION .."
 			# TODO make it less ugly

@@ -3025,31 +3025,65 @@ Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
     if [ -z "$MERCHANT" ] || [ "$MERCHANT[0]" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
-	MERCHANT[0]="$CHAR_GPS"
+	MERCHANT="$CHAR_GPS"
 	
 	# Determine what this merchant trades in
 	# Has some influence on what the player gets for it or pays for it.
-	RollDice 4
-	(( DICE == 1 )) && MERCHANT[1]="food" || (( DICE == 2 )) && MERCHANT[1]="tobacco" || (( DICE == 3 )) && MERCHANT[1]="gold" || MERCHANT[1]="items"
+	RollDice 4 && local MERCHANT_WANTS
+	(( DICE == 1 )) && MERCHANT_WANTS="Food" || (( DICE == 2 )) && MERCHANT_WANTS="Tobacco" || (( DICE == 3 )) && MERCHANT_WANTS="Gold" || MERCHANT_WANTS="Items"
 
+	# THIS IS A WORKAROUND ( Missing; ITEMS subsystem TODO )
 	# Temporary workaround for Almanac while we don't have items..
-	(( ALMANAC == 0 )) && MERCHANT[1]="items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
+	(( ALMANAC == 0 )) && MERCHANT_WANTS="Items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
+
+	local VAL_ITEMS=1
+	local PRICE_IxG=$( echo "scale=2;$VAL_ITEMS/$VAL_GOLD" | bc ) # Warning! old-style echo used on purpose
+	local PRICE_GxI=$( echo "scale=2;$VAL_GOLD/$VAL_ITEMS" | bc ) # Otherwise bc errors out
+	local PRICE_IxT=$( echo "scale=2;$VAL_ITEMS/$VAL_TOBACCO" | bc )
+	local PRICE_TxI=$( echo "scale=2;$VAL_TOBACCO/$VAL_ITEMS" | bc )
+	# END WORKAROUND
+
 
 	# STANDARD PRICES set in WorldPriceFixing(). Now let's add profit && agenda
-	RollDice 9 && local PROFIT_MARGIN=$DICE
-
-    # And for some reason, Merchant refuses to trade items for food or vice-versa.
-
-	# SPECIFIC PRICES based on MERCHANT[1]
-	case "${MERCHANT[1]}" in
-	"food" )    local SPECIAL_PRICE=( 4 5 6 7 )       ;;
-	"tobacco" ) local SPECIAL_PRICE=( 2 3 6 7 10 11 ) ;;
-	"gold" )	local SPECIAL_PRICE=( 2 3 4 5 8 9 )   ;;
-	* )         local SPECIAL_PRICE=( 8 9 10 11 )     ;;
+	RollDice 25 && local PROFIT_MARGIN=$(( DICE/100 ))
+	MERCHANT_FxG=$( bc <<< "scale=2;$PRICE_FxG+$PROFIT_MARGIN" ) # Usual stuff
+	MERCHANT_FxT=$( bc <<< "scale=2;$PRICE_FxT+$PROFIT_MARGIN" )
+	MERCHANT_GxT=$( bc <<< "scale=2;$PRICE_GxT+$PROFIT_MARGIN" )
+	MERCHANT_GxF=$( bc <<< "scale=2;$PRICE_GxF+$PROFIT_MARGIN" )
+	MERCHANT_TxG=$( bc <<< "scale=2;$PRICE_TxG+$PROFIT_MARGIN" )
+	MERCHANT_TxF=$( bc <<< "scale=2;$PRICE_TxF+$PROFIT_MARGIN" )	
+	MERCHANT_IxG=$( bc <<< "scale=2;$PRICE_IxG+$PROFIT_MARGIN" ) # Items (temporary)
+	MERCHANT_IxT=$( bc <<< "scale=2;$PRICE_IxT+$PROFIT_MARGIN" ) # Cannot trade items <> food!
+	MERCHANT_GxI=$( bc <<< "scale=2;$PRICE_GxI+$PROFIT_MARGIN" )
+	MERCHANT_TxI=$( bc <<< "scale=2;$PRACE_TxI+$PROFIT_MARGIN" )
+	# This way, all prices are different from Grocer's (and more expensive!)
+	# However, with special prices, some will be lower than Grocer's
+	# I might re-write this tomorrow.. TODO
+	
+	# SPECIAL PRICES depending on what MERCHANT_WANTS
+	local SPECIAL_PRICE && local SP_COUNT=0
+	case "$MERCHANT_WANTS" in
+	"Food" )    SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=4             ;;
+	"Tobacco" ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=6 ;;
+	"Gold" )    SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=6 ;;
+	* )         SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=4             ;;
 	esac
-    for MERCi in ${SPECIAL_PRICE[@]} ; do
- 	MERCHANT[$MERCi]=$( bc <<< "scale=2;${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
-    done
+	
+	# Under construction...TODO
+	#while (( SP_COUNT <= SP_CMAX )) ; do
+	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]}" | cut 1-1 ) = $( echo "$MERCHANT_WANTS" | cut 1-1 ) ] ; then
+		
+	#else
+	
+	#fi
+	#(( SP_COUNT++ ))
+	#done
+	
+	
+    #for MERCi in ${SPECIAL_PRICE[@]} ; do
+	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]:0:1}" | cut 1-1 )
+ 	#MERCHANT[$MERCi]=$( bc <<< "scale=2;${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
+    #done
 
 	fi
 	
@@ -3060,27 +3094,28 @@ Marketplace_Merchant() {
     local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
-    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking to trade?" )  && (( M_Y++ )) # [0-4] are dummies
+    "possible prices! I buy everything" "and sell only the best, 'tis true!" "Are you buying or selling?" )  && (( M_Y++ )) # [0-4] are dummies
 	while (( M_Y <= 10 )) ; do
 		MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 		(( M_Y++ ))
 	done
 	tput rc
-	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+#	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
     GX_Marketplace_Merchant
     tput sc
     	case "$MERCHANTVAR" in
 		F | f ) local MERCHANDISE="Food"
-				MvAddStr 7 4 "${MERCHANT[5]} Gold or ${MERCHANT[7]} Tobacco."           # FxG, FxT (sell for gold/tobacco)
-				MvAddStr 10 4 "for ${MERCHANT[4]} Gold or ${MERCHANT[6]} Tobacco each!" # GxF, TxF (buy  for food/tobacco)
+				MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
+				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
 				;;
 		T | t ) local MERCHANDISE="Tobacco"
-				MvAddStr 7 4 "${MERCHANT[3]} Gold or ${MERCHANT[6]} Food."              # TxG, TxF
-				MvAddStr 10 4 "for ${MERCHANT[2]} Gold or ${MERCHANT[7]} Food each!"    # GxT, FxT
+				MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
+				MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
 				;;
 		G | g ) local MERCHANDISE="Gold"
-				MvAddStr 7 4 "${MERCHANT[2]} Tobacco or ${MERCHANT[4]} Food."           # GxT, GxF
-				MvAddStr 10 4 "for ${MERCHANT[3]} Tobacco or ${MERCHANT[5]} Food each!" # TxG, FxG
+				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
+				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
 				;;
 		I | i ) local MERCHANDISE="Item" ;;		
 		* ) break ;;
@@ -3090,7 +3125,7 @@ Marketplace_Merchant() {
 	MvAddStr 6 4 "I managed to acquire a special"
 	MvAddStr 7 4 "hand-made and leatherbound"
     MvAddStr 8 4 "Almanac. It is only"
-    MvAddStr 9 4 "${MERCHANT[8]} Gold or ${MERCHANT[10]} Tobacco!"
+    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
     MvAddStr 11 4 "Go ahead! Touch it!"
 	else
 	MvAddStr 4 4 "But of course! Here are my prices:"

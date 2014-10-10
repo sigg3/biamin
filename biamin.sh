@@ -1285,13 +1285,6 @@ GX_Marketplace_Grocer() {
                                    _____  '----`    ____      __ '-^-^`  _____
    
 EOT
-    # TODO: Must fix the prices or add msg on current value of gold.
-    tput sc # save cursor position
-    tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-    echo "1 FOOD costs $PRICE_IN_GOLD Gold"
-    tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-    echo "or $PRICE_IN_TOBACCO Tobacco.\""
-    tput rc # restore cursor position
     echo "$HR"
 }
 
@@ -1745,6 +1738,7 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     # Create strings for economical situation..
     VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
     VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) # locale's delimiter is ',' (cyrillic locale for instance) #kstn
+    WorldPriceFixing # Set all prices
     GX_Intro # With countdown
     NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
     NewSector
@@ -1815,6 +1809,18 @@ TodaysDate() {
 
 ## WORLD EVENT functions
 
+WorldPriceFixing() { # Used in WorldChangeEconomy() and Intro()
+local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
+# Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
+PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
+PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
+PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )
+PRICE_GxF=$( echo "scale=2;$VAL_GOLD/$VAL_FOOD" | bc )    # Price of 1 Gold in Food
+PRICE_TxG=$( echo "scale=2;$VAL_TOBACCO/$VAL_GOLD" | bc )
+PRICE_TxF=$( echo "scale=2;$VAL_TOBACCO/$VAL_FOOD" | bc )
+# Items are arbitrarily priced & not set here, but the same logic IxG applies.
+}
+
 WorldChangeEconomy() {  # Used in NewSector()
     (( $(RollDice2 100) > 15 )) && return 0 # Roll to 15% chance for economic event transpiring or leave immediately
     BBSMSG=$(RollDice2 12) # = Number of possible scenarios (+ default 0) and Update BBSMSG
@@ -1850,6 +1856,7 @@ WorldChangeEconomy() {  # Used in NewSector()
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
+    WorldPriceFixing         # Update all prices    
 } # Return to NewSector()
 
 # Other WorldChangeFUNCTIONs go here:)
@@ -3027,25 +3034,10 @@ Marketplace_Merchant() {
 
 	# Temporary workaround for Almanac while we don't have items..
 	(( ALMANAC == 0 )) && MERCHANT[1]="items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
-	
+
+	# STANDARD PRICES set in WorldPriceFixing(). Now let's add profit && agenda
 	RollDice 9 && local PROFIT_MARGIN=$DICE
-	
-	# STANDARD PRICES
-	# Prices for 1 UNIT (Gold, Tobacco, Food, Item) in CURRENCY (Gold, Tobacco) or TRADE (Food, Item)
-	MERCHANT[2]=$( bc <<< "scale=2;($VAL_GOLD/$VAL_TOBACCO)-0.$PROFIT_MARGIN" ) # GxT  e.g. Merchant buys Tobacco from Player with Gold
-	MERCHANT[3]=$( bc <<< "scale=2;($VAL_TOBACCO/$VAL_GOLD)-0.$PROFIT_MARGIN" ) # TxG       Merchant sells Tobacco to Player for Gold
-	
-	RollDice 100
-	MERCHANT[4]=$( bc <<< "scale=2;(1/$VAL_GOLD)*($DICE/100)" )                 # GxF
-	MERCHANT[5]=$( bc <<< "scale=2;${MERCHANT[4]}-0.$PROFIT_MARGIN" )           # FxG  e.g. Merchant sells Food to Player for Gold
-	RollDice 100
-	MERCHANT[6]=$( bc <<< "scale=2;(1/$VAL_TOBACCO)*($DICE/100)" )              # TxF
-	MERCHANT[7]=$( bc <<< "scale=2;${MERCHANT[6]}-0.$PROFIT_MARGIN" )           # FxT
-	
-	MERCHANT[8]=$( bc <<< "scale=2;(1/$VAL_GOLD)*2.$PROFIT_MARGIN" )            # GxI
-	MERCHANT[9]=$( bc <<< "scale=2;${MERCHANT[8]}-0.$PROFIT_MARGIN" )           # IxG  NOT IMPLEMENTED
-	MERCHANT[10]=$( bc <<< "scale=2;(1/$VAL_TOBACCO)*2.$PROFIT_MARGIN" )        # TxI
-	MERCHANT[11]=$( bc <<< "scale=2;${MERCHANT[10]}-0.$PROFIT_MARGIN" )         # IxT  NOT IMPLEMENTED
+
     # And for some reason, Merchant refuses to trade items for food or vice-versa.
 
 	# SPECIFIC PRICES based on MERCHANT[1]
@@ -3129,14 +3121,16 @@ Marketplace_Merchant() {
 } # Return to Marketplace
 
 Marketplace_Grocer() { # Used in GoIntoTown()
-    # The PRICE of a unit (food, ale) is always 1.
-    # Determine prices for 1 unit depending on currencies' respective values
-    PRICE_IN_GOLD=$( bc <<< "scale=2; 1/$VAL_GOLD" )
-    PRICE_IN_TOBACCO=$( bc <<< "scale=2; 1/$VAL_TOBACCO" )		
+    # The PRICE of units are set in WorldPriceFixing()
     while (true); do
 	GX_Marketplace_Grocer
+    tput sc # save cursor position
+    tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+    echo "1 FOOD costs $PRICE_FxG Gold"
+    tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+    echo "or $PRICE_FxT Tobacco.\""
+    tput rc # restore cursor position
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
-	# echo "1 FOOD costs $PRICE_IN_GOLD Gold or $PRICE_IN_TOBACCO Tobacco" # Will perhaps add pricing in GX_! # Added to GX_
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
 	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR 2>&1
 	case "$MARKETVAR" in
@@ -3144,7 +3138,8 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 		GX_Marketplace_Grocer
 		read -p "How many food items do you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
-		local COST=$( bc <<< "$PRICE_IN_GOLD * $QUANTITY" )
+		# TODO Perhaps this could help: stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
+		local COST=$( bc <<< "$PRICE_FxG * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_GOLD > $COST") )); then
 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
@@ -3158,7 +3153,7 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 		GX_Marketplace_Grocer
 		read -p "How much food you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
-		local COST=$( bc <<< "${PRICE_IN_TOBACCO} * $QUANTITY" )
+		local COST=$( bc <<< "${PRICE_FxT} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO > $COST") )); then
 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")

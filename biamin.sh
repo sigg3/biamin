@@ -2812,6 +2812,17 @@ GX_Place() {     # Used in NewSector() and MapNav()
 
 CheckForDeath() { (( DEATH == 1 )) && unset DEATH && HighScore && return 0 ;} # Used in NewSector()
 
+DiceGameCompetition() {
+    case "$1" in # DGAME_COMP
+	2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
+	3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
+	4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
+	5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
+	6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
+	7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
+    esac
+}
+
 MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	echo -en "${CLEAR_LINE}"
 
@@ -2865,15 +2876,15 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		    break # leave immediately
 	    esac
 
-	    # Determine if we're sharing the bet based on odds percentage.. # TODO. Do these calculations just once/round!
-	    case $DGAME_GUESS in # DGAME_COMP
-		2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
-		3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
-		4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
-		5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
-		6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
-		7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
-	    esac
+	    DiceGameCompetition $DGAME_GUESS # Determine if we're sharing the bet based on odds percentage.. # TODO. Do these calculations just once/round!
+	    # case $DGAME_GUESS in # DGAME_COMP
+	    # 	2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
+	    # 	3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
+	    # 	4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
+	    # 	5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
+	    # 	6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
+	    # 	7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
+	    # esac
 	    
 	    # Run that through a loop of players num and % dice..
 	    DGAME_PLAYERS_COUNTER=$DGAME_PLAYERS
@@ -2922,15 +2933,15 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		DGAME_COMPETITION=$( bc <<< "$DGAME_PLAYERS - $DGAME_COMPETITION" )
 		DGAME_OTHER_WINNERS=0
 		
-		# Chances of any player picking the resulting number
-		case "$DGAME_RESULT" in
-		    2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
-		    3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
-		    4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
-		    5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
-		    6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
-		    7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
-		esac
+		DiceGameCompetition $DGAME_RESULT # Chances of any player picking the resulting number
+		# case "$DGAME_RESULT" in
+		#     2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
+		#     3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
+		#     4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
+		#     5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
+		#     6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
+		#     7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
+		# esac
 		
 		while (( DGAME_COMPETITION >= 1 )) ; do
 			RollDice 100 # bugfix

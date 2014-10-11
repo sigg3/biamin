@@ -2025,8 +2025,8 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-    RANDOM=$(date '+%s') # Reseed random number generator using seconds since the Epoch
-    DICE=$((RANDOM%$DICE_SIZE+1))
+    [ ${#OSTYPE} = 9 ] && RANDOM=$(date '+%N') || RANDOM=$(( SECONDS * 3 )) # Reseed random number generator
+    DICE=$((RANDOM%$DICE_SIZE+1))                                           # If !linux use $SECONDS * 3.
 }
 
 RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()

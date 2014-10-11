@@ -3021,70 +3021,55 @@ Marketplace() { # Used in GoIntoTown()
     # Or he call the police (the guards?) and they throw player from town? (kstn) # We're getting way ahead of ourselves:) Let's just make what we have work first:)
 } # Return to GoIntoTown()
 
+Marketplace_Merchant_PriceFixing() {
+case "$1" in
+ "FxG" ) MERCHANT_FxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxF" ) MERCHANT_GxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "FxT" ) MERCHANT_FxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxF" ) MERCHANT_TxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxT" ) MERCHANT_GxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxG" ) MERCHANT_TxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "IxG" ) MERCHANT_IxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxI" ) MERCHANT_GxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "IxT" ) MERCHANT_IxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxI" ) MERCHANT_TxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+esac
+}
 Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
     if [ -z "$MERCHANT" ] || [ "$MERCHANT[0]" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
-	
-	# Determine what this merchant trades in
-	# Has some influence on what the player gets for it or pays for it.
-	RollDice 4 && local MERCHANT_WANTS
-	(( DICE == 1 )) && MERCHANT_WANTS="Food" || (( DICE == 2 )) && MERCHANT_WANTS="Tobacco" || (( DICE == 3 )) && MERCHANT_WANTS="Gold" || MERCHANT_WANTS="Items"
 
-	# THIS IS A WORKAROUND ( Missing; ITEMS subsystem TODO )
-	# Temporary workaround for Almanac while we don't have items..
-	(( ALMANAC == 0 )) && MERCHANT_WANTS="Items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
+	# STANDARD PRICES. Mostly set in WorldPriceFixing(). 
+	MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF	
+	MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF
+	MERCHANT_GxT=$PRICE_GxT && MERCHANT_TxG=$PRICE_TxG
 
-	local VAL_ITEMS=1
-	local PRICE_IxG=$( echo "scale=2;$VAL_ITEMS/$VAL_GOLD" | bc ) # Warning! old-style echo used on purpose
-	local PRICE_GxI=$( echo "scale=2;$VAL_GOLD/$VAL_ITEMS" | bc ) # Otherwise bc errors out
-	local PRICE_IxT=$( echo "scale=2;$VAL_ITEMS/$VAL_TOBACCO" | bc )
-	local PRICE_TxI=$( echo "scale=2;$VAL_TOBACCO/$VAL_ITEMS" | bc )
-	# END WORKAROUND
+	local VAL_ITEMS=2 # Twice the value of Food. TODO This could be subject to change. Consider Almanac vs. a pelt of fur..?
+	MERCHANT_IxG=$( echo "scale=2;$VAL_ITEMS/$VAL_GOLD" | bc ) # Warning! old-style echo used on purpose
+	MERCHANT_GxI=$( echo "scale=2;$VAL_GOLD/$VAL_ITEMS" | bc ) # Otherwise bc errors out
+	MERCHANT_IxT=$( echo "scale=2;$VAL_ITEMS/$VAL_TOBACCO" | bc )
+	MERCHANT_TxI=$( echo "scale=2;$VAL_TOBACCO/$VAL_ITEMS" | bc )	
 
+	# Add profit margin on items based on MERCHANT WANTS $SPECIAL_PRICE[0]
+	RollDice 90 && local PROFIT=$(( DICE/100 )) && local SPECIAL_PRICE && local SP_COUNT=0
 
-	# STANDARD PRICES set in WorldPriceFixing(). Now let's add profit && agenda
-	RollDice 25 && local PROFIT_MARGIN=$(( DICE/100 ))
-	MERCHANT_FxG=$( bc <<< "scale=2;$PRICE_FxG+$PROFIT_MARGIN" ) # Usual stuff
-	MERCHANT_FxT=$( bc <<< "scale=2;$PRICE_FxT+$PROFIT_MARGIN" )
-	MERCHANT_GxT=$( bc <<< "scale=2;$PRICE_GxT+$PROFIT_MARGIN" )
-	MERCHANT_GxF=$( bc <<< "scale=2;$PRICE_GxF+$PROFIT_MARGIN" )
-	MERCHANT_TxG=$( bc <<< "scale=2;$PRICE_TxG+$PROFIT_MARGIN" )
-	MERCHANT_TxF=$( bc <<< "scale=2;$PRICE_TxF+$PROFIT_MARGIN" )	
-	MERCHANT_IxG=$( bc <<< "scale=2;$PRICE_IxG+$PROFIT_MARGIN" ) # Items (temporary)
-	MERCHANT_IxT=$( bc <<< "scale=2;$PRICE_IxT+$PROFIT_MARGIN" ) # Cannot trade items <> food!
-	MERCHANT_GxI=$( bc <<< "scale=2;$PRICE_GxI+$PROFIT_MARGIN" )
-	MERCHANT_TxI=$( bc <<< "scale=2;$PRACE_TxI+$PROFIT_MARGIN" )
-	# This way, all prices are different from Grocer's (and more expensive!)
-	# However, with special prices, some will be lower than Grocer's
-	# I might re-write this tomorrow.. TODO
-	
-	# SPECIAL PRICES depending on what MERCHANT_WANTS
-	local SPECIAL_PRICE && local SP_COUNT=0
-	case "$MERCHANT_WANTS" in
-	"Food" )    SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=4             ;;
-	"Tobacco" ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=6 ;;
-	"Gold" )    SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=6 ;;
-	* )         SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=4             ;;
+	# Determine what this merchant trades in. Has some influence on what the player gets for it or pays for it.
+	RollDice 4
+	case "$DICE" in                                                           # Merchant WANTS to buy and only reluctantly sells
+	1 ) SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=3             ;; # Food
+	2 ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=5 ;; # Tobacco
+	3 ) SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=5 ;; # Gold
+	4 ) SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=3             ;; # Items
 	esac
 	
-	# Under construction...TODO
-	#while (( SP_COUNT <= SP_CMAX )) ; do
-	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]}" | cut 1-1 ) = $( echo "$MERCHANT_WANTS" | cut 1-1 ) ] ; then
-		
-	#else
-	
-	#fi
-	#(( SP_COUNT++ ))
-	#done
-	
-	
-    #for MERCi in ${SPECIAL_PRICE[@]} ; do
-	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]:0:1}" | cut 1-1 )
- 	#MERCHANT[$MERCi]=$( bc <<< "scale=2;${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
-    #done
-
+	while (( SP_COUNT <= SP_CMAX )) ; do
+	# Merchant wants to keep e.g. food, so adds $PROFIT to nominal price
+	# However, Merchant also wants to buy up e.g. food from player, so buys at good price
+	Marketplace_Merchant_PriceFixing ${SPECIAL_PRICE[$SP_COUNT]} + $PROFIT
+	(( SP_COUNT++ ))
+	done
 	fi
 	
 	# Merchant Loop

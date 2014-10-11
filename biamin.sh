@@ -3053,6 +3053,7 @@ Marketplace_Merchant() {
 	MERCHANT="$CHAR_GPS"
 
 	# STANDARD PRICES. Mostly set in WorldPriceFixing(). 
+	# Note MERCHANT_FxG means: Merchant trades 1 Food for $MERCHANT_FXG amount of players Gold.
 	MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF	
 	MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF
 	MERCHANT_GxT=$PRICE_GxT && MERCHANT_TxG=$PRICE_TxG
@@ -3090,14 +3091,13 @@ Marketplace_Merchant() {
     local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
-    "possible prices! I buy everything" "and sell only the best, 'tis true!" "Are you buying or selling?" )  && (( M_Y++ )) # [0-4] are dummies
+    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
 	while (( M_Y <= 10 )) ; do
 		MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 		(( M_Y++ ))
 	done
 	tput rc
-	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
-#	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+    read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
     GX_Marketplace_Merchant
     tput sc
     	case "$MERCHANTVAR" in
@@ -3127,28 +3127,16 @@ Marketplace_Merchant() {
 	MvAddStr 4 4 "But of course! Here are my prices:"
 	MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
 	MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
+	MvAddStr 10 4 "Are you buying or selling?"
+    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+    GX_Marketplace_Merchant
+    case "$MERCHANTVAR" in
+    b | B ) local TODO ;; # Add buying logic (from grocer
+    s | S ) local TODO ;; # Add selling logic (more or less equiv.)
+    esac    
 	fi
 	tput rc
-	read -sn 1 # DEBUG
     done
-    
-    
-    # TODO stuff v2+v3
-    # New Merchant setup: Player can choose what to trade in, but the merchant has an agenda, which affects prices.
-    # The above only sorts out the prices. We also need a system of STOCK.
-    # E.g. how much food does he have (if any)? How many items (if any)? (Gold and Tobacco can be infinite, since they are currencies.)
-    # 
-    # MERCHANT ITEMS from MERCHANT'S POV
-    # Simple and most likely useless potions.
-    # One idea: Each potion/item comes with a + and a -. So charm comes with +1 ACCURACY but -1 STRENGTH.
-    # This requires a list of potions/items/charms etc. for sale.
-    #
-    # MERCHANT ITEMS from Players POV
-    # Player can sell his items (this will be stuff he scavenges, like fur, tusks, etc. from slain enemies/pickpocketing).
-    #
-    # It will in turn require an encumbrance system :P
-    # For now, the RESET_MERCH_AFTER_PURCHASE=1 will disable items as soon as the player has bought almanac. (Workaround)
-    
 } # Return to Marketplace
 
 Marketplace_Grocer() { # Used in GoIntoTown()

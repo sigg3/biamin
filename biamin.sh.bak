@@ -2009,7 +2009,7 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
     local ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
-    HOTZONE=() # Reset HOTZONE  
+    declare -a HOTZONE=() # Reset HOTZONE and declare as array (can speed up operations)
     while (( ITEMS_2_SCATTER > 0 )) ; do
 	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)                          # Randomize ITEM_Y and ITEM_X 
 	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
@@ -2025,8 +2025,8 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-    RANDOM=$(date '+%s') # Reseed random number generator using seconds since the Epoch # BUGFIX '+%N' falls in OpenBSD, so '+%s' is suitable imho
-    DICE=$((RANDOM%$DICE_SIZE+1))
+    [ ${#OSTYPE} = 9 ] && RANDOM=$(date '+%N') || RANDOM=$(( SECONDS * 3 )) # Reseed random number generator
+    DICE=$((RANDOM%$DICE_SIZE+1))                                           # If !linux use $SECONDS * 3.
 }
 
 RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
@@ -2484,7 +2484,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     T ) ((DICE <= 35)) && ENEMY="mage"    || ((DICE <= 90)) && ENEMY="bandit" || ENEMY="dragon" ;;
     C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="dragon" ;;
     x ) ((DICE <= 20)) && ENEMY="orc"     || ((DICE <= 40)) && ENEMY="varg"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 55)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="bear" ;;
-    . ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 70)) && ENEMY="boar" || ((DICE <= 75)) && ENEMY="bear"   || ENEMY="imp"  ;;
+    . ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ENEMY="imp"  ;; # Bear in road was weird..
     @ ) ((DICE <= 10)) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="bear"   || ENEMY="imp"  ;;
     esac
 
@@ -2505,7 +2505,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=35  ; EN_FLEE_EXP=75  ; EN_DEFEATED_EXP=150  ;;
 	dragon )  EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=120 ; EN_FLEE_THRESHOLD=50 ; PL_FLEE_EXP=45  ; EN_FLEE_EXP=90  ; EN_DEFEATED_EXP=180  ;;
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
-	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=50   ;; # TODO: test and confirm these
+	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=60   ;; # TODO: test and confirm these
     imp )     EN_STRENGTH=2 ; EN_ACCURACY=1 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; PL_FLEE_EXP=2   ; EN_FLEE_EXP=5   ; EN_DEFEATED_EXP=10   ;; # TODO: test and confirm these
     esac
     
@@ -2686,7 +2686,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    sleep 2
 	    if (( $(RollDice2 6) <= EN_ACCURACY )); then
 		echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
-		DAMAGE=$(( $(RollDice2 6) * EN_STRENGTH ))
+		RollDice 6
+		DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 		echo "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
 		CHAR_HEALTH=$(( CHAR_HEALTH - DAMAGE ))
 		SaveCurrentSheet
@@ -2758,7 +2759,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 RollForHealing() { # Used in Rest()
     RollDice 6
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
-    (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
+    (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH + $1 )) && echo "You slept well and gained $1 Health." )
     ((TURN++))
     sleep 2
 }   # Return to Rest()
@@ -2769,6 +2770,7 @@ Rest() {  # Used in NewSector()
     PLAYER_RESTING=1 # Set flag for FightMode()
     RollDice 100
     GX_Rest
+    echo "$HR"
     case "$SCENARIO" in
 	H ) if (( CHAR_HEALTH < 100 )); then
 		CHAR_HEALTH=100
@@ -3033,70 +3035,56 @@ Marketplace() { # Used in GoIntoTown()
     # Or he call the police (the guards?) and they throw player from town? (kstn) # We're getting way ahead of ourselves:) Let's just make what we have work first:)
 } # Return to GoIntoTown()
 
+Marketplace_Merchant_PriceFixing() {
+case "$1" in
+ "FxG" ) MERCHANT_FxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxF" ) MERCHANT_GxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "FxT" ) MERCHANT_FxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxF" ) MERCHANT_TxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxT" ) MERCHANT_GxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxG" ) MERCHANT_TxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "IxG" ) MERCHANT_IxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "GxI" ) MERCHANT_GxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "IxT" ) MERCHANT_IxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+ "TxI" ) MERCHANT_TxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+esac
+}
 Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
     if [ -z "$MERCHANT" ] || [ "$MERCHANT[0]" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
-	
-	# Determine what this merchant trades in
-	# Has some influence on what the player gets for it or pays for it.
-	RollDice 4 && local MERCHANT_WANTS
-	(( DICE == 1 )) && MERCHANT_WANTS="Food" || (( DICE == 2 )) && MERCHANT_WANTS="Tobacco" || (( DICE == 3 )) && MERCHANT_WANTS="Gold" || MERCHANT_WANTS="Items"
 
-	# THIS IS A WORKAROUND ( Missing; ITEMS subsystem TODO )
-	# Temporary workaround for Almanac while we don't have items..
-	(( ALMANAC == 0 )) && MERCHANT_WANTS="Items" && RESET_MERCH_AFTER_PURCHASE=1 # let player buy almanac (temporary workaround until items-goods system is written)
+	# STANDARD PRICES. Mostly set in WorldPriceFixing(). 
+	# Note MERCHANT_FxG means: Merchant trades 1 Food for $MERCHANT_FXG amount of players Gold.
+	MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF	
+	MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF
+	MERCHANT_GxT=$PRICE_GxT && MERCHANT_TxG=$PRICE_TxG
 
-	local VAL_ITEMS=1
-	local PRICE_IxG=$( echo "scale=2;$VAL_ITEMS/$VAL_GOLD" | bc ) # Warning! old-style echo used on purpose
-	local PRICE_GxI=$( echo "scale=2;$VAL_GOLD/$VAL_ITEMS" | bc ) # Otherwise bc errors out
-	local PRICE_IxT=$( echo "scale=2;$VAL_ITEMS/$VAL_TOBACCO" | bc )
-	local PRICE_TxI=$( echo "scale=2;$VAL_TOBACCO/$VAL_ITEMS" | bc )
-	# END WORKAROUND
+	local VAL_ITEMS=2 # Twice the value of Food. TODO This could be subject to change. Consider Almanac vs. a pelt of fur..?
+	MERCHANT_IxG=$( echo "scale=2;$VAL_ITEMS/$VAL_GOLD" | bc ) # Warning! old-style echo used on purpose
+	MERCHANT_GxI=$( echo "scale=2;$VAL_GOLD/$VAL_ITEMS" | bc ) # Otherwise bc errors out
+	MERCHANT_IxT=$( echo "scale=2;$VAL_ITEMS/$VAL_TOBACCO" | bc )
+	MERCHANT_TxI=$( echo "scale=2;$VAL_TOBACCO/$VAL_ITEMS" | bc )	
 
+	# Add profit margin on items based on MERCHANT WANTS $SPECIAL_PRICE[0]
+	RollDice 90 && local PROFIT=$(( DICE/100 )) && local SPECIAL_PRICE && local SP_COUNT=0
 
-	# STANDARD PRICES set in WorldPriceFixing(). Now let's add profit && agenda
-	RollDice 25 && local PROFIT_MARGIN=$(( DICE/100 ))
-	MERCHANT_FxG=$( bc <<< "scale=2;$PRICE_FxG+$PROFIT_MARGIN" ) # Usual stuff
-	MERCHANT_FxT=$( bc <<< "scale=2;$PRICE_FxT+$PROFIT_MARGIN" )
-	MERCHANT_GxT=$( bc <<< "scale=2;$PRICE_GxT+$PROFIT_MARGIN" )
-	MERCHANT_GxF=$( bc <<< "scale=2;$PRICE_GxF+$PROFIT_MARGIN" )
-	MERCHANT_TxG=$( bc <<< "scale=2;$PRICE_TxG+$PROFIT_MARGIN" )
-	MERCHANT_TxF=$( bc <<< "scale=2;$PRICE_TxF+$PROFIT_MARGIN" )	
-	MERCHANT_IxG=$( bc <<< "scale=2;$PRICE_IxG+$PROFIT_MARGIN" ) # Items (temporary)
-	MERCHANT_IxT=$( bc <<< "scale=2;$PRICE_IxT+$PROFIT_MARGIN" ) # Cannot trade items <> food!
-	MERCHANT_GxI=$( bc <<< "scale=2;$PRICE_GxI+$PROFIT_MARGIN" )
-	MERCHANT_TxI=$( bc <<< "scale=2;$PRACE_TxI+$PROFIT_MARGIN" )
-	# This way, all prices are different from Grocer's (and more expensive!)
-	# However, with special prices, some will be lower than Grocer's
-	# I might re-write this tomorrow.. TODO
-	
-	# SPECIAL PRICES depending on what MERCHANT_WANTS
-	local SPECIAL_PRICE && local SP_COUNT=0
-	case "$MERCHANT_WANTS" in
-	"Food" )    SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=4             ;;
-	"Tobacco" ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=6 ;;
-	"Gold" )    SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=6 ;;
-	* )         SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=4             ;;
+	# Determine what this merchant trades in. Has some influence on what the player gets for it or pays for it.
+	RollDice 4
+	case "$DICE" in                                                           # Merchant WANTS to buy and only reluctantly sells
+	1 ) SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=3             ;; # Food
+	2 ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=5 ;; # Tobacco
+	3 ) SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=5 ;; # Gold
+	4 ) SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=3             ;; # Items
 	esac
 	
-	# Under construction...TODO
-	#while (( SP_COUNT <= SP_CMAX )) ; do
-	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]}" | cut 1-1 ) = $( echo "$MERCHANT_WANTS" | cut 1-1 ) ] ; then
-		
-	#else
-	
-	#fi
-	#(( SP_COUNT++ ))
-	#done
-	
-	
-    #for MERCi in ${SPECIAL_PRICE[@]} ; do
-	#if [ $( echo "${SPECIAL_PRICE[$SP_COUNT]:0:1}" | cut 1-1 )
- 	#MERCHANT[$MERCi]=$( bc <<< "scale=2;${MERCHANT[$MERCi]}+($PROFIT_MARGIN/2)" )
-    #done
-
+	while (( SP_COUNT <= SP_CMAX )) ; do
+	# Merchant wants to keep e.g. food, so adds $PROFIT to nominal price
+	# However, Merchant also wants to buy up e.g. food from player, so buys at good price
+	Marketplace_Merchant_PriceFixing ${SPECIAL_PRICE[$SP_COUNT]} + $PROFIT
+	(( SP_COUNT++ ))
+	done
 	fi
 	
 	# Merchant Loop
@@ -3106,14 +3094,13 @@ Marketplace_Merchant() {
     local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
-    "possible prices! I buy everything" "and sell only the best, 'tis true!" "Are you buying or selling?" )  && (( M_Y++ )) # [0-4] are dummies
+    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
 	while (( M_Y <= 10 )) ; do
 		MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 		(( M_Y++ ))
 	done
 	tput rc
-	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
-#	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+    read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
     GX_Marketplace_Merchant
     tput sc
     	case "$MERCHANTVAR" in
@@ -3143,28 +3130,16 @@ Marketplace_Merchant() {
 	MvAddStr 4 4 "But of course! Here are my prices:"
 	MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
 	MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
+	MvAddStr 10 4 "Are you buying or selling?"
+    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+    GX_Marketplace_Merchant
+    case "$MERCHANTVAR" in
+    b | B ) local TODO ;; # Add buying logic (from grocer
+    s | S ) local TODO ;; # Add selling logic (more or less equiv.)
+    esac    
 	fi
 	tput rc
-	read -sn 1 # DEBUG
     done
-    
-    
-    # TODO stuff v2+v3
-    # New Merchant setup: Player can choose what to trade in, but the merchant has an agenda, which affects prices.
-    # The above only sorts out the prices. We also need a system of STOCK.
-    # E.g. how much food does he have (if any)? How many items (if any)? (Gold and Tobacco can be infinite, since they are currencies.)
-    # 
-    # MERCHANT ITEMS from MERCHANT'S POV
-    # Simple and most likely useless potions.
-    # One idea: Each potion/item comes with a + and a -. So charm comes with +1 ACCURACY but -1 STRENGTH.
-    # This requires a list of potions/items/charms etc. for sale.
-    #
-    # MERCHANT ITEMS from Players POV
-    # Player can sell his items (this will be stuff he scavenges, like fur, tusks, etc. from slain enemies/pickpocketing).
-    #
-    # It will in turn require an encumbrance system :P
-    # For now, the RESET_MERCH_AFTER_PURCHASE=1 will disable items as soon as the player has bought almanac. (Workaround)
-    
 } # Return to Marketplace
 
 Marketplace_Grocer() { # Used in GoIntoTown()

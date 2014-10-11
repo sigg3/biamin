@@ -2758,7 +2758,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 RollForHealing() { # Used in Rest()
     RollDice 6
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
-    (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
+    (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH + $1 )) && echo "You slept well and gained $1 Health." )
     ((TURN++))
     sleep 2
 }   # Return to Rest()

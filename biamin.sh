@@ -2469,6 +2469,7 @@ Death() { # Used in FightMode() and also should be used in check-for-starvation
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
     DEATH=1 
+    CleanUp
 }
 
 FightMode() {	  # FIGHT MODE! (secondary loop for fights)
@@ -2610,7 +2611,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    else # DEATH!
 		echo "Gain 1000 Experience Points to achieve magic healing!"
 		sleep 4		
-		Death # Moved to separate function because we will also need it in check-for-starvation
+#		Death # Moved to separate function because we will also need it in check-for-starvation
 	    fi
 	    unset FIGHTMODE # At any case finally dead or resurrected player can't countinue fight
 	    break	    # Exit fight loop
@@ -2810,7 +2811,7 @@ GX_Place() {     # Used in NewSector() and MapNav()
     esac
 }   # Return to NewSector() or MapNav()
 
-CheckForDeath() { (( DEATH == 1 )) && unset DEATH && HighScore && return 0 ;} # Used in NewSector()
+CheckForDeath() { (( DEATH == 1 )) && unset DEATH && CleanUp ;} # Used in NewSector()
 
 DiceGameCompetition() {
     case "$1" in # DGAME_COMP

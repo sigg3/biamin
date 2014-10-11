@@ -2009,7 +2009,7 @@ HotzonesDistribute() { # Used in Intro() and ItemWasFound()
     read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
     local ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
-    HOTZONE=() # Reset HOTZONE  
+    declare -a HOTZONE=() # Reset HOTZONE and declare as array (can speed up operations)
     while (( ITEMS_2_SCATTER > 0 )) ; do
 	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)                          # Randomize ITEM_Y and ITEM_X 
 	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
@@ -2025,7 +2025,7 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
     # RANDOM=$SEED
     # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-    RANDOM=$(date '+%s') # Reseed random number generator using seconds since the Epoch # BUGFIX '+%N' falls in OpenBSD, so '+%s' is suitable imho
+    RANDOM=$(date '+%s') # Reseed random number generator using seconds since the Epoch
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
@@ -2483,7 +2483,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     T ) ((DICE <= 35)) && ENEMY="mage"    || ((DICE <= 90)) && ENEMY="bandit" || ENEMY="dragon" ;;
     C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="dragon" ;;
     x ) ((DICE <= 20)) && ENEMY="orc"     || ((DICE <= 40)) && ENEMY="varg"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 55)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="bear" ;;
-    . ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 70)) && ENEMY="boar" || ((DICE <= 75)) && ENEMY="bear"   || ENEMY="imp"  ;;
+    . ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ENEMY="imp"  ;; # Bear in road was weird..
     @ ) ((DICE <= 10)) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="bear"   || ENEMY="imp"  ;;
     esac
 
@@ -2504,7 +2504,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=35  ; EN_FLEE_EXP=75  ; EN_DEFEATED_EXP=150  ;;
 	dragon )  EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=120 ; EN_FLEE_THRESHOLD=50 ; PL_FLEE_EXP=45  ; EN_FLEE_EXP=90  ; EN_DEFEATED_EXP=180  ;;
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
-	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=5   ; EN_FLEE_EXP=20  ; EN_DEFEATED_EXP=50   ;; # TODO: test and confirm these
+	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=60   ;; # TODO: test and confirm these
     imp )     EN_STRENGTH=2 ; EN_ACCURACY=1 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; PL_FLEE_EXP=2   ; EN_FLEE_EXP=5   ; EN_DEFEATED_EXP=10   ;; # TODO: test and confirm these
     esac
     
@@ -2685,7 +2685,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	    sleep 2
 	    if (( $(RollDice2 6) <= EN_ACCURACY )); then
 		echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
-		DAMAGE=$(( $(RollDice2 6) * EN_STRENGTH ))
+		RollDice 6
+		DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 		echo "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
 		CHAR_HEALTH=$(( CHAR_HEALTH - DAMAGE ))
 		SaveCurrentSheet
@@ -2768,6 +2769,7 @@ Rest() {  # Used in NewSector()
     PLAYER_RESTING=1 # Set flag for FightMode()
     RollDice 100
     GX_Rest
+    echo "$HR"
     case "$SCENARIO" in
 	H ) if (( CHAR_HEALTH < 100 )); then
 		CHAR_HEALTH=100

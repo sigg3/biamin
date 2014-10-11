@@ -2557,7 +2557,7 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
 	GX_Monster_$ENEMY 
 	# Firstly check for pickpocketing
-	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "p" ]]; then
+	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then
 	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
 		echo "You were unable to pickpocket from the ${ENEMY}!" # Pickpocket falls
 		NEXT_TURN="en"

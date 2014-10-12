@@ -50,8 +50,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     [[ "$FIGHTMODE" ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
     	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
     	CHAR_EXP=$(( CHAR_EXP-20 )) ;
-    	echo "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP" ;
-    	echo -e "HEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
+    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
     exit 0
@@ -116,6 +115,7 @@ GX_Map() { # Used in MapNav()
          }
       print; }' <<< "$MAP"
 }
+
 # SAVE CHARSHEET
 SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
     echo "CHARACTER: $CHAR
@@ -139,15 +139,13 @@ TURN: $TURN
 ALMANAC: $ALMANAC" > "$CHARSHEET"
 }
 
-
 # CHAR SETUP
 BiaminSetup() { # Used in MainMenu()
     # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
     # Check whether CHAR exists if not create CHARSHEET
     if [[ -f "$CHARSHEET" ]] ; then
-	echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn
-	
+	echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn	
 	# Sequence for updating older charsheets to later additions (compatibility)
 	grep -Eq '^HOME:' "$CHARSHEET"        || echo "HOME: $START_LOCATION" >> $CHARSHEET
 	grep -Eq '^GOLD:' "$CHARSHEET"        || echo "GOLD: 10" >> $CHARSHEET
@@ -368,15 +366,15 @@ TodaysDate() {
 ## WORLD EVENT functions
 
 WorldPriceFixing() { # Used in WorldChangeEconomy() and Intro()
-local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
-# Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
-PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
-PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
-PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )
-PRICE_GxF=$( echo "scale=2;$VAL_GOLD/$VAL_FOOD" | bc )    # Price of 1 Gold in Food
-PRICE_TxG=$( echo "scale=2;$VAL_TOBACCO/$VAL_GOLD" | bc )
-PRICE_TxF=$( echo "scale=2;$VAL_TOBACCO/$VAL_FOOD" | bc )
-# Items are arbitrarily priced & not set here, but the same logic IxG applies.
+    local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
+    # Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
+    PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
+    PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
+    PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )
+    PRICE_GxF=$( echo "scale=2;$VAL_GOLD/$VAL_FOOD" | bc )    # Price of 1 Gold in Food
+    PRICE_TxG=$( echo "scale=2;$VAL_TOBACCO/$VAL_GOLD" | bc )
+    PRICE_TxF=$( echo "scale=2;$VAL_TOBACCO/$VAL_FOOD" | bc )
+    # Items are arbitrarily priced & not set here, but the same logic IxG applies.
 }
 
 WorldChangeEconomy() {  # Used in NewSector()
@@ -984,13 +982,6 @@ EOT
  } # Return to DisplayCharsheet()
 
 
-# FIGHT MODE! (secondary loop for fights)
-FightTable() {  # Used in FightMode()
-    GX_Monster_"$ENEMY"
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
-}   # Return to FightMode()
-
 EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
     # req.: dice-size | formula | skill-abbrevation
     local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
@@ -1025,8 +1016,8 @@ Death() { # Used in FightMode() and also should be used in check-for-starvation
     #echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
-    unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix
-    DEATH=1 
+    unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
+    #    DEATH=1 
     CleanUp
 }
 
@@ -1048,7 +1039,7 @@ Rest() {  # Used in NewSector()
     RollDice 100
     GX_Rest
     echo "$HR"
-    case "$SCENARIO" in
+    case "$1" in
 	H ) if (( CHAR_HEALTH < 100 )); then
 		CHAR_HEALTH=100
 		echo "You slept well in your own bed. Health restored to 100."
@@ -1056,7 +1047,6 @@ Rest() {  # Used in NewSector()
 		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
 	    ((TURN++))
-	    sleep 2 		#  Do we need this sleem? Sleep at home more then at other places?
 	    ;;
 	x ) RollForEvent 60 "fight" && FightMode || RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
 	. ) RollForEvent 30 "fight" && FightMode || RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
@@ -1090,6 +1080,8 @@ GX_Place() {     # Used in NewSector() and MapNav()
     esac
 }   # Return to NewSector() or MapNav()
 
+
+# Deprecated !
 CheckForDeath() { (( DEATH == 1 )) && unset DEATH && CleanUp ;} # Used in NewSector()
 
 DiceGameCompetition() {
@@ -1157,14 +1149,6 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    esac
 
 	    DiceGameCompetition $DGAME_GUESS # Determine if we're sharing the bet based on odds percentage.. # TODO. Do these calculations just once/round!
-	    # case $DGAME_GUESS in # DGAME_COMP
-	    # 	2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
-	    # 	3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
-	    # 	4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
-	    # 	5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
-	    # 	6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
-	    # 	7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
-	    # esac
 	    
 	    # Run that through a loop of players num and % dice..
 	    DGAME_PLAYERS_COUNTER=$DGAME_PLAYERS
@@ -1214,14 +1198,6 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		DGAME_OTHER_WINNERS=0
 		
 		DiceGameCompetition $DGAME_RESULT # Chances of any player picking the resulting number
-		# case "$DGAME_RESULT" in
-		#     2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
-		#     3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
-		#     4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
-		#     5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
-		#     6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
-		#     7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
-		# esac
 		
 		while (( DGAME_COMPETITION >= 1 )) ; do
 			RollDice 100 # bugfix
@@ -1313,19 +1289,20 @@ Marketplace() { # Used in GoIntoTown()
 } # Return to GoIntoTown()
 
 Marketplace_Merchant_PriceFixing() {
-case "$1" in
- "FxG" ) MERCHANT_FxG=$( echo "scale=2;$1$2$3" | bc ) ;;
- "GxF" ) MERCHANT_GxF=$( echo "scale=2;$1$2$3" | bc ) ;;
- "FxT" ) MERCHANT_FxT=$( echo "scale=2;$1$2$3" | bc ) ;;
- "TxF" ) MERCHANT_TxF=$( echo "scale=2;$1$2$3" | bc ) ;;
- "GxT" ) MERCHANT_GxT=$( echo "scale=2;$1$2$3" | bc ) ;;
- "TxG" ) MERCHANT_TxG=$( echo "scale=2;$1$2$3" | bc ) ;;
- "IxG" ) MERCHANT_IxG=$( echo "scale=2;$1$2$3" | bc ) ;;
- "GxI" ) MERCHANT_GxI=$( echo "scale=2;$1$2$3" | bc ) ;;
- "IxT" ) MERCHANT_IxT=$( echo "scale=2;$1$2$3" | bc ) ;;
- "TxI" ) MERCHANT_TxI=$( echo "scale=2;$1$2$3" | bc ) ;;
-esac
+    case "$1" in
+	"FxG" ) MERCHANT_FxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"GxF" ) MERCHANT_GxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"FxT" ) MERCHANT_FxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"TxF" ) MERCHANT_TxF=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"GxT" ) MERCHANT_GxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"TxG" ) MERCHANT_TxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"IxG" ) MERCHANT_IxG=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"GxI" ) MERCHANT_GxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"IxT" ) MERCHANT_IxT=$( echo "scale=2;$1$2$3" | bc ) ;;
+	"TxI" ) MERCHANT_TxI=$( echo "scale=2;$1$2$3" | bc ) ;;
+    esac
 }
+
 Marketplace_Merchant() {
     # If this is a "freshly entered" town, re-do prices
     if [ -z "$MERCHANT" ] || [ "$MERCHANT[0]" != "$CHAR_GPS" ] ; then
@@ -1350,70 +1327,70 @@ Marketplace_Merchant() {
 	# Determine what this merchant trades in. Has some influence on what the player gets for it or pays for it.
 	RollDice 4
 	case "$DICE" in                                                           # Merchant WANTS to buy and only reluctantly sells
-	1 ) SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=3             ;; # Food
-	2 ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=5 ;; # Tobacco
-	3 ) SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=5 ;; # Gold
-	4 ) SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=3             ;; # Items
+	    1 ) SPECIAL_PRICE=( "FxG" "GxF" "FxT" "TxF" ) && SP_CMAX=3             ;; # Food
+	    2 ) SPECIAL_PRICE=( "TxG" "GxT" "TxF" "FxT" "TxI" "IxT" ) && SP_CMAX=5 ;; # Tobacco
+	    3 ) SPECIAL_PRICE=( "GxF" "FxG" "GxT" "TxG" "GxI" "IxG" ) && SP_CMAX=5 ;; # Gold
+	    4 ) SPECIAL_PRICE=( "IxG" "GxI" "IxT" "TxI" ) && SP_CMAX=3             ;; # Items
 	esac
 	
 	while (( SP_COUNT <= SP_CMAX )) ; do
-	# Merchant wants to keep e.g. food, so adds $PROFIT to nominal price
-	# However, Merchant also wants to buy up e.g. food from player, so buys at good price
-	Marketplace_Merchant_PriceFixing ${SPECIAL_PRICE[$SP_COUNT]} + $PROFIT
-	(( SP_COUNT++ ))
+	    # Merchant wants to keep e.g. food, so adds $PROFIT to nominal price
+	    # However, Merchant also wants to buy up e.g. food from player, so buys at good price
+	    Marketplace_Merchant_PriceFixing ${SPECIAL_PRICE[$SP_COUNT]} + $PROFIT
+	    (( SP_COUNT++ ))
 	done
-	fi
-	
-	# Merchant Loop
-	while (true) ; do
-    GX_Marketplace_Merchant
-    local M_Y=4
-    local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
+    fi
+    
+    # Merchant Loop
+    while (true) ; do
+	GX_Marketplace_Merchant
+	local M_Y=4
+	local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
-    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
+	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
 	while (( M_Y <= 10 )) ; do
-		MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
-		(( M_Y++ ))
+	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
+	    (( M_Y++ ))
 	done
 	tput rc
-    read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
-    GX_Marketplace_Merchant
-    tput sc
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+	GX_Marketplace_Merchant
+	tput sc
     	case "$MERCHANTVAR" in
-		F | f ) local MERCHANDISE="Food"
-				MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
-				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
-				;;
-		T | t ) local MERCHANDISE="Tobacco"
-				MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
-				MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
-				;;
-		G | g ) local MERCHANDISE="Gold"
-				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
-				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
-				;;
-		I | i ) local MERCHANDISE="Item" ;;		
-		* ) break ;;
+	    F | f ) local MERCHANDISE="Food"
+		MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
+		MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
+		;;
+	    T | t ) local MERCHANDISE="Tobacco"
+		MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
+		MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
+		;;
+	    G | g ) local MERCHANDISE="Gold"
+		MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
+		MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
+		;;
+	    I | i ) local MERCHANDISE="Item" ;;		
+	    * ) break ;;
 	esac
 	if [ "$MERCHANDISE" = "Item" ] ; then
-	MvAddStr 4 4 "You are in for a treat!" # TODO random item stock (unless Almanac == 0)
-	MvAddStr 6 4 "I managed to acquire a special"
-	MvAddStr 7 4 "hand-made and leatherbound"
-    MvAddStr 8 4 "Almanac. It is only"
-    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
-    MvAddStr 11 4 "Go ahead! Touch it!"
+	    MvAddStr 4 4 "You are in for a treat!" # TODO random item stock (unless Almanac == 0)
+	    MvAddStr 6 4 "I managed to acquire a special"
+	    MvAddStr 7 4 "hand-made and leatherbound"
+	    MvAddStr 8 4 "Almanac. It is only"
+	    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
+	    MvAddStr 11 4 "Go ahead! Touch it!"
 	else
-	MvAddStr 4 4 "But of course! Here are my prices:"
-	MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
-	MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
-	MvAddStr 10 4 "Are you buying or selling?"
-    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
-    GX_Marketplace_Merchant
-    case "$MERCHANTVAR" in
-    b | B ) local TODO ;; # Add buying logic (from grocer
-    s | S ) local TODO ;; # Add selling logic (more or less equiv.)
-    esac    
+	    MvAddStr 4 4 "But of course! Here are my prices:"
+	    MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
+	    MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
+	    MvAddStr 10 4 "Are you buying or selling?"
+	    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+	    GX_Marketplace_Merchant
+	    case "$MERCHANTVAR" in
+		b | B ) local TODO ;; # Add buying logic (from grocer
+		s | S ) local TODO ;; # Add selling logic (more or less equiv.)
+	    esac    
 	fi
 	tput rc
     done
@@ -1423,12 +1400,12 @@ Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of units are set in WorldPriceFixing()
     while (true); do
 	GX_Marketplace_Grocer
-    tput sc # save cursor position
-    tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-    echo "1 FOOD costs $PRICE_FxG Gold"
-    tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-    echo "or $PRICE_FxT Tobacco.\""
-    tput rc # restore cursor position
+	tput sc # save cursor position
+	tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+	echo "1 FOOD costs $PRICE_FxG Gold"
+	tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
+	echo "or $PRICE_FxT Tobacco.\""
+	tput rc # restore cursor position
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
 	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR 2>&1
@@ -1491,7 +1468,6 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
     # TODO may be it shold be renamed to smth more understandable? #kstn
     # Food check # TODO add it to Rest() after finishing
     # TODO not check for food at the 1st turn ???
-    # TODO set check to death from starvation
     # TODO Tavern also should reset STARVATION and restore starvation penalties if any
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
@@ -1522,7 +1498,6 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
 		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
 	    esac
 	fi
-	# ADD CHECK HERE IF HEALTH <= 0 then "You have starved to death" sleep 2 && death..
 	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death # 
     fi
     sleep 2 ### DEBUG
@@ -1544,12 +1519,12 @@ NewSector() { # Used in Intro()
 	    unset NODICE 
 	else
 	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
-	    CheckForDeath && break # If player was slain in fight mode
+#	    CheckForDeath && break # If player was slain in fight mode
 	    GX_Place "$SCENARIO"
 	fi
 
 	CheckForStarvation # Food check
-	CheckForDeath && break # If player was starved to death
+#	CheckForDeath && break # If player was starved to death
 	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
 	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
 
@@ -1563,8 +1538,8 @@ NewSector() { # Used in Intro()
 
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest;                   # Player may be attacked during the rest :)
-		    CheckForDeath && break 2 ;; # If player was slain during the rest
+		r | R ) Rest  "$SCENARIO";      # Player may be attacked during the rest :)
+#		    CheckForDeath && break 2 ;; # If player was slain during the rest
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;

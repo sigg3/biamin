@@ -1543,16 +1543,7 @@ NewSector() { # Used in Intro()
 	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
 	    unset NODICE 
 	else
-	    RollDice 100        # Find out if we're attacked 
-	    case "$SCENARIO" in # FightMode() if RollForEvent return 0
-		H ) RollForEvent 1  "fight" && FightMode ;;
-		x ) RollForEvent 50 "fight" && FightMode ;;
-		. ) RollForEvent 20 "fight" && FightMode ;;
-		T ) RollForEvent 15 "fight" && FightMode ;;
-		@ ) RollForEvent 35 "fight" && FightMode ;;
-		C ) RollForEvent 10 "fight" && FightMode ;;
-		* ) CustomMapError ;;
-	    esac
+	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
 	    CheckForDeath && break # If player was slain in fight mode
 	    GX_Place "$SCENARIO"
 	fi

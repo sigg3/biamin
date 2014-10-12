@@ -2,11 +2,31 @@
 #                              Fight loop                              #
 #                                                                      #
 
-FightMode() {	  # FIGHT MODE! (secondary loop for fights)
-                        # Used in NewSector() and Rest()
+CheckForFight() {
+    RollDice 100        # Find out if we're attacked 
+    case "$1" in        # FightMode() if RollForEvent return 0
+	H ) RollForEvent 1  "fight" && FightMode ;;
+	x ) RollForEvent 50 "fight" && FightMode ;;
+	. ) RollForEvent 20 "fight" && FightMode ;;
+	T ) RollForEvent 15 "fight" && FightMode ;;
+	@ ) RollForEvent 35 "fight" && FightMode ;;
+	C ) RollForEvent 10 "fight" && FightMode ;;
+	* ) CustomMapError ;;
+    esac
+}
+
+# FIGHT MODE! (secondary loop for fights)
+FightMode() {	# Used in NewSector() and Rest()
+
+    ########################################################################
+    # Set variables
+
     local LUCK=0        # Used to assess the match in terms of EXP..
     FIGHTMODE=1	        # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
     local PICKPOCKET=0  # Flag for succesful pickpocket
+
+    ########################################################################
+    # Define enemy
 
     RollDice 100 # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
     case "$SCENARIO" in
@@ -68,6 +88,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	esac
     fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 
+    ########################################################################
+    # Add bonuses
+
     # Adjustments for items
     (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
     (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
@@ -77,7 +100,9 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     GX_Monster_$ENEMY
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
 
+    ########################################################################
     # DETERMINE INITIATIVE (will usually be enemy)
+
     if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
@@ -117,8 +142,12 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
     fi
     sleep 1
 
+    ########################################################################
+    # Remove bonuses
     (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
 
+
+    ########################################################################
     # GAME LOOP: FIGHT LOOP
     while (( FIGHTMODE > 0 )) # If player didn't manage to run
     do
@@ -229,6 +258,8 @@ FightMode() {	  # FIGHT MODE! (secondary loop for fights)
 	fi
     done
     # FIGHT LOOP ends
+
+    ########################################################################
     # After the figthing 
     if (( DEATH != 1 )) ; then   # VICTORY!
 	GX_Monster_$ENEMY

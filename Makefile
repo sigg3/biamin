@@ -1,5 +1,5 @@
 NAME = biamin.sh
-FILES = FightMode.sh functions.sh
+FILES = gfx.sh FightMode.sh functions.sh
 RUNTIME = runtime.sh
 HEADER = header.sh
 all: ${FILES}

@@ -198,6 +198,46 @@ FightMode_EnemyTurn() {
     fi
 }
 
+FightMode_CheckForDeath() {
+    if ((CHAR_HEALTH <= 0)); then # If player is dead
+	echo "Your health points are $CHAR_HEALTH" && sleep 2
+	echo "You WERE KILLED by the $ENEMY, and now you are dead..." && sleep 2
+	if ((CHAR_EXP >= 1000)) && ((CHAR_HEALTH > -15)); then
+	    ((CHAR_HEALTH += 20))
+	    echo "However, your $CHAR_EXP Experience Points relates that you have"
+	    echo "learned many wondrous and magical things in your travels..!"
+	    echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
+	elif ((CHAR_ITEMS >= 3)) && ((CHAR_HEALTH > -5)); then
+	    ((CHAR_HEALTH += 5))
+	    echo "Suddenly you awake again, SAVED by your Guardian Angel!"
+	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
+	else # DEATH!
+	    echo "Gain 1000 Experience Points to achieve magic healing!"
+	    sleep 4		
+	    Death # Moved to separate function because we will also need it in check-for-starvation
+	fi
+	LUCK=2
+	sleep 8
+    fi
+}
+
+FightMode_CheckForExp() {
+    case "$LUCK" in
+	1)  # ENEMY managed to FLEE
+	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
+	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
+	2)  # died but saved by guardian angel or 1000 EXP
+	    echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
+	3)  # PLAYER managed to FLEE during fight!
+	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
+	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
+	*)  # ENEMY was slain!
+	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!\n" 
+	    ((CHAR_EXP += EN_DEFEATED_EXP))
+	    ((CHAR_KILLS++))
+    esac
+}
+
 # FIGHT MODE! (secondary loop for fights)
 FightMode() {	# Used in NewSector() and Rest()
 
@@ -239,45 +279,14 @@ FightMode() {	# Used in NewSector() and Rest()
 
     ########################################################################
     # After the figthing 
+    FightMode_CheckForDeath
 
-    # FightMode_CheckForDeath
-    if ((CHAR_HEALTH <= 0)); then # If player is dead
-	echo "Your health points are $CHAR_HEALTH" && sleep 2
-	echo "You WERE KILLED by the $ENEMY, and now you are dead..." && sleep 2
-	if ((CHAR_EXP >= 1000)) && ((CHAR_HEALTH > -15)); then
-	    ((CHAR_HEALTH += 20))
-	    echo "However, your $CHAR_EXP Experience Points relates that you have"
-	    echo "learned many wondrous and magical things in your travels..!"
-	    echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
-	elif ((CHAR_ITEMS >= 3)) && ((CHAR_HEALTH > -5)); then
-	    ((CHAR_HEALTH += 5))
-	    echo "Suddenly you awake again, SAVED by your Guardian Angel!"
-	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
-	else # DEATH!
-	    echo "Gain 1000 Experience Points to achieve magic healing!"
-	    sleep 4		
-	    Death # Moved to separate function because we will also need it in check-for-starvation
-	fi
-	LUCK=2
-	sleep 8
-    fi
-
-    # FightMode_CheckForExp
     GX_Monster_$ENEMY
-    case "$LUCK" in
-	1)  # ENEMY managed to FLEE
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
-	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
-	2)  # died but saved by guardian angel or 1000 EXP
-	    echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
-	3)  # PLAYER managed to FLEE during fight!
-	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
-	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
-	*)  # ENEMY was slain!
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!\n" 
-	    ((CHAR_EXP += EN_DEFEATED_EXP))
-	    ((CHAR_KILLS++))
-	    if ((PICKPOCKET == 0)); then # Check for loot 
+    FightMode_CheckForExp
+    # FightMode_CheckForPickpocket
+    case "$PICKPOCKET" in # check for stealing
+	0 ) # no pickpocketing was
+	    if ((LUCK == 0)); then # Only if $ENEMY was slain
 		echo -n "Searching the dead ${ENEMY}'s corpse, you find "
 		if (( $(bc <<< "($EN_GOLD + $EN_TOBACCO) == 0") )) ; then
 		    echo "mostly just lint .."
@@ -286,14 +295,7 @@ FightMode() {	# Used in NewSector() and Rest()
 		    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"
 		    echo "$EN_GOLD gold and $EN_TOBACCO tobacco"			
 		fi
-	    fi
-	    (( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD") ;;
-	# TODO check for boar's tusks etc (3.0)
-    esac
-    # FightMode_CheckForPickpocket
-    case "$PICKPOCKET" in # check for stealing
-	0 ) 
-	    ;;
+	    fi ;;
 	1 ) # loot and EXP
 	    echo -n "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
 	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) ;
@@ -308,6 +310,13 @@ FightMode() {	# Used in NewSector() and Rest()
 	    echo -n "gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing" ;
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
     esac
+    # FightMode_CheckForLoot
+    if ((LUCK == 0)); then # Only if $ENEMY was slain
+	(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
+	# TODO check for boar's tusks etc (3.0)
+    fi
+
+
     ((CHAR_BATTLES++))
     SaveCurrentSheet
     sleep 6

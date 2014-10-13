@@ -1,5 +1,3 @@
-
-
 ########################################################################
 #                                                                      #
 #                          1. FUNCTIONS                                #
@@ -1080,10 +1078,6 @@ GX_Place() {     # Used in NewSector() and MapNav()
     esac
 }   # Return to NewSector() or MapNav()
 
-
-# Deprecated !
-CheckForDeath() { (( DEATH == 1 )) && unset DEATH && CleanUp ;} # Used in NewSector()
-
 DiceGameCompetition() {
     case "$1" in # DGAME_COMP
 	2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
@@ -1519,12 +1513,10 @@ NewSector() { # Used in Intro()
 	    unset NODICE 
 	else
 	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
-#	    CheckForDeath && break # If player was slain in fight mode
 	    GX_Place "$SCENARIO"
 	fi
 
 	CheckForStarvation # Food check
-#	CheckForDeath && break # If player was starved to death
 	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
 	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
 
@@ -1639,3 +1631,4 @@ CreateBiaminLauncher() {
 #                                                                      #
 #                                                                      #
 ########################################################################
+

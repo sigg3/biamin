@@ -25,23 +25,37 @@ CheckForFight() {
 # Reset FightMode flags to default
 # $FIGHTMODE: FightMode flag. Also used in CleanUp()'s penaly for exit 
 # during battle
-#  0 - PLAYER is not fighting now
-#  1 - PLAYER is fighting now
+#	0 - PLAYER is not fighting now
+#	1 - PLAYER is fighting now
+# $NEXT_TURN: Which turn is now
+#	"en" - ENEMY
+#	"pl" - PLAYER
 # $LUCK: how many EXP player will get for this battle
-#  0 - ENEMY was slain
-#  1 - ENEMY managed to FLEE 
-#  2 - PLAYER died but saved by guardian angel or 1000 EXP
-#  3 - PLAYER managed to FLEE during fight!
+#	0 - ENEMY was slain
+#	1 - ENEMY managed to FLEE 
+#	2 - PLAYER died but saved by guardian angel or 1000 EXP
+#	3 - PLAYER managed to FLEE during fight!
 # $PICKPOCKET: how many GOLD, TOBACCO and EXP for pickpocketing player 
 # will get for this battle
-#  0 - no pickpocketing was
-#  1 - successful pickpocketing with loot ($EN_PICKPOCKET_EXP + loot)
-#  1 - successful pickpocketing without loot (only $EN_PICKPOCKET_EXP)
+#	0 - no pickpocketing was
+#	1 - successful pickpocketing with loot ($EN_PICKPOCKET_EXP + loot)
+#	1 - successful pickpocketing without loot (only $EN_PICKPOCKET_EXP)
 #-----------------------------------------------------------------------
 FightMode_ResetFlags() {
-    FIGHTMODE=1	  # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
-    LUCK=0        # Flag for fight results
-    PICKPOCKET=0  # Flag for pickpocketing results
+    FIGHTMODE=1	  
+    NEXT_TURN="pl"
+    LUCK=0        
+    PICKPOCKET=0  
+}
+
+FightMode_AddBonuses() {
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
+    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
+    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+}
+ 
+FightMode_RemoveBonuses() {
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
 }
 
 FightMode_DefineEnemy() {
@@ -315,11 +329,11 @@ FightMode_CheckForPickpocket() {
 #-----------------------------------------------------------------------
 # FightMode_CheckForLoot()
 # Check which loot player will take from this enemy 
+# TODO: check for boar's tusks etc (3.0)
 #-----------------------------------------------------------------------
 FightMode_CheckForLoot() {
     if ((LUCK == 0)); then # Only if $ENEMY was slain
 	(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
-	# TODO check for boar's tusks etc (3.0)
     fi
 }
 
@@ -328,27 +342,11 @@ FightMode_CheckForLoot() {
 # Main fight loop.
 #-----------------------------------------------------------------------
 FightMode() {	# Used in NewSector() and Rest()
-    ########################################################################
-    FightMode_ResetFlags
-
-
-    ########################################################################
-    FightMode_DefineEnemy # Define enemy
-
-    ########################################################################
-    # Add bonuses
-
-    # Adjustments for items
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
-    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
-    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
-    ########################################################################    
-    FightMode_DefineInitiative # DETERMINE INITIATIVE (will usually be enemy)
-
-    ########################################################################
-    # Remove bonuses
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
-
+    FightMode_ResetFlags	# Reset all FightMode flags to default
+    FightMode_DefineEnemy       # Define enemy for this battle
+    FightMode_AddBonuses        # Adjustments for items
+    FightMode_DefineInitiative  # DETERMINE INITIATIVE (will usually be enemy)
+    FightMode_RemoveBonuses     # Remove bonuses
     ########################################################################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightTable	                                                        # Display enemy GX, player and enemy abilities

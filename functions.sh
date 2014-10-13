@@ -526,17 +526,13 @@ RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
 
 ## GAME FUNCTIONS: ITEMS IN LOOP
 ItemWasFound() { # Used in NewSector()
+    GX_Item "$CHAR_ITEMS"	# Defined in GX_Item.sh
     case "$CHAR_ITEMS" in
-	0 ) GX_Item0 ;;				# Gift of Sight (set in MapNav)
-	1 ) (( HEALING++ )) && GX_Item1 ;;	# Emerald of Narcolepsy (set now & setup)
-	2 ) GX_Item2 ;;				# Guardian Angel (set in battle loop)
-	3 ) (( FLEE++ )) && GX_Item3 ;;         # Fast Magic Boots (set now & setup)
-	4 ) GX_Item4 ;;				# Quick Rabbit Reaction (set in battle loop)
-	5 ) GX_Item5 ;;				# Flask of Terrible Odour (set in battle loop)
-	6 ) (( STRENGTH++ )) && GX_Item6 ;;	# Two-Handed Broadsword	(set now & setup)
-	7 ) (( ACCURACY++ )) && GX_Item7 ;;	# Steady Hand Brew (set now & setup)
+	1 ) (( HEALING++ )) ;;	# Emerald of Narcolepsy (set now & setup)
+	3 ) (( FLEE++ )) ;;     # Fast Magic Boots (set now & setup)
+	6 ) (( STRENGTH++ )) ;;	# Two-Handed Broadsword	(set now & setup)
+	7 ) (( ACCURACY++ )) ;; # Steady Hand Brew (set now & setup)
     esac
-
     local COUNTDOWN=180
     while (( COUNTDOWN > 0 )); do
 	echo -en "${CLEAR_LINE}                      Press any letter to continue  ($COUNTDOWN)"

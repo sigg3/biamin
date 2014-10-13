@@ -45,10 +45,11 @@ MakePrompt() { # Make centered to 79px promt from $@. Arguments should be separa
 CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"
-    [[ "$FIGHTMODE" ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
-    	CHAR_HEALTH=$(( CHAR_HEALTH-20 )) ;
-    	CHAR_EXP=$(( CHAR_EXP-20 )) ;
-    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
+    if [[ "$FIGHTMODE" ]]; then #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
+	((CHAR_HEALTH -= 20))
+    	((CHAR_EXP -=20))
+    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP"
+    fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
     exit 0
@@ -1094,7 +1095,7 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 		DiceGameCompetition $DGAME_RESULT # Chances of any player picking the resulting number
 		
 		while (( DGAME_COMPETITION >= 1 )) ; do
-			RollDice 100 # bugfix
+		    RollDice 100 # bugfix
 		    (( DICE <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
 		    (( DGAME_COMPETITION-- ))
 		done
@@ -1179,7 +1180,8 @@ Marketplace() { # Used in GoIntoTown()
     done
     # IDEA? Add stealing from market??? 
     # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-    # Or he call the police (the guards?) and they throw player from town? (kstn) # We're getting way ahead of ourselves:) Let's just make what we have work first:)
+    # Or he call the police (the guards?) and they throw player from town? (kstn) 
+    # We're getting way ahead of ourselves:) Let's just make what we have work first:)
 } # Return to GoIntoTown()
 
 Marketplace_Merchant_PriceFixing() {

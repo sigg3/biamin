@@ -48,14 +48,18 @@ FightMode_ResetFlags() {
     PICKPOCKET=0  
 }
 
+#-----------------------------------------------------------------------
+# FightMode_AddBonuses()
+# Set fight bonuses from magick items
+# IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+#-----------------------------------------------------------------------
 FightMode_AddBonuses() {
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
-    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
-    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+    HaveItem "$QUICK_RABBIT_REACTION"   && ((ACCURACY++))
+    HaveItem "$FLASK_OF_TERRIBLE_ODOUR" && ((EN_FLEE++))    
 }
  
 FightMode_RemoveBonuses() {
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
+    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting...
 }
 
 FightMode_DefineEnemy() {

@@ -287,7 +287,7 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     SHORTNAME=$(Capitalize "$CHAR") # Create capitalized FIGHT CHAR name
     (( TURN == 0 )) && TodaysDate # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
-    (( CHAR_ITEMS < 8 )) && HotzonesDistribute # Place items randomly in map
+    HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
     # Create strings for economical situation..
     VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
@@ -495,22 +495,6 @@ LoadGame() { # Used in MainMenu()
     CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${FILES[$NUM]}" );
 }   # return to MainMenu()
 
-# GAME ITEMS
-HotzonesDistribute() { # Used in Intro() and ItemWasFound()
-    # Scatters special items across the map
-    local MAP_X MAP_Y
-    read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
-    MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
-    local ITEMS_2_SCATTER=$(( 8 - CHAR_ITEMS ))
-    declare -a HOTZONE=() # Reset HOTZONE and declare as array (can speed up operations)
-    while (( ITEMS_2_SCATTER > 0 )) ; do
-	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)                          # Randomize ITEM_Y and ITEM_X 
-	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
-	[[ $(grep -E "(^| )$ITEM_X-$ITEM_Y( |$)" <<< "${HOTZONE[@]}") ]] && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
-	HOTZONE[((--ITEMS_2_SCATTER))]="$ITEM_X-$ITEM_Y" # --ITEMS_2_SCATTER, then init ${HOTZONE[ITEMS_2_SCATTER]},
-	# --ITEMS_2_SCATTER - because array starts from ${HOTZONE[0]} #kstn
-    done
-}
 
 ################### GAME SYSTEM #################
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
@@ -524,25 +508,6 @@ RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
 
 RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
 
-## GAME FUNCTIONS: ITEMS IN LOOP
-ItemWasFound() { # Used in NewSector()
-    GX_Item "$CHAR_ITEMS"	# Defined in GX_Item.sh
-    case "$CHAR_ITEMS" in
-	1 ) (( HEALING++ )) ;;	# Emerald of Narcolepsy (set now & setup)
-	3 ) (( FLEE++ )) ;;     # Fast Magic Boots (set now & setup)
-	6 ) (( STRENGTH++ )) ;;	# Two-Handed Broadsword	(set now & setup)
-	7 ) (( ACCURACY++ )) ;; # Steady Hand Brew (set now & setup)
-    esac
-    local COUNTDOWN=180
-    while (( COUNTDOWN > 0 )); do
-	echo -en "${CLEAR_LINE}                      Press any letter to continue  ($COUNTDOWN)"
-	read -sn 1 -t 1 && break || ((COUNTDOWN--))
-    done
-    # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feature
-    (( ++CHAR_ITEMS < 8 )) && HotzonesDistribute # Increase CHAR_ITEMS , THEN check (( CHAR_ITEMS < 8 ))
-    SaveCurrentSheet # Save CHARSHEET items
-    NODICE=1         # No fighting if item is found..
-}   # Return to NewSector()
 
 ## GAME ACTION: MAP + MOVE
 MapNav() { # Used in NewSector()
@@ -1437,12 +1402,10 @@ NewSector() { # Used in Intro()
 	((TURN++)) # Nev turn, new date
 	DateFromTurn # Get year, month, day, weekday
 	# Find out where we are - Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
-	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
+	read -r MAP_X MAP_Y <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
 	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" ) # MAP_Y+2 MAP_X+2 - padding for borders
-	# Look for treasure @ current GPS location  - Checks current section for treasure
-	(( CHAR_ITEMS < 8 )) && [[ $(grep -E "(^| )$MAP_X-$MAP_Y( |$)" <<< "${HOTZONE[@]}") ]] && ItemWasFound
-
+	CheckForItem $MAP_X $MAP_Y # Look for treasure @ current GPS location  - Checks current section for treasure
 	GX_Place "$SCENARIO"	
 	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
 	    unset NODICE 
@@ -1465,8 +1428,7 @@ NewSector() { # Used in Intro()
 
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest  "$SCENARIO";;      # Player may be attacked during the rest :)
-#		    CheckForDeath && break 2 ;; # If player was slain during the rest
+		r | R ) Rest  "$SCENARIO";;     # Player may be attacked during the rest :)
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;

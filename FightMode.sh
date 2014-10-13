@@ -1,7 +1,12 @@
 ########################################################################
-#                              Fight loop                              #
-#                                                                      #
+#                              Fight mode                              #
+#                      (secondary loop for fights)                     #
 
+#-----------------------------------------------------------------------
+# CheckForFight()
+# Calls FightMode if player is attacked at current scenario or returns 0
+# Arguments : $SCENARIO (char)
+#-----------------------------------------------------------------------
 CheckForFight() {
     RollDice 100        # Find out if we're attacked 
     case "$1" in        # FightMode() if RollForEvent return 0
@@ -15,12 +20,29 @@ CheckForFight() {
     esac
 }
 
-FightTable() {  # Used in FightMode()
-    GX_Monster_"$ENEMY"
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
-}   # Return to FightMode()
-
+#-----------------------------------------------------------------------
+# FightMode_ResetFlags()
+# Reset FightMode flags to default
+# $FIGHTMODE: FightMode flag. Also used in CleanUp()'s penaly for exit 
+# during battle
+#  0 - PLAYER is not fighting now
+#  1 - PLAYER is fighting now
+# $LUCK: how many EXP player will get for this battle
+#  0 - ENEMY was slain
+#  1 - ENEMY managed to FLEE 
+#  2 - PLAYER died but saved by guardian angel or 1000 EXP
+#  3 - PLAYER managed to FLEE during fight!
+# $PICKPOCKET: how many GOLD, TOBACCO and EXP for pickpocketing player 
+# will get for this battle
+#  0 - no pickpocketing was
+#  1 - successful pickpocketing with loot ($EN_PICKPOCKET_EXP + loot)
+#  1 - successful pickpocketing without loot (only $EN_PICKPOCKET_EXP)
+#-----------------------------------------------------------------------
+FightMode_ResetFlags() {
+    FIGHTMODE=1	  # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
+    LUCK=0        # Flag for fight results
+    PICKPOCKET=0  # Flag for pickpocketing results
+}
 
 FightMode_DefineEnemy() {
     RollDice 100 # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
@@ -126,6 +148,17 @@ FightMode_DefineInitiative() {
     sleep 2
 }
 
+#-----------------------------------------------------------------------
+# FightTable()
+# Display enemy's GX, player and enemy abilities
+#-----------------------------------------------------------------------
+FightTable() {  # Used in FightMode()
+    GX_Monster_"$ENEMY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
+}
+
+
 FightMode_CharTurn() {
     read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT" 2>&1
     RollDice 6
@@ -221,8 +254,13 @@ FightMode_CheckForDeath() {
     fi
 }
 
+#-----------------------------------------------------------------------
+# FightMode_CheckForExp()
+# Define how many EXP player will get for this battle
+# Arguments: $LUCK(int)
+#-----------------------------------------------------------------------
 FightMode_CheckForExp() {
-    case "$LUCK" in
+    case "$1" in
 	1)  # ENEMY managed to FLEE
 	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
@@ -236,55 +274,17 @@ FightMode_CheckForExp() {
 	    ((CHAR_EXP += EN_DEFEATED_EXP))
 	    ((CHAR_KILLS++))
     esac
+    ((CHAR_BATTLES++))		# At any case increase CHAR_BATTLES
 }
 
-# FIGHT MODE! (secondary loop for fights)
-FightMode() {	# Used in NewSector() and Rest()
-
-    ########################################################################
-    # Set variables
-
-    LUCK=0        # Used to assess the match in terms of EXP..
-    FIGHTMODE=1	  # Anti-cheat bugfix for CleanUp: Adds penalty for CTRL+C during fights!
-    PICKPOCKET=0  # Flag for succesful pickpocket
-
-    ########################################################################
-    FightMode_DefineEnemy # Define enemy
-
-    ########################################################################
-    # Add bonuses
-
-    # Adjustments for items
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
-    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
-    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
-    ########################################################################    
-    FightMode_DefineInitiative # DETERMINE INITIATIVE (will usually be enemy)
-
-    ########################################################################
-    # Remove bonuses
-    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
-
-    ########################################################################
-    # GAME LOOP: FIGHT LOOP
-    while ((FIGHTMODE)); do  # If player didn't manage to run
-	FightTable
-	#   Initiatife             ? Player's turn        :  Enemy's turn
-	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn
-	((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) && unset FIGHTMODE  # Exit loop if player or enemy is dead
-	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl" # Change initiative
-	sleep 2
-    done
-    # FIGHT LOOP ends
-
-    ########################################################################
-    # After the figthing 
-    FightMode_CheckForDeath
-
-    GX_Monster_$ENEMY
-    FightMode_CheckForExp
-    # FightMode_CheckForPickpocket
-    case "$PICKPOCKET" in # check for stealing
+#-----------------------------------------------------------------------
+# FightMode_CheckForPickpocket()
+# Check how many GOLD, TOBACCO and EXP for pickpocketing player wil get
+# for this battle
+# Arguments: $PICKPOCKET(int)
+#-----------------------------------------------------------------------
+FightMode_CheckForPickpocket() {
+    case "$1" in 
 	0 ) # no pickpocketing was
 	    if ((LUCK == 0)); then # Only if $ENEMY was slain
 		echo -n "Searching the dead ${ENEMY}'s corpse, you find "
@@ -310,18 +310,63 @@ FightMode() {	# Used in NewSector() and Rest()
 	    echo -n "gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing" ;
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
     esac
-    # FightMode_CheckForLoot
+}
+
+#-----------------------------------------------------------------------
+# FightMode_CheckForLoot()
+# Check which loot player will take from this enemy 
+#-----------------------------------------------------------------------
+FightMode_CheckForLoot() {
     if ((LUCK == 0)); then # Only if $ENEMY was slain
 	(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
 	# TODO check for boar's tusks etc (3.0)
     fi
+}
+
+#-----------------------------------------------------------------------
+# FightMode()
+# Main fight loop.
+#-----------------------------------------------------------------------
+FightMode() {	# Used in NewSector() and Rest()
+    ########################################################################
+    FightMode_ResetFlags
 
 
-    ((CHAR_BATTLES++))
+    ########################################################################
+    FightMode_DefineEnemy # Define enemy
+
+    ########################################################################
+    # Add bonuses
+
+    # Adjustments for items
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY++ )) # item4: Quick Rabbit Reaction
+    (( CHAR_ITEMS > 4 )) && (( EN_FLEE++ ))  # item5: Flask of Terrible Odour
+    # IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+    ########################################################################    
+    FightMode_DefineInitiative # DETERMINE INITIATIVE (will usually be enemy)
+
+    ########################################################################
+    # Remove bonuses
+    (( CHAR_ITEMS > 3 )) && (( ACCURACY--)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting.. # I was wrong about bug here :( #kstn
+
+    ########################################################################
+    while ((FIGHTMODE)); do                                                     # If player didn't manage to run
+	FightTable	                                                        # Display enemy GX, player and enemy abilities
+	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is
+	((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) && unset FIGHTMODE           # Exit loop if player or enemy is dead
+	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          # Change initiative
+	sleep 2
+    done
+    ########################################################################
+    FightMode_CheckForDeath	               # Check if player is alive
+    GX_Monster_$ENEMY		               # Display enemy GX last time
+    FightMode_CheckForExp "$LUCK"	       # 
+    FightMode_CheckForPickpocket "$PICKPOCKET" # 
+    FightMode_CheckForLoot	               # 
     SaveCurrentSheet
     sleep 6
     DisplayCharsheet
-}   # END FightMode. Return to NewSector() or to Rest()
+}   # Return to NewSector() or to Rest()
 
 #                                                                      #
 #                                                                      #

@@ -1538,7 +1538,7 @@ NewSector() { # Used in Intro()
 
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest  "$SCENARIO";      # Player may be attacked during the rest :)
+		r | R ) Rest  "$SCENARIO";;      # Player may be attacked during the rest :)
 #		    CheckForDeath && break 2 ;; # If player was slain during the rest
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;

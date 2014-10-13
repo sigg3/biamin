@@ -298,67 +298,6 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     NewSector
 }
 
-DateFromTurn() { # Some vars used in Almanac(
-    # Find out which YEAR we're in
-    YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
-    local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" )           # month and days
-    (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
-    (( YEAR > 99 )) && YEAR=$( bc <<< "$YEAR % 100" ) # FIX for year > 100
-    # # Determine Century, used in Almanac() calculations
-    # # The thought was originally: century, cycle, age.. Table it for now
-    CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
-#    YEAR=$(Ordial "$YEAR") # Add year postfix
-    # Find out which MONTH we're in
-    for ((i=1; i <= YEAR_MONTHES; i++)); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
-    MONTH=$(MonthString "$MONTH_NUM")
-    # Find out which DAY we're in
-    DAY_NUM=$( bc <<< "$REMAINDER - $(MonthTotalLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
-    DAY=$(Ordial "$DAY_NUM") # Add day postfix
-    # Find out which WEEKDAY we're in
-    WEEKDAY_NUM=$( bc <<< "$TURN % $WEEK_LENGTH" )
-    WEEKDAY=$(WeekdayString "$WEEKDAY_NUM")
-    # Find out which MOON cycle we're in
-    case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
-    	0 | 1 )             MOON="New Moon"         ;;
-    	2 | 3 | 4 | 5 )     MOON="Growing Crescent" ;;
-    	6 | 7 | 8 | 9 )     MOON="First Quarter"    ;;
-    	10 | 11 | 12 | 13 ) MOON="Growing Gibbous"  ;;
-    	14 | 15 | 16 | 17 ) MOON="Full Moon"        ;;
-    	18 | 19 | 20 | 21 ) MOON="Waning Gibbous"   ;;
-    	22 | 23 | 24 | 25 ) MOON="Third Quarter"    ;;
-    	26 | 27 | 28 | 29 ) MOON="Waning Crescent"  ;;
-    	* )                 MOON="Old Moon"         ;; # Same as New Moon
-    esac
-    # Output example "3rd of Year-Turn in the 13th cycle"
-    BIAMIN_DATE_STR="$DAY of $MONTH in the $(Ordial $YEAR) Cycle"
-}
-
-TurnFromDate() { # Creation() ?
-    local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
-    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    local TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE")
-    echo $TURN
-}
-
-TodaysDate() {
-    # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
-    # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
-    # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
-
-    # if [[ $CREATION == 0 ]] ; then # first run
-    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    # else
-    # just increment date, month and/or year..
-    # fi
-    # TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
-    # NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
-    
-    TODAYS_DATE=$(Ordial "$TODAYS_DATE")        # Adjust date
-    TODAYS_MONTH=$(MonthString "$TODAYS_MONTH") # Adjust month
-    TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")        # Adjust year
-    # Output example "3rd of Year-Turn in the 13th cycle"
-    TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
-}
 
 
 ## WORLD EVENT functions

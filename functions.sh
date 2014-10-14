@@ -564,7 +564,7 @@ EOF
     esac
     case "$CHARSHEET_OPT" in
 	d | D ) GX_Races && PressAnyKey ;;
-	a | A ) [[ "$ALMANAC" -eq 1 ]] && Almanac ;;
+	a | A ) ((ALMANAC)) && Almanac ;;
 	q | Q ) CleanUp ;;
     esac
 }
@@ -683,10 +683,11 @@ Almanac() { # Almanac (calendar). Used in DisplayCharsheet() #FIX_DATE !!!
     esac
 
     case "$CENTURY" in # centuries
-	100 | 500 | 900 | 1300 | 1700 )       local FICEN=4 ;; # TODO: Trim it
-	200 | 600 | 1000 | 1400 | 1800 )      local FICEN=2 ;; # This table
-	300 | 700 | 1100 | 1500 | 1900 )      local FICEN=0 ;; # is currently
-	90 | 400 | 800 | 1200 | 1600 | 2000 ) local FICEN=6 ;; # way too big :P
+         90 | 400 |  800 | 1200 | 1600 | 2000 ) local FICEN=6 ;; # way too big :P
+	100 | 500 |  900 | 1300 | 1700 )        local FICEN=4 ;; # TODO: Trim it
+	200 | 600 | 1000 | 1400 | 1800 )        local FICEN=2 ;; # This table
+	300 | 700 | 1100 | 1500 | 1900 )        local FICEN=0 ;; # is currently
+
     esac
 
     # LEGEND: d+m+y+(y/4)+c mod 7

@@ -512,7 +512,7 @@ RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
 
 ## GAME ACTION: MAP + MOVE
 MapNav() { # Used in NewSector()
-    if [[ -z "$1" ]] ; then	# If empty = toggle map (m) was pressed, else just move!
+    if [[ "$1" == "m" || "$1" == "M" ]] ; then	# If player want to see the map
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
 	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
@@ -1434,8 +1434,7 @@ NewSector() { # Used in Intro()
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;
-		m | M ) MapNav; break ;;        # Go to Map then move
-		* ) MapNav "$ACTION"; break ;;	# Move directly (if not WASD, then loitering :)
+		* ) MapNav "$ACTION"; break ;;	# Go to Map then move or move directly (if not WASD, then loitering :)
 	    esac
 	done
     done

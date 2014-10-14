@@ -288,7 +288,7 @@ FightMode_CheckForDeath() {
 	    echo "However, your $CHAR_EXP Experience Points relates that you have"
 	    echo "learned many wondrous and magical things in your travels..!"
 	    echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
-	elif ((CHAR_ITEMS >= 3)) && ((CHAR_HEALTH > -5)); then
+	elif HaveItem "$GUARDIAN_ANGEL" && ((CHAR_HEALTH > -5)); then
 	    ((CHAR_HEALTH += 5))
 	    echo "Suddenly you awake again, SAVED by your Guardian Angel!"
 	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"

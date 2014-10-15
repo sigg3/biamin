@@ -652,22 +652,15 @@ EOT
     PressAnyKey
 } # End of GX_Bulletin()
 
-
-GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dice
+#-----------------------------------------------------------------------
+# GX_DiceGame()
+# Display dices GX for MiniGame_Dice()
+# Arguments: $DGAME_DICE_1(int), $DGAME_DICE_2(int).
+#-----------------------------------------------------------------------
+GX_DiceGame() { 
     GDICE_SYM="@" # @ looks nice:)
-    DICES='                  _______________            _______________
-                 [               ].         [               ].
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 [_______________];         [_______________];
-                  `~------------~`           `~------------~`                
-                                                     '
-
     clear
-    echo "$DICES" | awk ' BEGIN { FS = "" ; OFS = ""; }
+    awk ' BEGIN { FS = "" ; OFS = ""; }
 {   # First dice
     if ('$1' == 1) { if (NR == 5) { $26 = "'$GDICE_SYM'"} } 
     if ('$1' == 2) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
@@ -700,9 +693,21 @@ GX_DiceGame() { # Used in MiniGame_Dice(). Requires: $1 - 1st dice, $2 - 2nd dic
 		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
     # Display numbers too for great justice (or readability)
     if (NR == 10) { $26 = '$1'; $53 = '$2'; }
-    print; } '
-echo "$HR"
+    print; } ' <<"EOF"
+                  _______________            _______________
+                 [               ].         [               ].
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 [_______________];         [_______________];
+                  `~------------~`           `~------------~`                
+                                                              
+EOF
+    echo "$HR"
 }   # Return to MiniGame_Dice()
+
 
 GX_DiceGame_Table() {
 	clear

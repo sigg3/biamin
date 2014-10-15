@@ -498,17 +498,28 @@ LoadGame() { # Used in MainMenu()
 
 
 ################### GAME SYSTEM #################
+#-----------------------------------------------------------------------
+# Reseed RANDOM. Needed only once at start, so moved to separate section
+case "$OSTYPE" in
+    openbsd* ) RANDOM=$(date '+%S');;
+    *)         RANDOM=$(date '+%N')
+esac
+# TODO:
+#  ? Move it to runtime section
+#  ? Make separate file with system-depended things
+#  ? Use /dev/random or /dev/urandom
+#-----------------------------------------------------------------------
+# SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
+# RANDOM=$SEED
+# Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
+#-----------------------------------------------------------------------
+
 RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
-    # SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
-    # RANDOM=$SEED
-    # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-    [ ${#OSTYPE} = 9 ] && RANDOM=$(date '+%N') || RANDOM=$(( SECONDS * 3 )) # Reseed random number generator
-    DICE=$((RANDOM%$DICE_SIZE+1))                                           # If !linux use $SECONDS * 3.
+    DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
 RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
-
 
 ## GAME ACTION: MAP + MOVE
 MapNav() { # Used in NewSector()
@@ -1277,6 +1288,7 @@ Marketplace_Merchant() {
 	    MvAddStr 8 4 "Almanac. It is only"
 	    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
 	    MvAddStr 11 4 "Go ahead! Touch it!"
+	    read -sn 1 ### DEBUG
 	else
 	    MvAddStr 4 4 "But of course! Here are my prices:"
 	    MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"

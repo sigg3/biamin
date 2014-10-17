@@ -50,8 +50,9 @@ FightMode_ResetFlags() {
 
 #-----------------------------------------------------------------------
 # FightMode_AddBonuses()
-# Set fight bonuses from magick items
-# IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+# Set fight bonuses from magick items (BEFORE 'DefineInitiative()'!)
+# IDEA: If player was attacked during the rest (at night) he and enemies
+#  can get + or - for night and moon phase here ??? (3.0)
 #-----------------------------------------------------------------------
 FightMode_AddBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION"   && ((ACCURACY++))
@@ -156,7 +157,7 @@ FightMode_DefineEnemy() {
 FightMode_DefineInitiative() {
     GX_Monster_$ENEMY
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
-    if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
+    if (( EN_ACCURACY > ACCURACY )) || ((PLAYER_RESTING)) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
 	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
@@ -295,7 +296,7 @@ FightMode_CheckForDeath() {
 	else # DEATH!
 	    echo "Gain 1000 Experience Points to achieve magic healing!"
 	    sleep 4		
-	    Death # Moved to separate function because we will also need it in check-for-starvation
+	    Death # And CleanUp
 	fi
 	LUCK=2
 	sleep 8

@@ -498,6 +498,7 @@ LoadGame() { # Used in MainMenu()
 
 
 ################### GAME SYSTEM #################
+
 #-----------------------------------------------------------------------
 # Reseed RANDOM. Needed only once at start, so moved to separate section
 case "$OSTYPE" in

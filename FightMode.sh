@@ -50,8 +50,9 @@ FightMode_ResetFlags() {
 
 #-----------------------------------------------------------------------
 # FightMode_AddBonuses()
-# Set fight bonuses from magick items
-# IDEA: If player was attacked during the rest (at night )he and enemies can get + or - for night and moon phase here ??? (3.0)
+# Set fight bonuses from magick items (BEFORE 'DefineInitiative()'!)
+# IDEA: If player was attacked during the rest (at night) he and enemies
+#  can get + or - for night and moon phase here ??? (3.0)
 #-----------------------------------------------------------------------
 FightMode_AddBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION"   && ((ACCURACY++))
@@ -154,9 +155,9 @@ FightMode_DefineEnemy() {
 }
 
 FightMode_DefineInitiative() {
-    GX_Monster_$ENEMY
+    GX_Monster "$ENEMY"
     sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
-    if (( EN_ACCURACY > ACCURACY )) || (( PLAYER_RESTING == 1 )) ; then
+    if (( EN_ACCURACY > ACCURACY )) || ((PLAYER_RESTING)) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
 	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
@@ -164,7 +165,7 @@ FightMode_DefineInitiative() {
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
-	GX_Monster_$ENEMY 
+	GX_Monster "$ENEMY" 
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
 	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
@@ -201,7 +202,7 @@ FightMode_DefineInitiative() {
 # Display enemy's GX, player and enemy abilities
 #-----------------------------------------------------------------------
 FightTable() {  # Used in FightMode()
-    GX_Monster_"$ENEMY"
+    GX_Monster "$ENEMY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
@@ -295,7 +296,7 @@ FightMode_CheckForDeath() {
 	else # DEATH!
 	    echo "Gain 1000 Experience Points to achieve magic healing!"
 	    sleep 4		
-	    Death # Moved to separate function because we will also need it in check-for-starvation
+	    Death # And CleanUp
 	fi
 	LUCK=2
 	sleep 8
@@ -391,7 +392,7 @@ FightMode() {	# Used in NewSector() and Rest()
     done
     ########################################################################
     FightMode_CheckForDeath	               # Check if player is alive
-    GX_Monster_$ENEMY		               # Display enemy GX last time
+    GX_Monster "$ENEMY"		               # Display enemy GX last time
     FightMode_CheckForExp "$LUCK"	       # 
     FightMode_CheckForPickpocket "$PICKPOCKET" # 
     FightMode_CheckForLoot	               # 

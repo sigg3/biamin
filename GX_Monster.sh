@@ -2,10 +2,15 @@
 #                           GX_Monster                                 #
 #                           (cc-version)                               #
 
-
-GX_Monster_chthulu() {
+#-----------------------------------------------------------------------
+# GX_Monster()
+# Display enemy's GX
+# Arguments: ${enemy[name]} (string)
+#-----------------------------------------------------------------------
+GX_Monster() {
     clear
-    cat <<"EOT"
+    case "$1" in
+	"chthulu" ) cat <<"EOT"
                         \ \_|\/\      ,.---.      ,/'/            \`\ 
                          \ _    \   ;'      `\   ,/ /              \ \
          T H E            \ \____\.:          \-.J  l._   ____      \`\ 
@@ -21,12 +26,8 @@ GX_Monster_chthulu() {
                           \_\_`\      `\                    `.     ,_(
                                         )                     `.   (
 EOT
-    echo "$HR"
-}
-
-GX_Monster_orc() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"orc" ) cat <<"EOT"
                                                   |\            /|
                                                   | \_.::::::._/ |
                                                    |  __ \/__   |
@@ -44,12 +45,8 @@ GX_Monster_orc() {
                                                   |____'    '____|
                                                  (______)  (______)
 EOT
-    echo "$HR"
-}
-
-GX_Monster_varg() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"varg" ) cat <<"EOT"
 
                                                      ______
                                                ____.:      :.
@@ -65,12 +62,8 @@ GX_Monster_varg() {
 
 
 EOT
-    echo "$HR"
-}
-
-GX_Monster_mage() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"mage" ) cat <<"EOT"
                                              ---.         _/""""""\
                                             (( ) )       /_____  |'
                                              \/ /       // \/  \  \
@@ -89,12 +82,8 @@ GX_Monster_mage() {
                                              ^      /               \
                                                    |        \        \
 EOT
-    echo "$HR"
-}
-
-GX_Monster_goblin() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"goblin" ) cat <<"EOT"
                                                     _______                   _
                                                    (       )/|    ===[]]]====(_)
                                                 ____0(0)    /       7 _/^
@@ -110,12 +99,8 @@ GX_Monster_goblin() {
                                              ___/  /      __|  \
                                             (_____/      (______)
 EOT
-    echo "$HR"
-}
-
-GX_Monster_bandit() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"bandit" ) cat <<"EOT"
                                                        /""""""';   ____
                                                       d = / =  |3 /1--\\
                                                  _____| _____  |_|11 ||||
@@ -131,12 +116,8 @@ GX_Monster_bandit() {
                                                 __\    \    \      )__
                                                (________)    (________)
 EOT
-    echo "$HR"
-}
-
-GX_Monster_boar() {
-    clear
-    cat <<"EOT"
+	    ;; 
+	"boar" ) cat <<"EOT"
                                 ;".  ,--~-./L-'"'"'"'"~,   
                                 |\ \/     /, | ~  ` ~   `"`~,-~~._.
                                 (_\/ _  _ \__)~   ~     ~        ~ \.
@@ -152,12 +133,8 @@ GX_Monster_boar() {
                                        [  |    ]  \     /  (       [  |
                                       /,__\   /,___\   /___%       /__7
 EOT
-    echo "$HR"
-}
-
-GX_Monster_dragon() {
-    clear
-    cat <<"EOT"
+	    ;;
+	"dragon" ) cat <<"EOT"
                                                          ,,_____.
                                                      ,~-'.------.`'~-._
                                  _,-----.._         / /""'       `7-,~-`.
@@ -174,12 +151,8 @@ GX_Monster_dragon() {
                                                    > ,_  (   `\_`,`|n-, _ ,;M;
                                                    (  C`~-\  `_ `~_/ e`n';m*7
 EOT
-    echo "$HR"
-}
-
-GX_Monster_bear() { # Cave bear, really, "bear" is just shorter:)
-clear
-cat <<"EOT"
+	    ;;
+	"bear" ) cat <<"EOT"
                                                ,--~~.._                
                                           _.,;'        `-.....__          
                                   ,..-~~^"                      `~~~~-.._       
@@ -197,12 +170,8 @@ cat <<"EOT"
                                        _,'    ;  _;  ;           :.   : `   }
                                     ,;'_..__,' .;_._}          ,,::.:-'"--~'
 EOT
-echo "$HR"
-}
-
-GX_Monster_imp() { # This imp is a whimp
-clear
-cat <<"EOT"
+	    ;;
+	"imp" ) cat <<"EOT"
 
 
                                                          __,__,         
@@ -216,10 +185,10 @@ cat <<"EOT"
 
 
 EOT
-echo "$HR"
+	    ;;
+    esac
+    echo "$HR"
 }
-
 #                                                                      #
 #                                                                      #
 ########################################################################
-

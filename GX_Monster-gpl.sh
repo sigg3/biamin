@@ -6,7 +6,6 @@
 # GX_Monster()
 # Display enemy's GX
 # Arguments: ${enemy[name]} (string)
-# TODO: center gragon, boar, bear and imp
 #-----------------------------------------------------------------------
 GX_Monster() {
     clear
@@ -36,8 +35,8 @@ EOT
                         A FIERCE MAGE STANDS IN YOUR WAY!
                      
                Before you know it, he begins his evil incantations..
-         
                           "Lorem ipsum dolor sit amet..."
+
 EOT
 	    ;;
 	"goblin" ) cat <<"EOT"
@@ -57,27 +56,30 @@ EOT
 EOT
 	    ;; 
 	"boar" ) cat <<"EOT"
-A WILD BOAR CROSSES YOUR PATH!
+                         A WILD BOAR CROSSES YOUR PATH
 
-Careful, this beast is not as peaceful as it looks.
+              Careful, this beast is not as peaceful as it looks.
 
 EOT
 	    ;;
 	"dragon" ) cat <<"EOT"
-A DRAGON SWOOPS IN!
-There is nowhere to hide or run.
-Fight for your life!
+                              A DRAGON SWOOPS IN!
+
+                       There is nowhere to hide or run.
+                             Fight for your life!
 EOT
 	    ;;
 	"bear" ) cat <<"EOT"
-SUDDENLY, A MIGHTY CAVE BEAR APPEARS
-It kicks the ground and charges. Brace yourself.
+                     SUDDENLY, A MIGHTY CAVE BEAR APPEARS
+
+               It kicks the ground and charges. Brace yourself.
 EOT
 	    ;;
 	"imp" ) cat <<"EOT"
-AN YMPE SWOOPS DOWN!
-The imp is a common nuisance for travellers.
-Luckily, they are easily defeated.
+                             AN YMPE SWOOPS DOWN!
+
+                 The imp is a common nuisance for travellers.
+                      Luckily, they are easily defeated.
 EOT
 	    ;;
     esac

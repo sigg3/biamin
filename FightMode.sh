@@ -58,9 +58,14 @@ FightMode_AddBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION"   && ((ACCURACY++))
     HaveItem "$FLASK_OF_TERRIBLE_ODOUR" && ((EN_FLEE++))    
 }
- 
+
+#-----------------------------------------------------------------------
+# FightMode_RemoveBonuses()
+# Set fight bonuses from magick items (AFTER 'DefineInitiative()' but
+# BEFORE fight loop!)
+#-----------------------------------------------------------------------
 FightMode_RemoveBonuses() {
-    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) # Reset Quick Rabbit Reaction (ACCURACY) before fighting...
+    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) 
 }
 
 FightMode_DefineEnemy() {
@@ -328,8 +333,8 @@ FightMode_CheckForExp() {
 
 #-----------------------------------------------------------------------
 # FightMode_CheckForPickpocket()
-# Check how many GOLD, TOBACCO and EXP for pickpocketing player wil get
-# for this battle
+# Check how many GOLD, TOBACCO and EXP for pickpocketing player will
+# get for this battle
 # Arguments: $PICKPOCKET(int)
 #-----------------------------------------------------------------------
 FightMode_CheckForPickpocket() {
@@ -379,10 +384,10 @@ FightMode_CheckForLoot() {
 FightMode() {	# Used in NewSector() and Rest()
     FightMode_ResetFlags	# Reset all FightMode flags to default
     FightMode_DefineEnemy       # Define enemy for this battle
-    FightMode_AddBonuses        # Adjustments for items
+    FightMode_AddBonuses        # Set adjustments for items
     FightMode_DefineInitiative  # DETERMINE INITIATIVE (will usually be enemy)
-    FightMode_RemoveBonuses     # Remove bonuses
-    ########################################################################
+    FightMode_RemoveBonuses     # Remove adjustments for items
+    ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightTable	                                                        # Display enemy GX, player and enemy abilities
 	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is

@@ -1,9 +1,9 @@
 NAME    = biamin.sh
 SHABANG = `which bash`
 HEADER  = header.sh
-CC      = gfx.sh GX_Item.sh GX_Monster.sh
+CC      = gfx.sh GX_Item.sh GX_Monster.sh GX_Places.sh
 GPL     = GX_Item-gpl.sh GX_Monster-gpl.sh
-FILES   = BiaminSetup.sh FightMode.sh Items.sh functions.sh Date.sh
+FILES   = BiaminSetup.sh FightMode.sh Items.sh functions.sh Date.sh CLI_arguments.sh
 RUNTIME = runtime.sh
 
 all:

@@ -39,7 +39,7 @@ CheckHotzones() {
 # Used in Intro() and ItemWasFound()
 #-----------------------------------------------------------------------
 HotzonesDistribute() { # 
-    (( $1 => MAX_ITEMS )) && return 0 
+    (( $1 >= MAX_ITEMS )) && return 0 
     local MAP_X MAP_Y
     read -r MAP_X MAP_Y <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}

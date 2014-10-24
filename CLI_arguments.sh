@@ -3,6 +3,51 @@
 #                                                                      #
 
 #-----------------------------------------------------------------------
+# MapCreateCustom()
+# Map template generator (CLI arg function)
+#-----------------------------------------------------------------------
+MapCreateCustom() { 
+    cat <<"EOT" > "${GAMEDIR}/CUSTOM_MAP.template"
+NAME: Despriptive name of map goes here
+CREATOR: Name of the map creator
+DESCRIPTION: Short and not exceeding 50 chars
+START LOCATION: Where person'll start?
+MAP:
+       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
+   #=========================================================================#
+ 1 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 2 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 3 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 4 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 5 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 6 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 7 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 8 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+ 9 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+10 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+11 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+12 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+13 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+14 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+15 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
+   #=========================================================================#
+          LEGEND: x = Mountain, . = Road, T = Town, @ = Forest         N
+                  H = Home (Heal Your Wounds) C = Oldburg Castle     W + E
+                                                                       S
+EOT
+    echo "Custom map template created in $GAMEDIR/CUSTOM_MAP.template"
+    echo ""
+    echo "1. Change all 'Z' symbols in map area with any of these:  x . T @ H C"
+    echo "   See the LEGEND in rename_to_CUSTOM.map file for details."
+    echo "   Home default is $START_LOCATION. Change line 16 of CONFIG or enter new HOME at runtime."
+    echo "2. Spacing must be accurate, so don't touch whitespace or add new lines."
+    echo "3. When you are done, simply rename your map file to FILENAME.map"
+    echo "Please submit bugs and feedback at <$WEBURL>"
+}
+
+
+
+#-----------------------------------------------------------------------
 # Announce()
 # Simply outputs a 160 char text you can cut & paste to social media.
 # TODO: Once date is decoupled from system date (with CREATION and

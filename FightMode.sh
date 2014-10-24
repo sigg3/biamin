@@ -354,10 +354,7 @@ FightMode_CheckForPickpocket() {
 	    echo -n "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
 	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) ;
 	    CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) ;
-	    case "$ENEMY" in
-		orc ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing an $ENEMY!" ;;
-		*   ) echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing a $ENEMY!" ;;
-	    esac
+	    echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing the ${ENEMY}!" ;
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
 	2)  # no loot but EXP
 	    echo -n "In the pouch lifted from the ${ENEMY}, you find nothing but ..." ;

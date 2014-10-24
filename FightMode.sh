@@ -6,6 +6,7 @@
 # CheckForFight()
 # Calls FightMode if player is attacked at current scenario or returns 0
 # Arguments : $SCENARIO (char)
+# Used : NewSector(), Rest()
 #-----------------------------------------------------------------------
 CheckForFight() {
     RollDice 100        # Find out if we're attacked 
@@ -156,7 +157,8 @@ FightMode_DefineEnemy() {
 	    dragon )  EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.25" ) ;; # max 10 days, min 1 day    (doesn't taste good, but works)
 	    bear )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.4"  ) ;; # max    days, min   day    (is considered gourmet by some)
 	esac
-    fi # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
+    fi
+    # IDEA: Boars might have tusks, dragon teeth and varg pelts (skin) you can sell at the market. (3.0)
 }
 
 FightMode_DefineInitiative() {
@@ -387,10 +389,10 @@ FightMode() {	# Used in NewSector() and Rest()
     ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightTable	                                                        # Display enemy GX, player and enemy abilities
-	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is
+	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
 	((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) && unset FIGHTMODE           # Exit loop if player or enemy is dead
-	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          # Change initiative
-	sleep 2
+	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
+	sleep 2			                                                #  after pause
     done
     ########################################################################
     FightMode_CheckForDeath	               # Check if player is alive
@@ -401,8 +403,7 @@ FightMode() {	# Used in NewSector() and Rest()
     SaveCurrentSheet
     sleep 6
     DisplayCharsheet
-}   # Return to NewSector() or to Rest()
-
+}
 #                                                                      #
 #                                                                      #
 ########################################################################

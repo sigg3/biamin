@@ -89,8 +89,9 @@ GX_HowTo() {
    inhabiting the different scenarios. Some places are safer than others.
    For more information please visit <$WEBURL>
 $HR
+                    Press any key to return to (M)ain Menu
 EOF
-    read -sn 1 -p "                    Press any key to return to (M)ain Menu" 2>&1
+    read -sn 1
 }
 
 GX_HighScore() {

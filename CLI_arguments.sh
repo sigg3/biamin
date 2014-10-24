@@ -1,13 +1,15 @@
 ########################################################################
-#                                                                      #
+#                            Parse Console Args                        #
 #                                                                      #
 
+#-----------------------------------------------------------------------
+# Announce()
+# Simply outputs a 160 char text you can cut & paste to social media.
+# TODO: Once date is decoupled from system date (with CREATION and
+# DATE), create new message. E.g.  $CHAR died $DATE having fought
+# $BATTLES ($KILLS victoriously) etc...
+#-----------------------------------------------------------------------
 Announce() {
-    # Simply outputs a 160 char text you can cut & paste to social media.
-    
-    # TODO: Once date is decoupled from system date (with CREATION and DATE), create new message. E.g.
-    # $CHAR died $DATE having fought $BATTLES ($KILLS victoriously) etc...
-
     # Die if $HIGHSCORE is empty
     [[ ! -s "$HIGHSCORE" ]] && Die "Sorry, can't do that just yet!\nThe highscore list is unfortunately empty right now."
 
@@ -18,14 +20,8 @@ Announce() {
 
     ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
 
-    case $(RollDice2 6) in
-	1 ) ADJECTIVE="honorable" ;;
-	2 ) ADJECTIVE="fearless" ;;
-	3 ) ADJECTIVE="courageos" ;;
-	4 ) ADJECTIVE="brave" ;;
-	5 ) ADJECTIVE="legendary" ;;
-	6 ) ADJECTIVE="heroic" ;;
-    esac
+    ANNOUNCE_ADJECTIVES=("honorable" "fearless" "courageos" "brave" "legendary" "heroic")
+    ADJECTIVE=${ANNOUNCE_ADJECTIVES[RANDOM%6]}
 
     ANNOUNCEMENT_TMP=$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< "$ANNOUNCEMENT_TMP"
@@ -47,7 +43,7 @@ Announce() {
     else
 	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain at the $highDATE in the $highYEAR Cycle."
     fi
-    ANNOUNCEMENT_LENGHT=$(awk '{print length($0)}' <<< "$ANNOUNCEMENT" ) 
+    ANNOUNCEMENT_LENGHT=$(Strlen "$ANNOUNCEMENT" ) 
     GX_HighScore
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"
@@ -58,6 +54,10 @@ Announce() {
     exit 0
 }
 
+#-----------------------------------------------------------------------
+# CreateBiaminLauncher()
+# Add alias for biamin in $HOME/.bashrc
+#-----------------------------------------------------------------------
 CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
@@ -71,8 +71,12 @@ CreateBiaminLauncher() {
     exit 0
 }
 
-ParseCLIarguments() {
-    # Parse CLI arguments if any # TODO use getopts ?
+#-----------------------------------------------------------------------
+# ParseCLIarguments()
+# Parse CLI arguments if any
+# TODO use getopts ?
+#-----------------------------------------------------------------------
+ParseCLIarguments() {    
     case "$1" in
 	-a | --announce )     Announce ;;
 	-i | --install ) CreateBiaminLauncher ;;
@@ -173,8 +177,6 @@ ParseCLIarguments() {
 	    exit 0;;
     esac
 }
-
-
 
 #                                                                      #
 #                                                                      #

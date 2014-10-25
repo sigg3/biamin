@@ -387,12 +387,13 @@ GX_Rest() { # Relies on GX_Moon for ASCII
     tput rc
 }
 
-
-
-
-GX_Bulletin() { # Requires $BBSMSG as arg, default val=0
-    # # Display custom message (BBSMSG)
-    case $1 in		       # MAX 35 chars per line !!!
+#-----------------------------------------------------------------------
+# GX_Bulletin()
+# Display custom message (BBSMSG)
+# Arguments: $BBSMSG (int)
+#-----------------------------------------------------------------------
+GX_Bulletin() { 
+    case $1 in # MAX 35 chars per line !!!
 	1 ) # Wild Fire Threatens Tobacco (serious)
 	    local BULLETIN=( 
 		"WILD FIRE THREATENS TOBACCO SUPPLY! "                                    

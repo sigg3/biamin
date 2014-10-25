@@ -71,13 +71,9 @@ Announce() {
     ANNOUNCEMENT_TMP=$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< "$ANNOUNCEMENT_TMP"
 
-    case "$highRACE" in
-	1 ) highRACE="Human" ;;
-	2 ) highRACE="Elf" ;;
-	3 ) highRACE="Dwarf" ;;
-	4 ) highRACE="Hobbit" ;;
-    esac
-
+    HIGH_RACES=("Human" "Elf" "Dwarf" "Hobbit")
+    highRACE=${HIGH_RACES["$highRACE"]}
+    
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
 

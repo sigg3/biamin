@@ -700,21 +700,13 @@ DiceGameCompetition() {
 }
 
 MiniGame_Dice() { # Small dice based minigame used in Tavern()
-	echo -en "${CLEAR_LINE}"
-
+#	echo -en "${CLEAR_LINE}"
 	# How many players currently at the table
 	DGAME_PLAYERS=$((RANDOM%6)) # 0-5 players
-	(( DGAME_PLAYERS == 0 )) && read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0  # leave
-	# Determine stake size
-	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # min 0.25, max 1.5
-	# Check if player can afford it
-	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then
-	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
-	    return 0 # leave
-	fi
 
 	GX_DiceGame_Table
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
+	    0 ) read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0 ;; # leave
 	    1 ) read -sn1 -p "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME 2>&1 ;;
 	    * ) read -sn1 -p "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME 2>&1 ;;	    
 	esac
@@ -722,6 +714,14 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    j | J | y | Y ) ;; # Game on! Do nothing.
 	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ; sleep 2; return 0;; # Leave.
 	esac
+
+	# Determine stake size
+	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # min 0.25, max 1.5
+	# Check if player can afford it
+	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then
+	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
+	    return 0 # leave
+	fi
 
 	GAME_ROUND=1
 	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
@@ -733,10 +733,6 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	# DICE GAME LOOP
 	while ( true ) ; do
 	    GX_DiceGame_Table
-	    if (( $(bc <<< "$CHAR_GOLD < $DGAME_STAKES") )) ; then # Check if we've still got gold for 1 stake...
-		echo "You're out of gold, $CHAR_RACE_STR. Come back when you have some more!"
-		break # if not, leave immediately		
-	    fi		
 	    read -p "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: " DGAME_GUESS 2>&1
 	    echo " " # Empty line for cosmetical purposes # TODO
 	    
@@ -823,6 +819,12 @@ MiniGame_Dice() { # Small dice based minigame used in Tavern()
 	    DGAME_POT=$( bc <<< "$DGAME_POT + $DGAME_STAKES_TOTAL" )		     # If not, the other players won't complain:)
 
 	    (( GAME_ROUND++ ))	# Increment round
+
+	    if (( $(bc <<< "$CHAR_GOLD < $DGAME_STAKES") )) ; then # Check if we've still got gold for 1 stake...
+		GX_DiceGame_Table
+		echo "You're out of gold, $CHAR_RACE_STR. Come back when you have some more!"
+		break # if not, leave immediately		
+	    fi		
 	done
 	sleep 3 # After 'break' in while-loop
 	SaveCurrentSheet

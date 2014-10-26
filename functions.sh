@@ -1108,8 +1108,13 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
     fi
     sleep 2 ### DEBUG
 }
-# THE GAME LOOP
-NewSector() { # Used in Intro()
+
+#-----------------------------------------------------------------------
+# NewSector()
+# Main game loop
+# Used in runtime section
+#-----------------------------------------------------------------------
+NewSector() { 
     while (true); do  # While (player-is-alive) :) 
 	((TURN++)) # Nev turn, new date
 	DateFromTurn # Get year, month, day, weekday
@@ -1148,26 +1153,37 @@ NewSector() { # Used in Intro()
 	    esac
 	done
     done
-}   # Return to MainMenu() (if player is dead)
+}
 
-
+#-----------------------------------------------------------------------
+# ColorConfig()
+# Define colors and escape sequences
+# Arguments: $COLOR (int)
+#-----------------------------------------------------------------------
 ColorConfig() {
-    echo -e "\nWe need to configure terminal colors for the map!
+    case "$1" in
+	1 ) echo "Enabling color for maps!" ;;
+	0 ) echo "Enabling old black-and-white version!" ;;
+	* ) echo -e "\nWe need to configure terminal colors for the map!
 Please note that a colored symbol is easier to see on the world map.
 Back in a minute was designed for white text on black background.
 Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
-    read -sn1 -p "Do you want color? [Y/N]: " COLOR_CONFIG 2>&1
-    case "$COLOR_CONFIG" in
-	n | N ) COLOR=0 ; echo -e "\nDisabling color! Edit $GAMEDIR/config to change this setting.";;
-	* )     COLOR=1 ; echo -e "\nEnabling color!" ;;
+	    read -sn1 -p "Do you want color? [Y/N]: " COLOR_CONFIG 2>&1
+	    case "$COLOR_CONFIG" in
+		n | N ) COLOR=0 ; echo -e "\nDisabling color! Edit $GAMEDIR/config to change this setting.";;
+		* )     COLOR=1 ; echo -e "\nEnabling color!" ;;
+	    esac
+	    # BUG! Falls in OpenBSD. TODO replace to awk. #kstn
+	    sed -i"~" "/^COLOR:/s/^.*$/COLOR: $COLOR/g" "$GAMEDIR/config" # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
+	    sleep 2;;
     esac
-
-    # BUG! Falls in OpenBSD. TODO replace to awk. #kstn
-    sed -i"~" "/^COLOR:/s/^.*$/COLOR: $COLOR/g" "$GAMEDIR/config" # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
-    sleep 2
+    if ((COLOR == 1)) ; then
+	YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
+	RESET='\033[0m'
+    fi
+    # Define escape sequences #TODO replace to tput or similar
+    CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 }
-
-
 #                           END FUNCTIONS                              #
 #                                                                      #
 #                                                                      #

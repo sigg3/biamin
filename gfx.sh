@@ -8,41 +8,6 @@ HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ 
 
 PressAnyKey() { read -sn 1 -p "$(MakePrompt 'Press (A)ny key to continue..')" 2>&1; } # Centered "Press Any Key to continue" string
 
-GX_BiaminTitle() { # Used in GX_Banner(), GX_Credits(), GX_HowTo(), CleanUp() and License() !
-    clear
-    cat <<"EOT"
-            ______                                                     
-          (, /    )       /)     ,                    ,               
-            /---(  _   _ (/_      __     _     ___     __      _/_  _ 
-         ) / ____)(_(_(__/(__  _(_/ (_  (_(_   // (__(_/ (_(_(_(___(/_
-        (_/ (   
-EOT
-}  
-
-GX_Banner() {
-    GX_BiaminTitle
-    cat <<"EOT"
-                                                     ___________(  )_ 
-                                                    /   \      (  )  \
-                                                   /     \     |`|    \   
-                                                  /   _   \      ~ ^~  \ ~ ^~  
-                                                 /|  |.|  |\___ (     ) (     )
-                                                  |  | |  |    ( (     ) (     )
-                                             """"""";::;"""""""(    )  )    )  )
-                                                  ,::;;.        (_____) (_____)
-                                                 ,:;::;           | |     | |
-                                               ;:;:;:;            | |     | |
-                                            ,;;;;;;;,            """""  """"""
-
-                    
-          /a/ |s|i|m|p|l|e| /b/a/s/h/ |a|d|v|e|n|t|u|r|e| /g/a/m/e/
-
-              Sigg3.net (C) 2014 CC BY-NC-SA 4.0 and GNU GPL v.3
-EOT
-    echo "$HR"
-}
-
-
 
 GX_Credits() {
     GX_BiaminTitle
@@ -94,35 +59,6 @@ EOF
     read -sn 1
 }
 
-GX_HighScore() {
-    clear
-    cat <<"EOT"
-         _________     _    _ _       _                            
-        |o x o x o|   | |__| (_) __ _| |__  ___  ___ ___  _ __ ___ 
-         \_*.*.*_/    |  __  | |/ _` | '_ \/ __|/ __/ _ \| '__/ _ \
-           \-.-/      | |  | | | (_| | | | \__ \ (_| (_) | | |  __/
-           _| |_      |_|  |_|_|\__, |_| |_|___/\___\___/|_|  \___|
-          |_____|                |___/                              
-                                       Y e   H a l l e   o f   F a m e
-EOT
-    echo "$HR"
-}
-
-GX_LoadGame() {
-    clear
-    cat << "EOT"
-        ___________ 
-       (__________()   _                    _    ____                      
-       / ,,,,,,,  /   | |    ___   __ _  __| |  / ___| __ _ _ __ ___   ___ 
-      / ,,,,,,,  /    | |   / _ \ / _` |/ _` | | |  _ / _` | '_ ` _ \ / _ \
-     / ,,,,,,,  /     | |__| (_) | (_| | (_| | | |_| | (_| | | | | | |  __/
-   _/________  /      |_____\___/ \__,_|\__,_|  \____|\__,_|_| |_| |_|\___|
-  (__________(/ 
- 
-
-EOT
-    echo "$HR"
-}
 
 GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
     [[ -z "$1" ]] && local DISP=1 || local DISP="$1"

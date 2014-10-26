@@ -115,7 +115,7 @@ CreateBiaminLauncher() {
 #-----------------------------------------------------------------------
 # ParseCLIarguments()
 # Parse CLI arguments if any
-# TODO use getopts ?
+# TODO: use getopts ?
 #-----------------------------------------------------------------------
 ParseCLIarguments() {    
     case "$1" in

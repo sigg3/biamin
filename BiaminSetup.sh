@@ -191,9 +191,10 @@ BiaminSetup_MakeNewChar() {
 #-----------------------------------------------------------------------
 # BiaminSetup()
 # Gets char name and load charsheet or make new char
+# Used: runtime.sh
 # TODO: Argumens: $CHAR(string)
 #-----------------------------------------------------------------------
-BiaminSetup() { # Used in MainMenu()
+BiaminSetup() { 
     # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
     if [[ -f "$CHARSHEET" ]]; then
@@ -206,9 +207,7 @@ BiaminSetup() { # Used in MainMenu()
     BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     (( DISABLE_CHEATS == 1 )) && (( CHAR_HEALTH >= 150 )) && CHAR_HEALTH=150
-    Intro
 }
-
 #                                                                      #
 #                                                                      #
 ########################################################################

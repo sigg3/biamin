@@ -46,6 +46,12 @@ fi # TODO define here another seqences from MapNav()
 # Define escape sequences #TODO replace to tput or similar
 CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
-MainMenu       # Run main menu
+
+################################# Main game part ###############################
+MainMenu       # Run main menu (Define $CHAR)
+BiaminSetup    # Load or make new char
+Intro	       # Set world
+NewSector      # And run main game loop
+############################## Main game part ends #############################
 exit 0         # This should never happen:
                # .. but why be 'tardy when you can be tidy?

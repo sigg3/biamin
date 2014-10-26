@@ -140,10 +140,7 @@ Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
     WorldPriceFixing # Set all prices
     GX_Intro # With countdown
     NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
-    NewSector
 }
-
-
 
 ## WORLD EVENT functions
 
@@ -217,12 +214,23 @@ esac
 # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
 #-----------------------------------------------------------------------
 
-RollDice() {     # Used in RollForEvent(), RollForHealing(), etc
+#-----------------------------------------------------------------------
+# RollDice()
+# Arguments: $DICE_SIZE (int)
+# Used: RollForEvent(), RollForHealing(), etc
+#-----------------------------------------------------------------------
+RollDice() {     
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 
-RollDice2() { RollDice $1 ; echo "$DICE" ; } # Temp wrapper for RollDice()
+#-----------------------------------------------------------------------
+# RollDice()
+# Temp wrapper for RollDice()
+# Arguments: $DICE_SIZE (int)
+# Used: RollForEvent(), RollForHealing(), etc
+#-----------------------------------------------------------------------
+RollDice2() { RollDice $1 ; echo "$DICE" ; } 
 
 ## GAME ACTION: MAP + MOVE
 MapNav() { # Used in NewSector()
@@ -618,7 +626,6 @@ EchoFightFormula() { # Display Formula in Fighting. Used in FightMode()
 
 Death() { # Used in FightMode() and also should be used in check-for-starvation
     GX_Death
-    # echo " The $TODAYS_DATE_STR:"
     echo " The $BIAMIN_DATE_STR:"
     echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
     local COUNTDOWN=20
@@ -631,7 +638,6 @@ Death() { # Used in FightMode() and also should be used in check-for-starvation
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
-    #    DEATH=1 
     CleanUp
 }
 
@@ -681,18 +687,6 @@ RollForEvent() { # Used in NewSector() and Rest()
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 
-GX_Place() {     # Used in NewSector() and MapNav()
-    # Display scenario GFX and define place name for MapNav() and DisplayCharsheet()
-    case "$1" in
-	H ) GX_Home      ; PLACE="Home" ;;
-	x ) GX_Mountains ; PLACE="Mountain" ;;
-	. ) GX_Road      ; PLACE="Road" ;;
-	T ) GX_Town      ; PLACE="Town" ;;
-	@ ) GX_Forest    ; PLACE="Forest" ;;
-	C ) GX_Castle    ; PLACE="Oldburg Castle" ;;
-	Z | * ) CustomMapError;;
-    esac
-}   # Return to NewSector() or MapNav()
 
 DiceGameCompetition() {
     case "$1" in # DGAME_COMP

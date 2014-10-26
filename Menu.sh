@@ -72,9 +72,15 @@ HighscoreRead() { # Used in Announce() and HighScore()
     unset HIGHSCORE_TMP
 }
 
-PrepareLicense() { # gets licenses and concatenates into "LICENSE" in $GAMEDIR
-    # TODO add option to use wget if systen hasn't curl (Debian for instance) -kstn
-    # TODO I'm not sure. I was told to use curl because it has greater compatibility than wget..? - s3
+#----------------------------------------------------------------------
+# PrepareLicense()
+# Gets licenses and concatenates into "LICENSE" in $GAMEDIR
+# TODO: add option to use wget if systen hasn't curl (Debian for
+# instance) -kstn
+# TODO: I'm not sure. I was told to use curl because it has greater
+# compatibility than wget..? - s3
+#-----------------------------------------------------------------------
+PrepareLicense() {
     echo " Download GNU GPL Version 3 ..."
     GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
     echo " Download CC BY-NC-SA 4.0 ..."
@@ -91,9 +97,12 @@ $CC"  > "$GAMEDIR/LICENSE"
     fi
 }
 
-
-License() { # Used in Credits()
-    # Displays license if present or runs PrepareLicense && then display it..
+#-----------------------------------------------------------------------
+# License()
+# Displays license if present or runs PrepareLicense && then display it..
+# Used: Credits()
+#-----------------------------------------------------------------------
+License() {
     GX_BiaminTitle
     if [[ ! -f "$GAMEDIR/LICENSE" ]]; then
 	echo -e "\n License file currently missing in $GAMEDIR/ !"
@@ -126,30 +135,33 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     exit 0
 }
 
+#-----------------------------------------------------------------------
+# MainMenu()
+# Defines $CHAR or show misc options
+#-----------------------------------------------------------------------
 MainMenu() {
-    while (true) ; do # Forever, because we exit through CleanUp()
+    while [[ ! "$CHAR" ]] ; do # Until $CHAR is defined
 	GX_Banner 		
 	read -sn 1 -p "$(MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT 2>&1
 	case "$TOPMENU_OPT" in
-	    p | P ) GX_Banner ; 
- 		read -p " Enter character name (case sensitive): " CHAR 2>&1 ;
-		[[ "$CHAR" ]] && BiaminSetup;; # Do nothing if CHAR is empty
-	    l | L ) LoadGame && BiaminSetup;; # Do nothing if CHAR is empty
-	    h | H ) GX_HighScore ;	      # HighScore
-		echo "";
-		# Show 10 highscore entries or die if Highscore list is empty
-		[[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
-		echo "" ; # empty line TODO fix it
-		read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" 2>&1 ;;
+	    p | P ) echo -en "${CLEAR_LINE} Enter character name (case sensitive): ";
+ 		    read CHAR 2>&1 ;;
+	    l | L ) LoadGame;;
+	    h | H ) GX_HighScore ; # HighScore
+		    echo "";
+		    # Show 10 highscore entries or die if Highscore list is empty
+		    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
+		    echo "" ; # empty line TODO fix it
+		    read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" 2>&1 ;;
 	    c | C ) GX_Credits ; # Credits
-		read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT" 2>&1 ;
-		case "$CREDITS_OPT" in
-		    L | l ) License ;;
-		    H | h ) GX_HowTo ;;
-		esac ;;
+		    read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT" 2>&1 ;
+		    case "$CREDITS_OPT" in
+			L | l ) License ;;
+			H | h ) GX_HowTo ;;
+		    esac ;;
 	    q | Q ) CleanUp ;;
 	esac
-    done
+done
 }
 
 #                                                                      #

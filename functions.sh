@@ -57,13 +57,12 @@ What to do?
     read -n 1 -p "Please select 1 or 2: " MAP_CLEAN_OPTS 2>&1
     case "$MAP_CLEAN_OPTS" in
 	1 ) mv "${ERROR_MAP}" "${ERROR_MAP}.error" ;
-	    echo -e "\nCustom map file moved to ${ERROR_MAP}.error" ;
-	    sleep 4 ;;
+	    echo -e "\nCustom map file moved to ${ERROR_MAP}.error" ;;
 	2 ) rm -f "${ERROR_MAP}" ;
-	    echo -e "\nCustom map deleted!" ;
-	    sleep 4 ;;
+	    echo -e "\nCustom map deleted!" ;;
 	* ) Die "\nBad option! Quitting.." ;;
     esac
+    sleep 4
 }
 
 ### DISPLAY MAP

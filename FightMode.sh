@@ -130,7 +130,7 @@ FightMode_DefineEnemy() {
     ########################################################################
 
 
-    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightTable()
+    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightMode_FightTable()
     
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
@@ -205,33 +205,53 @@ FightMode_DefineInitiative() {
 }
 
 #-----------------------------------------------------------------------
-# FightTable()
+# FightMode_FightTable()
 # Display enemy's GX, player and enemy abilities
 #-----------------------------------------------------------------------
-FightTable() {  # Used in FightMode()
+FightMode_FightTable() {  # Used in FightMode()
     GX_Monster "$ENEMY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
 
+#-----------------------------------------------------------------------
+# FightMode_FightFormula()
+# Display Formula in Fighting
+# Arguments: $DICE_SIZE(int), $FORMULA(string), $SKILLABBREV(string)
+#-----------------------------------------------------------------------
+FightMode_FightFormula() { 
+    local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
+    (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
+    case "$FORMULA" in
+	eq )    FORMULA="= " ;;
+	gt )    FORMULA="> " ;;
+	lt )    FORMULA="< " ;;
+	ge )    FORMULA=">=" ;;
+	le )    FORMULA="<=" ;;
+	times ) FORMULA="x " ;;
+    esac   
+    echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( " # skill & roll
+    # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
+    # determined in the if and cases of the Fight Loop, so don't repeat here.
+}
 
 FightMode_CharTurn() {
     read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT" 2>&1
     RollDice 6
-    FightTable
+    FightMode_FightTable
     echo -n "ROLL D6: $DICE "
     case "$FIGHT_PROMPT" in
 	f | F ) # Player tries to flee!
 	    RollDice 6 	# ????? Do we need it ??? #kstn
-	    EchoFightFormula 6 le F
+	    FightMode_FightFormula 6 le F
 	    unset FIGHT_PROMPT
 	    if (( DICE <= FLEE )); then
 		(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
 		echo -n " $FLEE ) You try to flee the battle .."
 		sleep 2
-		FightTable
+		FightMode_FightTable
 		RollDice 6
-		EchoFightFormula 6 le eA
+		FightMode_FightFormula 6 le eA
 		if (( DICE <= EN_ACCURACY )); then
 		    (( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
 		    echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
@@ -271,7 +291,7 @@ FightMode_EnemyTurn() {
 	    sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	fi		
-	FightTable # If enemy didn't manage to run
+	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     echo "It's the ${ENEMY}'s turn"
     sleep 2
@@ -388,7 +408,7 @@ FightMode() {	# Used in NewSector() and Rest()
     FightMode_RemoveBonuses     # Remove adjustments for items
     ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
-	FightTable	                                                        # Display enemy GX, player and enemy abilities
+	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
 	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
 	((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) && unset FIGHTMODE           # Exit loop if player or enemy is dead
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn

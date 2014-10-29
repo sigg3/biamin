@@ -3,7 +3,7 @@ SHABANG = `which bash`
 HEADER  = header.sh
 CC      = gfx.sh GX_Item.sh GX_Monster.sh GX_Places.sh GX_Menu.sh
 GPL     = GX_Item-gpl.sh GX_Monster-gpl.sh GX_Places-gpl.sh GX_Menu-gpl.sh
-FILES   = BiaminSetup.sh FightMode.sh Items.sh functions.sh Date.sh Menu.sh CLI_arguments.sh
+FILES   = BiaminSetup.sh FightMode.sh Items.sh MiniGameDice.sh Almanac.sh functions.sh Date.sh Menu.sh CLI_arguments.sh
 RUNTIME = runtime.sh
 
 all:

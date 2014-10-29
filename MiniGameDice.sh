@@ -2,17 +2,27 @@
 #                          Dice game in tavern                         #
 #                                                                      #
 
+#-----------------------------------------------------------------------
+# $DICE_GAME_CHANCES
+# Chances (%) of any player picking the resulting number
+# Fixed, so declared as array
+# Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
+# ${DICE_GAME_CHANCES[1]} are dummy
+# TODO: find a way to declare it as constant
+#-----------------------------------------------------------------------
+# dice1+dice2    = 0        1      2 3 4 5  6  7  8  9  10 11 12 
+DICE_GAME_CHANCES=("dummy" "dummy" 3 6 9 12 14 17 14 12 9  6  3)
 
-DiceGameCompetition() {
-    case "$1" in # DGAME_COMP
-	2 | 12 ) DGAME_COMP=3 ;;  # 1/36 = 03 %
-	3 | 11 ) DGAME_COMP=6 ;;  # 2/36 = 06 % 
-	4 | 10 ) DGAME_COMP=9 ;;  # 3/36 = 09 %
-	5 | 9  ) DGAME_COMP=12 ;; # 4/36 = 12 %
-	6 | 8  ) DGAME_COMP=14 ;; # 5/36 = 14 %
-	7      ) DGAME_COMP=17 ;; # 1/6  = 17 % == 61 %
-    esac
-}
+#-----------------------------------------------------------------------
+# $DICE_GAME_WINNINGS
+# % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
+# Fixed, so declared as array
+# Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
+# ${DICE_GAME_WINNINGS[1]} are dummy
+# TODO: find a way to declare it as constant
+#-----------------------------------------------------------------------
+# dice1+dice2    =  0       1       2   3  4  5  6  7  8  9  10 11 12
+DICE_GAME_WINNINGS=("dummy" "dummy" 100 85 70 55 40 25 40 55 70 85 100)
 
 #-----------------------------------------------------------------------
 # MiniGame_Dice()
@@ -20,10 +30,7 @@ DiceGameCompetition() {
 # Used: Tavern()
 #-----------------------------------------------------------------------
 MiniGame_Dice() { 
-#	echo -en "${CLEAR_LINE}"
-	# How many players currently at the table
-	DGAME_PLAYERS=$((RANDOM%6)) # 0-5 players
-
+	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
 	GX_DiceGame_Table
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
 	    0 ) read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0 ;; # leave
@@ -31,14 +38,11 @@ MiniGame_Dice() {
 	    * ) read -sn1 -p "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" JOIN_DICE_GAME 2>&1 ;;	    
 	esac
 	case "$JOIN_DICE_GAME" in
-	    j | J | y | Y ) ;; # Game on! Do nothing.
+	    j | J | y | Y ) ;;                                  # Game on! Do nothing.
 	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ; sleep 2; return 0;; # Leave.
-	esac
-
-	# Determine stake size
-	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # min 0.25, max 1.5
-	# Check if player can afford it
-	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then
+	esac	
+	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
+	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then  # Check if player can afford it
 	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
 	    return 0 # leave
 	fi
@@ -46,9 +50,8 @@ MiniGame_Dice() {
 	GAME_ROUND=1
 	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
 	echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]" && sleep 3
-	
-	# Determine starting pot size
-	DGAME_POT=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" )
+		
+	DGAME_POT=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
 	
 	# DICE GAME LOOP
 	while ( true ) ; do
@@ -68,16 +71,14 @@ MiniGame_Dice() {
 		    break # leave immediately
 	    esac
 
-	    DiceGameCompetition $DGAME_GUESS # Determine if we're sharing the bet based on odds percentage.. # TODO. Do these calculations just once/round!
-	    
+	    DGAME_COMP=${DICE_GAME_CHANCES[$DGAME_GUESS]} # Determine if we're sharing the bet based on odds percentage.. 
+
 	    # Run that through a loop of players num and % dice..
-	    DGAME_PLAYERS_COUNTER=$DGAME_PLAYERS
 	    DGAME_COMPETITION=0
-	    while (( DGAME_PLAYERS_COUNTER > 0 )) ; do		
+	    for ((i=0; i < DGAME_PLAYERS; i++)); do
 		(( $(RollDice2 100) <= DGAME_COMP )) && (( DGAME_COMPETITION++ )) # Sharing!
-		(( DGAME_PLAYERS_COUNTER-- ))
 	    done
-	    
+
 	    # Roll the dice (pray for good luck!)
 	    echo -n "Rolling for $DGAME_GUESS ($DGAME_COMP% odds).. " && sleep 1
 	    case "$DGAME_COMPETITION" in
@@ -95,34 +96,25 @@ MiniGame_Dice() {
 	    GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2" # Display roll result graphically
 	    
 	    # Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
-	    case "$DGAME_RESULT" in
-	    2 | 12 ) DGAME_WINNINGS=$DGAME_POT ;;		       # 100%  # TODO
-	    3 | 11 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.85" ) ;; # 85%   # PLAY TEST THESE %s
-	    4 | 10 ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.70" ) ;; # 70%
-	    5 | 9  ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.55" ) ;; # 55%
-	    6 | 8  ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.40" ) ;; # 40%
-	    7      ) DGAME_WINNINGS=$( bc <<< "$DGAME_POT * 0.25" ) ;; # 25%
-	    esac
-	    
+	    DGAME_WINNINGS=$( bc <<< "$DGAME_POT * ${DICE_GAME_WINNINGS[$DGAME_RESULT]}" )
+
 	    if (( DGAME_GUESS == DGAME_RESULT )) ; then # You won
    		DGAME_POT=$( bc <<< "$DGAME_POT - $DGAME_WINNINGS" )  # Adjust winnings to odds
 		DGAME_WINNINGS=$( bc <<< "$DGAME_WINNINGS / ( $DGAME_COMPETITION + 1 )" ) # no competition = winnings/1
 		echo "You rolled $DGAME_RESULT and won $DGAME_WINNINGS Gold! [ +$DGAME_WINNINGS Gold ]"
 		CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $DGAME_WINNINGS" )
-		sleep 3
 	    else # You didn't win
 		echo -n "You rolled $DGAME_RESULT and lost.. "
 		
 		# Check if other player(s) won the pot
 		DGAME_COMPETITION=$( bc <<< "$DGAME_PLAYERS - $DGAME_COMPETITION" )
 		DGAME_OTHER_WINNERS=0
-		
-		DiceGameCompetition $DGAME_RESULT # Chances of any player picking the resulting number
-		
-		while (( DGAME_COMPETITION >= 1 )) ; do
+
+		DGAME_COMP=${DICE_GAME_CHANCES[$DGAME_RESULT]} # Chances of any player picking the resulting number
+
+		for ((DGAME_COMPETITION; DGAME_COMPETITION > 0; DGAME_COMPETITION-- )); do
 		    RollDice 100 # bugfix
 		    (( DICE <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
-		    (( DGAME_COMPETITION-- ))
 		done
 		
 		case "$DGAME_OTHER_WINNERS" in

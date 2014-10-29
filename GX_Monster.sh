@@ -186,6 +186,9 @@ EOT
 
 EOT
 	    ;;
+	*)
+	    Die "Bug in GX_Monster() with enemy >>>$1<<<"
+	    ;;
     esac
     echo "$HR"
 }

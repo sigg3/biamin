@@ -300,7 +300,8 @@ EOF
 
 #-----------------------------------------------------------------------
 # Death()
-# Used: FightMode() and also should be used in check-for-starvation
+# Used: FightMode()
+# TODO: also should be used in check-for-starvation
 #-----------------------------------------------------------------------
 Death() { 
     GX_Death

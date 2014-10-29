@@ -132,6 +132,10 @@ EOT
      +1 Accuracy and Initiative
 
 EOT
+	    ;;
+	*)
+	    Die "Bug in GX_Item() with item >>>$1<<<"
+	    ;;
     esac
     echo "$HR"
 }

@@ -69,8 +69,13 @@ FightMode_RemoveBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) 
 }
 
+#-----------------------------------------------------------------------
+# FightMode_DefineEnemy()
+# Determine generic enemy and set enemy's abilities
+#-----------------------------------------------------------------------
 FightMode_DefineEnemy() {
-    RollDice 100 # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
+    # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
+    RollDice 100
     case "$SCENARIO" in
 	H ) ((DICE <= 10)) && ENEMY="chthulu" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="imp"    ;;
 	T ) ((DICE <= 35)) && ENEMY="mage"    || ((DICE <= 90)) && ENEMY="bandit" || ENEMY="dragon" ;;
@@ -109,6 +114,7 @@ FightMode_DefineEnemy() {
 
     ########################################################################
     # TEST NEW EXP SYSTEM
+    # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn
     case "$ENEMY" in
 	# orig: str=2, acc=4
 	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_DEFEATED_EXP=20   ;; 
@@ -128,7 +134,6 @@ FightMode_DefineEnemy() {
     EN_FLEE_EXP=$((EN_DEFEATED_EXP / 2))       # - Exp player get if enemy manage to flee from him
     #
     ########################################################################
-
 
     ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightMode_FightTable()
     

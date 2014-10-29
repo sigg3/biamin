@@ -1,11 +1,10 @@
 ########################################################################
-#                                                                      #
-#                                                                      #
-
+#                             BiaminSetup                              #
+#                    Load charsheet or make new char                   #
 
 # Set abilities according to race (each equal to 12) + string var used frequently
 RACES=(
-    "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we have'nt RACE == 0
+    "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we haven't RACE == 0
     "human  3       3        3        3     2          -3"
     "elf    4       3        4        1    -3           2" 
     "dwarf  2       5        3        2     2          -3"
@@ -32,7 +31,6 @@ BiaminSetup_SetItemsAbilities() {
     HaveItem "$BROADSWORD"            && ((STRENGTH++)) || return 0
     HaveItem "$STEADY_HAND_BREW"      && ((ACCURACY++))	|| return 0
 }
-
 
 BiaminSetup_LoadCharsheet() {
 	echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn	

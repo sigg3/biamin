@@ -36,7 +36,7 @@ CheckHotzones() {
 # HotzonesDistribute()
 # Scatters special items across the map
 # Arguments: $CHAR_ITEMS(int)
-# Used in Intro() and ItemWasFound()
+# Used: ItemWasFound(), Intro()
 #-----------------------------------------------------------------------
 HotzonesDistribute() { # 
     (( $1 >= MAX_ITEMS )) && return 0 
@@ -44,28 +44,23 @@ HotzonesDistribute() { #
     read -r MAP_X MAP_Y <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
     MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
     local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))
-    declare -a HOTZONE=() # Reset HOTZONE and declare as array (can speed up operations)
+    declare -a HOTZONE=()                                               # Reset HOTZONE and declare as array (can speed up operations)
     while ((ITEMS_2_SCATTER > 0)) ; do
-	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)                          # Randomize ITEM_Y and ITEM_X 
-	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue                   # reroll if HOTZONE == CHAR_GPS
-	CheckHotzones $ITEM_X $ITEM_Y && continue # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
-	((ITEMS_2_SCATTER--)) # decrease ITEMS_2_SCATTER because array starts from ${HOTZONE[0]} #kstn
-	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM_X-$ITEM_Y" # init ${HOTZONE[ITEMS_2_SCATTER]},
+	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)             # Randomize ITEM_Y and ITEM_X 
+	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue      # reroll if HOTZONE == CHAR_GPS
+	CheckHotzones $ITEM_X $ITEM_Y && continue                       # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
+	((ITEMS_2_SCATTER--))                                           # decrease ITEMS_2_SCATTER because array starts from ${HOTZONE[0]} #kstn
+	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM_X-$ITEM_Y"                   # init ${HOTZONE[ITEMS_2_SCATTER]},
     done
 }
 
 #-----------------------------------------------------------------------
-# CheckForItem()
-# Calls ItemWasFound() if this GPS is in the items array ($HOTZONES[])
-# Arguments: MAP_X(int) MAP_Y(int)
+# ItemWasFound()
+# Display found item GX, add ability (if any), increase $CHAR_ITEMS
+# and redistribute hotzones
 #-----------------------------------------------------------------------
-CheckForItem() {
-    (( $1 < MAX_ITEMS )) && CheckHotzones $1 $2 && ItemWasFound
-}
-
-## GAME FUNCTIONS: ITEMS IN LOOP
-ItemWasFound() { # Used in NewSector()
-    GX_Item "$CHAR_ITEMS"	# Defined in GX_Item.sh
+ItemWasFound() {
+    GX_Item "$CHAR_ITEMS"	     # Defined in GX_Item.sh
     case "$CHAR_ITEMS" in
 	"$EMERALD_OF_NARCOLEPSY" ) ((HEALING++))  ;;
 	"$FAST_MAGIC_BOOTS"      ) ((FLEE++))     ;;
@@ -77,11 +72,21 @@ ItemWasFound() { # Used in NewSector()
 	echo -en "${CLEAR_LINE}                      Press any letter to continue  ($COUNTDOWN)"
 	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
-    ((++CHAR_ITEMS)) # Increase CHAR_ITEMS
+    ((++CHAR_ITEMS))                 # Increase CHAR_ITEMS
     HotzonesDistribute "$CHAR_ITEMS" # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feature
-    SaveCurrentSheet # Save CHARSHEET items
-    NODICE=1         # No fighting if item is found..
-}   # Return to NewSector()
+    SaveCurrentSheet                 # Save CHARSHEET items
+    NODICE=1                         # No fighting if item is found..
+}
+
+#-----------------------------------------------------------------------
+# CheckForItem()
+# Calls ItemWasFound() if this GPS is in the items array ($HOTZONES[])
+# Arguments: MAP_X(int) MAP_Y(int)
+# Used: NewSector()
+#-----------------------------------------------------------------------
+CheckForItem() {
+    (( $1 < MAX_ITEMS )) && CheckHotzones $1 $2 && ItemWasFound
+}
 
 #                                                                      #
 #                                                                      #

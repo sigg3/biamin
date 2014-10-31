@@ -41,8 +41,7 @@ CheckHotzones() {
 HotzonesDistribute() { # 
     (( $1 >= MAX_ITEMS )) && return 0 
     local MAP_X MAP_Y
-    read -r MAP_X MAP_Y <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
-    MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18}
+    read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS")
     local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))
     declare -a HOTZONE=()                                               # Reset HOTZONE and declare as array (can speed up operations)
     while ((ITEMS_2_SCATTER > 0)) ; do

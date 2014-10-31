@@ -181,11 +181,11 @@ FightMode_DefineInitiative() {
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
 	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
-		echo "You were unable to pickpocket from the ${ENEMY}!" # Pickpocket falls
+		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
 	    else 
-		echo -en "\nYou successfully stole the ${ENEMY}'s pouch, " # "steal success" take loot
-		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in # bc return 1 if true, 0 if false
+		echo -en "\nYou successfully stole the ${ENEMY}'s pouch, "        # "steal success" take loot
+		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in                  # bc return 1 if true, 0 if false
 	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
 	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
 		esac
@@ -212,8 +212,9 @@ FightMode_DefineInitiative() {
 #-----------------------------------------------------------------------
 # FightMode_FightTable()
 # Display enemy's GX, player and enemy abilities
+# Used: FightMode()
 #-----------------------------------------------------------------------
-FightMode_FightTable() {  # Used in FightMode()
+FightMode_FightTable() {  
     GX_Monster "$ENEMY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"

@@ -4,6 +4,7 @@
 #                        2. RUNTIME BLOCK                              #
 #                   All running code goes here!                        #
 
+
 # Make place for game (BEFORE CLI opts! Mostly because of Higscore and MapCreateCustom())
 if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists...
     echo -e "Game directory default is $GAMEDIR/\nYou can change this in $CONFIG. Creating directory ..."

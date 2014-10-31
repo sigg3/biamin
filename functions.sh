@@ -65,8 +65,12 @@ What to do?
     sleep 4
 }
 
-### DISPLAY MAP
-GX_Map() { # Used in MapNav()
+#-----------------------------------------------------------------------
+# GX_Map()
+# Display map
+# Used: MapNav()
+#-----------------------------------------------------------------------
+GX_Map() {
     local ITEM2C_Y=0 ITEM2C_X=0 # Lazy fix for awk - it falls when see undefined variable #kstn
     # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
     # Remember, the player won't necessarily find items in HOTZONE array's sequence.
@@ -102,8 +106,11 @@ GX_Map() { # Used in MapNav()
       print; }' <<< "$MAP"
 }
 
-# SAVE CHARSHEET
-SaveCurrentSheet() { # Saves current game values to CHARSHEET file (overwriting)
+#-----------------------------------------------------------------------
+# SaveCurrentSheet()
+# Saves current game values to CHARSHEET file (overwriting)
+#-----------------------------------------------------------------------
+SaveCurrentSheet() { 
     echo "CHARACTER: $CHAR
 RACE: $CHAR_RACE
 BATTLES: $CHAR_BATTLES
@@ -125,9 +132,13 @@ TURN: $TURN
 ALMANAC: $ALMANAC" > "$CHARSHEET"
 }
 
-# CHAR SETUP
 
-Intro() { # Used in BiaminSetup() . Intro function basically gets the game going
+#-----------------------------------------------------------------------
+# Intro()
+# Intro function basically gets the game going
+# Used: runtime section. 
+#-----------------------------------------------------------------------
+Intro() { 
     SHORTNAME=$(Capitalize "$CHAR") # Create capitalized FIGHT CHAR name
     (( TURN == 0 )) && TodaysDate # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
     MapCreate          # Create session map in $MAP  
@@ -231,8 +242,6 @@ RollDice() {
 #-----------------------------------------------------------------------
 RollDice2() { RollDice $1 ; echo "$DICE" ; } 
 
-
-
 #-----------------------------------------------------------------------
 # MapNav()
 # Game action: show map and move or move directly
@@ -267,8 +276,12 @@ MapNav() {
     sleep 1.5 # Merged with sleep from 'case "$DEST"' section
 }   # Return NewSector()
 
-# GAME ACTION: DISPLAY CHARACTER SHEET
-DisplayCharsheet() { # Used in NewSector() and FightMode()
+#-----------------------------------------------------------------------
+# DisplayCharsheet() 
+# Display character sheet.
+# Used: NewSector(), FightMode()
+#-----------------------------------------------------------------------
+DisplayCharsheet() { 
     MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
     local RACE=$(Capitalize "$CHAR_RACE_STR") # Capitalize
     GX_CharSheet
@@ -296,7 +309,6 @@ EOF
 	q | Q ) CleanUp ;;
     esac
 }
-
 
 #-----------------------------------------------------------------------
 # Death()
@@ -358,8 +370,13 @@ Rest() {  # Used in NewSector()
 
 # THE GAME LOOP
 
-RollForEvent() { # Used in NewSector() and Rest()
-    # $1 - dice size, $2 - event
+
+#-----------------------------------------------------------------------
+# RollForEvent()
+# Arguments: $DICE_SIZE(int), $EVENT(string)
+# Used: NewSector(), Rest()
+#-----------------------------------------------------------------------
+RollForEvent() {     
     echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 
     sleep 2
     (( DICE <= $1 )) && return 0 || return 1
@@ -647,51 +664,6 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
     sleep 2 ### DEBUG
 }
 
-#-----------------------------------------------------------------------
-# NewSector()
-# Main game loop
-# Used in runtime section
-#-----------------------------------------------------------------------
-NewSector() { 
-    while (true); do  # While (player-is-alive) :) 
-	((TURN++)) # Nev turn, new date
-	DateFromTurn # Get year, month, day, weekday
-	# Find out where we are - Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
-	read -r MAP_X MAP_Y <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
-	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
-	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" ) # MAP_Y+2 MAP_X+2 - padding for borders
-	CheckForItem $MAP_X $MAP_Y # Look for treasure @ current GPS location  - Checks current section for treasure
-	GX_Place "$SCENARIO"	
-	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
-	    unset NODICE 
-	else
-	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
-	    GX_Place "$SCENARIO"
-	fi
-
-	CheckForStarvation # Food check
-	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
-	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
-
-	while (true); do # GAME ACTIONS MENU BAR
-	    GX_Place "$SCENARIO"
-	    case "$SCENARIO" in # Determine promt
-		T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION 2>&1;;
-		H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION 2>&1;;
-		* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION 2>&1;;
-	    esac
-
-	    case "$ACTION" in
-		c | C ) DisplayCharsheet ;;
-		r | R ) Rest  "$SCENARIO";;     # Player may be attacked during the rest :)
-		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
-		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
-		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;
-		* ) MapNav "$ACTION"; break ;;	# Go to Map then move or move directly (if not WASD, then loitering :)
-	    esac
-	done
-    done
-}
 
 #-----------------------------------------------------------------------
 # ColorConfig()

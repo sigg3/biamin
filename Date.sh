@@ -85,30 +85,30 @@ DateFromTurn() { # Some vars used in Almanac(
 TurnFromDate() { # Creation() ?
     local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    local TURN=$(bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE")
-    echo $TURN
+    bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE"
 }
 
+#-----------------------------------------------------------------------
+# TodaysDate()
+# An adjusted version of warhammeronline.wikia.com/wiki/Calendar
+# Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
+# in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
+#
+# TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
+# NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
+#-----------------------------------------------------------------------
 TodaysDate() {
-    # An adjusted version of warhammeronline.wikia.com/wiki/Calendar
-    # Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
-    # in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
-
     # if [[ $CREATION == 0 ]] ; then # first run
     read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
     # else
     # just increment date, month and/or year..
     # fi
-    # TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
-    # NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
-    
     TODAYS_DATE=$(Ordial "$TODAYS_DATE")        # Adjust date
     TODAYS_MONTH=$(MonthString "$TODAYS_MONTH") # Adjust month
     TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")        # Adjust year
     # Output example "3rd of Year-Turn in the 13th cycle"
     TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
 }
-
 
 #                                                                      #
 #                                                                      #

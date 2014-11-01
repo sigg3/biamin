@@ -8,10 +8,9 @@
 # Fixed, so declared as array
 # Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
 # ${DICE_GAME_CHANCES[1]} are dummy
-# TODO: find a way to declare it as constant
 #-----------------------------------------------------------------------
-# dice1+dice2    = 0        1      2 3 4 5  6  7  8  9  10 11 12 
-DICE_GAME_CHANCES=("dummy" "dummy" 3 6 9 12 14 17 14 12 9  6  3)
+#               dice1+dice2    = 0        1      2 3 4 5  6  7  8  9  10 11 12 
+declare -r -a DICE_GAME_CHANCES=("dummy" "dummy" 3 6 9 12 14 17 14 12 9  6  3)
 
 #-----------------------------------------------------------------------
 # $DICE_GAME_WINNINGS
@@ -19,10 +18,9 @@ DICE_GAME_CHANCES=("dummy" "dummy" 3 6 9 12 14 17 14 12 9  6  3)
 # Fixed, so declared as array
 # Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
 # ${DICE_GAME_WINNINGS[1]} are dummy
-# TODO: find a way to declare it as constant
 #-----------------------------------------------------------------------
-# dice1+dice2    =  0       1       2   3  4  5  6  7  8  9  10 11 12
-DICE_GAME_WINNINGS=("dummy" "dummy" 100 85 70 55 40 25 40 55 70 85 100)
+#                dice1+dice2    =  0       1       2   3  4  5  6  7  8  9  10 11 12
+declare -r -a DICE_GAME_WINNINGS=("dummy" "dummy" 100 85 70 55 40 25 40 55 70 85 100)
 
 #-----------------------------------------------------------------------
 # MiniGame_Dice()

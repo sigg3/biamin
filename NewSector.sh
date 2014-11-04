@@ -6,7 +6,7 @@
 # GPStoXY()
 # Converts $GPS(string [A-R][1-15]) to $X(int [1-18]) $Y(int)
 # Arguments: $CHAR_GPS(string [A-R][1-15])
-# Used: NewSector()
+# Used: NewSector(), HotzonesDistribute()
 #-----------------------------------------------------------------------
 GPStoXY() {
     awk '{
@@ -51,11 +51,18 @@ NewSector() {
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
+	    # case "$SCENARIO" in # Determine promt
+	    # 	T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION 2>&1;;
+	    # 	H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION 2>&1;;
+	    # 	* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION 2>&1;;
+	    # esac
+
 	    case "$SCENARIO" in # Determine promt
-		T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION 2>&1;;
-		H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION 2>&1;;
-		* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION 2>&1;;
+		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
+		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;
+		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
+	    ACTION=$(Read)	# Read only one symbol
 
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
@@ -68,7 +75,6 @@ NewSector() {
 	done
     done
 }
-
 
 #                                                                      #
 #                                                                      #

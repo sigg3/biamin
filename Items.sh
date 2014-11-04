@@ -19,9 +19,7 @@ MAX_ITEMS=8 # Define maximum count of items
 # Check if player have this item
 # Arguments: $ITEM(int)
 #-----------------------------------------------------------------------
-HaveItem() { 
-    (( $CHAR_ITEMS > $1 )) && return 0 || return 1; 
-}
+HaveItem() { (( $CHAR_ITEMS > $1 )) && return 0 || return 1; }
 
 #-----------------------------------------------------------------------
 # CheckHotzones()
@@ -39,10 +37,10 @@ CheckHotzones() {
 # Used: ItemWasFound(), Intro()
 #-----------------------------------------------------------------------
 HotzonesDistribute() { # 
-    (( $1 >= MAX_ITEMS )) && return 0 
-    local MAP_X MAP_Y
-    read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS")
-    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))
+    (( $1 >= MAX_ITEMS )) && return 0                                   # Do not redisribute hotzones if player have all magick items
+    local MAP_X MAP_Y		                                        # TODO: not sure do we need it? #kstn
+    read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS")                      # Get current X(int), Y(int) from GPS([A-R][1-15])
+    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))                         # Scatter only absent items 
     declare -a HOTZONE=()                                               # Reset HOTZONE and declare as array (can speed up operations)
     while ((ITEMS_2_SCATTER > 0)) ; do
 	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)             # Randomize ITEM_Y and ITEM_X 
@@ -72,7 +70,7 @@ ItemWasFound() {
 	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
     ((++CHAR_ITEMS))                 # Increase CHAR_ITEMS
-    HotzonesDistribute "$CHAR_ITEMS" # Re-distribute items to increase randomness if char haven't all 8 items. Now it is not bugfix but feature
+    HotzonesDistribute "$CHAR_ITEMS" # Re-distribute items to increase randomness. Now it is not bugfix but feature
     SaveCurrentSheet                 # Save CHARSHEET items
     NODICE=1                         # No fighting if item is found..
 }
@@ -83,9 +81,7 @@ ItemWasFound() {
 # Arguments: MAP_X(int) MAP_Y(int)
 # Used: NewSector()
 #-----------------------------------------------------------------------
-CheckForItem() {
-    (( $1 < MAX_ITEMS )) && CheckHotzones $1 $2 && ItemWasFound
-}
+CheckForItem() { (( $1 < MAX_ITEMS )) && CheckHotzones $1 $2 && ItemWasFound ; }
 
 #                                                                      #
 #                                                                      #

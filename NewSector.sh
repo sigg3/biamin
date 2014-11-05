@@ -63,7 +63,6 @@ NewSector() {
 		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
 	    ACTION=$(Read)	# Read only one symbol
-
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
 		r | R ) Rest "$SCENARIO";;      # Player may be attacked during the rest :)

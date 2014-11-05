@@ -26,10 +26,10 @@ BiaminSetup_SetRaceAbilities() {
 # Arguments: $CHAR_ITEMS (int)
 #-----------------------------------------------------------------------
 BiaminSetup_SetItemsAbilities() {
-    HaveItem "$EMERALD_OF_NARCOLEPSY" && ((HEALING++))  || return 0
-    HaveItem "$FAST_MAGIC_BOOTS"      && ((FLEE++))     || return 0
-    HaveItem "$BROADSWORD"            && ((STRENGTH++)) || return 0
-    HaveItem "$STEADY_HAND_BREW"      && ((ACCURACY++))	|| return 0
+    HaveItem "$EMERALD_OF_NARCOLEPSY" && ((HEALING++))
+    HaveItem "$FAST_MAGIC_BOOTS"      && ((FLEE++))
+    HaveItem "$TWO_HANDED_BROADSWORD" && ((STRENGTH++))
+    HaveItem "$STEADY_HAND_BREW"      && ((ACCURACY++))
 }
 
 BiaminSetup_LoadCharsheet() {

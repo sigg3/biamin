@@ -13,7 +13,6 @@ Strlen() { awk '{print length($0);}' <<< "$*" ;} # Return lenght of string $*. "
 
 MvAddStr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "mvaddstr" is name similar function from ncurses.h
 
-
 #-----------------------------------------------------------------------
 # Ordial()
 # Add postfix to $1 (NUMBER)
@@ -87,7 +86,7 @@ GX_Map() {
     # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
     # Remember, the player won't necessarily find items in HOTZONE array's sequence.
     # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
-    [[ ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < 8)) ]] && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}" 
+    [[ ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < MAX_ITEMS)) ]] && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
 
     clear
     awk 'BEGIN { FS = "   " ; OFS = "   "; }
@@ -302,7 +301,7 @@ DisplayCharsheet() {
  Current Location:          $CHAR_GPS ($PLACE)
  Number of Battles:         $CHAR_BATTLES
  Enemies Slain:             $CHAR_KILLS ($MURDERSCORE%)
- Items found:               $CHAR_ITEMS of 8
+ Items found:               $CHAR_ITEMS of $MAX_ITEMS
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  Inventory:                 $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food
  Current Date:              $TODAYS_DATE_STR
@@ -334,7 +333,7 @@ Death() {
 	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
     	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
-    unset COUNTDOWN
+    unset COUNTDOWN 
     #echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
@@ -679,7 +678,6 @@ CheckForStarvation(){
     fi
     sleep 2 ### DEBUG
 }
-
 
 #-----------------------------------------------------------------------
 # ColorConfig()

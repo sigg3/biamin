@@ -2,10 +2,10 @@
 #                          ASCII places                                #
 #                          (cc-version)                                #
 
-
 #-----------------------------------------------------------------------
 # GX_Place()
 # Display scenario GFX and define place name for MapNav() and DisplayCharsheet()
+# Arguments: $SCENARIO(char)
 # Used: NewSector(), MapNav()
 #-----------------------------------------------------------------------
 GX_Place() {     

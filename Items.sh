@@ -41,7 +41,7 @@ HotzonesDistribute() { #
     local MAP_X MAP_Y		                                        # TODO: not sure do we need it? #kstn
     read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS")                      # Get current X(int), Y(int) from GPS([A-R][1-15])
     local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))                         # Scatter only absent items 
-    declare -a HOTZONE=()                                               # Reset HOTZONE and declare as array (can speed up operations)
+    HOTZONE=()                                                          # Reset HOTZONE
     while ((ITEMS_2_SCATTER > 0)) ; do
 	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)             # Randomize ITEM_Y and ITEM_X 
 	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue      # reroll if HOTZONE == CHAR_GPS

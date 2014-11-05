@@ -86,7 +86,7 @@ GX_Map() {
     # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
     # Remember, the player won't necessarily find items in HOTZONE array's sequence.
     # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
-    [[ ((CHAR_ITEMS > 0)) && ((CHAR_ITEMS < MAX_ITEMS)) ]] && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
+    HaveItem "$GIFT_OF_SIGHT" && ((CHAR_ITEMS < MAX_ITEMS)) && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
 
     clear
     awk 'BEGIN { FS = "   " ; OFS = "   "; }

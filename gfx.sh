@@ -597,8 +597,8 @@ LoadCustomMap() { # Used in MapCreate()
 	    # I remember that it should be centered, but I haven't any ideas how to do it now :( kstn
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
-	echo -en "\n Enter NUMBER of map to load or any letter to play (D)efault map: "
-	read -n 1 NUM # TODO replace to read -p after debug
+	echo "" # Empty line 
+	read -n 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1 
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list

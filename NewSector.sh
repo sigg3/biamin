@@ -66,7 +66,7 @@ NewSector() {
 
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest  "$SCENARIO";;     # Player may be attacked during the rest :)
+		r | R ) Rest "$SCENARIO";;      # Player may be attacked during the rest :)
 		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" -eq "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" -eq "T" || "$SCENARIO" -eq "C" ]] && GoIntoTown ;;

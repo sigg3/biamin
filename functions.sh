@@ -13,7 +13,13 @@ Strlen() { awk '{print length($0);}' <<< "$*" ;} # Return lenght of string $*. "
 
 MvAddStr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "mvaddstr" is name similar function from ncurses.h
 
-Ordial() { # Add postfix to $1 (NUMBER)
+
+#-----------------------------------------------------------------------
+# Ordial()
+# Add postfix to $1 (NUMBER)
+# Arguments: $1(int)
+#-----------------------------------------------------------------------
+Ordial() { 
     grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
     grep -Eq '[^1]?2$'  <<< "$1" && echo "${1}nd" && return 0
     grep -Eq '[^1]?3$'  <<< "$1" && echo "${1}rd" && return 0
@@ -21,7 +27,12 @@ Ordial() { # Add postfix to $1 (NUMBER)
     Die "Bug in Ordial with ARG $1"
 }
 
-MakePrompt() { # Make centered to 79px promt from $@. Arguments should be separated by ';'
+#-----------------------------------------------------------------------
+# MakePrompt()
+# Make centered to 79px promt from $@. Arguments should be separated by ';'
+# Arguments: $PROMPT(string)
+#-----------------------------------------------------------------------
+MakePrompt() { 
     awk '   BEGIN { FS =";" }
         {
             MAXLEN = 79;
@@ -43,7 +54,8 @@ MakePrompt() { # Make centered to 79px promt from $@. Arguments should be separa
 }
 
 # PRE-CLEANUP tidying function for buggy custom maps
-CustomMapError() { # Used in MapCreate(), GX_Place() and NewSector()
+# Used in MapCreate(), GX_Place(), NewSector()
+CustomMapError() { 
     local ERROR_MAP=$1
     clear
     echo "Whoops! There is an error with your map file!
@@ -132,24 +144,23 @@ TURN: $TURN
 ALMANAC: $ALMANAC" > "$CHARSHEET"
 }
 
-
 #-----------------------------------------------------------------------
 # Intro()
 # Intro function basically gets the game going
 # Used: runtime section. 
 #-----------------------------------------------------------------------
 Intro() { 
-    SHORTNAME=$(Capitalize "$CHAR") # Create capitalized FIGHT CHAR name
-    (( TURN == 0 )) && TodaysDate # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
-    MapCreate          # Create session map in $MAP  
-    HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
-    WORLDCHANGE_COUNTDOWN=0 # WorldChange Counter (0 or negative value allow changes)    
+    SHORTNAME=$(Capitalize "$CHAR")                                    # Create capitalized FIGHT CHAR name
+    (( TURN == 0 )) && TodaysDate                                      # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+    MapCreate                                                          # Create session map in $MAP  
+    HotzonesDistribute "$CHAR_ITEMS"                                   # Place items randomly in map
+    WORLDCHANGE_COUNTDOWN=0                                            # WorldChange Counter (0 or negative value allow changes)    
     # Create strings for economical situation..
     VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
-    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) # locale's delimiter is ',' (cyrillic locale for instance) #kstn
-    WorldPriceFixing # Set all prices
-    GX_Intro # With countdown
-    NODICE=1 # Do not roll on first section after loading/starting a game in NewSector()
+    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
+    WorldPriceFixing                                                   # Set all prices
+    GX_Intro                                                           # With countdown
+    NODICE=1                                                           # Do not roll on first section after loading/starting a game in NewSector()
 }
 
 ## WORLD EVENT functions
@@ -271,8 +282,7 @@ MapNav() {
 	q | Q ) CleanUp ;; # Save and exit
 	* ) echo -n "Loitering.."
     esac
-    MAP_X=$(awk '{print substr("ABCDEFGHIJKLMNOPQR", '$MAP_X', 1)}' <<< "$MAP_X") # Translate MAP_X numeric back to A-R
-    CHAR_GPS="$MAP_X$MAP_Y" 	# Set new [A-R][1-15] to CHAR_GPS
+    CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y") # Translate MAP_X numeric back to A-R
     sleep 1.5 # Merged with sleep from 'case "$DEST"' section
 }   # Return NewSector()
 
@@ -625,11 +635,17 @@ GoIntoTown() { # Used in NewSector()
     done
 } # Return to NewSector()
 
-CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
-    # TODO may be it shold be renamed to smth more understandable? #kstn
-    # Food check # TODO add it to Rest() after finishing
-    # TODO not check for food at the 1st turn ???
-    # TODO Tavern also should reset STARVATION and restore starvation penalties if any
+
+#-----------------------------------------------------------------------
+# CheckForStarvation()
+# Food check 
+# Used: NewSector() and should be used also in Rest()
+# TODO: may be it shold be renamed to smth more understandable? #kstn
+# TODO: add it to Rest() after finishing
+# TODO: not check for food at the 1st turn ???
+# TODO: Tavern also should reset STARVATION and restore starvation penalties if any
+#-----------------------------------------------------------------------
+CheckForStarvation(){ 
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
 	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
@@ -659,7 +675,7 @@ CheckForStarvation() { # Used in NewSector() and should be used also in Rest()
 		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
 	    esac
 	fi
-	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death # 
+	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death
     fi
     sleep 2 ### DEBUG
 }
@@ -691,7 +707,8 @@ Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
 	YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
 	RESET='\033[0m'
     fi
-    # Define escape sequences #TODO replace to tput or similar
+    # Define escape sequences
+    #TODO replace to tput or similar
     CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 }
 #                           END FUNCTIONS                              #

@@ -35,6 +35,7 @@ CheckHotzones() {
 # Scatters special items across the map
 # Arguments: $CHAR_ITEMS(int)
 # Used: ItemWasFound(), Intro()
+# TODO: Replace hotzones format from (int)-(int) to GPS([A-R][1-15])
 #-----------------------------------------------------------------------
 HotzonesDistribute() { # 
     (( $1 >= MAX_ITEMS )) && return 0                                   # Do not redisribute hotzones if player have all magick items

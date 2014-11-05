@@ -167,6 +167,7 @@ Intro() {
 WorldPriceFixing() { # Used in WorldChangeEconomy() and Intro()
     local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
     # Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
+    # O_o. Are you sure that all is right with your encoding settings? #kstn
     PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
     PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
     PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )

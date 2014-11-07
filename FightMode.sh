@@ -152,8 +152,8 @@ FightMode_DefineEnemy() {
     esac
 
     # Loot: Determine loot type and size 
-    (( $(RollDice2 100) <= EN_GOLD    )) && EN_GOLD=$( bc <<< "scale=2; $(RollDice2 10) * ($EN_GOLD / 100)" )      || EN_GOLD=0
-    (( $(RollDice2 100) <= EN_TOBACCO )) && EN_TOBACCO=$( bc <<< "scale=2; $(RollDice2 10) * (EN_TOBACCO / 100)" ) || EN_TOBACCO=0
+    EN_GOLD=$(    bc <<< "scale=2; if ($(RollDice2 100) > $EN_GOLD   ) 0 else $(RollDice2 10) * ($EN_GOLD / 100)" )
+    EN_TOBACCO=$( bc <<< "scale=2; if ($(RollDice2 100) > $EN_TOBACCO) 0 else $(RollDice2 10) * ($EN_TOBACCO / 100)" )
     if (( $(RollDice2 100) <= EN_FOOD )) ; then # Loot: Food table for animal creatures
 	case "$ENEMY" in
 	    boar )    EN_FOOD=$( bc <<< "scale=2; $(RollDice2 10) * 0.5"  ) ;; # max 20 days, min 2 days   (has the most eatable foodstuff)

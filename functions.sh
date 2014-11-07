@@ -76,46 +76,6 @@ What to do?
     sleep 4
 }
 
-#-----------------------------------------------------------------------
-# GX_Map()
-# Display map
-# Used: MapNav()
-#-----------------------------------------------------------------------
-GX_Map() {
-    local ITEM2C_Y=0 ITEM2C_X=0 # Lazy fix for awk - it falls when see undefined variable #kstn
-    # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
-    # Remember, the player won't necessarily find items in HOTZONE array's sequence.
-    # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
-    HaveItem "$GIFT_OF_SIGHT" && ((CHAR_ITEMS < MAX_ITEMS)) && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
-
-    clear
-    awk 'BEGIN { FS = "   " ; OFS = "   "; }
-    { # place "o" (player) on map
-      if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
-         if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
-         else                 { $'$(( MAP_X + 1 ))'="o";   } 
-         }
-      # if player has Gift-Of-Sight and not all items are found
-      if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
-         # place ITEM2C on map 
-         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
- 	 if (NR == '$(( ITEM2C_Y + 2 ))') {
-            if ( '$ITEM2C_X' == 18 ) { $'$(( ITEM2C_X + 1 ))'="~ ("; }
-            else                     { $'$(( ITEM2C_X + 1 ))'="~";   } 
-            }
-         }
-      # All color on map sets here
-      if ('${COLOR}' == 1 ) {
-         # Terminal color scheme bugfix
-         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
-         # colorise "o" (player) and "~" (ITEM2C)
-	 if ( NR > 2 && NR < 19 ) {
- 	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
-	    gsub(/o/, "'$(printf "%s" "${YELLOW}o${RESET}")'")
-	    }
-         }
-      print; }' <<< "$MAP"
-}
 
 #-----------------------------------------------------------------------
 # SaveCurrentSheet()
@@ -162,60 +122,7 @@ Intro() {
     NODICE=1                                                           # Do not roll on first section after loading/starting a game in NewSector()
 }
 
-## WORLD EVENT functions
 
-WorldPriceFixing() { # Used in WorldChangeEconomy() and Intro()
-    local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
-    # Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
-    # O_o. Are you sure that all is right with your encoding settings? #kstn
-    PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
-    PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
-    PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )
-    PRICE_GxF=$( echo "scale=2;$VAL_GOLD/$VAL_FOOD" | bc )    # Price of 1 Gold in Food
-    PRICE_TxG=$( echo "scale=2;$VAL_TOBACCO/$VAL_GOLD" | bc )
-    PRICE_TxF=$( echo "scale=2;$VAL_TOBACCO/$VAL_FOOD" | bc )
-    # Items are arbitrarily priced & not set here, but the same logic IxG applies.
-}
-
-WorldChangeEconomy() {  # Used in NewSector()
-    (( $(RollDice2 100) > 15 )) && return 0 # Roll to 15% chance for economic event transpiring or leave immediately
-    BBSMSG=$(RollDice2 12) # = Number of possible scenarios (+ default 0) and Update BBSMSG
-    
-    case "$BBSMSG" in
-    	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
-    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
-    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
-    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
-    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
-    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
-    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
-    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
-    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
-    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
-    esac
-
-    local FLUX=$( bc <<< "$DICE * $VAL_CHANGE" ) # Determine severity
-    
-    case "$UNIT" in # Which market is affected?
-	"Tobacco" )  
-	    VAL_TOBACCO=$( bc <<< "$VAL_TOBACCO $CHANGE $FLUX" ) ;     # How is tobacco affected?	    
-	    (( $(bc <<< "$VAL_TOBACCO <= 0") )) && VAL_TOBACCO=0.25  ; # Adjusted for min 0.25 value
-	    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< "$VAL_TOBACCO" ) ;; # Used in GX_Bulletin()
-	"Gold"    )  
-	    VAL_GOLD=$( bc <<< "$VAL_GOLD $CHANGE $FLUX" ) ;           # How is gold affected?
-	    (( $(bc <<< "$VAL_GOLD <= 0") )) && VAL_GOLD=0.25	       # Adjusted for min 0.25 value
-	    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }'  <<< "$VAL_GOLD" ) ;; # Used in GX_Bulletin()
-	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${DICE}<<<" ;;
-    esac
-    WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
-    SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
-    WorldPriceFixing         # Update all prices    
-} # Return to NewSector()
-
-# Other WorldChangeFUNCTIONs go here:)
 
 ################### GAME SYSTEM #################
 
@@ -253,38 +160,6 @@ RollDice() {
 #-----------------------------------------------------------------------
 RollDice2() { RollDice $1 ; echo "$DICE" ; } 
 
-#-----------------------------------------------------------------------
-# MapNav()
-# Game action: show map and move or move directly
-# Arguments: $DESTINATION(string)
-# Used: NewSector()
-#-----------------------------------------------------------------------
-MapNav() { 
-    if [[ "$1" == "m" || "$1" == "M" ]] ; then	# If player want to see the map
-	GX_Map
-	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
-	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
-	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1
-    else  # The player did NOT toggle map, just moved without looking from NewSector()..
-	DEST="$1"
-	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
-    fi
-
-    case "$DEST" in # Fix for 80x24. Dirty but better than nothing #kstn
-	w | W | n | N ) echo -n "You go North"; # Going North (Reversed: Y-1)
-	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || echo -en "${CLEAR_LINE}You wanted to visit Santa, but walked in a circle.." ;;
-	d | D | e | E ) echo -n "You go East" # Going East (X+1)
-	    (( MAP_X != 18 )) && (( MAP_X++ )) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
-	s | S ) echo -n "You go South" # Going South (Reversed: Y+1)
-	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;; 
-	a | A ) echo -n "You go West" # Going West (X-1)
-	    (( MAP_X != 1  )) && (( MAP_X-- )) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
-	q | Q ) CleanUp ;; # Save and exit
-	* ) echo -n "Loitering.."
-    esac
-    CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y") # Translate MAP_X numeric back to A-R
-    sleep 1.5 # Merged with sleep from 'case "$DEST"' section
-}   # Return NewSector()
 
 #-----------------------------------------------------------------------
 # DisplayCharsheet() 
@@ -392,71 +267,6 @@ RollForEvent() {
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 
-
-Tavern() { # Used in GoIntoTown()
-    while (true); do
-	GX_Tavern # Tavern gained +30 HEALTH - Town*2
-	read -sn1 -p "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit" VAR 2>&1
-	case "$VAR" in
-	    r | R) 
-		GX_Tavern
-		read -sn1 -p "      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit" CUR 2>&1
-		case "$CUR" in
-		    g | G ) 
-			if (( $(bc <<< "$CHAR_GOLD <= 1") )); then # check for money
-			    echo "You don't have enough Gold to rent a room in the Tavern"
-			else
-			    GX_Rest
-			    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - 1")
-			    echo -n "You got some much needed rest .."
-			    if (( CHAR_HEALTH < 150 )); then
-				(( CHAR_HEALTH += 30 ))
-				(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150
-				echo " and your HEALTH is $CHAR_HEALTH now"
-			    fi
-			    ((TURN++))
-			fi
-			;;
-		    t | T )
-			if (( $(bc <<< "$CHAR_TOBACCO <= 1") )); then # check for money
-			    echo "You don't have enough Tobacco to rent a room in the Tavern"
-			else
-			    GX_Rest
-			    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - 1")
-			    echo -n "You got some much needed rest .."
-			    if (( CHAR_HEALTH < 150 )); then
-				(( CHAR_HEALTH += 30 ))
-				(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150
-				echo " and your HEALTH is $CHAR_HEALTH now"
-			    fi
-			    ((TURN++))
-			fi
-			;;
-		esac 
-		read -n 1;; # DEBUG replace to sleep 
- 	    p | P ) MiniGame_Dice ;;
-	    * ) break ;; # Leave tavern
-	esac
-    done
-} # Return to GoIntoTown()
-
-Marketplace() { # Used in GoIntoTown()
-    # The PRICE of a unit (food, ale) is always 1.
-    while (true); do
-	GX_Marketplace
-	read -sn 1 -p "           (G)rocer          (M)erchant          (L)eave Marketplace" VAR 2>&1
-	case "$VAR" in
-	    g | G) Marketplace_Grocer;; # Trade FOOD for GOLD and TOBACCO
-	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
-	    # Smbd who'll trade boars' tusks etc for GOLD/TOBACCO ???
-	    *) break ;; # Leave marketplace
-	esac
-    done
-    # IDEA? Add stealing from market??? 
-    # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-    # Or he call the police (the guards?) and they throw player from town? (kstn) 
-    # We're getting way ahead of ourselves:) Let's just make what we have work first:)
-} # Return to GoIntoTown()
 
 Marketplace_Merchant_PriceFixing() {
     case "$1" in
@@ -567,6 +377,14 @@ Marketplace_Merchant() {
     done
 } # Return to Marketplace
 
+
+#-----------------------------------------------------------------------
+# Marketplace_Grocer()
+# IDEA:
+# ? Add stealing from market??? 
+#   Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
+#   Or he call the police (the guards?) and they throw player from town? (kstn)
+#-----------------------------------------------------------------------
 Marketplace_Grocer() { # Used in GoIntoTown()
     # The PRICE of units are set in WorldPriceFixing()
     while (true); do
@@ -614,26 +432,8 @@ Marketplace_Grocer() { # Used in GoIntoTown()
 	esac
     done
     unset PRICE_IN_GOLD PRICE_IN_TOBACCO
-    # IDEA: Add stealing from market??? 
-    # Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-    # Or he call the police (the guards?) and they throw player from town? (kstn)
 } # Return to GoIntoTown()
 
-GoIntoTown() { # Used in NewSector()
-    while (true); do
-	GX_Place "$SCENARIO" # GX_Town 
-        # Add separate GX for this? 
-        # What about add separate GX for Town and use current GX_Town() here? #kstn
-	echo -n "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town"	
-	read -sn 1 ACTION
-	case "$ACTION" in
-	    t | T ) Tavern ;;
-	    m | M ) Marketplace ;;
-	    b | B ) GX_Bulletin "$BBSMSG" ;;
-	    * ) break ;; # Leave town
-	esac
-    done
-} # Return to NewSector()
 
 
 #-----------------------------------------------------------------------

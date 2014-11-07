@@ -26,6 +26,81 @@ XYtoGPS() {
 }
 
 #-----------------------------------------------------------------------
+# GX_Map()
+# Display map and ItemToSee if player have GiftOfSight and haven't all
+# items
+# Used: MapNav()
+#-----------------------------------------------------------------------
+GX_Map() {
+    local ITEM2C_Y=0 ITEM2C_X=0 # Lazy fix for awk - it falls when see undefined variable #kstn
+    # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
+    # Remember, the player won't necessarily find items in HOTZONE array's sequence.
+    # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
+    HaveItem "$GIFT_OF_SIGHT" && ((CHAR_ITEMS < MAX_ITEMS)) && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
+
+    clear
+    awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
+         if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
+         else                 { $'$(( MAP_X + 1 ))'="o";   } 
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
+         # place ITEM2C on map 
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == '$(( ITEM2C_Y + 2 ))') {
+            if ( '$ITEM2C_X' == 18 ) { $'$(( ITEM2C_X + 1 ))'="~ ("; }
+            else                     { $'$(( ITEM2C_X + 1 ))'="~";   } 
+            }
+         }
+      # All color on map sets here
+      if ('${COLOR}' == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
+	    gsub(/o/, "'$(printf "%s" "${YELLOW}o${RESET}")'")
+	    }
+         }
+      print; }' <<< "$MAP"
+}
+
+#-----------------------------------------------------------------------
+# MapNav()
+# Game action: show map and move or move directly
+# Arguments: $DESTINATION(string)
+# Used: NewSector()
+#-----------------------------------------------------------------------
+MapNav() { 
+    if [[ "$1" == "m" || "$1" == "M" ]] ; then	# If player want to see the map
+	GX_Map
+	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
+	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
+	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1
+    else  # The player did NOT toggle map, just moved without looking from NewSector()..
+	DEST="$1"
+	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
+    fi
+
+    case "$DEST" in # Fix for 80x24. Dirty but better than nothing #kstn
+	w | W | n | N ) echo -n "You go North"; # Going North (Reversed: Y-1)
+	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || echo -en "${CLEAR_LINE}You wanted to visit Santa, but walked in a circle.." ;;
+	d | D | e | E ) echo -n "You go East" # Going East (X+1)
+	    (( MAP_X != 18 )) && (( MAP_X++ )) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
+	s | S ) echo -n "You go South" # Going South (Reversed: Y+1)
+	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;; 
+	a | A ) echo -n "You go West" # Going West (X-1)
+	    (( MAP_X != 1  )) && (( MAP_X-- )) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
+	q | Q ) CleanUp ;; # Save and exit
+	* ) echo -n "Loitering.."
+    esac
+    CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y") # Translate MAP_X numeric back to A-R
+    sleep 1.5 # Merged with sleep from 'case "$DEST"' section
+}
+
+#-----------------------------------------------------------------------
 # NewSector()
 # Main game loop
 # Used in runtime section
@@ -45,18 +120,11 @@ NewSector() {
 	    GX_Place "$SCENARIO"
 	fi
 
-	CheckForStarvation # Food check
-	# --WorldChangeCounter THEN Check for WORLD EVENT: Economy
-	(( --WORLDCHANGE_COUNTDOWN <= 0 )) && WorldChangeEconomy # Change economy if success
+	CheckForStarvation         # Food check
+	CheckForWorldChangeEconomy # Change economy if success
 
 	while (true); do # GAME ACTIONS MENU BAR
 	    GX_Place "$SCENARIO"
-	    # case "$SCENARIO" in # Determine promt
-	    # 	T | C ) read -sn 1 -p "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ACTION 2>&1;;
-	    # 	H )     read -sn 1 -p "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ACTION 2>&1;;
-	    # 	* )     read -sn 1 -p "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ACTION 2>&1;;
-	    # esac
-
 	    case "$SCENARIO" in # Determine promt
 		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
 		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;

@@ -110,7 +110,7 @@ Marketplace() {
 #-----------------------------------------------------------------------
 GoIntoTown() { 
     while (true); do
-	GX_Place "$SCENARIO" # GX_Town 
+	GX_Place "T" # GX_Town 
 	read -sn 1 -p "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town" ACTION
 	case "$ACTION" in
 	    t | T ) Tavern ;;

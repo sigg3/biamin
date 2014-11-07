@@ -101,6 +101,16 @@ MapNav() {
 }
 
 #-----------------------------------------------------------------------
+# NewSector_GetScenario()
+# Get scenario char at current GPS
+# Arguments: $CHAR_GPS(string[A-R][1-15])
+#-----------------------------------------------------------------------
+NewSector_GetScenario() {
+    read -r MAP_X MAP_Y <<< $(GPStoXY "$1") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
+    awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" # MAP_Y+2 MAP_X+2 - padding for borders
+}
+
+#-----------------------------------------------------------------------
 # NewSector()
 # Main game loop
 # Used in runtime section
@@ -109,9 +119,8 @@ NewSector() {
     while (true); do  # While (player-is-alive) :) 
 	((TURN++)) # Nev turn, new date
 	DateFromTurn # Get year, month, day, weekday
-	read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
-	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" ) # MAP_Y+2 MAP_X+2 - padding for borders
 	CheckForItem "$CHAR_GPS" # Look for treasure @ current GPS location  - Checks current section for treasure
+	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS") # Get scenario char at current GPS
 	GX_Place "$SCENARIO"	
 	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
 	    unset NODICE 

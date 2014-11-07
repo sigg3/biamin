@@ -74,6 +74,7 @@ GX_Map() {
 # Used: NewSector()
 #-----------------------------------------------------------------------
 MapNav() { 
+    read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
     if [[ "$1" == "m" || "$1" == "M" ]] ; then	# If player want to see the map
 	GX_Map
 	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors

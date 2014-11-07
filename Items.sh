@@ -24,10 +24,10 @@ HaveItem() { (( $CHAR_ITEMS > $1 )) && return 0 || return 1; }
 #-----------------------------------------------------------------------
 # CheckHotzones()
 # Check if this GPS is in the items array ($HOTZONES[])
-# Arguments: MAP_X(int) MAP_Y(int)
+# Arguments: $ITEM(string [A-R][1-15])
 #-----------------------------------------------------------------------
 CheckHotzones() {
-    [[ $(grep -E "(^| )$1-$2( |$)" <<< "${HOTZONE[@]}") ]] && return 0 || return 1
+    [[ $(grep -E "(^| )$1( |$)" <<< "${HOTZONE[@]}") ]] && return 0 || return 1
 }
 
 #-----------------------------------------------------------------------
@@ -35,20 +35,16 @@ CheckHotzones() {
 # Scatters special items across the map
 # Arguments: $CHAR_ITEMS(int)
 # Used: ItemWasFound(), Intro()
-# TODO: Replace hotzones format from (int)-(int) to GPS([A-R][1-15])
 #-----------------------------------------------------------------------
 HotzonesDistribute() { # 
-    (( $1 >= MAX_ITEMS )) && return 0                                   # Do not redisribute hotzones if player have all magick items
-    local MAP_X MAP_Y		                                        # TODO: not sure do we need it? #kstn
-    read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS")                      # Get current X(int), Y(int) from GPS([A-R][1-15])
-    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))                         # Scatter only absent items 
-    HOTZONE=()                                                          # Reset HOTZONE
-    while ((ITEMS_2_SCATTER > 0)) ; do
-	local ITEM_Y=$(RollDice2 15) ITEM_X=$(RollDice2 18)             # Randomize ITEM_Y and ITEM_X 
-	(( ITEM_X == MAP_X )) && (( ITEM_Y == MAP_Y )) && continue      # reroll if HOTZONE == CHAR_GPS
-	CheckHotzones $ITEM_X $ITEM_Y && continue                       # reroll if "$ITEM_X-$ITEM_Y" is already in ${HOTZONE[@]}
-	((ITEMS_2_SCATTER--))                                           # decrease ITEMS_2_SCATTER because array starts from ${HOTZONE[0]} #kstn
-	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM_X-$ITEM_Y"                   # init ${HOTZONE[ITEMS_2_SCATTER]},
+    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))               # Scatter only absent items 
+    HOTZONE=()                                                # Reset HOTZONE
+    while ((ITEMS_2_SCATTER > 0 )) ; do			      # If player already have all items, ITEMS_2_SCATTER'll be 0
+	local ITEM=$(XYtoGPS $(RollDice2 18) $(RollDice2 15)) # Create random item
+	[[ "$ITEM" == "$CHAR_GPS" ]] && continue              # reroll if HOTZONE == CHAR_GPS
+	CheckHotzones "$ITEM" && continue                     # reroll if "$ITEM" is already in ${HOTZONE[@]}
+	((ITEMS_2_SCATTER--))                                 # decrease ITEMS_2_SCATTER because array starts from ${HOTZONE[0]} #kstn
+	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM"                   # init ${HOTZONE[ITEMS_2_SCATTER]},
     done
 }
 
@@ -79,10 +75,10 @@ ItemWasFound() {
 #-----------------------------------------------------------------------
 # CheckForItem()
 # Calls ItemWasFound() if this GPS is in the items array ($HOTZONES[])
-# Arguments: MAP_X(int) MAP_Y(int)
+# Arguments: $CHAR_GPS([A-R][1-15])
 # Used: NewSector()
 #-----------------------------------------------------------------------
-CheckForItem() { (( $1 < MAX_ITEMS )) && CheckHotzones $1 $2 && ItemWasFound ; }
+CheckForItem() { (( $1 < MAX_ITEMS )) && CheckHotzones $1 && ItemWasFound ; }
 
 #                                                                      #
 #                                                                      #

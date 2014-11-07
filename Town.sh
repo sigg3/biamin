@@ -70,6 +70,7 @@ Tavern() {
 		    t | T ) CheckForTobacco 1 "You don't have enough Tobacco to rent a room in the Tavern" && TavernRest ;;
 		esac 
 		sleep 1
+		;;
  	    p | P ) MiniGame_Dice ;;
 	    * ) break ;; # Leave tavern
 	esac

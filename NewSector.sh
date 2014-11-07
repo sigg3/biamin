@@ -36,7 +36,7 @@ GX_Map() {
     # Check for Gift of Sight. Show ONLY the NEXT item viz. "Item to see" (ITEM2C).
     # Remember, the player won't necessarily find items in HOTZONE array's sequence.
     # Retrieve item map positions e.g. 1-15 >> X=1 Y=15. There always will be item in HOTZONE[0]!
-    HaveItem "$GIFT_OF_SIGHT" && ((CHAR_ITEMS < MAX_ITEMS)) && IFS="-" read -r "ITEM2C_X" "ITEM2C_Y" <<< "${HOTZONE[0]}"
+    HaveItem "$GIFT_OF_SIGHT" && ((CHAR_ITEMS < MAX_ITEMS)) && read -r "ITEM2C_X" "ITEM2C_Y" <<< $(GPStoXY "${HOTZONE[0]}")
 
     clear
     awk 'BEGIN { FS = "   " ; OFS = "   "; }
@@ -111,7 +111,7 @@ NewSector() {
 	DateFromTurn # Get year, month, day, weekday
 	read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" ) # MAP_Y+2 MAP_X+2 - padding for borders
-	CheckForItem "$MAP_X" "$MAP_Y" # Look for treasure @ current GPS location  - Checks current section for treasure
+	CheckForItem "$CHAR_GPS" # Look for treasure @ current GPS location  - Checks current section for treasure
 	GX_Place "$SCENARIO"	
 	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
 	    unset NODICE 

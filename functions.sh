@@ -114,9 +114,6 @@ Intro() {
     MapCreate                                                          # Create session map in $MAP  
     HotzonesDistribute "$CHAR_ITEMS"                                   # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0                                            # WorldChange Counter (0 or negative value allow changes)    
-    # Create strings for economical situation..
-    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
-    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
     WorldPriceFixing                                                   # Set all prices
     GX_Intro                                                           # With countdown
     NODICE=1                                                           # Do not roll on first section after loading/starting a game in NewSector()

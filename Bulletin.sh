@@ -47,10 +47,8 @@ CheckForWorldChangeEconomy() {
     case "$UNIT" in # Which market is affected?
 	"Tobacco" )  
 	    VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ; # How is tobacco affected and restrict to 0.25 min
-	    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< "$VAL_TOBACCO" ) ;; # Used in GX_Bulletin()
 	"Gold"    )  
 	    VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;       # How is gold affected and restrict to 0.25 min
-	    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }'  <<< "$VAL_GOLD" ) ;; # Used in GX_Bulletin()
 	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${DICE}<<<" ;;
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
@@ -72,6 +70,9 @@ MAX_BBSMSG=12
 # Arguments: $BBSMSG (int)
 #-----------------------------------------------------------------------
 GX_Bulletin() { 
+    # Create strings for economical situation..
+    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
+    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
     case $1 in # MAX 35 chars per line !!!
 	1 ) # Wild Fire Threatens Tobacco (serious)
 	    local BULLETIN=( 

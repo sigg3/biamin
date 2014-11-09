@@ -22,10 +22,10 @@ if [[ ! "$PAGER" ]] ; then # Define PAGER (for ShowLicense() )
     for PAGER in less more ; do PAGER=$(which "$PAGER" 2>/dev/null); [[ "$PAGER" ]] && break; done
 fi
 
-ParseCLIarguments "$1"			  # Parse CLI args if any
+ParseCLIarguments "$@"			  # Parse CLI args if any
 echo "Putting on the traveller's boots.." # OK lets play!
 
-# Load variables from $GAMEDIR/config. NB variables should not be empty !
+# Load variables from $GAMEDIR/config. Need if player wants to keep his saves not in ~/.biamin . NB variables should not be empty !
 read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
                                    if (/^COLOR:/)    { COLOR = $2  } }
                             END { print GAMEDIR, COLOR ;}' "$CONFIG" )
@@ -33,10 +33,10 @@ read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
 ColorConfig "$COLOR"               # Color configuration
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
 ################################# Main game part ###############################
-MainMenu       # Run main menu (Define $CHAR)
-BiaminSetup    # Load or make new char
-Intro	       # Set world
-NewSector      # And run main game loop
+[[ "$CHAR" ]] || MainMenu  # Run main menu (Define $CHAR) if game wasn't run as biamin -p <charname>
+BiaminSetup                # Load or make new char
+Intro	                   # Set world
+NewSector                  # And run main game loop
 ############################## Main game part ends #############################
-exit 0         # This should never happen:
-               # .. but why be 'tardy when you can be tidy?
+exit 0                     # This should never happen:
+                           # .. but why be 'tardy when you can be tidy?

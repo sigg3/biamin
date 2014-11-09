@@ -205,7 +205,11 @@ BiaminSetup_MakeNewChar() {
 BiaminSetup() { 
     # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
-    [[ -f "$CHARSHEET" ]] && BiaminSetup_LoadCharsheet || BiaminSetup_MakeNewChar
+    if [[ -f "$CHARSHEET" ]] ; then
+	BiaminSetup_LoadCharsheet
+    else
+	BiaminSetup_MakeNewChar
+    fi
     sleep 2
     BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
     BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"

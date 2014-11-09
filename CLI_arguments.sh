@@ -7,6 +7,12 @@
 # Map template generator (CLI arg function)
 #-----------------------------------------------------------------------
 MapCreateCustom() { 
+    echo -n "Create custom map template? [Y/N]: "
+    case $(Read) in
+	y | Y) echo -e "\nCreating custom map template.." ;;
+	*)     echo -e "\nNot doing anything! Quitting.." ; exit 0 ;;
+    esac
+	    
     cat <<"EOT" > "${GAMEDIR}/CUSTOM_MAP.template"
 NAME: Despriptive name of map goes here
 CREATOR: Name of the map creator
@@ -43,9 +49,8 @@ EOT
     echo "2. Spacing must be accurate, so don't touch whitespace or add new lines."
     echo "3. When you are done, simply rename your map file to FILENAME.map"
     echo "Please submit bugs and feedback at <$WEBURL>"
+    exit 0
 }
-
-
 
 #-----------------------------------------------------------------------
 # Announce()
@@ -127,13 +132,7 @@ ParseCLIarguments() {
 	    echo "Current dir for game files: $GAMEDIR/"
 	    echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 	    exit 0;;
-	--map )
-	    read -n1 -p "Create custom map template? [Y/N]: " CUSTOM_MAP_PROMPT 2>&1
-	    case "$CUSTOM_MAP_PROMPT" in
-		y | Y) echo -e "\nCreating custom map template.." ; MapCreateCustom ;;
-		*)     echo -e "\nNot doing anything! Quitting.."
-	    esac
-	    exit 0 ;;
+	--map ) MapCreateCustom ;;
 	-p | --play | p ) echo "Launching Back in a Minute.." ;;
 	-v | --version )
 	    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"

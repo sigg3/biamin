@@ -2,7 +2,12 @@
 #                             Menu system                              #
 #                                                                      #
 
-LoadGame() { # Used in MainMenu()
+#-----------------------------------------------------------------------
+# LoadGame()
+# Display chars in $GAMEDIR and load one
+# Used: MainMenu()
+#-----------------------------------------------------------------------
+LoadGame() { 
     local SHEETS FILES i=0 LIMIT=9 OFFSET=0 NUM=0 a # Declare all needed local variables
     # xargs ls -t - sort by date, last played char'll be the first in array
     for loadSHEET in $(find "$GAMEDIR/" -name '*.sheet') ; do # Find all sheets and add to array if any

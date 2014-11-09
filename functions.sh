@@ -119,8 +119,6 @@ Intro() {
     NODICE=1                                                           # Do not roll on first section after loading/starting a game in NewSector()
 }
 
-
-
 ################### GAME SYSTEM #################
 
 #-----------------------------------------------------------------------
@@ -156,7 +154,6 @@ RollDice() {
 # Used: RollForEvent(), RollForHealing(), etc
 #-----------------------------------------------------------------------
 RollDice2() { RollDice $1 ; echo "$DICE" ; } 
-
 
 #-----------------------------------------------------------------------
 # DisplayCharsheet() 

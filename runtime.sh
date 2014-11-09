@@ -28,7 +28,7 @@ echo "Putting on the traveller's boots.." # OK lets play!
 # Load variables from $GAMEDIR/config. NB variables should not be empty !
 read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
                                    if (/^COLOR:/)    { COLOR = $2  } }
-                            END { print GAMEDIR " " COLOR ;}' "$GAMEDIR/config" )
+                            END { print GAMEDIR, COLOR ;}' "$CONFIG" )
 
 ColorConfig "$COLOR"               # Color configuration
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp

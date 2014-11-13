@@ -63,7 +63,7 @@ FightMode_AddBonuses() {
 #-----------------------------------------------------------------------
 # FightMode_RemoveBonuses()
 # Set fight bonuses from magick items (AFTER 'DefineInitiative()' but
-# BEFORE fight loop!)
+#  BEFORE fight loop!)
 #-----------------------------------------------------------------------
 FightMode_RemoveBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) 

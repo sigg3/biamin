@@ -109,14 +109,14 @@ ALMANAC: $ALMANAC" > "$CHARSHEET"
 # Used: runtime section. 
 #-----------------------------------------------------------------------
 Intro() { 
-    SHORTNAME=$(Capitalize "$CHAR")                                    # Create capitalized FIGHT CHAR name
-    (( TURN == 0 )) && TodaysDate                                      # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
-    MapCreate                                                          # Create session map in $MAP  
-    HotzonesDistribute "$CHAR_ITEMS"                                   # Place items randomly in map
-    WORLDCHANGE_COUNTDOWN=0                                            # WorldChange Counter (0 or negative value allow changes)    
-    WorldPriceFixing                                                   # Set all prices
-    GX_Intro                                                           # With countdown
-    NODICE=1                                                           # Do not roll on first section after loading/starting a game in NewSector()
+    SHORTNAME=$(Capitalize "$CHAR")  # Create capitalized FIGHT CHAR name
+    (( TURN == 0 )) && TodaysDate    # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+    MapCreate                        # Create session map in $MAP  
+    HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
+    WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)    
+    WorldPriceFixing                 # Set all prices
+    GX_Intro                         # With countdown
+    NODICE=1                         # Do not roll on first section after loading/starting a game in NewSector()
 }
 
 ################### GAME SYSTEM #################
@@ -124,8 +124,8 @@ Intro() {
 #-----------------------------------------------------------------------
 # Reseed RANDOM. Needed only once at start, so moved to separate section
 case "$OSTYPE" in
-    openbsd* ) RANDOM=$(date '+%S');;
-    *)         RANDOM=$(date '+%N')
+    openbsd* ) RANDOM=$(date '+%S') ;;
+    *)         RANDOM=$(date '+%N') ;;
 esac
 # TODO:
 #  ? Move it to runtime section
@@ -178,11 +178,11 @@ DisplayCharsheet() {
  Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
-    case "$ALMANAC" in
-	1) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit')"  CHARSHEET_OPT 2>&1 ;; # Player has "unlocked" Almanac
-	*) read -sn 1 -p "$(MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit')" CHARSHEET_OPT 2>&1 ;; # Player does not have Almanac
+    case "$ALMANAC" in		# Define prompt
+	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has "unlocked" Almanac
+	*) MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit' ;; # Player does not have Almanac
     esac
-    case "$CHARSHEET_OPT" in
+    case $(Read) in
 	d | D ) GX_Races && PressAnyKey ;;
 	a | A ) ((ALMANAC)) && Almanac ;;
 	q | Q ) CleanUp ;;
@@ -221,9 +221,14 @@ RollForHealing() { # Used in Rest()
     sleep 2
 }   # Return to Rest()
 
-# GAME ACTION: REST
-# Game balancing can also be done here, if you think players receive too much/little health by resting.
-Rest() {  # Used in NewSector()
+#-----------------------------------------------------------------------
+# Rest()
+# Game balancing can also be done here, if you think players receive
+# too much/little health by resting.
+# Arguments: $SCENARIO(char)
+# Used: NewSector()
+#-----------------------------------------------------------------------
+Rest() {  
     PLAYER_RESTING=1 # Set flag for FightMode()
     RollDice 100
     GX_Rest
@@ -253,7 +258,7 @@ Rest() {  # Used in NewSector()
 #-----------------------------------------------------------------------
 # RollForEvent()
 # Arguments: $DICE_SIZE(int), $EVENT(string)
-# Used: NewSector(), Rest()
+# Used: Rest(), CheckForFight()
 #-----------------------------------------------------------------------
 RollForEvent() {     
     echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 

@@ -115,29 +115,33 @@ BiaminSetup_LoadCharsheet() {
     (( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 }
 
-# BiaminSetup_MakeBaseChar() {
-#     CHAR_BATTLES=0
-#     CHAR_EXP=0
-#     CHAR_HEALTH=100
-#     CHAR_ITEMS=0
-#     CHAR_KILLS=0
-#     BBSMSG=0
-#     STARVATION=0;
-#     TURN=$(TurnFromDate) # Player starts from translated _real date_. Afterwards, turns increment.
-#     ALMANAC=0
-#     #
-#     CHAR_GOLD=-1
-#     CHAR_TOBACCO=-1
-#     # Determine initial food stock (D16 + 4) - player has 5 food minimum
-#     CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" )
-#     # Set initial Value of Currencies
-#     VAL_GOLD=1
-#     VAL_TOBACCO=1
-#     VAL_CHANGE=0.25    
-#     # Add location info
-#     CHAR_GPS="$START_LOCATION"
-#     CHAR_HOME="$START_LOCATION"
-# }
+#-----------------------------------------------------------------------
+# BiaminSetup_MakeBaseChar()
+# Sketch. Main idea is to exclude BiaminSetup_UpdateOldSaves() but
+# make basic char with default settings (gold, values, food, etc) and
+# then BiaminSetup_LoadCharsheet() or BiaminSetup_MakeNewChar()
+#-----------------------------------------------------------------------
+BiaminSetup_MakeBaseChar() {
+# CHARACTER: $CHAR
+# RACE: $CHAR_RACE
+    CHAR_BATTLES=0
+# EXPERIENCE: $CHAR_EXP
+    CHAR_GPS="$START_LOCATION"
+    CHAR_HEALTH=100
+    CHAR_ITEMS=0
+    CHAR_KILLS=0
+    CHAR_HOME="$START_LOCATION"
+# GOLD: $CHAR_GOLD
+# TOBACCO: $CHAR_TOBACCO
+    CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" ) # Determine initial food stock (D16 + 4) - player has 5 food minimum
+    BBSMSG=0
+    VAL_GOLD=1 	                # Initial Value of Currencies
+    VAL_TOBACCO=1	        # Initial Value of Currencies
+    VAL_CHANGE=0.25	        # Initial Value of Currencies
+    STARVATION=0
+    TURN=$(TurnFromDate)	# Count turn from current date
+    ALMANAC=0 			# Locked by-default
+}
 
 BiaminSetup_MakeNewChar() {
 	echo " $CHAR is a new character!"

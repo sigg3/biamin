@@ -66,7 +66,7 @@ FightMode_AddBonuses() {
 #  BEFORE fight loop!)
 #-----------------------------------------------------------------------
 FightMode_RemoveBonuses() {
-    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY++)) 
+    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY--)) 
 }
 
 #-----------------------------------------------------------------------

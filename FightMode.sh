@@ -422,7 +422,7 @@ FightMode() {	# Used in NewSector() and Rest()
     done
     ########################################################################
     FightMode_CheckForDeath	               # Check if player is alive
-    GX_Monster "$ENEMY"		               # Display enemy GX last time
+    FightMode_FightTable	               # Display enemy GX last time
     FightMode_CheckForExp "$LUCK"	       # 
     FightMode_CheckForPickpocket "$PICKPOCKET" # 
     FightMode_CheckForLoot	               # 

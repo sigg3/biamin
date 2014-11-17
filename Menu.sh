@@ -134,7 +134,6 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 		((CHAR_HEALTH -= 20)) ;
     	((CHAR_EXP -=20)) ;
     	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
-    fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
     exit 0

@@ -130,10 +130,11 @@ Press any key to go back to main menu!";
 CleanUp() { # Used in MainMenu(), NewSector(),
     GX_BiaminTitle
     echo -e "\n$HR"
-	[[ "$FIGHTMODE" ]] && { #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
-		((CHAR_HEALTH -= 20)) ;
-    	((CHAR_EXP -=20)) ;
-    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP" ; }
+    if [ -n "$FIGHTMODE" ] && (( FIGHTMODE == 1 )); then #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
+		((CHAR_HEALTH -= 20))
+    	((CHAR_EXP -=20))
+    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP"
+    fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
     exit 0

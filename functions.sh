@@ -124,8 +124,8 @@ Intro() {
 #-----------------------------------------------------------------------
 # Reseed RANDOM. Needed only once at start, so moved to separate section
 case "$OSTYPE" in
-    openbsd* ) RANDOM_SEED=$(date '+%S') ;;
-    *)         RANDOM_SEED=$(date '+%N') ;;
+    openbsd* ) RANDOM=$(date '+%S') ;;
+    *)         RANDOM=$(date '+%N') ;;
 esac
 
 # TODO:
@@ -145,7 +145,6 @@ esac
 #-----------------------------------------------------------------------
 RollDice() {     
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
-	RANDOM=$RANDOM_SEED
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

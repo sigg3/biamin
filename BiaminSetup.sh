@@ -83,37 +83,34 @@ BiaminSetup_SanityCheck(){
 BiaminSetup_LoadCharsheet() {
     echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn	
     BiaminSetup_UpdateOldSaves "$CHARSHEET"
-    IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS \
-       CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO \
-       CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN ALMANAC <<< $(awk '
-       {
-           if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
-              	                 CHARACTER = substr($0, RLENGTH+2); }
-           if (/^RACE:/)       { RACE= $2 }
-           if (/^BATTLES:/)    { BATTLES = $2 }
-           if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
-           if (/^LOCATION:/)   { LOCATION = $2 }
-           if (/^HEALTH:/)     { HEALTH = $2 }
-           if (/^ITEMS:/)      { ITEMS = $2 }
-           if (/^KILLS:/)      { KILLS = $2 }
-           if (/^HOME:/)       { HOME = $2 }
-           if (/^GOLD:/)       { GOLD = $2 }
-           if (/^TOBACCO:/)    { TOBACCO = $2 }
-           if (/^FOOD:/)       { FOOD = $2 }
-           if (/^BBSMSG:/)     { BBSMSG = $2 }
-           if (/^VAL_GOLD:/)   { VAL_GOLD = $2 }
-           if (/^VAL_TOBACCO:/){ VAL_TOBACCO = $2 }
-           if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
-           if (/^STARVATION:/) { STARVATION = $2 }
-           if (/^TURN:/)        { TURN= $2 }
-           if (/^ALMANAC:/)     { ALMANAC = $2 }
-       }       
-       END { 
-           print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" \
-              	HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" \
-              	BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" \
-              	TURN ";" ALMANAC ";" 
-       }' "$CHARSHEET" )
+	local CHAR_TMP=$(awk '
+                  { 
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
+                  	                 CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^RACE:/)       { RACE= $2 }
+                   if (/^BATTLES:/)    { BATTLES = $2 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
+                   if (/^LOCATION:/)   { LOCATION = $2 }
+                   if (/^HEALTH:/)     { HEALTH = $2 }
+                   if (/^ITEMS:/)      { ITEMS = $2 }
+                   if (/^KILLS:/)      { KILLS = $2 }
+                   if (/^HOME:/)       { HOME = $2 }
+                   if (/^GOLD:/)       { GOLD = $2 }
+                   if (/^TOBACCO:/)    { TOBACCO = $2 }
+                   if (/^FOOD:/)       { FOOD = $2 }
+                   if (/^BBSMSG:/)     { BBSMSG = $2 }
+                   if (/^VAL_GOLD:/)   { VAL_GOLD = $2 }
+                   if (/^VAL_TOBACCO:/){ VAL_TOBACCO = $2 }
+                   if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
+                   if (/^STARVATION:/) { STARVATION = $2 }
+                   if (/^TURN:/)        { TURN= $2 }
+                   if (/^ALMANAC:/)     { ALMANAC = $2 }
+                 }
+                 END { 
+                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" ALMANAC ";"
+                 }' $CHARSHEET )
+	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN ALMANAC <<< "$CHAR_TMP"
+	unset CHAR_TMP
     # If character is dead, don't fool around..
     (( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 }

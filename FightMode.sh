@@ -429,6 +429,7 @@ FightMode() {	# Used in NewSector() and Rest()
     SaveCurrentSheet
     sleep 6
     DisplayCharsheet
+    [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && DICE=111 # Bugfix: Don't roll for heal if pl was attacked.
 }
 #                                                                      #
 #                                                                      #

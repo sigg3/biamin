@@ -172,7 +172,7 @@ FightMode_DefineInitiative() {
     if (( EN_ACCURACY > ACCURACY )) || ((PLAYER_RESTING)) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
-	(( PLAYER_RESTING == 1 )) && echo "Suddenly you was attacked by the $ENEMY " || echo "The $ENEMY has initiative"
+	(( PLAYER_RESTING == 1 )) && echo -e "You're awoken by an intruder, the $ENEMY attacks!" || echo "The $ENEMY has initiative"
     else
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"

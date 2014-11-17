@@ -122,11 +122,13 @@ Intro() {
 ################### GAME SYSTEM #################
 
 #-----------------------------------------------------------------------
-# Reseed RANDOM. Needed only once at start, so moved to separate section
+# Reseed RANDOM. Needed only once at start, so moved to separate section (Why only at start? -Sigge)
 case "$OSTYPE" in
-    openbsd* ) RANDOM=$(date '+%S') ;;
-    *)         RANDOM=$(date '+%N') ;;
+    openbsd* ) RESEEDER="Reseed S" ;;
+    *)         RESEEDER="Reseed N" ;;
 esac
+$RESEED
+
 # TODO:
 #  ? Move it to runtime section
 #  ? Make separate file with system-depended things
@@ -137,6 +139,16 @@ esac
 # Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
 #-----------------------------------------------------------------------
 
+
+#-----------------------------------------------------------------------
+# Reseed()
+# Automatic arguments determined by OSTYPE (above)
+# Used: RollForEvent(), RollForHealing(), etc
+#-----------------------------------------------------------------------
+Reseed() {
+	[ "$1" = "S" ] && RANDOM=$(date '+%S')
+	[ "$1" = "N" ] && RANDOM=$(date '+%N')
+}
 #-----------------------------------------------------------------------
 # RollDice()
 # Arguments: $DICE_SIZE (int)
@@ -144,6 +156,7 @@ esac
 #-----------------------------------------------------------------------
 RollDice() {     
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
+	$RESEEDER
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
 

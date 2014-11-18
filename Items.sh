@@ -2,7 +2,11 @@
 #                           Game items                                 #
 #                                                                      #
 
-# Define items variables (mostly for readability)
+#-----------------------------------------------------------------------
+# Items variables
+# Used: ItemWasFound(), GX_Item(), FightMode_AddBonuses(),
+#  FightMode_RemoveBonuses(), BiaminSetup_SetItemsAbilities()
+#-----------------------------------------------------------------------
 GIFT_OF_SIGHT=0
 EMERALD_OF_NARCOLEPSY=1
 GUARDIAN_ANGEL=2
@@ -12,7 +16,7 @@ FLASK_OF_TERRIBLE_ODOUR=5
 TWO_HANDED_BROADSWORD=6
 STEADY_HAND_BREW=7
 
-MAX_ITEMS=8 # Define maximum count of items
+MAX_ITEMS=8 # Maximum count of items
 
 #-----------------------------------------------------------------------
 # HaveItem()
@@ -24,7 +28,7 @@ HaveItem() { (( $CHAR_ITEMS > $1 )) && return 0 || return 1; }
 #-----------------------------------------------------------------------
 # CheckHotzones()
 # Check if this GPS is in the items array ($HOTZONES[])
-# Arguments: $ITEM(string [A-R][1-15])
+# Arguments: $GPS(string [A-R][1-15])
 #-----------------------------------------------------------------------
 CheckHotzones() {
     [[ $(grep -E "(^| )$1( |$)" <<< "${HOTZONE[@]}") ]] && return 0 || return 1
@@ -40,11 +44,11 @@ HotzonesDistribute() { #
     local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))               # Scatter only absent items 
     HOTZONE=()                                                # Reset HOTZONE
     while ((ITEMS_2_SCATTER > 0 )) ; do			      # If player already have all items, ITEMS_2_SCATTER'll be 0
-	local ITEM=$(XYtoGPS $(RollDice2 18) $(RollDice2 15)) # Create random item
-	[[ "$ITEM" == "$CHAR_GPS" ]] && continue              # reroll if HOTZONE == CHAR_GPS
-	CheckHotzones "$ITEM" && continue                     # reroll if "$ITEM" is already in ${HOTZONE[@]}
-	((ITEMS_2_SCATTER--))                                 # decrease ITEMS_2_SCATTER because array starts from ${HOTZONE[0]} #kstn
-	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM"                   # init ${HOTZONE[ITEMS_2_SCATTER]},
+	local ITEM=$(XYtoGPS $(RollDice2 18) $(RollDice2 15)) # Create random item GPS
+	[[ "$ITEM" == "$CHAR_GPS" ]] && continue              # Reroll if HOTZONE == CHAR_GPS
+	CheckHotzones "$ITEM" && continue                     # Reroll if "$ITEM" is already in ${HOTZONE[@]}
+	((ITEMS_2_SCATTER--))                                 # Decrease ITEMS_2_SCATTER (because array starts from ${HOTZONE[0]} #kstn)
+	HOTZONE["$ITEMS_2_SCATTER"]="$ITEM"                   # Init ${HOTZONE[ITEMS_2_SCATTER]},
     done
 }
 

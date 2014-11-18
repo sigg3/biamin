@@ -12,7 +12,7 @@ GX_Item() {
     clear
     echo "                                  ITEM FOUND!"
     case "$1" in
-	0) 
+	"$GIFT_OF_SIGHT") 
 	    cat <<"EOT"
                                  Gift of Sight
 
@@ -27,7 +27,7 @@ GX_Item() {
 
 EOT
 	    ;;
-	1)
+	"$EMERALD_OF_NARCOLEPSY")
 	    cat <<"EOT"
                              Emerald of Narcolepsy
 
@@ -44,7 +44,7 @@ EOT
 	
 EOT
 	    ;;
-	2)
+	"$GUARDIAN_ANGEL")
 	    cat <<"EOT"
                                 Guardian Angel
 
@@ -55,7 +55,7 @@ EOT
 
 EOT
 	    ;;
-	3) 
+	"$FAST_MAGIC_BOOTS") 
 	    cat <<"EOT"
                                Fast Magic Boots
 
@@ -74,7 +74,7 @@ EOT
 
 EOT
 	    ;;
-	4)
+	"$QUICK_RABBIT_REACTION")
 	    cat <<"EOT"
                              Quick Rabbit Reaction
 
@@ -90,7 +90,7 @@ EOT
 
 EOT
 	    ;;
-	5)
+	"$FLASK_OF_TERRIBLE_ODOUR")
 	    cat <<"EOT"
                              Flask of terrible odour
 
@@ -104,7 +104,7 @@ EOT
 
 EOT
 	    ;;
-	6)
+	"$TWO_HANDED_BROADSWORD")
 	    cat <<"EOT"
                              Two-Handed Broadsword
 
@@ -122,7 +122,7 @@ EOT
 	
 EOT
 	    ;;
-	7)
+	"$STEADY_HAND_BREW")
 	    cat <<"EOT"
                                Steady Hand Brew
 

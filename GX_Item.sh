@@ -11,7 +11,7 @@
 GX_Item() {
     clear
     case "$1" in
-	0) 
+	"$GIFT_OF_SIGHT") 
 	    cat <<"EOT"
 		
                           G I F T   O F   S I G H T
@@ -37,7 +37,7 @@ GX_Item() {
 
 EOT
 	    ;;
-	1)
+	"$EMERALD_OF_NARCOLEPSY")
 	    cat <<"EOT"
 
                   E M E R A L D   O F   N A R C O L E P S Y
@@ -61,7 +61,7 @@ EOT
 	
 EOT
 	    ;;
-	2)
+	"$GUARDIAN_ANGEL")
 	    cat <<"EOT"
 
                           G U A R D I A N   A N G E L
@@ -87,7 +87,7 @@ EOT
 
 EOT
 	    ;;
-	3) 
+	"$FAST_MAGIC_BOOTS") 
 	    cat <<"EOT"
 
                         F A S T   M A G I C   B O O T S
@@ -112,7 +112,7 @@ EOT
 
 EOT
 	    ;;
-	4)
+	"$QUICK_RABBIT_REACTION")
 	    cat <<"EOT"
 
                     Q U I C K   R A B B I T   R E A C T I O N
@@ -136,7 +136,7 @@ EOT
 
 EOT
 	    ;;
-	5)
+	"$FLASK_OF_TERRIBLE_ODOUR")
 	    cat <<"EOT"
 
                   F L A S K   O F   T E R R I B L E   O D O U R
@@ -160,7 +160,7 @@ EOT
 
 EOT
 	    ;;
-	6)
+	"$TWO_HANDED_BROADSWORD")
 	    cat <<"EOT"
 
                    T W O - H A N D E D    B R O A D S W O R D
@@ -184,7 +184,7 @@ EOT
 	
 EOT
 	    ;;
-	7)
+	"$STEADY_HAND_BREW")
 	    cat <<"EOT"
 
                       S T E A D Y   H A N D   B R E W

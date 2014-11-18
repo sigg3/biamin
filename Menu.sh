@@ -147,20 +147,20 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 MainMenu() {
     while [[ ! "$CHAR" ]] ; do # Until $CHAR is defined
 	GX_Banner 		
-	read -sn 1 -p "$(MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit')" TOPMENU_OPT 2>&1
-	case "$TOPMENU_OPT" in
+	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
+	case $(Read) in
 	    p | P ) echo -en "${CLEAR_LINE} Enter character name (case sensitive): ";
  		    read CHAR 2>&1 ;;
-	    l | L ) LoadGame;;
+	    l | L ) LoadGame ;;
 	    h | H ) GX_HighScore ; # HighScore
 		    echo "";
 		    # Show 10 highscore entries or die if Highscore list is empty
 		    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
 		    echo "" ; # empty line TODO fix it
-		    read -sn 1 -p "$(MakePrompt 'Press the any key to go to (M)ain menu')" 2>&1 ;;
+		    PressAnyKey 'Press the any key to go to (M)ain menu';;
 	    c | C ) GX_Credits ; # Credits
-		    read -sn 1 -p "$(MakePrompt '(H)owTo;(L)icense;(M)ain menu')" "CREDITS_OPT" 2>&1 ;
-		    case "$CREDITS_OPT" in
+		    MakePrompt '(H)owTo;(L)icense;(M)ain menu'; 
+		    case $(Read) in
 			L | l ) License ;;
 			H | h ) GX_HowTo ;;
 		    esac ;;

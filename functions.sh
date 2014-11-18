@@ -209,9 +209,9 @@ Death() {
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
+    # TODO: add showing Highscore list here
     CleanUp
 }
-
 
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
@@ -434,8 +434,6 @@ Marketplace_Grocer() { # Used in GoIntoTown()
     unset PRICE_IN_GOLD PRICE_IN_TOBACCO
 } # Return to GoIntoTown()
 
-
-
 #-----------------------------------------------------------------------
 # CheckForStarvation()
 # Food check 
@@ -489,12 +487,12 @@ ColorConfig() {
     case "$1" in
 	1 ) echo "Enabling color for maps!" ;;
 	0 ) echo "Enabling old black-and-white version!" ;;
-	* ) echo -e "\nWe need to configure terminal colors for the map!
+	* ) echo -en "\nWe need to configure terminal colors for the map!
 Please note that a colored symbol is easier to see on the world map.
 Back in a minute was designed for white text on black background.
-Does \033[1;33mthis text appear yellow\033[0m without any funny characters?"
-	    read -sn1 -p "Do you want color? [Y/N]: " COLOR_CONFIG 2>&1
-	    case "$COLOR_CONFIG" in
+Does \033[1;33mthis text appear yellow\033[0m without any funny characters?
+Do you want color? [Y/N]: "
+	    case $(Read) in
 		n | N ) COLOR=0 ; echo -e "\nDisabling color! Edit $GAMEDIR/config to change this setting.";;
 		* )     COLOR=1 ; echo -e "\nEnabling color!" ;;
 	    esac

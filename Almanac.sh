@@ -82,8 +82,6 @@ Almanac_Notes() {
 # Used: DisplayCharsheet()
 # TODO: FIX_DATE !!!
 # TODO: The Almanac must be "unlocked" in gameplay, e.g. bought from Merchant. This is random (20% chance he has one)
-# TODO: Add ALMANAC=0 in default charsheets
-# TODO: When Almanac is found ALMANAC=1 is saved.
 # TODO: when ALMANAC=1 add NOTES 0-9 in charsheet.
 #-----------------------------------------------------------------------
 Almanac() { 

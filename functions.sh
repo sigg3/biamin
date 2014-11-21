@@ -100,7 +100,7 @@ VAL_TOBACCO: $VAL_TOBACCO
 VAL_CHANGE: $VAL_CHANGE
 STARVATION: $STARVATION
 TURN: $TURN
-ALMANAC: $ALMANAC" > "$CHARSHEET"
+INV_ALMANAC: INV_$ALMANAC" > "$CHARSHEET"
 }
 
 #-----------------------------------------------------------------------
@@ -179,13 +179,13 @@ DisplayCharsheet() {
  Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
-    case "$ALMANAC" in		# Define prompt
+    case "$INV_ALMANAC" in		# Define prompt
 	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has "unlocked" Almanac
 	*) MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit' ;; # Player does not have Almanac
     esac
     case $(Read) in
 	d | D ) GX_Races && PressAnyKey ;;
-	a | A ) ((ALMANAC)) && Almanac ;;
+	a | A ) ((INV_ALMANAC)) && Almanac ;;
 	q | Q ) CleanUp ;;
     esac
 }

@@ -52,7 +52,7 @@ BiaminSetup_UpdateOldSaves() {
     # Time 
     grep -Eq '^TURN:' "$1"        || echo "TURN: $(TurnFromDate)" >> $1
     # Almanac
-    grep -Eq '^ALMANAC:' "$1"     || echo "ALMANAC: 0" >> $1
+    grep -Eq '^INV_ALMANAC:' "$1" || echo "ALMANAC: 0" >> $1
 }
 
 #-----------------------------------------------------------------------
@@ -104,12 +104,12 @@ BiaminSetup_LoadCharsheet() {
                    if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
                    if (/^STARVATION:/) { STARVATION = $2 }
                    if (/^TURN:/)        { TURN= $2 }
-                   if (/^ALMANAC:/)     { ALMANAC = $2 }
+                   if (/^INV_ALMANAC:/) { ALMANAC = $2 }
                  }
                  END { 
-                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" ALMANAC ";"
+                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"
                  }' $CHARSHEET )
-	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN ALMANAC <<< "$CHAR_TMP"
+	IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN INV_ALMANAC <<< "$CHAR_TMP"
 	unset CHAR_TMP
     # If character is dead, don't fool around..
     (( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
@@ -140,7 +140,7 @@ BiaminSetup_MakeBaseChar() {
     VAL_CHANGE=0.25	        # Initial Value of Currencies
     STARVATION=0
     TURN=$(TurnFromDate)	# Count turn from current date
-    ALMANAC=0 			# Locked by-default
+    INV_ALMANAC=0 			# Locked by-default
 }
 
 BiaminSetup_MakeNewChar() {
@@ -153,7 +153,7 @@ BiaminSetup_MakeNewChar() {
 	BBSMSG=0
 	STARVATION=0;
 	TURN=$(TurnFromDate) # Player starts from translated _real date_. Afterwards, turns increment.
-	ALMANAC=0
+	INV_ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
 

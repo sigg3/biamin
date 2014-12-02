@@ -1,0 +1,12 @@
+How to make biamin.sh executable file:
+
+1. Clone git repository or download and extact tarball.
+2. Run
+$ make
+3. And play
+$ ./biamin.sh p
+or
+$ bash biamin.sh p
+
+
+

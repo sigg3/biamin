@@ -217,7 +217,8 @@ Death() {
 RollForHealing() { # Used in Rest()
     RollDice 6
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
-    (( DICE > HEALING )) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
+    # TODO!!! Check it - ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." ) - shouldn't that be not () but {} ??? #kstn
+    ((DICE > HEALING)) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
     ((TURN++))
     sleep 2
 }   # Return to Rest()
@@ -326,7 +327,7 @@ Marketplace_Merchant() {
 	GX_Marketplace_Merchant
 	local M_Y=4
 	local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
-	tput  sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
+	tput sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
 	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
 	while (( M_Y <= 10 )) ; do
@@ -369,7 +370,7 @@ Marketplace_Merchant() {
 	    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
 	    GX_Marketplace_Merchant
 	    case "$MERCHANTVAR" in
-		b | B ) local TODO ;; # Add buying logic (from grocer
+		b | B ) local TODO ;; # Add buying logic (from grocer)
 		s | S ) local TODO ;; # Add selling logic (more or less equiv.)
 	    esac    
 	fi
@@ -380,25 +381,24 @@ Marketplace_Merchant() {
 
 #-----------------------------------------------------------------------
 # Marketplace_Grocer()
+# Used: GoIntoTown()
 # IDEA:
 # ? Add stealing from market??? 
 #   Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
 #   Or he call the police (the guards?) and they throw player from town? (kstn)
 #-----------------------------------------------------------------------
-Marketplace_Grocer() { # Used in GoIntoTown()
+Marketplace_Grocer() { 
     # The PRICE of units are set in WorldPriceFixing()
     while (true); do
 	GX_Marketplace_Grocer
-	tput sc # save cursor position
-	tput cup 10 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-	echo "1 FOOD costs $PRICE_FxG Gold"
-	tput cup 11 4 # move to y=10, x=4 ( upper left corner is 0 0 )
-	echo "or $PRICE_FxT Tobacco.\""
-	tput rc # restore cursor position
+	tput sc                                      # save cursor position
+	MvAddStr 10 4 "1 FOOD costs $PRICE_FxG Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
+	MvAddStr 11 4  "or $PRICE_FxT Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
+	tput rc                                      # restore cursor position
 	echo "Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
-	echo -e "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
-	read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave')" MARKETVAR 2>&1
-	case "$MARKETVAR" in
+	echo "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
+	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
+	case $(Read) in
 	    g | G )
 		GX_Marketplace_Grocer
 		read -p "How many food items do you want to buy? " QUANTITY 2>&1
@@ -505,7 +505,7 @@ Do you want color? [Y/N]: "
 	RESET='\033[0m'
     fi
     # Define escape sequences
-    #TODO replace to tput or similar
+    # TODO replace to tput or similar
     CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 }
 #                           END FUNCTIONS                              #

@@ -83,6 +83,8 @@ FightMode_DefineEnemy() {
 	x ) ((DICE <= 20)) && ENEMY="orc"     || ((DICE <= 40)) && ENEMY="varg"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 55)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="bear" ;;
 	. ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ENEMY="imp"  ;; # Bear in road was weird..
 	@ ) ((DICE <= 10)) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="bear"   || ENEMY="imp"  ;;
+
+
     esac
 
     # ENEMY ATTRIBUTES
@@ -180,6 +182,7 @@ FightMode_DefineInitiative() {
 	GX_Monster "$ENEMY" 
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
+	    # TODO check this test
 	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
@@ -196,7 +199,8 @@ FightMode_DefineInitiative() {
 	# And secondly for flee
 	if [[ "$FLEE_OPT" == "f" || "$FLEE_OPT" == "F" ]]; then	       
 	    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
-	    if (( $(RollDice2 6) <= FLEE )) ; then
+	    RollDice 6
+	    if (( DICE <= FLEE )) ; then
 		echo "You rolled $DICE and managed to run away!"
 		LUCK=3
 		unset FIGHTMODE
@@ -251,14 +255,14 @@ FightMode_CharTurn() {
 	    RollDice 6 	# ????? Do we need it ??? #kstn
 	    FightMode_FightFormula 6 le F
 	    unset FIGHT_PROMPT
-	    if (( DICE <= FLEE )); then
+	    if (( DICE <= FLEE )); then # first check for flee
 		(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
 		echo -n " $FLEE ) You try to flee the battle .."
 		sleep 2
 		FightMode_FightTable
 		RollDice 6
 		FightMode_FightFormula 6 le eA
-		if (( DICE <= EN_ACCURACY )); then
+		if (( DICE <= EN_ACCURACY )); then # second check for flee
 		    (( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
 		    echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
 		else # Player managed to flee
@@ -274,10 +278,11 @@ FightMode_CharTurn() {
 	*)  # Player fights
 	    unset FIGHT_PROMPT
 	    if (( DICE <= ACCURACY )); then
-		echo -e "\tAccuracy [D6 $DICE < $ACCURACY] Your weapon hits the target!"
+		echo -e "\tAccuracy [D6 $DICE <= $ACCURACY] Your weapon hits the target!"
 		read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT" 2>&1
-		DAMAGE=$(( $(RollDice2 6) * STRENGTH ))
+		RollDice 6
 		echo -en "\nROLL D6: $DICE"
+		DAMAGE=$(( DICE * STRENGTH ))
 		echo -en "\tYour blow dishes out $DAMAGE damage points!"
 		((EN_HEALTH -= DAMAGE))
 	    else
@@ -290,7 +295,8 @@ FightMode_EnemyTurn() {
     if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 	echo -e "Rolling for enemy flee: D20 < $EN_FLEE"
 	sleep 2
-	if (( $(RollDice2 20) < EN_FLEE )); then
+	RollDice 20
+	if (( DICE < EN_FLEE )); then
 	    echo -e "ROLL D20: ${DICE}\tThe $ENEMY uses an opportunity to flee!"
 	    LUCK=1
 	    unset FIGHTMODE
@@ -301,7 +307,8 @@ FightMode_EnemyTurn() {
     fi  # Enemy does not lose turn for trying for flee
     echo "It's the ${ENEMY}'s turn"
     sleep 2
-    if (( $(RollDice2 6) <= EN_ACCURACY )); then
+    RollDice 6
+    if (( DICE <= EN_ACCURACY )); then
 	echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)

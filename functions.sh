@@ -100,7 +100,7 @@ VAL_TOBACCO: $VAL_TOBACCO
 VAL_CHANGE: $VAL_CHANGE
 STARVATION: $STARVATION
 TURN: $TURN
-INV_ALMANAC: INV_$ALMANAC" > "$CHARSHEET"
+INV_ALMANAC: $INV_ALMANAC" > "$CHARSHEET"
 }
 
 #-----------------------------------------------------------------------

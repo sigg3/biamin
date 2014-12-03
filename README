@@ -1,3 +1,4 @@
+------------------------------------------------------------------------
 How to make biamin.sh executable file:
 
 1. Clone git repository or download and extact tarball.
@@ -8,5 +9,24 @@ $ ./biamin.sh p
 or
 $ bash biamin.sh p
 
+------------------------------------------------------------------------
+If you want to debug biamin:
 
+At any case you can send message through http://sigg3.net/biamin/bugs
+or any other way, but fastest is to leave a comment on
+https://gitorious.org/back-in-a-minute . But the best way to debug
+(and help us make biamin better :) ) is to run biamin as
 
+$ bash -x biamin.sh p 2>log
+
+bash      -> run biamin using BASH
+-x        -> use BASH's debugger
+biamin.sn -> biamin :)
+p         -> play (run ./biamin --help)
+2>log     -> redirect STDERR to file 'log'
+
+and send 'log' to us if you'll meet any bugs. It's really easier to
+understand what is wrong when you have debugger output.
+
+And at any case:
+WHATEVER YOU CHOOSE, AND HOWEVER YOU ROLL, THANKS FOR PLAYING!

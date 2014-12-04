@@ -21,12 +21,13 @@ $ bash -x biamin.sh p 2>log
 
 bash      -> run biamin using BASH
 -x        -> use BASH's debugger
-biamin.sn -> biamin :)
+biamin.sh -> biamin :)
 p         -> play (run ./biamin --help)
 2>log     -> redirect STDERR to file 'log'
 
-and send 'log' to us if you'll meet any bugs. It's really easier to
-understand what is wrong when you have debugger output.
+and send 'log' to us (or use any pastebin servise and sent link) if
+you'll meet any bugs. It's really easier to understand what is wrong
+when you have debugger output.
 
 And at any case:
 WHATEVER YOU CHOOSE, AND HOWEVER YOU ROLL, THANKS FOR PLAYING!

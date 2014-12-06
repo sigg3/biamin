@@ -1,5 +1,12 @@
+               ____  _____    _    ____  __  __ _____ 
+              |  _ \| ____|  / \  |  _ \|  \/  | ____|
+              | |_) |  _|   / _ \ | | | | |\/| |  _|  
+              |  _ <| |___ / ___ \| |_| | |  | | |___ 
+              |_| \_\_____/_/   \_\____/|_|  |_|_____|
+
+   blog @ sigg3.net/biamin || repo @ gitorious.org/back-in-a-minute
 ------------------------------------------------------------------------
-How to make biamin.sh executable file:
+How to make the biamin.sh executable:
 
 1. Clone git repository or download and extact tarball.
 2. Run
@@ -10,24 +17,27 @@ or
 $ bash biamin.sh p
 
 ------------------------------------------------------------------------
-If you want to debug biamin:
+If you want to hunt down evil bugs and become a debug warrior:
 
-At any case you can send message through http://sigg3.net/biamin/bugs
-or any other way, but fastest is to leave a comment on
-https://gitorious.org/back-in-a-minute . But the best way to debug
-(and help us make biamin better :) ) is to run biamin as
+The fastest way is to leave a comment on our git repo at
+https://gitorious.org/back-in-a-minute
+But you may also leave a comment on http://sigg3.net/biamin/bugs
+
+To debug biamin and help us make it better, run biamin like this:
 
 $ bash -x biamin.sh p 2>log
 
-bash      -> run biamin using BASH
--x        -> use BASH's debugger
-biamin.sh -> biamin :)
-p         -> play (run ./biamin --help)
-2>log     -> redirect STDERR to file 'log'
+Explanation:
+    bash      -> run biamin using BASH
+    -x        -> use BASH's debugger
+    biamin.sh -> biamin :)
+    p         -> play (run ./biamin --help)
+    2>log     -> redirect STDERR to file 'log'
 
-and send 'log' to us (or use any pastebin servise and sent link) if
-you'll meet any bugs. It's really easier to understand what is wrong
-when you have debugger output.
+When you've found a bug, you can either send the log to us or use any
+pastebin service and provide us with a link. This improves the chances
+of our catching the error and fixing it, and it makes the gods happy!
 
-And at any case:
 WHATEVER YOU CHOOSE, AND HOWEVER YOU ROLL, THANKS FOR PLAYING!
+
+Regards, kstn & sigg3

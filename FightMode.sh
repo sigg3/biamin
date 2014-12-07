@@ -353,7 +353,7 @@ FightMode_CheckForExp() {
 	1)  # ENEMY managed to FLEE
 	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
-	2)  # died but saved by guardian angel or 1000 EXP
+	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight!
 	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
@@ -404,8 +404,11 @@ FightMode_CheckForPickpocket() {
 # TODO: check for boar's tusks etc (3.0)
 #-----------------------------------------------------------------------
 FightMode_CheckForLoot() {
-    if ((LUCK == 0)); then # Only if $ENEMY was slain
-	(( $(bc <<< "$EN_FOOD > 0") )) && echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body" && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
+    if ((LUCK == 0)); then                       # Only if $ENEMY was slain
+	if (( $(bc <<< "$EN_FOOD > 0") )); then	 #  and have some FOOD
+	    echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body"
+	    CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
+	fi
     fi
 }
 

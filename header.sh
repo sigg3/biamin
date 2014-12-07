@@ -5,7 +5,7 @@ WEBURL="http://sigg3.net/biamin/"
 
 ########################################################################
 # BEGIN CONFIGURATION                                                  #
-# Default dir for config,saves, etc, change at runtime                 #
+# Default dir for config, saves, etc, change at runtime                #
 GAMEDIR="$HOME/.biamin" # (no trailing slash!)                         #
 # Default file for config, change at runtime                           #
 CONFIG="$GAMEDIR/config"                                               #
@@ -46,4 +46,5 @@ DISABLE_CHEATS=0                                                       #
 #                                           - Sigg3                    #
 #                                                                      #
 ########################################################################
+
 

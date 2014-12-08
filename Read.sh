@@ -11,3 +11,12 @@ Read() {
     echo "$REPLY"		# And echo it
 }
 
+#-----------------------------------------------------------------------
+# Sleep()
+# Works like usual sleep but can be abortet by hitting key
+# Arguments: $SECONDS(int)
+#-----------------------------------------------------------------------    
+Sleep() {
+    read -n 1 -t "$1"
+}
+

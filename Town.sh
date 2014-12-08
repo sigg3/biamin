@@ -61,7 +61,7 @@ TavernRest() {
 Tavern() { 
     while (true); do
 	GX_Tavern 
-	echo "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit"
+	echo -n "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit"
 	case $(Read) in
 	    r | R) 
 		echo -en "${CLEAR_LINE}      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit"
@@ -89,7 +89,7 @@ Marketplace() {
     # The PRICE of a unit (food, ale) is always 1. #??? #kstn
     while (true); do
 	GX_Marketplace
-	echo "           (G)rocer          (M)erchant          (L)eave Marketplace"
+	echo -n "           (G)rocer          (M)erchant          (L)eave Marketplace"
 	case $(Read) in
 	    g | G) Marketplace_Grocer;;   # Trade FOOD for GOLD and TOBACCO
 	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
@@ -110,7 +110,7 @@ Marketplace() {
 GoIntoTown() { 
     while (true); do
 	GX_Place "T" # GX_Town 
-	echo "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town"
+	echo -n "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town"
 	case $(Read) in
 	    t | T ) Tavern ;;
 	    m | M ) Marketplace ;;

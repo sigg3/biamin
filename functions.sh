@@ -265,7 +265,7 @@ Rest() {
 #-----------------------------------------------------------------------
 RollForEvent() {     
     echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 
-    sleep 2
+    sleep 1.5
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 
@@ -279,40 +279,67 @@ Marketplace_Merchant() {
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
 
-	# Set prices at defaults
+	# Set BUY & SELL prices at defaults (Food, Tobacco, Gold)
     MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT && MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
+    
+    # Set prices for items (1 item is worth 2x Food)
+    PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG
+    PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
     
 	# Create semi-random profit/discount margin
 	RollDice 3
-	local MERCHANT_MARGIN=$(( bc <<< "scale=2;$DICE*$VAL_CHANGE" ))
+	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
 
-	# Add positive and negative margins to..
+	# Add positive and negative margins to what the merchant wants to keep for himself
 	RollDice 3
-	case "$DICE" in                                                               # Merchant WANTS to buy and only reluctantly sells:
-	    1 ) MERCHANT_FxG=$(( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" ))   # Food (player's cost in gold purchasing food)
-			MERCHANT_GxF=$(( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" ))   # Food (player's discount in food purchasing gold) 
-			MERCHANT_FxT=$(( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" ))
-			MERCHANT_TxF=$(( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ))
-			MERCHANT_FxI=$(( bc <<< "scale=2;$MERCHANT_FxI+$MERCHANT_MARGIN" ))
-			MERCHANT_IxF=$(( bc <<< "scale=2;$MERCHANT_IxF-$MERCHANT_MARGIN" )) ;;
-		2 ) MERCHANT_TxG=$(( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" ))   # Tobacco (player's cost in gold purchasing tobacco)
-			MERCHANT_GxT=$(( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" ))   # Tobacco (player's discount in tobacco purchasing gold) 
-			MERCHANT_TxF=$(( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" ))
-			MERCHANT_FxT=$(( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ))
-			MERCHANT_TxI=$(( bc <<< "scale=2;$MERCHANT_TxI+$MERCHANT_MARGIN" ))
-			MERCHANT_IxT=$(( bc <<< "scale=2;$MERCHANT_IxT-$MERCHANT_MARGIN" )) ;;
-		3 ) MERCHANT_GxF=$(( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" ))   # Gold (player's cost in food purchasing gold)
-			MERCHANT_FxG=$(( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" ))   # Gold (player's discount in gold purchasing food)
-			MERCHANT_GxT=$(( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" ))
-			MERCHANT_TxG=$(( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" ))
-			MERCHANT_GxI=$(( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" ))
-			MERCHANT_IxG=$(( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" )) ;;
+	case "$DICE" in                                                              # Merchant WANTS to buy and only reluctantly sells:
+	    1 ) MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's cost in gold purchasing food)
+			MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold) 
+			MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" )
+			MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ) ;;
+		2 ) MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's cost in gold purchasing tobacco)
+			MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold) 
+			MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" )
+			MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ) ;;
+		3 ) MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's cost in food purchasing gold)
+			MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
+			MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )
+			MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )
+			MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )    # You can only buy/sell items with gold
+			MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
 	esac
 	
+	# Set any value equal or below 0 to defaults
+	# Ugly yet POSIX compliant code from mywiki.wooledge.org/BashFAQ/022
+	case $(bc <<< "scale=2;$MERCHANT_FxG - 0.00" ) in
+	0 | -*) MERCHANT_FxG=$PRICE_FxG ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_GxF - 0.00" ) in
+	0 | -*) MERCHANT_GxF=$PRICE_GxF ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_FxT - 0.00" ) in
+	0 | -*) MERCHANT_FxT=$PRICE_FxT ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_TxF - 0.00" ) in
+	0 | -*) MERCHANT_TxF=$PRICE_TxF  ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_GxT - 0.00" ) in
+	0 | -*) MERCHANT_GxT=$PRICE_GxT ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_TxG - 0.00" ) in
+	0 | -*) MERCHANT_TxG=$PRICE_TxG  ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_GxI - 0.00" ) in
+	0 | -*) MERCHANT_GxI=$PRICE_GxI ;;
+	esac
+	case $(bc <<< "scale=2;$MERCHANT_IxG - 0.00" ) in
+	0 | -*) MERCHANT_IxG=$PRICE_IxG ;;
+	esac
+
 	# Merchant sell this item (but will buy e.g. fur, tusks etc.)
 	RollDice 4
 	case "$DICE" in
-		1 ) MERCHANT_ITEM="Health Potion (5 HP)" ;;
+		1 ) MERCHANT_ITEM="Health Potion (5 HP)"  ;;
 		2 ) MERCHANT_ITEM="Health Potion (10 HP)" ;;
 		3 ) MERCHANT_ITEM="Health Potion (15 HP)" ;;
 		4 ) MERCHANT_ITEM="Health Potion (20 HP)" ;;
@@ -349,29 +376,30 @@ Marketplace_Merchant() {
 				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
 				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
 				;;
-	    I | i ) MERCHANDISE="Item" ;;
+	    I | i ) MERCHANDISE="Item"
+				MvAddStr 7 4 "$MERCHANT_IxG Gold or $MERCHANT_IxT Tobacco." ;;
 	    * ) break ;;
 	esac
-	GX_Marketplace_Merchant
 	if [ "$MERCHANDISE" = "Item" ] ; then
 	    MvAddStr 4 4 "You are in for a treat! I managed to"
 	    MvAddStr 5 4 "acquire a very rare and valuable"
-	    MvAddStr 6 4 "$MERCHANT_ITEM, which can be yours"
-	    MvAddStr 7 4 "for just $MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
+	    MvAddStr 6 4 "$MERCHANT_ITEM, which can be yours for"
 	    MvAddStr 9 4 "Or I can buy any item you have for $MERCHANT_GxI a piece."
 	else
 	    MvAddStr 4 4 "But of course! Here are my prices:"
 	    MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
 	    MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
 	fi
-	MvAddStr 10 4 "Are you buying or selling?"
+	MvAddStr 11 4 "Are you buying or selling?"
+	tput rc
 	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
 	GX_Marketplace_Merchant
-	    case "$MERCHANDISE" in
+	    case "$MERCHANTVAR" in
 		b | B ) local TODO ;; # Add buying logic (from grocer)
-		s | S ) local TODO ;; # Add selling logic (more or less equiv.)
-	    esac    
-	fi
+		s | S ) [[ "$MERCHANDISE" = "Item" ]] && echo "You don't have anything to sell" && sleep 3 && break
+				;; # Add selling logic (more or less equiv.)
+		* ) unset MERCHANTVAR ;;
+	    esac
 	tput rc
     done
 } # Return to Marketplace
@@ -472,7 +500,7 @@ CheckForStarvation(){
 	fi
 	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death
     fi
-    sleep 2 ### DEBUG
+    sleep 1.5 ### DEBUG
 }
 
 #-----------------------------------------------------------------------

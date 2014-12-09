@@ -89,7 +89,7 @@ Marketplace() {
     # The PRICE of a unit (food, ale) is always 1. #??? #kstn
     while (true); do
 	GX_Marketplace
-	echo -n "           (G)rocer          (M)erchant          (L)eave Marketplace"
+	MakePrompt '(G)rocer;(M)erchant;(L)eave Marketplace'
 	case $(Read) in
 	    g | G) Marketplace_Grocer;;   # Trade FOOD for GOLD and TOBACCO
 	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn

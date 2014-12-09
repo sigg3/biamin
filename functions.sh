@@ -332,11 +332,11 @@ Marketplace_Merchant() {
 	    (( M_Y++ ))
 	done
 	tput rc
-	local MERCHANDISE=0
-	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANDISE 2>&1
+	local MERCHANDISE && local MERCHANTVAR
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
 	GX_Marketplace_Merchant
 	tput sc
-    case "$MERCHANDISE" in
+    case "$MERCHANTVAR" in
 	    F | f ) MERCHANDISE="Food"
 				MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
 				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
@@ -352,19 +352,21 @@ Marketplace_Merchant() {
 	    I | i ) MERCHANDISE="Item" ;;
 	    * ) break ;;
 	esac
+	GX_Marketplace_Merchant
 	if [ "$MERCHANDISE" = "Item" ] ; then
-	    MvAddStr 4 4 "You are in for a treat!"
-	    MvAddStr 6 4 "I managed to acquire a very"
-	    MvAddStr 7 4 "rare and valuable $MERCHANT_ITEM."
-	    MvAddStr 9 4 "It's yours for $MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
-	    read -sn 1 ### DEBUG
+	    MvAddStr 4 4 "You are in for a treat! I managed to"
+	    MvAddStr 5 4 "acquire a very rare and valuable"
+	    MvAddStr 6 4 "$MERCHANT_ITEM, which can be yours"
+	    MvAddStr 7 4 "for just $MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
+	    MvAddStr 9 4 "Or I can buy any item you have for $MERCHANT_GxI a piece."
 	else
 	    MvAddStr 4 4 "But of course! Here are my prices:"
 	    MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
 	    MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
-	    MvAddStr 10 4 "Are you buying or selling?"
-	    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
-	    GX_Marketplace_Merchant
+	fi
+	MvAddStr 10 4 "Are you buying or selling?"
+	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+	GX_Marketplace_Merchant
 	    case "$MERCHANDISE" in
 		b | B ) local TODO ;; # Add buying logic (from grocer)
 		s | S ) local TODO ;; # Add selling logic (more or less equiv.)

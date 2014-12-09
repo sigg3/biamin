@@ -279,9 +279,8 @@ Marketplace_Merchant() {
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
 
-	# Set normal prices at defaults
-    MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT
-    MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
+	# Set prices at defaults
+    MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT && MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
     
 	# Create semi-random profit/discount margin
 	RollDice 3
@@ -309,7 +308,7 @@ Marketplace_Merchant() {
 			MERCHANT_GxI=$(( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" ))
 			MERCHANT_IxG=$(( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" )) ;;
 	esac
-	    
+	fi
     # Merchant Loop
     while (true) ; do
 	GX_Marketplace_Merchant
@@ -323,21 +322,24 @@ Marketplace_Merchant() {
 	    (( M_Y++ ))
 	done
 	tput rc
-	local MERCHANDISE
-	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANDICE 2>&1
+	local MERCHANDISE=0
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANDISE 2>&1
 	GX_Marketplace_Merchant
 	tput sc
-    	case "$MERCHANDICE" in
-	    F | f ) MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
+    case "$MERCHANDISE" in
+	    F | f ) MERCHANDISE="Food"
+				MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
 				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
 				;;
-	    T | t ) MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
+	    T | t ) MERCHANDISE="Tobacco"
+				MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
 				MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
 				;;
-	    G | g )	MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
+	    G | g )	MERCHANDISE="Gold"
+				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
 				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
 				;;
-	    I | i ) local MERCHANDISE="Item" ;; # TODO need random item stock (I'm thinking potions healing 5-25 HP or something.. for simplicity; are consumed right away)
+	    I | i ) MERCHANDISE="Item" ;; # TODO need random item stock (I'm thinking potions healing 5-25 HP or something.. for simplicity; are consumed right away)
 	    * ) break ;;
 	esac
 	if [ "$MERCHANDISE" = "Item" ] ; then
@@ -355,7 +357,7 @@ Marketplace_Merchant() {
 	    MvAddStr 10 4 "Are you buying or selling?"
 	    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
 	    GX_Marketplace_Merchant
-	    case "$MERCHANTVAR" in
+	    case "$MERCHANDISE" in
 		b | B ) local TODO ;; # Add buying logic (from grocer)
 		s | S ) local TODO ;; # Add selling logic (more or less equiv.)
 	    esac    

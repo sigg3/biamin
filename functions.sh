@@ -308,6 +308,16 @@ Marketplace_Merchant() {
 			MERCHANT_GxI=$(( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" ))
 			MERCHANT_IxG=$(( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" )) ;;
 	esac
+	
+	# Merchant sell this item (but will buy e.g. fur, tusks etc.)
+	RollDice 4
+	case "$DICE" in
+		1 ) MERCHANT_ITEM="Health Potion (5 HP)" ;;
+		2 ) MERCHANT_ITEM="Health Potion (10 HP)" ;;
+		3 ) MERCHANT_ITEM="Health Potion (15 HP)" ;;
+		4 ) MERCHANT_ITEM="Health Potion (20 HP)" ;;
+	esac
+	(( ALMANAC == 0 )) && MERCHANT_ITEM="Almanac"	
 	fi
     # Merchant Loop
     while (true) ; do
@@ -339,16 +349,14 @@ Marketplace_Merchant() {
 				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
 				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
 				;;
-	    I | i ) MERCHANDISE="Item" ;; # TODO need random item stock (I'm thinking potions healing 5-25 HP or something.. for simplicity; are consumed right away)
+	    I | i ) MERCHANDISE="Item" ;;
 	    * ) break ;;
 	esac
 	if [ "$MERCHANDISE" = "Item" ] ; then
-	    MvAddStr 4 4 "You are in for a treat!" # TODO random item stock (unless Almanac == 0)
-	    MvAddStr 6 4 "I managed to acquire a special"
-	    MvAddStr 7 4 "hand-made and leatherbound"
-	    MvAddStr 8 4 "Almanac. It is only"
-	    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
-	    MvAddStr 11 4 "Go ahead! Touch it!"
+	    MvAddStr 4 4 "You are in for a treat!"
+	    MvAddStr 6 4 "I managed to acquire a very"
+	    MvAddStr 7 4 "rare and valuable $MERCHANT_ITEM."
+	    MvAddStr 9 4 "It's yours for $MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
 	    read -sn 1 ### DEBUG
 	else
 	    MvAddStr 4 4 "But of course! Here are my prices:"

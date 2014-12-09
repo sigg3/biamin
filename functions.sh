@@ -269,9 +269,100 @@ RollForEvent() {
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 
+#-----------------------------------------------------------------------
+# Marketplace_Merchant()
+# Used: GoIntoTown()
+#-----------------------------------------------------------------------
+Marketplace_Merchant() {
+    # If this is a "freshly entered" town, re-do prices
+    if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
+	# "Name" the current merchant as char GPS location
+	MERCHANT="$CHAR_GPS"
 
+	# Set normal prices at defaults
+    MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT
+    MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
+    
+	# Create semi-random profit/discount margin
+	RollDice 3
+	local MERCHANT_MARGIN=$(( bc <<< "scale=2;$DICE*$VAL_CHANGE" ))
 
-
+	# Add positive and negative margins to..
+	RollDice 3
+	case "$DICE" in                                                               # Merchant WANTS to buy and only reluctantly sells:
+	    1 ) MERCHANT_FxG=$(( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" ))   # Food (player's cost in gold purchasing food)
+			MERCHANT_GxF=$(( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" ))   # Food (player's discount in food purchasing gold) 
+			MERCHANT_FxT=$(( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" ))
+			MERCHANT_TxF=$(( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ))
+			MERCHANT_FxI=$(( bc <<< "scale=2;$MERCHANT_FxI+$MERCHANT_MARGIN" ))
+			MERCHANT_IxF=$(( bc <<< "scale=2;$MERCHANT_IxF-$MERCHANT_MARGIN" )) ;;
+		2 ) MERCHANT_TxG=$(( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" ))   # Tobacco (player's cost in gold purchasing tobacco)
+			MERCHANT_GxT=$(( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" ))   # Tobacco (player's discount in tobacco purchasing gold) 
+			MERCHANT_TxF=$(( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" ))
+			MERCHANT_FxT=$(( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ))
+			MERCHANT_TxI=$(( bc <<< "scale=2;$MERCHANT_TxI+$MERCHANT_MARGIN" ))
+			MERCHANT_IxT=$(( bc <<< "scale=2;$MERCHANT_IxT-$MERCHANT_MARGIN" )) ;;
+		3 ) MERCHANT_GxF=$(( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" ))   # Gold (player's cost in food purchasing gold)
+			MERCHANT_FxG=$(( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" ))   # Gold (player's discount in gold purchasing food)
+			MERCHANT_GxT=$(( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" ))
+			MERCHANT_TxG=$(( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" ))
+			MERCHANT_GxI=$(( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" ))
+			MERCHANT_IxG=$(( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" )) ;;
+	esac
+	    
+    # Merchant Loop
+    while (true) ; do
+	GX_Marketplace_Merchant
+	local M_Y=4
+	local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
+	tput sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
+	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
+	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
+	while (( M_Y <= 10 )) ; do
+	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
+	    (( M_Y++ ))
+	done
+	tput rc
+	local MERCHANDISE
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANDICE 2>&1
+	GX_Marketplace_Merchant
+	tput sc
+    	case "$MERCHANDICE" in
+	    F | f ) MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
+				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
+				;;
+	    T | t ) MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
+				MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
+				;;
+	    G | g )	MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
+				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
+				;;
+	    I | i ) local MERCHANDISE="Item" ;; # TODO need random item stock (I'm thinking potions healing 5-25 HP or something.. for simplicity; are consumed right away)
+	    * ) break ;;
+	esac
+	if [ "$MERCHANDISE" = "Item" ] ; then
+	    MvAddStr 4 4 "You are in for a treat!" # TODO random item stock (unless Almanac == 0)
+	    MvAddStr 6 4 "I managed to acquire a special"
+	    MvAddStr 7 4 "hand-made and leatherbound"
+	    MvAddStr 8 4 "Almanac. It is only"
+	    MvAddStr 9 4 "$MERCHANT_IxG Gold or $MERCHANT_IxF Tobacco!"
+	    MvAddStr 11 4 "Go ahead! Touch it!"
+	    read -sn 1 ### DEBUG
+	else
+	    MvAddStr 4 4 "But of course! Here are my prices:"
+	    MvAddStr 6 4 "I sell 1 $MERCHANDISE to you for"
+	    MvAddStr 9 4 "Or I can buy 1 $MERCHANDISE from you,"
+	    MvAddStr 10 4 "Are you buying or selling?"
+	    read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
+	    GX_Marketplace_Merchant
+	    case "$MERCHANTVAR" in
+		b | B ) local TODO ;; # Add buying logic (from grocer)
+		s | S ) local TODO ;; # Add selling logic (more or less equiv.)
+	    esac    
+	fi
+	tput rc
+    done
+} # Return to Marketplace
 
 #-----------------------------------------------------------------------
 # Marketplace_Grocer()

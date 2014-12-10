@@ -233,10 +233,13 @@ Marketplace_Merchant() {
 	(( BARGAIN_TYPE == 3 )) && break # TODO this is quite abrupt.. Fix it:)
 	
 	# Prompt for Quantity
-	[[ "$MERCHANDISE" = "Item" ]] && echo -n "How many $MERCHANT_ITEMs" || "How much $MERCHANDISE"
+	[[ "$MERCHANDISE" = "Item" ]] && echo -n "How many $MERCHANT_ITEMs" || echo -n "How much $MERCHANDISE"
 	echo -n " do you want to "
-	(( BARGAIN_TYPE == 1 )) && echo -n "buy? " || echo -n "sell? "
-	read -p QUANTITY 2>&1
+	(( BARGAIN_TYPE == 1 )) && echo -b "buy? " || echo -n "sell? "
+	read -s QUANTITY 2>&1
+	
+	# TODO rewrite to tput cup talks (so the text is in his "talk bubble")
+	
 	
 	# Calculate COST (for PLAYER or MERCHANT depending on BARGAIN TYPE)
 	(( BARGAIN_TYPE == 1 )) && echo -n "$QUANTITY $MERCHANDISE costs " # TODO verify/Check whether this should be -n or -en "\n" (after read -p)

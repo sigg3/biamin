@@ -163,8 +163,12 @@ RollDice2() { RollDice $1 ; echo "$DICE" ; }
 # Used: NewSector(), FightMode()
 #-----------------------------------------------------------------------
 DisplayCharsheet() { 
-    MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
-    local RACE=$(Capitalize "$CHAR_RACE_STR") # Capitalize
+    local MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
+    local RACE=$(Capitalize "$CHAR_RACE_STR")   # Capitalize
+	local CHARSHEET_INV_STR="$CHAR_GOLD Gold, " # Create Inventory string 
+	CHARSHEET_INV_STR+="$CHAR_TOBACCO Tobacco, "
+    CHARSHEET_INV_STR+="$CHAR_FOOD Food, "
+    (( ALMANAC == 1 )) && CHARSHEET_INV_STR+="Almanac" # Add below as necessary..
     GX_CharSheet
     cat <<EOF
  Character:                 $CHAR ($RACE)
@@ -175,14 +179,15 @@ DisplayCharsheet() {
  Enemies Slain:             $CHAR_KILLS ($MURDERSCORE%)
  Items found:               $CHAR_ITEMS of $MAX_ITEMS
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
- Inventory:                 $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food
+ Inventory:                 $CHARSHEET_INV_STR
  Current Date:              $TODAYS_DATE_STR
- Turn (DEBUG):              $TURN (don't forget to remove it :) ) 
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
+# Turn (DEBUG):              $TURN (don't forget to remove it :) )      # Do we need this still?
+
     case "$INV_ALMANAC" in		# Define prompt
-	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has "unlocked" Almanac
-	*) MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit' ;; # Player does not have Almanac
+	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has    Almanac
+	*) MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit' ;; # Player hasn't Almanac
     esac
     case $(Read) in
 	d | D ) GX_Races && PressAnyKey ;;

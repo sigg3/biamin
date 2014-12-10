@@ -250,7 +250,7 @@ Rest() {
 	    fi
 	    ((TURN++))
 	    ;;
-	x ) RollForEvent 60 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
+	x ) RollForEvent 60 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;; # TODO I need to clean this up..
 	. ) RollForEvent 30 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
 	T ) RollForEvent 15 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 15 "The vices of town life kept you up all night.." ;;
 	@ ) RollForEvent 35 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;

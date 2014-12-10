@@ -232,12 +232,12 @@ Marketplace_Merchant() {
     # Merchant Loop
     while (true) ; do
 	GX_Marketplace_Merchant
-	local M_Y=4
+	local M_Y=4                # Setup default greeting
 	local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
 	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
 	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
-	while (( M_Y <= 10 )) ; do
+	while (( M_Y <= 10 )) ; do # Output default greeting
 	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 	    (( M_Y++ ))
 	done
@@ -305,7 +305,7 @@ Marketplace_Merchant() {
 		"Tobacco" ) read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (F)ood;(N)ot Interested')" MERCHANTVAR 2>&1           ;;
 		"Gold" )    read -sn 1 -p "$(MakePrompt 'Trade for (F)ood;Trade for (T)obacco;(N)ot Interested')" MERCHANTVAR 2>&1        ;;
 		"Item" )    (( BARGAIN_TYPE == 1 )) && read -sn 1 -p "$(MakePrompt 'Trade for (G)old;(N)ot Interested')" MERCHANTVAR 2>&1
-					(( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # Temp workaround (have no items to sell)
+					(( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (have no items to sell)
 		esac
 		
 		# Determine that player has CURRENCY to cover COST or STOCK to cover SALE
@@ -349,7 +349,7 @@ Marketplace_Merchant() {
 		esac
 		fi
 	
-		# Create transaction status output
+		# Create transaction status output (MERCHANT_CONFIRMATION)
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"
 		local MERCHANT_CONFIRMATION
 		local IFS="-" && set "$MERCHANTVAR"
@@ -377,7 +377,7 @@ Marketplace_Merchant() {
 				;;
 		esac
 		
-		# Output transaction status ("goodbye")
+		# Output MERCHANT_CONFIRMATION ("goodbye")
 		tput sc
 		MvAddStr 14 4 "$MERCHANT_CONFIRMATION"
 		tput rc
@@ -397,10 +397,8 @@ Marketplace_Merchant() {
 				(( CHAR_HEALTH += POTIONMODIFIER ))
 				echo " You drink the $MERCHANT_ITEM, restoring $POTIONMODIFIER health points [ + $POTIONMODIFIER HEALTH ]"
 			fi
-		PressAnyKey
-		else
-		PressAnyKey
 		fi # TODO add elif here for removal of items (BARGAIN_TYPE=2) from inventory later
+		PressAnyKey
 	fi
     done
 } # Return to Marketplace

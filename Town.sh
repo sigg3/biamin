@@ -294,14 +294,28 @@ Marketplace_Merchant() {
 	# Do the transaction if it is valid
 	if (( TRANSACTION_STATUS == 0 )) ; then
 	MERCHANTVAR+="-$MERCHANDISE"
-	case "$MERCHANTVAR" in  # Conduct transaction for filtered (valid) transactions in PAYMENT - UNIT
-	"Tobacco-Food" ) CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}") ;;
-	"Tobacco-Gold" ) CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} + ${QUANTITY}") ;;
-	"Food-Gold" )    CHAR_FOOD=$(bc <<< "$CHAR_FOOD - $COST_FOOD" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} + ${QUANTITY}")          ;;
-	"Food-Tobacco" ) CHAR_FOOD=$(bc <<< "$CHAR_FOOD - $COST_FOOD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} + ${QUANTITY}")    ;;
-	"Gold-Food" )    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")          ;;
-	"Gold-Tobacco" ) CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} + ${QUANTITY}")    ;;
-	"Gold-Item" )    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" ) ;; # Items are added/used below
+	case "$MERCHANTVAR" in  # Conduct transaction for filtered (valid) transactions in THING-PAYMENT
+	"Tobacco-Food" ) (( BARGAIN_TYPE == 1 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}") # Buying tobacco for food
+					 (( BARGAIN_TYPE == 2 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO + $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} - ${QUANTITY}") # Selling food for tobacco
+					 ;;
+	"Tobacco-Gold" ) (( BARGAIN_TYPE == 1 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} + ${QUANTITY}")
+					 (( BARGAIN_TYPE == 2 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO + $COST_TOBACCO" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} - ${QUANTITY}")
+					 ;;
+	"Food-Gold" )    (( BARGAIN_TYPE == 1 )) && CHAR_FOOD=$(bc <<< "$CHAR_FOOD - $COST_FOOD" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} + ${QUANTITY}")
+					 (( BARGAIN_TYPE == 2 )) && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $COST_FOOD" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} - ${QUANTITY}")
+					 ;;
+	"Food-Tobacco" ) (( BARGAIN_TYPE == 1 )) && CHAR_FOOD=$(bc <<< "$CHAR_FOOD - $COST_FOOD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} + ${QUANTITY}")
+					 (( BARGAIN_TYPE == 2 )) && CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $COST_FOOD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} - ${QUANTITY}")
+					 ;;
+	"Gold-Food" )    (( BARGAIN_TYPE == 1 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+					 (( BARGAIN_TYPE == 2 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD + $COST_GOLD" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} - ${QUANTITY}")
+					 ;;
+	"Gold-Tobacco" ) (( BARGAIN_TYPE == 1 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} + ${QUANTITY}")
+					 (( BARGAIN_TYPE == 2 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD + $COST_GOLD" ) && CHAR_TOBACCO=$(bc <<< "${CHAR_TOBACCO} - ${QUANTITY}")
+					 ;;
+	"Gold-Item" )    (( BARGAIN_TYPE == 1 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" )
+					 (( BARGAIN_TYPE == 2 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD + $COST_GOLD" )
+					 ;; # Items are added/used/removed below
 	* ) TRANSACTION_STATUS=3 ;; # invalid input of other type (e.g. hitting (T)obacco to buy Item. Nice try:)
 	esac
 	fi
@@ -310,9 +324,9 @@ Marketplace_Merchant() {
 	local IFS="-" && set "$MERCHANTVAR"
 	case "$TRANSACTION_STATUS" in
 	1 ) echo "You don't have enough $1 to buy $QUANTITY $2"    ;; # Invalid transaction
-	2 ) echo "Sorry, friend, I don't accept $1 .."             ;; # Invalid input
+	2 ) echo "Sorry, friend, I don't accept that currency .."  ;; # Invalid input
 	3 ) echo "You can't buy $2 with $1"                        ;; # Invalid exchange
-	4 ) echo "Welcome back anytime!"                           ;; # Not interested
+	4 ) echo "Welcome back anytime, friend!"                   ;; # Not interested
 	0 ) # Valid transactions
 	    (( BARGAIN_TYPE == 1 )) && echo -n "You bought" || echo -n "You sold"
 		echo -n " $QUANTITY $2(s) for "

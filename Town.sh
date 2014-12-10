@@ -291,11 +291,12 @@ Marketplace_Merchant() {
 		esac
 	
 		# Do the transaction if it is valid
+		# Info: The COST can be the players (for BARGAIN_TYPE 1 ) or the merchants (for BARGAIN_TYPE 2).
 		if (( TRANSACTION_STATUS == 0 )) ; then
 		MERCHANTVAR+="-$MERCHANDISE"
 		case "$MERCHANTVAR" in  # Conduct transaction for filtered (valid) transactions in THING-PAYMENT
 		"Tobacco-Food" ) (( BARGAIN_TYPE == 1 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}") # Buying tobacco for food
-						(( BARGAIN_TYPE == 2 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO + $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} - ${QUANTITY}") # Selling food for tobacco
+						(( BARGAIN_TYPE == 2 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO + $COST_TOBACCO" ) && CHAR_FOOD=$(bc <<< "${CHAR_FOOD} - ${QUANTITY}")  # Selling food for tobacco
 						;;
 		"Tobacco-Gold" ) (( BARGAIN_TYPE == 1 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST_TOBACCO" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} + ${QUANTITY}")
 						(( BARGAIN_TYPE == 2 )) && CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO + $COST_TOBACCO" ) && CHAR_GOLD=$(bc <<< "${CHAR_GOLD} - ${QUANTITY}")
@@ -323,7 +324,7 @@ Marketplace_Merchant() {
 		local IFS="-" && set "$MERCHANTVAR"
 		case "$TRANSACTION_STATUS" in
 		1 ) echo "You don't have enough $1 to buy $QUANTITY $2"    ;; # Invalid transaction
-		2 ) echo "Sorry, friend, I don't accept that currency .."  ;; # Invalid input
+		2 ) echo "Sorry, friend, I don't accept that trade .."     ;; # Invalid input
 		3 ) echo "You can't buy $2 with $1"                        ;; # Invalid exchange
 		4 ) echo "Welcome back anytime, friend!"                   ;; # Not interested
 		0 ) # Valid transactions
@@ -345,7 +346,7 @@ Marketplace_Merchant() {
 			esac
 			;;
 		esac
-		if [[ $BARGAIN_TYPE = 1 ]] && [[ "$MERCHANDISE" = "Item" ]] ; then # Post purchase immediate usage of items (TODO we can change this later)
+		if [[ $BARGAIN_TYPE = 1 ]] && [[ $TRANSACTION_STATUS = 0 ]] && [[ "$MERCHANDISE" = "Item" ]] ; then # Post purchase immediate usage of items (TODO we can change this later)
 		GX_Marketplace_Merchant                                            # TODO This should change when we have inventory system setup..
 			if [[ "$MERCHANT_ITEM" = "Almanac" ]] ; then
 				echo "You put the Almanac in your inventory. Access inventory from (C)haracter sheet."
@@ -360,7 +361,7 @@ Marketplace_Merchant() {
 				(( CHAR_HEALTH += POTIONMODIFIER ))
 				echo "You drink the $MERCHANT_ITEM, restoring $POTIONMODIFIER health points [ + $POTIONMODIFIER HEALTH ]"
 			fi
-		fi
+		fi # TODO add elif here for removal of items from inventory later
 		PressAnyKey
 	fi
     done

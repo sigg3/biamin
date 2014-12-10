@@ -40,7 +40,6 @@ CheckForTobacco() {
 # Tavern_Rest()
 # Successful rest in Tavern (Tavern gained +30 HEALTH - Town*2 )
 # Used: Tavern()
-# IDEA: add item or magic thing whick add 50 for MAX_HEALTH (
 #-----------------------------------------------------------------------
 TavernRest() {
     GX_Rest
@@ -79,11 +78,6 @@ Tavern() {
 #-----------------------------------------------------------------------
 # Marketplace() 
 # Used: GoIntoTown()
-# TODO:
-#  ? Add stealing from market??? 
-#    Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-#    Or he call the police (the guards?) and they throw player from town? (kstn) 
-#    We're getting way ahead of ourselves:) Let's just make what we have work first:)
 #-----------------------------------------------------------------------
 Marketplace() { 
     # The PRICE of a unit (food, ale) is always 1. #??? #kstn

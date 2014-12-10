@@ -61,7 +61,7 @@ TavernRest() {
 Tavern() { 
     while (true); do
 	GX_Tavern 
-	echo -n "     (R)ent a room and rest safely     (P)lay dice     (A)ny key to Exit"
+	MakePrompt "(R)ent a room and rest safely;(P)lay dice;(A)ny key to Exit"
 	case $(Read) in
 	    r | R) 
 		echo -en "${CLEAR_LINE}      rent for 1 (G)old      rent for 1 (T)obacco      (A)ny key to Exit"
@@ -110,7 +110,7 @@ Marketplace() {
 GoIntoTown() { 
     while (true); do
 	GX_Place "T" # GX_Town 
-	echo -n "      (T)avern      (B)ulletin Board      (M)arketplace      (E)xit Town"
+	MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
 	case $(Read) in
 	    t | T ) Tavern ;;
 	    m | M ) Marketplace ;;

@@ -247,6 +247,13 @@ Marketplace_Merchant() {
 	F | f | T | t | G | g | I | i ) Marketplace_Merchant_Bargaining	"$MERCHANTVAR" ;;
     * ) break ;;
 	esac
+
+	# DEBUG DATA
+	echo "        DEBUG       In the beginning.." >2
+	echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+	echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+	# // DEBUG DATA
+	
 	tput sc
 	MvAddStr 12 4 "Are you buying or selling?"
 	tput rc
@@ -258,6 +265,12 @@ Marketplace_Merchant() {
 	s | S ) BARGAIN_TYPE=2  ;; # Selling STOCK ($MERCHANDISE) to Merchant
 	* )     BARGAIN_TYPE=3  ;; # Invalid input
 	esac
+	
+	# DEBUG DATA
+	echo "        DEBUG       Filter bargain type" >2
+	echo "        DEBUG       BARGAIN_TYPE: $BARGAIN_TYPE" >2
+	# // DEBUG DATA
+	
 	if (( BARGAIN_TYPE != 3 )) && [[ MERCHANDISE != "unknown" ]] ; then	
 		# Prompt for Quantity
 		local QUANTITYPROMPT
@@ -268,6 +281,12 @@ Marketplace_Merchant() {
 		
 		# Exit if amount is 0 (this is equal to "cancel")
 		(( QUANTITY == 0 )) && break
+	
+			# DEBUG DATA
+			echo "        DEBUG       Prompt for quantity" >2
+			echo "        DEBUG       QUANTITY: $QUANTITY" >2
+			# // DEBUG DATA
+	
 		
 		# Calculate COST (for PLAYER or MERCHANT depending on BARGAIN TYPE)
 		(( BARGAIN_TYPE == 1 )) && echo -n " $QUANTITY $MERCHANDISE costs " # TODO verify/Check whether this should be -n or -en "\n" (after read -p)
@@ -308,6 +327,12 @@ Marketplace_Merchant() {
 					(( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (have no items to sell)
 		esac
 		
+		# DEBUG DATA
+		echo "        DEBUG       Create bargaining prompt" >2
+		echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+		# // DEBUG DATA
+		
+		
 		# Determine that player has CURRENCY to cover COST or STOCK to cover SALE
 		case "$MERCHANTVAR" in
 		T | t ) MERCHANTVAR="Tobacco" && (( $(bc <<< "$CHAR_TOBACCO > $COST_TOBACCO") )) && TRANSACTION_STATUS=0 || TRANSACTION_STATUS=1 ;; # Legend
@@ -317,6 +342,22 @@ Marketplace_Merchant() {
 		N | n ) TRANSACTION_STATUS=4                                                                                      				 ;; # 4 = CHAR is not interested
 		* )     TRANSACTION_STATUS=2                                                                                       				 ;; # 2 = invalid input
 		esac
+	
+		# DEBUG DATA
+		echo "        DEBUG       Summary BEFORE transaction" >2
+		echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+		echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+		echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+		echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+		echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+		echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+		echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+		echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+		echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+		echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+		echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+		# // DEBUG
+	
 	
 		# Do the transaction if it is valid
 		# Info: The COST can be the player's (for BARGAIN_TYPE 1 ) or the merchant's (for BARGAIN_TYPE 2).
@@ -348,6 +389,22 @@ Marketplace_Merchant() {
 		                 ;; # invalid input of other type (e.g. hitting (T)obacco to buy Item. Nice try:)
 		esac
 		fi
+	
+		# DEBUG DATA
+		echo "        DEBUG       Summary AFTER transaction" >2
+		echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+		echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+		echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+		echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+		echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+		echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+		echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+		echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+		echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+		echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+		echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+		# // DEBUG
+	
 	
 		# Create transaction status output (MERCHANT_CONFIRMATION)
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"

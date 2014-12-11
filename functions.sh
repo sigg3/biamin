@@ -165,9 +165,8 @@ RollDice2() { RollDice $1 ; echo "$DICE" ; }
 DisplayCharsheet() { 
     local MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
     local RACE=$(Capitalize "$CHAR_RACE_STR")   # Capitalize
-	local CHARSHEET_INV_STR="$CHAR_GOLD Gold, " # Create Inventory string 
-	CHARSHEET_INV_STR+="$CHAR_TOBACCO Tobacco, "
-    CHARSHEET_INV_STR+="$CHAR_FOOD Food"
+	local CHARSHEET_INV_STR # Create Inventory string 
+	CHARSHEET_INV_STR="$CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food"
     (( ALMANAC == 1 )) && CHARSHEET_INV_STR+=", Almanac" # Add below as necessary..
     GX_CharSheet
     cat <<EOF

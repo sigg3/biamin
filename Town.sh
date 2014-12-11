@@ -135,7 +135,7 @@ Marketplace_Merchant_Bargaining() {
 	if [[ "$MERCHANDISE" = "Item" ]] ; then
 	    MvAddStr 4 4 "You are in for a treat! I managed to"
 	    MvAddStr 5 4 "acquire a very rare and valuable"
-	    MvAddStr 6 4 "$MERCHANT_ITEM, which can be"
+	    MvAddStr 6 4 "$MERCHANT_ITEM, it can be yours"
 	    MvAddStr 9 4 "I also buy any items you sell"
 	    MvAddStr 10 4 "for $MERCHANT_GxI Gold a piece."
 	elif [[ "$MERCHANDISE" = "unknown" ]] ; then
@@ -446,6 +446,8 @@ Marketplace_Merchant() {
 			;;
 		esac
 		
+		############  THERE IS A BUG ABOVE ^^ FOR SUCCESSFUL TRANSACTIONS: echoes only "You bough n MERCH for "
+		
 		# Output MERCHANT_CONFIRMATION ("goodbye")
 		if (( TRANSACTION_STATUS == 0 )) ; then
 		echo -n "$MERCHANT_CONFIRMATION_1" && read -s -n1 2>&1
@@ -454,10 +456,6 @@ Marketplace_Merchant() {
 		MvAddStr 12 4 "$MERCHANT_CONFIRMATION_1"
 		(( TRANSACTION_STATUS == 1 )) && MvAddStr 13 4 "$MERCHANT_CONFIRMATION_2"
 		tput rc
-		fi
-		if (( TRANSACTION_STATUS == 3 )) ; then # Leave merchant loop if we're not interested
-		PressAnyKey
-		break
 		fi
 		
 		# Post purchase actions for items
@@ -477,10 +475,8 @@ Marketplace_Merchant() {
 				echo " You drink the $MERCHANT_ITEM, restoring $POTIONMODIFIER health points [ + $POTIONMODIFIER HEALTH ]"
 			fi
 		fi # TODO add elif here for removal of items (BARGAIN_TYPE=2) from inventory later
-		
-		PressAnyKey
-		
-		# Unset speak bubbles (else they'll repeat..!)
+				
+		# Unset constructed strings otherwise they may be repeated.. (TODO: use 'local QUANTITYPROMPT=""' as initiation perhaps..)
 		[ -n "$QUANTITYPROMPT" ]          && unset QUANTITYPROMPT
 		[ -n "$MERCHANT_ORDER_CONJUG_1" ] && unset MERCHANT_ORDER_CONJUG_1
 		[ -n "$MERCHANT_ORDER_CONJUG_2" ] && unset MERCHANT_ORDER_CONJUG_2
@@ -488,6 +484,10 @@ Marketplace_Merchant() {
 		[ -n "$MERCHANT_ORDER_2" ]        && unset MERCHANT_ORDER_2
 		[ -n "$MERCHANT_CONFIRMATION_1" ] && unset MERCHANT_CONFIRMATION_1
 		[ -n "$MERCHANT_CONFIRMATION_2" ] && unset MERCHANT_CONFIRMATION_2
+		
+		(( TRANSACTION_STATUS != 0 )) && PressAnyKey # Return to zero
+		(( TRANSACTION_STATUS == 3 )) && break       # Leave loop if we're not interested
+
 	fi
     done
 } # Return to Marketplace

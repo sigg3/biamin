@@ -52,7 +52,7 @@ BiaminSetup_UpdateOldSaves() {
     # Time 
     grep -Eq '^TURN:' "$1"        || echo "TURN: $(TurnFromDate)" >> $1
     # Almanac
-    grep -Eq '^INV_ALMANAC:' "$1" || echo "ALMANAC: 0" >> $1
+    grep -Eq '^INV_ALMANAC:' "$1" || echo "INV_ALMANAC: 0" >> $1
 }
 
 #-----------------------------------------------------------------------
@@ -104,7 +104,7 @@ BiaminSetup_LoadCharsheet() {
                    if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
                    if (/^STARVATION:/) { STARVATION = $2 }
                    if (/^TURN:/)        { TURN= $2 }
-                   if (/^INV_ALMANAC:/) { ALMANAC = $2 }
+                   if (/^INV_ALMANAC:/) { INV_ALMANAC = $2 }
                  }
                  END { 
                  print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"

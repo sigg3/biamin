@@ -3,7 +3,7 @@
 #                                                                      #
 
 
-# GAME ACTION: USE ALMANAC (MOON info, NOTES, MAIN info)
+# GAME ACTION: USE INV_ALMANAC (MOON info, NOTES, MAIN info)
 Almanac_Moon() { # Used in Almanac()
     GX_CharSheet 2 # Display GX Header with ALMANAC header
     # Substitute "NOTES" with MOON string in banner
@@ -82,7 +82,7 @@ Almanac_Notes() {
 # Used: DisplayCharsheet()
 # TODO: FIX_DATE !!!
 # TODO: The Almanac must be "unlocked" in gameplay, e.g. bought from Merchant. This is random (20% chance he has one)
-# TODO: when ALMANAC=1 add NOTES 0-9 in charsheet.
+# TODO: when INV_ALMANAC=1 add NOTES 0-9 in charsheet.
 #-----------------------------------------------------------------------
 Almanac() { 
     GX_CharSheet 2 # Display GX banner with ALMANAC header

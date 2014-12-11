@@ -137,12 +137,16 @@ ___                          (         \__ 1                _/             \   \
                                |  |  |_    1    \___________________________  
                                |__| ___\   1                                \___
 EOT
-    echo "$HR" ## && PressAnyKey #BUGFIX
-    echo "                        Press (A)ny key to continue.." 
-    local COUNTDOWN=60
+    echo "$HR"
+    local SPACE="                       " && echo "$SPACE Press (A)ny key to continue" 
+    local COUNTDOWN=60 && local CDOTS=1 && local DOTS && tput sc # Sorry, had to try it:P
     while (( COUNTDOWN >= 0 )) ; do
+    	(( CDOTS == 1 )) && DOTS=".. " || DOTS="..."
+		MvAddStr 16 51 "$DOTS $SPACE"
     	read -sn 1 -t 1 && break || ((COUNTDOWN--))
+    	(( CDOTS == 1 )) && CDOTS=2 || CDOTS=1
     done
+    tput rc
     unset COUNTDOWN
 }
 

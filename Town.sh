@@ -194,7 +194,7 @@ Marketplace_Merchant() {
 	
 	# Set any value equal or below 0 to defaults
 	# Ugly yet POSIX compliant code from mywiki.wooledge.org/BashFAQ/022
-	case $(bc <<< "scale=2;$MERCHANT_FxG - 0.00" ) in
+	case $(bc <<< "scale=2;$MERCHANT_FxG - 0.00" ) in # TODO simplify/loop this instead..?
 	0 | -*) MERCHANT_FxG=$PRICE_FxG ;;
 	esac
 	case $(bc <<< "scale=2;$MERCHANT_GxF - 0.00" ) in
@@ -228,7 +228,7 @@ Marketplace_Merchant() {
 		4 ) MERCHANT_ITEM="Health Potion (20 HP)" ;;
 		5 ) MERCHANT_ITEM="Almanac"               ;;
 	esac
-	(( ALMANAC == 0 )) && MERCHANT_ITEM="Almanac"	
+	(( INV_ALMANAC == 0 )) && MERCHANT_ITEM="Almanac"	
 	fi
     # Merchant Loop
     while (true) ; do

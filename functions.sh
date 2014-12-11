@@ -167,8 +167,8 @@ DisplayCharsheet() {
     local RACE=$(Capitalize "$CHAR_RACE_STR")   # Capitalize
 	local CHARSHEET_INV_STR="$CHAR_GOLD Gold, " # Create Inventory string 
 	CHARSHEET_INV_STR+="$CHAR_TOBACCO Tobacco, "
-    CHARSHEET_INV_STR+="$CHAR_FOOD Food, "
-    (( ALMANAC == 1 )) && CHARSHEET_INV_STR+="Almanac" # Add below as necessary..
+    CHARSHEET_INV_STR+="$CHAR_FOOD Food"
+    (( ALMANAC == 1 )) && CHARSHEET_INV_STR+=", Almanac" # Add below as necessary..
     GX_CharSheet
     cat <<EOF
  Character:                 $CHAR ($RACE)

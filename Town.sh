@@ -90,11 +90,12 @@ Marketplace() {
     # The PRICE of a unit (food, ale) is always 1. #??? #kstn
     while (true); do
 	GX_Marketplace
-	MakePrompt '(G)rocer;(M)erchant;(L)eave Marketplace'
+	MakePrompt '(G)rocer;(M)erchant;(L)eave Marketplace;(Q)uit'
 	case $(Read) in
 	    g | G) Marketplace_Grocer;;   # Trade FOOD for GOLD and TOBACCO
 	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
 	    # Smbd who'll trade boars' tusks etc for GOLD/TOBACCO ???
+	    q | Q ) CleanUp ;;
 	    *) break ;; # Leave marketplace
 	esac
     done
@@ -235,9 +236,10 @@ Marketplace_Merchant() {
 	local M_Y=4                # Setup default greeting
 	local MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!") # [0] is dummy
 	tput sc && MvAddStr $M_Y 4 "Oye there, ${MERCHANT_MSG[$CHAR_RACE]}"
-	local MERCHANT_MSG=( "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
-	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "What are you looking for?" )  && (( M_Y++ )) # [0-4] are dummies
-	while (( M_Y <= 10 )) ; do # Output default greeting
+	(( M_Y++ ))
+	local MERCHANT_MSG=( "" "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best"
+	    "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?" )  && (( M_Y++ )) # [0-5,11] are dummies
+	while (( M_Y <= 12 )) ; do # Output default greeting
 	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 	    (( M_Y++ ))
 	done
@@ -247,12 +249,6 @@ Marketplace_Merchant() {
 	F | f | T | t | G | g | I | i ) Marketplace_Merchant_Bargaining	"$MERCHANTVAR" ;;
     * ) break ;;
 	esac
-
-	# DEBUG DATA
-	echo "        DEBUG       In the beginning.." >2
-	echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	# // DEBUG DATA
 	
 	tput sc
 	MvAddStr 12 4 "Are you buying or selling?"
@@ -266,11 +262,6 @@ Marketplace_Merchant() {
 	* )     BARGAIN_TYPE=3  ;; # Invalid input
 	esac
 	
-	# DEBUG DATA
-	echo "        DEBUG       Filter bargain type" >2
-	echo "        DEBUG       BARGAIN_TYPE: $BARGAIN_TYPE" >2
-	# // DEBUG DATA
-	
 	if (( BARGAIN_TYPE != 3 )) && [[ MERCHANDISE != "unknown" ]] ; then	
 		# Prompt for Quantity
 		local QUANTITYPROMPT
@@ -279,44 +270,60 @@ Marketplace_Merchant() {
 		(( BARGAIN_TYPE == 1 )) && QUANTITYPROMPT+="buy? " || QUANTITYPROMPT+="sell? "
 		echo -en "$QUANTITYPROMPT" && read QUANTITY 2>&1
 		
-		# Exit if amount is 0 (this is equal to "cancel")
-		(( QUANTITY == 0 )) && break
-	
-			# DEBUG DATA
-			echo "        DEBUG       Prompt for quantity" >2
-			echo "        DEBUG       QUANTITY: $QUANTITY" >2
-			# // DEBUG DATA
-	
+		if (( $(bc <<< "$QUANTITY < 1") )) ; then
+		Marketplace_Merchant_Bargaining "$MERCHANDISE"
+		tput sc
+		MvAddStr 12 4 "If you want to trade small,"
+		MvAddStr 13 4 "I suggest you go see the"
+		MvAddStr 14 4 "grocer instead. Good-bye!"
+		tput rc
+		PressAnyKey
+		break # Exit if amount is < 1 (this is equal to "cancel")
+		elif (( $(bc <<< "$QUANTITY > 1" ) )) ; then # Construct merchant string
+		case "$MERCHANDISE" in
+		"Item" ) local MERCHANT_ORDER_CONJUG_1="s " ;;
+		* )      local MERCHANT_ORDER_CONJUG_1=" "  ;;
+		esac
+		local MERCHANT_ORDER_CONJUG_2="cost " 
+		else # Construct merchant string
+		local MERCHANT_ORDER_CONJUG_1=" " && local MERCHANT_ORDER_CONJUG_2="costs " 
+		fi
 		
 		# Calculate COST (for PLAYER or MERCHANT depending on BARGAIN TYPE)
-		(( BARGAIN_TYPE == 1 )) && echo -n " $QUANTITY $MERCHANDISE costs " # TODO verify/Check whether this should be -n or -en "\n" (after read -p)
-		(( BARGAIN_TYPE == 2 )) && echo -n " I'll give you" # TODO verify/Check whether this should be -n or -en "\n" (after read -p)
+		local MERCHANT_ORDER_1 && local MERCHANT_ORDER_2
+		(( BARGAIN_TYPE == 1 )) && MERCHANT_ORDER_1="$QUANTITY $MERCHANDISE$MERCHANT_ORDER_CONJUG_1$MERCHANT_ORDER_CONJUG_2"
+		(( BARGAIN_TYPE == 2 )) && MERCHANT_ORDER_1="For $QUANTITY $MERCHANDISE$MERCHANT_ORDER_CONJUG_1" && MERCHANT_ORDER_1+="I'll give you "
 
 		case "$MERCHANDISE" in
 		"Food" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
 					(( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
-					echo -n "$COST_GOLD Gold or $COST_TOBACCO Tobacco"
+					MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
 					;;
 		"Tobacco" ) (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_TxG * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" ) 
 					(( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
-					echo -n "$COST_GOLD Gold or $COST_FOOD Food" 
+					MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
 					;;
 		"Gold" )    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
 					(( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_TxG * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_GxT * $QUANTITY" )
-					echo -n "$COST_FOOD Food or $COST_TOBACCO Tobacco"
+					MERCHANT_ORDER_2+="$COST_FOOD Food or $COST_TOBACCO Tobacco."
 					;;
 		"Item" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_IxG * $QUANTITY" )
 					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxI * $QUANTITY" )
-					echo -n "$COST_GOLD Gold" 
+					MERCHANT_ORDER_2+="$COST_GOLD Gold."
 					;;
 		esac
-		(( BARGAIN_TYPE == 1 )) && echo "." || echo " for $QUANTITY $MERCHANDISE."
+		
+		Marketplace_Merchant_Bargaining "$MERCHANDISE"
+		tput sc
+		MvAddStr 12 4 "$MERCHANT_ORDER_1"
+		MvAddStr 13 4 "$MERCHANT_ORDER_2"
+		tput rc
 		
 		# Create bargaining prompt
 		case "$MERCHANDISE" in
@@ -327,22 +334,16 @@ Marketplace_Merchant() {
 					(( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (have no items to sell)
 		esac
 		
-		# DEBUG DATA
-		echo "        DEBUG       Create bargaining prompt" >2
-		echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-		# // DEBUG DATA
-		
-		
 		# Determine that player has CURRENCY to cover COST or STOCK to cover SALE
 		case "$MERCHANTVAR" in
 		T | t ) MERCHANTVAR="Tobacco" && (( $(bc <<< "$CHAR_TOBACCO > $COST_TOBACCO") )) && TRANSACTION_STATUS=0 || TRANSACTION_STATUS=1 ;; # Legend
 		F | f ) MERCHANTVAR="Food"    && (( $(bc <<< "$CHAR_FOOD > $COST_FOOD") ))       && TRANSACTION_STATUS=0 || TRANSACTION_STATUS=1 ;; # 0 = CHAR has that amount
 		G | g ) MERCHANTVAR="Gold"    && (( $(bc <<< "$CHAR_GOLD > $COST_GOLD") ))       && TRANSACTION_STATUS=0 || TRANSACTION_STATUS=1 ;; # 1 = CHAR does not have it
 		I | i ) MERCHANTVAR="Item"    && TRANSACTION=1  ;; # Selling items not yet implemented                             ;; # 1 = ""
-		N | n ) TRANSACTION_STATUS=4                                                                                      				 ;; # 4 = CHAR is not interested
+		N | n ) TRANSACTION_STATUS=3                                                                                      				 ;; # 4 = CHAR is not interested
 		* )     TRANSACTION_STATUS=2                                                                                       				 ;; # 2 = invalid input
 		esac
-	
+
 		# DEBUG DATA
 		echo "        DEBUG       Summary BEFORE transaction" >2
 		echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
@@ -384,8 +385,8 @@ Marketplace_Merchant() {
 						 ;;
 		"Gold-Item" )    (( BARGAIN_TYPE == 1 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST_GOLD" )
 						 (( BARGAIN_TYPE == 2 )) && CHAR_GOLD=$(bc <<< "$CHAR_GOLD + $COST_GOLD" )
-						 ;; # Items are added/used/removed below
-		* )              TRANSACTION_STATUS=3
+						 ;; # TODO Items are added/used/removed below TODO change this with inventory implementation (3.0)
+		* )              TRANSACTION_STATUS=2
 		                 ;; # invalid input of other type (e.g. hitting (T)obacco to buy Item. Nice try:)
 		esac
 		fi
@@ -408,37 +409,58 @@ Marketplace_Merchant() {
 	
 		# Create transaction status output (MERCHANT_CONFIRMATION)
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"
-		local MERCHANT_CONFIRMATION
-		local IFS="-" && set "$MERCHANTVAR"
+		(( TRANSACTION_STATUS == 0 )) && local IFS="-" && set "$MERCHANTVAR" && local PAYMENT="$1" || local PAYMENT="$MERCHANTVAR"
+
+		# DEBUG
+		echo "        DEBUG       Setting MERCHANTVAR" >2
+		echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+		echo "        DEBUG               \$1: $1" >2
+		echo "        DEBUG               \$2: $2" >2
+		echo "        DEBUG           PAYMENT: $PAYMENT" >2
+		# // DEBUG
+		
+		
+		local MERCHANT_CONFIRMATION_1
 		case "$TRANSACTION_STATUS" in
-		1 )     MERCHANT_CONFIRMATION="Not enough $1 to buy $QUANTITY"              ;; # Invalid transaction
-		2 | 3 ) MERCHANT_CONFIRMATION="Sorry, I don't accept that trade .."         ;; # Invalid input
-		4 )     MERCHANT_CONFIRMATION="Welcome back anytime, friend!"               ;; # Not interested
-		0 ) 	# Valid transactions
-				(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION="You bought" || MERCHANT_CONFIRMATION="You sold"
-				MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for "
-				case "$1" in
-				"Tobacco" ) MERCHANT_CONFIRMATION+="$COST_TOBACCO Tobacco "
-							(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_TOBACCO TOBACCO ]"
-							(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_TOBACCO TOBACCO ]"
-							;;
-				"Food" )    MERCHANT_CONFIRMATION+="$COST_FOOD Food "
-							(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_FOOD FOOD ]"
-							(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_FOOD FOOD ]"
-							;;
-				"Gold" )    MERCHANT_CONFIRMATION+="$COST_GOLD Gold "
-							(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_GOLD GOLD ]"
-							(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_GOLD GOLD ]"
-							;;
-				esac
-				;;
+		1 ) MERCHANT_CONFIRMATION_1="You don't have enough $PAYMENT"
+			local MERCHANT_CONFIRMATION_2="to buy $QUANTITY $MERCHANDISE."  ;; # Invalid transaction
+		2 ) MERCHANT_CONFIRMATION_1="Sorry, I can't accept that trade .."   ;; # Invalid input
+		3 ) MERCHANT_CONFIRMATION_1="Welcome back anytime, friend!"         ;; # Not interested
+		0 ) # Valid transactions
+			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1=" You bought" || MERCHANT_CONFIRMATION_1=" You sold"
+			MERCHANT_CONFIRMATION_1+=" $QUANTITY $MERCHANDISE for "
+			case "$PAYMENT" in
+			"Tobacco" ) MERCHANT_CONFIRMATION_1+="$COST_TOBACCO Tobacco "
+						(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_TOBACCO TOBACCO ]"
+						(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_TOBACCO TOBACCO ]"
+						;;
+			"Food" )    MERCHANT_CONFIRMATION_1+="$COST_FOOD Food "
+						(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_FOOD FOOD ]"
+						(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_FOOD FOOD ]"
+						;;
+			"Gold" )    MERCHANT_CONFIRMATION_1+="$COST_GOLD Gold "
+						(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_GOLD GOLD ]"
+						(( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_GOLD GOLD ]"
+						;;
+			esac
+			;;
 		esac
 		
 		# Output MERCHANT_CONFIRMATION ("goodbye")
+		if (( TRANSACTION_STATUS == 0 )) ; then
+		echo -n "$MERCHANT_CONFIRMATION_1" && read -s -n1 2>&1
+		else
 		tput sc
-		MvAddStr 14 4 "$MERCHANT_CONFIRMATION"
+		MvAddStr 12 4 "$MERCHANT_CONFIRMATION_1"
+		(( TRANSACTION_STATUS == 1 )) && MvAddStr 13 4 "$MERCHANT_CONFIRMATION_2"
 		tput rc
-
+		fi
+		if (( TRANSACTION_STATUS == 3 )) ; then # Leave merchant loop if we're not interested
+		PressAnyKey
+		break
+		fi
+		
+		# Post purchase actions for items
 		if [[ $BARGAIN_TYPE = 1 ]] && [[ $TRANSACTION_STATUS = 0 ]] && [[ "$MERCHANDISE" = "Item" ]] ; then # Post purchase immediate usage of items (TODO we can change this later)
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"                                       # TODO This should change when we have inventory system setup..
 			if [[ "$MERCHANT_ITEM" = "Almanac" ]] ; then
@@ -455,7 +477,17 @@ Marketplace_Merchant() {
 				echo " You drink the $MERCHANT_ITEM, restoring $POTIONMODIFIER health points [ + $POTIONMODIFIER HEALTH ]"
 			fi
 		fi # TODO add elif here for removal of items (BARGAIN_TYPE=2) from inventory later
+		
 		PressAnyKey
+		
+		# Unset speak bubbles (else they'll repeat..!)
+		[ -n "$QUANTITYPROMPT" ]          && unset QUANTITYPROMPT
+		[ -n "$MERCHANT_ORDER_CONJUG_1" ] && unset MERCHANT_ORDER_CONJUG_1
+		[ -n "$MERCHANT_ORDER_CONJUG_2" ] && unset MERCHANT_ORDER_CONJUG_2
+		[ -n "$MERCHANT_ORDER_1" ]        && unset MERCHANT_ORDER_1
+		[ -n "$MERCHANT_ORDER_2" ]        && unset MERCHANT_ORDER_2
+		[ -n "$MERCHANT_CONFIRMATION_1" ] && unset MERCHANT_CONFIRMATION_1
+		[ -n "$MERCHANT_CONFIRMATION_2" ] && unset MERCHANT_CONFIRMATION_2
 	fi
     done
 } # Return to Marketplace

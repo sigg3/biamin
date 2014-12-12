@@ -50,7 +50,7 @@ MakePrompt() {
             STR = STR SEPARATOR INTRO
         }
         END { printf STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
-#BACKUP END { print STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
+    #BACKUP END { print STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
 }
 
 # PRE-CLEANUP tidying function for buggy custom maps

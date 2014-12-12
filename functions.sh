@@ -116,7 +116,7 @@ Intro() {
     HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)    
     WorldPriceFixing                 # Set all prices
-    GX_Intro                         # With countdown
+    GX_Intro 60                      # With countdown 60 seconds
     NODICE=1                         # Do not roll on first section after loading/starting a game in NewSector()
 }
 

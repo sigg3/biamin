@@ -118,7 +118,13 @@ EOT
     echo "$HR"
 }
 
-GX_Intro() { # Used in Intro()
+#-----------------------------------------------------------------------
+# GX_Intro()
+# Display intro banner $1 seconds
+# Arguments: $SECONDS(int)
+# Used: Intro()
+#-----------------------------------------------------------------------
+GX_Intro() {
     clear
     cat <<"EOT"
                                                                          
@@ -137,17 +143,31 @@ ___                          (         \__ 1                _/             \   \
                                |  |  |_    1    \___________________________  
                                |__| ___\   1                                \___
 EOT
+
+    ### BACKUP - delete it after testing
+    # echo "$HR"
+    # local SPACE="                       " && echo "$SPACE Press (A)ny key to continue" 
+    # local COUNTDOWN=60 && local CDOTS=1 && local DOTS && tput sc # Sorry, had to try it:P
+    # while (( COUNTDOWN >= 0 )) ; do
+    # 	(( CDOTS == 1 )) && DOTS=".. " || DOTS="..."
+    # 	MvAddStr 16 51 "$DOTS $SPACE"
+    # 	read -sn 1 -t 1 && break || ((COUNTDOWN--))
+    # 	(( CDOTS == 1 )) && CDOTS=2 || CDOTS=1
+    # done
+    # tput rc
+    # unset COUNTDOWN
+
+    local COUNTDOWN="$1"
+    tput civis
     echo "$HR"
-    local SPACE="                       " && echo "$SPACE Press (A)ny key to continue" 
-    local COUNTDOWN=60 && local CDOTS=1 && local DOTS && tput sc # Sorry, had to try it:P
-    while (( COUNTDOWN >= 0 )) ; do
-    	(( CDOTS == 1 )) && DOTS=".. " || DOTS="..."
-		MvAddStr 16 51 "$DOTS $SPACE"
-    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
-    	(( CDOTS == 1 )) && CDOTS=2 || CDOTS=1
+    echo -n "                         Press (A)ny key to continue.."
+    tput sc    
+    while (( COUNTDOWN-- > 0 )) ; do
+	tput rc
+    	((COUNTDOWN % 2)) && echo -n "." || echo -n " "
+    	read -sn 1 -t 1 && break 
     done
-    tput rc
-    unset COUNTDOWN
+    tput cnorm
 }
 
 GX_Races() {

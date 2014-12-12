@@ -54,7 +54,7 @@ TavernRest() {
 	(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
 	echo " and your HEALTH is $CHAR_HEALTH now"
     fi
-    ((TURN++))
+    NewTurn
 }
 
 #-----------------------------------------------------------------------

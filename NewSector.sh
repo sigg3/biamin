@@ -112,14 +112,23 @@ NewSector_GetScenario() {
 }
 
 #-----------------------------------------------------------------------
+# NewTurn()
+# Increase turn and get date
+# Used: NewSector(), TavernRest()
+#-----------------------------------------------------------------------
+NewTurn() {
+    ((TURN++)) # Nev turn, new date
+    DateFromTurn # Get year, month, day, weekday
+}
+    
+#-----------------------------------------------------------------------
 # NewSector()
 # Main game loop
 # Used in runtime section
 #-----------------------------------------------------------------------
 NewSector() { 
     while (true); do  # While (player-is-alive) :) 
-	((TURN++)) # Nev turn, new date
-	DateFromTurn # Get year, month, day, weekday
+	NewTurn
 	CheckForItem "$CHAR_GPS" # Look for treasure @ current GPS location  - Checks current section for treasure
 	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS") # Get scenario char at current GPS
 	GX_Place "$SCENARIO"	
@@ -140,7 +149,7 @@ NewSector() {
 		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;
 		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
-	    ACTION=$(Read)	# Read only one symbol
+	    local ACTION=$(Read)	# Read only one symbol
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
 		r | R ) Rest "$SCENARIO";;      # Player may be attacked during the rest :)

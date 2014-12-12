@@ -20,6 +20,7 @@ MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full 
 
 MONTH_STR=(
     # Month name         # Month trivia
+    "Biamin Festival"    "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
     "After-Frost"        "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
     "Marrsuckur"         "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
     "Plough-Tide"        "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
@@ -32,7 +33,6 @@ MONTH_STR=(
     "Brew-Tasting Tide"  "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
     "Winter Month"       "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
     "Midwinter Offering" "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
-    "Biamin Festival"    "Rarely happens, if ever :("
 )
 
 #-----------------------------------------------------------------------

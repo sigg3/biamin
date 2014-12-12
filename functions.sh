@@ -165,8 +165,7 @@ RollDice2() { RollDice $1 ; echo "$DICE" ; }
 DisplayCharsheet() { 
     local MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
     local RACE=$(Capitalize "$CHAR_RACE_STR")   # Capitalize
-	local CHARSHEET_INV_STR # Create Inventory string 
-	CHARSHEET_INV_STR="$CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food"
+    local CHARSHEET_INV_STR="$CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food" # Create Inventory string 
     (( INV_ALMANAC == 1 )) && CHARSHEET_INV_STR+=", Almanac" # Add below as necessary..
     GX_CharSheet
     cat <<EOF
@@ -182,7 +181,6 @@ DisplayCharsheet() {
  Current Date:              $TODAYS_DATE_STR
  Biamin Date:               $BIAMIN_DATE_STR
 EOF
-# Turn (DEBUG):              $TURN (don't forget to remove it :) )      # Do we need this still?
 
     case "$INV_ALMANAC" in		# Define prompt
 	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has    Almanac

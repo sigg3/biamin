@@ -162,8 +162,9 @@ EOT
     echo "$HR"
     echo -n "                         Press (A)ny key to continue.."
     tput sc    
-    while (( COUNTDOWN-- > 0 )) ; do
-	tput rc
+    # while (( COUNTDOWN-- > 0 )) ; do # TEST. Should work
+    while ((COUNTDOWN--)); do
+    tput rc
     	((COUNTDOWN % 2)) && echo -n "." || echo -n " "
     	read -sn 1 -t 1 && break 
     done

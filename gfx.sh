@@ -208,11 +208,12 @@ GX_Calendar() {
 
 #-----------------------------------------------------------------------
 # GX_Moon()
+# Arguments: $MOON(int[0-7]) (Count of moon phases_
 # Used: GX_Rest(), Almanac_Moon()
 #-----------------------------------------------------------------------
 GX_Moon() { 
-    case "$MOON" in
-	"Old Moon" | "New Moon" ) cat <<"EOT"
+    case "$1" in
+	0 ) cat <<"EOT"
 
 
                                                            .  - . 
@@ -227,7 +228,7 @@ GX_Moon() {
 
 EOT
 	    ;;
-	"Growing Crescent" ) cat <<"EOT"
+	1 ) cat <<"EOT"
 
 
                                                                ~-.
@@ -242,7 +243,7 @@ EOT
 
 EOT
 	    ;;
-	"First Quarter" ) cat <<"EOT"
+	2 ) cat <<"EOT"
 
 
                                                               ,~-.
@@ -257,7 +258,7 @@ EOT
 
 EOT
 	    ;;
-	"Growing Gibbous" | "Waxing Gibbous" ) cat <<"EOT"
+	3 ) cat <<"EOT"
 
 
                                                           ,-~ ~-. 
@@ -272,7 +273,7 @@ EOT
 
 EOT
 	    ;;
-	"Full Moon" ) cat <<"EOT"
+	4 ) cat <<"EOT"
                                                            .    .
                                                        .            .
                                                     .     ,.----.      .
@@ -287,7 +288,7 @@ EOT
                                                          .      .
 EOT
 	    ;;
-	"Waning Gibbous" ) cat <<"EOT"
+	5 ) cat <<"EOT"
 
 
                                                           ,.---. 
@@ -302,7 +303,7 @@ EOT
 
 EOT
 	    ;;
-	"Third Quarter" | "Last Quarter" ) cat <<"EOT"
+	6 ) cat <<"EOT"
 
 
                                                          ,~-. 
@@ -317,7 +318,7 @@ EOT
 
 EOT
 	    ;;
-	"Waning Crescent" ) cat <<"EOT"
+	7 ) cat <<"EOT"
 
                                                            _
                                                         ,;`  
@@ -332,6 +333,7 @@ EOT
 
 EOT
 	    ;;
+	* ) Die "Bug in GX_Moon() with ARG >>>$1<<<" ;;
     esac
 }
 
@@ -341,7 +343,7 @@ EOT
 #-----------------------------------------------------------------------
 GX_Rest() { 
     clear
-    GX_Moon # Draw moon
+    GX_Moon "$MOON" # Draw moon
 
     tput sc
     # Add universal text
@@ -351,15 +353,14 @@ GX_Rest() {
     # Add MOON specific text
     tput cup 8 9
     case "$MOON" in
-	"Old Moon" | "New Moon" ) echo "It is dark, the Moon is" && tput cup 8 33
-            [[ "$MOON" == "Old Moon" ]] && echo "Olde" || echo "Young" ;;
-	"Growing Crescent" )      echo "It is a Growing Crescent Moon" ;;
-	"First Quarter" )         echo "The Moon is in its First Quarter" ;;
-	"Growing Gibbous" | "Waxing Gibbous" ) echo "The Moon is Waxing" ;;
-	"Full Moon" )             echo "It is a Full Moon" ;;
-	"Waning Gibbous" )        echo "The Moon is Waning" ;;
-	"Third Quarter" | "Last Quarter" ) echo "The Moon is in the Last Quarter" ;;
-	"Waning Crescent" )        echo "It is a Waning Crescent Moon" ;;
+	0 ) echo "It is dark, the Moon is" && tput cup 8 33 && echo "Young" ;;
+	1 ) echo "It is a Growing Crescent Moon" ;;
+	2 ) echo "The Moon is in its First Quarter" ;;
+	3 ) echo "The Moon is Waxing" ;;
+	4 ) echo "It is a Full Moon" ;;
+	5 ) echo "The Moon is Waning" ;;
+	6 ) echo "The Moon is in the Last Quarter" ;;
+	7 ) echo "It is a Waning Crescent Moon" ;;
     esac
 
     # Finally, sprinkle with stars:

@@ -111,7 +111,10 @@ INV_ALMANAC: $INV_ALMANAC" > "$CHARSHEET"
 #-----------------------------------------------------------------------
 Intro() { 
     SHORTNAME=$(Capitalize "$CHAR")  # Create capitalized FIGHT CHAR name
-    (( TURN == 0 )) && TodaysDate    # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+
+# TEST - should not needed now    
+#    (( TURN == 0 )) && TodaysDate    # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
+
     MapCreate                        # Create session map in $MAP  
     HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)    
@@ -178,8 +181,7 @@ DisplayCharsheet() {
  Items found:               $CHAR_ITEMS of $MAX_ITEMS
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  Inventory:                 $CHARSHEET_INV_STR
- Current Date:              $TODAYS_DATE_STR
- Biamin Date:               $BIAMIN_DATE_STR
+ Current Date:              $BIAMIN_DATE_STR
 EOF
 
     case "$INV_ALMANAC" in		# Define prompt

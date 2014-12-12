@@ -135,12 +135,12 @@ BiaminSetup_MakeBaseChar() {
 # TOBACCO: $CHAR_TOBACCO
     CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" ) # Determine initial food stock (D16 + 4) - player has 5 food minimum
     BBSMSG=0
-    VAL_GOLD=1 	            # Initial Value of Currencies
+    VAL_GOLD=1 	                # Initial Value of Currencies
     VAL_TOBACCO=1	        # Initial Value of Currencies
     VAL_CHANGE=0.25	        # Market fluctuation key
     STARVATION=0
     TURN=$(TurnFromDate)	# Count turn from current date
-    INV_ALMANAC=0 			# Locked by-default
+    INV_ALMANAC=0 		# Locked by-default
 }
 
 BiaminSetup_MakeNewChar() {

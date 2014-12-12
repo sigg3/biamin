@@ -2,32 +2,47 @@
 #                             Date                                     #
 #                                                                      #
 
+# Year has 360 days ( 12 monthes x 30 days)
+# Weekday has 7 days
+# One moon phase has 4 days
+# Moon has 8 phases
+# Moon month has 32 days
 
-# Load global calendar variables (used in DateFromTurn() and Almanac())
-YEAR_LENGHT=365 # Gregorian calendar without leap years
-YEAR_MONTHES=12 # How many monthes are in year?
+# Declare global calendar variables (used in DateFromTurn() and Almanac())
+YEAR_LENGHT=360     # How many days are in year?
+YEAR_MONTHES=12     # How many monthes are in year?
+MONTH_LENGTH=30     # How many days are in month?
+MOON_PHASE_LENGTH=4                   # How many days one Moon Phase lenghts
+MOON_CYCLE=$((MOON_PHASE_LENGTH * 8)) # How many days are in moon month? (8 phases * $MOON_PHASE_LENGTH) ATM == 32.
+
+# Moon Phases names
+MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
 
 MONTH_STR=(
-    # Month name #Month lenght #Month total lenght  #Month trivia
-    "Biamin Festival"    0  0   "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
-    "After-Frost"        31 31  "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
-    "Marrsuckur"         28 59  "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
-    "Plough-Tide"        31 90  "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
-    "Anorlukis"          30 120 "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       
-    "Summer-Tide"        31 151 "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" 
-    "Summer-Turn"        30 181 "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   
-    "Merentimes"         31 212 "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   
-    "Harvest Month"      31 243 "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        
-    "Ringorin"           30 273 "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              
-    "Brew-Tasting Tide"  31 304 "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
-    "Winter Month"       30 334 "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
-    "Midwinter Offering" 31 365 "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
+    # Month name         # Month trivia
+    "After-Frost"        "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
+    "Marrsuckur"         "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting."     
+    "Plough-Tide"        "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide."       
+    "Anorlukis"          "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves."       
+    "Summer-Tide"        "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" 
+    "Summer-Turn"        "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good."   
+    "Merentimes"         "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers."   
+    "Harvest Month"      "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness."        
+    "Ringorin"           "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers."              
+    "Brew-Tasting Tide"  "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone."    
+    "Winter Month"       "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in."       
+    "Midwinter Offering" "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike."  
+    "Biamin Festival"    "Rarely happens, if ever :("
 )
 
-MonthString()      { echo ${MONTH_STR[((  $1 * 4      ))]} ;}
-MonthLength()      { echo ${MONTH_STR[(( ($1 * 4) + 1 ))]} ;}
-MonthTotalLength() { echo ${MONTH_STR[(( ($1 * 4) + 2 ))]} ;}
-MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 4) + 3 ))]} ;}
+#-----------------------------------------------------------------------
+# Month*()
+# Returns $MONTH name and trivia. 
+# Arguments: $MONTH(int [0-11])
+# TODO: add check for $1 size
+#-----------------------------------------------------------------------
+MonthString()      { echo ${MONTH_STR[((  $1 * 2      ))]} ;} # Return month $1 name
+MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;} # Return month $1 trivia
 
 WEEK_LENGTH=7 # How many days are in week?
 WEEKDAY_STR=(
@@ -41,73 +56,52 @@ WEEKDAY_STR=(
     "Washday"   "Final Workday of the Week"           "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      
 )
 
-WeekdayString()      { echo ${WEEKDAY_STR[((  $1 * 3      ))]} ;}
-WeekdayTriviaShort() { echo ${WEEKDAY_STR[(( ($1 * 3) + 1 ))]} ;}
-WeekdayTriviaLong()  { echo ${WEEKDAY_STR[(( ($1 * 3) + 2 ))]} ;}
+#-----------------------------------------------------------------------
+# Weekday*()
+# Returns $WEEKDAY name, short and long trivia. 
+# Arguments: $WEEKDAY(int [0-6])
+# TODO: add check for $1 size
+#-----------------------------------------------------------------------
+WeekdayString()      { echo ${WEEKDAY_STR[((  $1 * 3      ))]} ;} # Return weekday $1 name 
+WeekdayTriviaShort() { echo ${WEEKDAY_STR[(( ($1 * 3) + 1 ))]} ;} # Return weekday $1 short trivia
+WeekdayTriviaLong()  { echo ${WEEKDAY_STR[(( ($1 * 3) + 2 ))]} ;} # Return weekday $1 long trivia
 
+#-----------------------------------------------------------------------
+# TurnFromDate()
+# Get $TURN from current (real) date
+# IDEA: rename to Creation() ?
+#-----------------------------------------------------------------------
+TurnFromDate() { 
+    local YEAR MONTH DAY
+    read -r "YEAR" "MONTH" "DAY" <<< "$(date '+%-y %-m %-d')"
+    bc <<< "($YEAR * $YEAR_LENGHT) + ($MONTH_LENGTH * $MONTH) + $DAY"
+}
 
-
+#-----------------------------------------------------------------------
+# DateFromTurn()
+# Arguments: $TURN(int)
+#-----------------------------------------------------------------------
 DateFromTurn() { # Some vars used in Almanac(
-    # Find out which YEAR we're in
-    YEAR=$( bc <<< "( $TURN / $YEAR_LENGHT ) + 1" )
-    local REMAINDER=$( bc <<< "$TURN % $YEAR_LENGHT" )           # month and days
-    (( REMAINDER == 0 )) && ((YEAR--)) && REMAINDER=$YEAR_LENGHT # last day of year fix
-    (( YEAR > 99 )) && YEAR=$( bc <<< "$YEAR % 100" ) # FIX for year > 100
-    # # Determine Century, used in Almanac() calculations
-    # # The thought was originally: century, cycle, age.. Table it for now
-    CENTURY=$( bc <<< "(($YEAR+200)/100)*100" ) # We start in year 2nn, actually :)
-#    YEAR=$(Ordial "$YEAR") # Add year postfix
-    # Find out which MONTH we're in
-    for ((i=1; i <= YEAR_MONTHES; i++)); do ((REMAINDER <= $(MonthTotalLength "$i") )) && MONTH_NUM=$i && break; done
-    MONTH=$(MonthString "$MONTH_NUM")
-    # Find out which DAY we're in
-    DAY_NUM=$( bc <<< "$REMAINDER - $(MonthTotalLength $((MONTH_NUM - 1)) )" ) # Substract PREVIOUS months length # DAY_NUM used in Almanac
-    DAY=$(Ordial "$DAY_NUM") # Add day postfix
-    # Find out which WEEKDAY we're in
-    WEEKDAY_NUM=$( bc <<< "$TURN % $WEEK_LENGTH" )
-    WEEKDAY=$(WeekdayString "$WEEKDAY_NUM")
-    # Find out which MOON cycle we're in
-    case $( bc <<< "( $TURN % 31 )" ) in		 # TODO Add instructions Not sure how this works
-    	0 | 1 )             MOON="New Moon"         ;;
-    	2 | 3 | 4 | 5 )     MOON="Growing Crescent" ;;
-    	6 | 7 | 8 | 9 )     MOON="First Quarter"    ;;
-    	10 | 11 | 12 | 13 ) MOON="Growing Gibbous"  ;;
-    	14 | 15 | 16 | 17 ) MOON="Full Moon"        ;;
-    	18 | 19 | 20 | 21 ) MOON="Waning Gibbous"   ;;
-    	22 | 23 | 24 | 25 ) MOON="Third Quarter"    ;;
-    	26 | 27 | 28 | 29 ) MOON="Waning Crescent"  ;;
-    	* )                 MOON="Old Moon"         ;; # Same as New Moon
-    esac
-    # Output example "3rd of Year-Turn in the 13th cycle"
-    BIAMIN_DATE_STR="$DAY of $MONTH in the $(Ordial $YEAR) Cycle"
-}
+    # The thought was originally: century, cycle, age.. Table it for now (sigge)
+    # By atm age == cycle as I understand it. Isn't it right? (kstn)
 
-TurnFromDate() { # Creation() ?
-    local TODAYS_YEAR TODAYS_MONTH TODAYS_DATE
-    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    bc <<< "($TODAYS_YEAR * $YEAR_LENGHT) + $(MonthLength $TODAYS_MONTH) + $TODAYS_DATE"
-}
+    # get date
+    YEAR=$(bc <<< "$TURN / $YEAR_LENGHT")            # Find out which YEAR we're in
+    CENTURY=$(bc <<< "($YEAR / 100) + 200" )         # Find out which CENTURY we're in (We start in year 2nn, actually :) )
+    ((YEAR >= 100)) && YEAR=$(bc <<< "$YEAR % 100")  # Cut down years more than 100 
+    local REMAINDER=$(bc <<< "$TURN % $YEAR_LENGHT") # Month + days
+    MONTH=$(bc <<< "$REMAINDER / $MONTH_LENGTH")     # Find out which MONTH we're in   # 0-11
+    DAY=$(bc <<< "$REMAINDER % $MONTH_LENGTH")       # Find out which DAY we're in     # 0-29
+    WEEKDAY=$( bc <<< "$TURN % $WEEK_LENGTH" )       # Find out which WEEKDAY we're in # 0-6
+    MOON=$(bc <<< "($TURN % $MOON_CYCLE) / 4")       # Find out current Moon Phase     # 0-7
+    
+    # Fix date (AFTER getting MONTH, DAY, etc !!!)
+    ((DAY++))
+    ((MONTH++))
+    ((YEAR++))
 
-#-----------------------------------------------------------------------
-# TodaysDate()
-# An adjusted version of warhammeronline.wikia.com/wiki/Calendar
-# Variables used in DisplayCharsheet () ($TODAYS_DATE_STR), and
-# in FightMode() ($TODAYS_DATE_STR, $TODAYS_DATE, $TODAYS_MONTH, $TODAYS_YEAR)
-#
-# TODO: Add CREATED or CREATION + DATE in charsheets:) Would be nice to have them after the char name..
-# NOTE: We probably shouldn't use $DATE but $BIAMIN_DATE or $GAMEDATE.
-#-----------------------------------------------------------------------
-TodaysDate() {
-    # if [[ $CREATION == 0 ]] ; then # first run
-    read -r "TODAYS_YEAR" "TODAYS_MONTH" "TODAYS_DATE" <<< "$(date '+%-y %-m %-d')"
-    # else
-    # just increment date, month and/or year..
-    # fi
-    TODAYS_DATE=$(Ordial "$TODAYS_DATE")        # Adjust date
-    TODAYS_MONTH=$(MonthString "$TODAYS_MONTH") # Adjust month
-    TODAYS_YEAR=$(Ordial "$TODAYS_YEAR")        # Adjust year
     # Output example "3rd of Year-Turn in the 13th cycle"
-    TODAYS_DATE_STR="$TODAYS_DATE of $TODAYS_MONTH in the $TODAYS_YEAR Cycle"
+    BIAMIN_DATE_STR="$(Ordial $DAY) of $(MonthString $MONTH) in the $(Ordial $YEAR) Cycle"
 }
 
 #                                                                      #

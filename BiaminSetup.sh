@@ -178,10 +178,14 @@ BiaminSetup_MakeNewChar() {
 
 	# Determine initial food stock (D16 + 4) - player has 5 food minimum
 	CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" )
+	
 	# Set initial Value of Currencies
-	VAL_GOLD=1
-	VAL_TOBACCO=1
-	VAL_CHANGE=0.25
+	VAL_GOLD=1        # Default 1
+	VAL_TOBACCO=1     # Default 1
+	
+	# Set economic (in)stability
+	VAL_CHANGE=0.15   # Default 0.15: 0.05 is very stable economy, 0.5 is very unstable.
+	                  # IDEA If we add a (S)ettings page in (M)ain menu, this could be user-configurable.
 	
 	# Add location info
 	CHAR_GPS="$START_LOCATION"

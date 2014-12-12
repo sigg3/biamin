@@ -90,7 +90,7 @@ Marketplace() {
     # The PRICE of a unit (food, ale) is always 1. #??? #kstn
     while (true); do
 	GX_Marketplace
-	MakePrompt '(G)rocer;(M)erchant;(L)eave Marketplace;(Q)uit'
+	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	case $(Read) in
 	    g | G) Marketplace_Grocer;;   # Trade FOOD for GOLD and TOBACCO
 	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
@@ -169,26 +169,26 @@ Marketplace_Merchant() {
 	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG
 	PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
 	
-	# Create semi-random profit/discount margin
+	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
 	RollDice 3
 	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
 
 	# Add positive and negative margins to what the merchant wants to keep for himself
 	RollDice 3
 	case "$DICE" in                                                              # Merchant WANTS to buy and only reluctantly sells:
-	    1 ) MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's cost in gold purchasing food)
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold) 
+		1 ) MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's cost in gold purchasing food)
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )        # Food (player's discount in food purchasing gold) 
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" )
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ) ;;
-	    2 ) MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's cost in gold purchasing tobacco)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold) 
+		2 ) MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's cost in gold purchasing tobacco)
+		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )        # Tobacco (player's discount in tobacco purchasing gold) 
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" )
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ) ;;
-	    3 ) MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's cost in food purchasing gold)
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
+		3 ) MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's cost in food purchasing gold)
+		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )        # Gold (player's discount in gold purchasing food)
 		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )
 		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )
-		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )    # You can only buy/sell items with gold
+		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )        # You can only buy/sell items with gold
 		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
 	esac
 	
@@ -244,7 +244,7 @@ Marketplace_Merchant() {
 	    (( M_Y++ ))
 	done
 	tput rc
-	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(N)othing')" MERCHANTVAR 2>&1
+	read -sn 1 -p "$(MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(L)eave')" MERCHANTVAR 2>&1
 	case "$MERCHANTVAR" in
 	    F | f | T | t | G | g | I | i ) Marketplace_Merchant_Bargaining	"$MERCHANTVAR" ;;
 	    * ) break ;;
@@ -409,7 +409,11 @@ Marketplace_Merchant() {
 	    
 	    # Create transaction status output (MERCHANT_CONFIRMATION)
 	    Marketplace_Merchant_Bargaining "$MERCHANDISE"
-	    (( TRANSACTION_STATUS == 0 )) && local IFS="-" && set "$MERCHANTVAR" && local PAYMENT="$1" || local PAYMENT="$MERCHANTVAR"
+	    if (( TRANSACTION_STATUS == 0 )) ; then
+	    local PAYMENT=$( echo "$MERCHANTVAR" | sed -e "s/-$MERCHANDISE//g" )
+	    else
+	    local PAYMENT="$MERCHANTVAR"
+	    fi
 
 	    # DEBUG
 	    echo "        DEBUG       Setting MERCHANTVAR" >2
@@ -420,40 +424,47 @@ Marketplace_Merchant() {
 	    # // DEBUG
 	    
 	    
-	    local MERCHANT_CONFIRMATION_1
+	    local MERCHANT_CONFIRMATION
 	    case "$TRANSACTION_STATUS" in
-		1 ) MERCHANT_CONFIRMATION_1="You don't have enough $PAYMENT"
+		1 ) MERCHANT_CONFIRMATION="You don't have enough $PAYMENT"
 		    local MERCHANT_CONFIRMATION_2="to buy $QUANTITY $MERCHANDISE."  ;; # Invalid transaction
-		2 ) MERCHANT_CONFIRMATION_1="Sorry, I can't accept that trade .."   ;; # Invalid input
-		3 ) MERCHANT_CONFIRMATION_1="Welcome back anytime, friend!"         ;; # Not interested
+		2 ) MERCHANT_CONFIRMATION="Sorry, I can't accept that trade .."   ;; # Invalid input
+		3 ) MERCHANT_CONFIRMATION="Welcome back anytime, friend!"         ;; # Not interested
 		0 ) # Valid transactions
-		    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1=" You bought" || MERCHANT_CONFIRMATION_1=" You sold"
-		    MERCHANT_CONFIRMATION_1+=" $QUANTITY $MERCHANDISE for "
+		    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION=" You bought" || MERCHANT_CONFIRMATION=" You sold"
+		    MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for "
 		    case "$PAYMENT" in
-			"Tobacco" ) MERCHANT_CONFIRMATION_1+="$COST_TOBACCO Tobacco "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_TOBACCO TOBACCO ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_TOBACCO TOBACCO ]"
+			"Tobacco" ) MERCHANT_CONFIRMATION+="$COST_TOBACCO Tobacco "
+				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_TOBACCO TOBACCO ]"
+				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_TOBACCO TOBACCO ]"
 				    ;;
 			"Food" )    MERCHANT_CONFIRMATION_1+="$COST_FOOD Food "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_FOOD FOOD ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_FOOD FOOD ]"
+				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_FOOD FOOD ]"
+				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_FOOD FOOD ]"
 				    ;;
 			"Gold" )    MERCHANT_CONFIRMATION_1+="$COST_GOLD Gold "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION_1+="[ -$COST_GOLD GOLD ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION_1+="[ +$COST_GOLD GOLD ]"
+				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_GOLD GOLD ]"
+				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_GOLD GOLD ]"
 				    ;;
+		    esac
+			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ + $QUANTITY "
+		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ - $QUANTITY "
+		    case "$MERCHANDISE" in
+		    "Food" | "Tobacco" | "Gold" ) MERCHANT_CONFIRMATION+="${MERCHANDISE^^} ]" ;;
+		    * ) MERCHANT_CONFIRMATION+="ITEM ]" ;;
 		    esac
 		    ;;
 	    esac
 	    
-	    ############  THERE IS A BUG ABOVE ^^ FOR SUCCESSFUL TRANSACTIONS: echoes only "You bough n MERCH for "
-	    
 	    # Output MERCHANT_CONFIRMATION ("goodbye")
 	    if (( TRANSACTION_STATUS == 0 )) ; then
-		echo -n "$MERCHANT_CONFIRMATION_1" && read -s -n1 2>&1
+	    tput sc
+	    MvAddStr 12 4 "Thanks for the trade!"
+	    tput rc
+		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 10
 	    else
 		tput sc
-		MvAddStr 12 4 "$MERCHANT_CONFIRMATION_1"
+		MvAddStr 12 4 "$MERCHANT_CONFIRMATION"
 		(( TRANSACTION_STATUS == 1 )) && MvAddStr 13 4 "$MERCHANT_CONFIRMATION_2"
 		tput rc
 	    fi

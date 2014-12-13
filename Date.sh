@@ -86,14 +86,14 @@ DateFromTurn() { # Some vars used in Almanac(
     # By atm age == cycle as I understand it. Isn't it right? (kstn)
 
     # get date
-    YEAR=$(bc <<< "$TURN / $YEAR_LENGHT")            # Find out which YEAR we're in
-    CENTURY=$(bc <<< "($YEAR / 100) + 200" )         # Find out which CENTURY we're in (We start in year 2nn, actually :) )
-    ((YEAR >= 100)) && YEAR=$(bc <<< "$YEAR % 100")  # Cut down years more than 100 
-    local REMAINDER=$(bc <<< "$TURN % $YEAR_LENGHT") # Month + days
-    MONTH=$(bc <<< "$REMAINDER / $MONTH_LENGTH")     # Find out which MONTH we're in   # 0-11
-    DAY=$(bc <<< "$REMAINDER % $MONTH_LENGTH")       # Find out which DAY we're in     # 0-29
-    WEEKDAY=$( bc <<< "$TURN % $WEEK_LENGTH" )       # Find out which WEEKDAY we're in # 0-6
-    MOON=$(bc <<< "($TURN % $MOON_CYCLE) / 4")       # Find out current Moon Phase     # 0-7
+    YEAR=$(bc <<< "$TURN / $YEAR_LENGHT")                       # Find out which YEAR we're in
+    CENTURY=$(bc <<< "($YEAR / 100) + 200" )                    # Find out which CENTURY we're in (We start in year 2nn, actually :) )
+    ((YEAR >= 100)) && YEAR=$(bc <<< "$YEAR % 100")             # Cut down years more than 100 
+    local REMAINDER=$(bc <<< "$TURN % $YEAR_LENGHT")            # Month + days
+    MONTH=$(bc <<< "$REMAINDER / $MONTH_LENGTH")                # Find out which MONTH we're in   # 0-11
+    DAY=$(bc <<< "$REMAINDER % $MONTH_LENGTH")                  # Find out which DAY we're in     # 0-29
+    WEEKDAY=$( bc <<< "$TURN % $WEEK_LENGTH" )                  # Find out which WEEKDAY we're in # 0-6
+    MOON=$(bc <<< "($TURN % $MOON_CYCLE) / $MOON_PHASE_LENGTH") # Find out current Moon Phase     # 0-7
     
     # Fix date (AFTER getting MONTH, DAY, etc !!!)
     ((DAY++))

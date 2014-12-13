@@ -471,7 +471,7 @@ GX_Marketplace_Beggar() { # Used in Marketplace_Beggar()
     cat <<"EOT"
 
                                                                  /;        |
-              THE OLD BEGGAR                                    //    \    |
+            THE OLD BEGGAR                                      //    \    |
                                                                /,mn-.      |
                                                               /,-'|'l    \ |
                                                              / ~ 'j||;     |

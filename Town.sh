@@ -91,10 +91,11 @@ Marketplace() {
     while (true); do
 	GX_Marketplace
 	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
+#	MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
 	case $(Read) in
-	    g | G) Marketplace_Grocer;;   # Trade FOOD for GOLD and TOBACCO
-	    m | M) Marketplace_Merchant;; # Trade TOBACCO <-> GOLD ??? Or what?? #kstn
-	    # Smbd who'll trade boars' tusks etc for GOLD/TOBACCO ???
+#	    b | B) Marketplace_Beggar;;
+	    g | G) Marketplace_Grocer;; 
+	    m | M) Marketplace_Merchant;; 
 	    q | Q ) CleanUp ;;
 	    *) break ;; # Leave marketplace
 	esac
@@ -555,9 +556,26 @@ Marketplace_Grocer() {
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
 Marketplace_Beggar() {
-	# Placeholder for whenever we get around to this feature..
 	GX_Marketplace_Beggar
-	PressAnyKey
+	local B_Y=4                # Setup default greeting
+	local BEGGAR_MSG=("" "Traveller from afar" "Forest Child" "Mountain Warrior" "Master Hobbit") # [0] is dummy
+    if [ -z "$BEGGAR" ] || [ "$BEGGAR" != "$CHAR_GPS" ] ; then 	# "Name" this beggar as GPS location
+	BEGGAR="$CHAR_GPS"
+	tput sc && MvAddStr $B_Y 4 "Kind ${BEGGAR_MSG[$CHAR_RACE]} .."
+	# Add mercy plea dependent on race (for $DEITY) vs. history/religion.
+#	(( M_Y++ ))                            #lllllllllllllllllllllllllllllllllllll#
+#	local MERCHANT_MSG=( "" "" "" "" "" "" "Please, " "to provide the Finest Merchandise" "in the Realm, and at the best"
+#			     "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?" )  && (( M_Y++ )) # [0-5,11] are dummies
+#	while (( M_Y <= 12 )) ; do # Output default greeting
+#	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
+#	    (( M_Y++ ))
+#	done
+	tput rc
+	else
+	tput sc && MvAddStr $B_Y 4 "Hello again, ${BEGGAR_MSG[$CHAR_RACE]} .."
+	tput rc
+	fi
+   	PressAnyKey
 }
 #
 # The BEGGAR will accept donations (1-2 x VAL_CHANGE), and will respond

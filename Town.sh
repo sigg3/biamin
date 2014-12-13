@@ -554,7 +554,11 @@ Marketplace_Grocer() {
 # Marketplace_Beggar()                                           Town.sh
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
-# PLACEHOLDER until I get an ASCII for it.
+Marketplace_Beggar() {
+	# Placeholder for whenever we get around to this feature..
+	GX_Marketplace_Beggar
+	PressAnyKey
+}
 #
 # The BEGGAR will accept donations (1-2 x VAL_CHANGE), and will respond
 # to the CHAR with a) simple thank you or b) advice, knowledge, info

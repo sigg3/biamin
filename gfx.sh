@@ -442,7 +442,7 @@ EOT
 
 
 
-GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hipster)
+GX_Marketplace_Merchant() { # Used in Marketplace_Merchant() (Goatee == dashing, not hipster)
     clear
     cat <<"EOT"
                                                             .--^`~~.
@@ -462,6 +462,28 @@ GX_Marketplace_Merchant() { # Used in GX_Marketplace (Goatee == dashing, not hip
                                        l_____l        4    ;_/  ,|_/__ 
                                              `-._____,'   /--|  \._`_.) 
                                                           \_/    
+EOT
+    echo "$HR"
+}
+
+GX_Marketplace_Beggar() { # Used in Marketplace_Beggar()
+    clear
+    cat <<"EOT"
+
+                                                                 /;        |
+              THE OLD BEGGAR                                    //    \    |
+                                                               /,mn-.      |
+                                                              /,-'|'l    \ |
+                                                             / ~ 'j||;     |
+                                              ______   ,._ _//_"W|'|' `.   |
+                                              \____;)=|   ` ` ```j|j|` :   |
+                                                  `'' |   ,,,,._    j; ; \ |
+                                                      |,~' `-. ';`-.   :   |
+                                                     /  ,     `v      ';   |
+                                                    / ,                : \ |
+                                                 _ /__    ,-~~.        ;   |
+                                               ,'_||_;`._;     `-__ _ ,'\  |
+                                                                         \_|
 EOT
     echo "$HR"
 }

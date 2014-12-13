@@ -312,8 +312,9 @@ CheckForStarvation(){
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
-		# GX_Starvation
-		echo "You have starved to death" && sleep 3.5 && Death
+		GX_Starvation
+		PressAnyKey
+		Death
 	fi
     fi
     sleep 4.5 ### DEBUG

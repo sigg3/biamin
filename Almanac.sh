@@ -235,11 +235,13 @@ EOT
      # Output Trivia (mind the space before sentences)
      echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
      echo "$HR"
-     read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT 2>&1
-     case "$ALM_OPT" in
-	 M | m ) Almanac_Moon ;;
-	 N | n ) Almanac_Notes ;;
-     esac
+     read -sn 1 -p "$(MakePrompt '(R)eturn')" # TODO change/update when features are ready
+# TODO v. 3
+#    read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT 2>&1
+#    case "$ALM_OPT" in
+#	 M | m ) Almanac_Moon ;;
+#	 N | n ) Almanac_Notes ;;
+#     esac
      unset ALM_OPT
  } # Return to DisplayCharsheet()
 

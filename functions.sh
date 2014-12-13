@@ -277,9 +277,8 @@ RollForEvent() {
 # CheckForStarvation()
 # Food check 
 # Used: NewSector() and should be used also in Rest()
-# TODO: may be it shold be renamed to smth more understandable? #kstn
 # TODO: add it to Rest() after finishing
-# TODO: not check for food at the 1st turn ???
+# TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
 # TODO: Tavern also should reset STARVATION and restore starvation penalties if any
 #-----------------------------------------------------------------------
 CheckForStarvation(){ 
@@ -289,32 +288,35 @@ CheckForStarvation(){
 	if (( STARVATION > 0 )) ; then
 	    if (( STARVATION >= 8 )) ; then # Restore lost ability after overcoming starvation
 		case "$CHAR_RACE" in
-		    1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (Strength: $STRENGTH)" ;; 
-		    2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (Accuracy: $ACCURACY)" ;; 
+		    1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;; 
+		    2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;; 
 		esac		    
 	    fi
 	    STARVATION=0
 	fi
     else
-	case $(( ++STARVATION )) in # ++STARVATION THEN check
-	    1 ) echo "You're starving on the ${STARVATION}st day and feeling hungry .." ;;
-	    2 ) echo "You're starving on the ${STARVATION}nd day and feeling famished .." ;;
-	    3 ) echo "You're starving on the ${STARVATION}rd day and feeling weak .." ;;
-	    * ) echo "You're starving on the ${STARVATION}th day, feeling weaker and weaker .." ;;
+    (( STARVATION++ )) && echo -n "You're starving on the "
+	case "$STARVATION" in
+	    1 ) echo "${STARVATION}st day and feeling hungry .."         ;;
+	    2 ) echo "${STARVATION}nd day and feeling weak .."           ;;
+	    3 ) echo "${STARVATION}rd day and feeling famished .."       ;;
+	    * ) echo "${STARVATION}th day, feeling weaker and weaker .." ;;
 	esac
-
 	(( CHAR_HEALTH -= 5 ))
-	echo "-5 HEALTH: Your body is suffering from starvation .. (Health: $HEALTH)" # Light Starvation penalty - decrease 5HP/turn	    
+	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" # Starvation penalty -5HP per turn	    
 	
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in
-		1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (Strength: $STRENGTH)" ;; 
-		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (Accuracy: $ACCURACY)" ;;
+		1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;; 
+		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
 	    esac
 	fi
-	((HEALTH <= 0)) && echo "You have starved to death" && sleep 2 && Death
+	if (( CHAR_HEALTH <= 0 )) ; then
+		# GX_Starvation
+		echo "You have starved to death" && sleep 3.5 && Death
+	fi
     fi
-    sleep 1.5 ### DEBUG
+    sleep 4.5 ### DEBUG
 }
 
 #-----------------------------------------------------------------------

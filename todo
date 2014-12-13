@@ -54,7 +54,7 @@ TODO 2.0 branch ("survival")
 [.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
-[ ] Allow trading gold->tobacco / tobacco-> gold also
+[x] Allow trading gold->tobacco / tobacco-> gold also
 [ ] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
 [ ] 	ASCII GX_Starvation # Great idea! #kstn
 [x] Game of chance (for tavern), dice game or card game etc.
@@ -68,10 +68,10 @@ TODO 2.0 branch ("survival")
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
 [x] Almanac
-[.] Almanac_Moon
-[.] Almanac_Notes
 
 TODO ideas for 3.0 branch ("rpg")
+[.] Almanac_Moon
+[.] Almanac_Notes
 [?]	Dicegame Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
 [?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [ ] Moonphase consequences

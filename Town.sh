@@ -264,7 +264,7 @@ Marketplace_Merchant() {
 	if (( BARGAIN_TYPE != 3 )) && [[ MERCHANDISE != "unknown" ]] ; then	
 	    # Prompt for Quantity
 	    local QUANTITYPROMPT
-	    [[ "$MERCHANDISE" = "Item" ]] && QUANTITYPROMPT=" How many $MERCHANT_ITEMs" || QUANTITYPROMPT=" How much $MERCHANDISE"
+	    [[ "$MERCHANDISE" = "Item" ]] && QUANTITYPROMPT=" How many $MERCHANT_ITEM" && QUANTITYPROMPT+="s" || QUANTITYPROMPT=" How much $MERCHANDISE"
 	    QUANTITYPROMPT+=" do you want to "
 	    (( BARGAIN_TYPE == 1 )) && QUANTITYPROMPT+="buy? " || QUANTITYPROMPT+="sell? "
 	    echo -en "$QUANTITYPROMPT" && read QUANTITY 2>&1
@@ -314,7 +314,7 @@ Marketplace_Merchant() {
 			    ;;
 		"Item" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_IxG * $QUANTITY" )
 			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxI * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_GOLD Gold."
+			    MERCHANT_ORDER_1+="$COST_GOLD Gold."
 			    ;;
 	    esac
 	    
@@ -413,44 +413,36 @@ Marketplace_Merchant() {
 	    else
 	    local PAYMENT="$MERCHANTVAR"
 	    fi
-
-	    # DEBUG
-	    echo "        DEBUG       Setting MERCHANTVAR" >2
-	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    echo "        DEBUG               \$1: $1" >2
-	    echo "        DEBUG               \$2: $2" >2
-	    echo "        DEBUG           PAYMENT: $PAYMENT" >2
-	    # // DEBUG
-	    
 	    
 	    local MERCHANT_CONFIRMATION
 	    case "$TRANSACTION_STATUS" in
-		1 ) MERCHANT_CONFIRMATION="You don't have enough $PAYMENT"
-		    local MERCHANT_CONFIRMATION_2="to buy $QUANTITY $MERCHANDISE."  ;; # Invalid transaction
+		1 ) MERCHANT_CONFIRMATION="You don't have enough $PAYMENT"          # Invalid transaction
+		    local MERCHANT_CONFIRMATION_2="to buy "
+		    case "$MERCHANDISE" in
+		    "Item" ) MERCHANT_CONFIRMATION_2+="this $MERCHANT_ITEM."    ;;
+		    * )      MERCHANT_CONFIRMATION_2+="$QUANTITY $MERCHANDISE." ;;
+		    esac
+		    ;; 
 		2 ) MERCHANT_CONFIRMATION="Sorry, I can't accept that trade .."   ;; # Invalid input
 		3 ) MERCHANT_CONFIRMATION="Welcome back anytime, friend!"         ;; # Not interested
 		0 ) # Valid transactions
 		    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION=" You bought" || MERCHANT_CONFIRMATION=" You sold"
-		    MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for "
+		    MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for [ "
 		    case "$PAYMENT" in
 			"Tobacco" ) MERCHANT_CONFIRMATION+="$COST_TOBACCO Tobacco "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_TOBACCO TOBACCO ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_TOBACCO TOBACCO ]"
-				    ;;
+				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_TOBACCO" || MERCHANT_CONFIRMATION+="+$COST_TOBACCO" ;;
 			"Food" )    MERCHANT_CONFIRMATION_1+="$COST_FOOD Food "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_FOOD FOOD ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_FOOD FOOD ]"
-				    ;;
+				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_FOOD"    || MERCHANT_CONFIRMATION+="+$COST_FOOD" ;;
 			"Gold" )    MERCHANT_CONFIRMATION_1+="$COST_GOLD Gold "
-				    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ -$COST_GOLD GOLD ]"
-				    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ +$COST_GOLD GOLD ]"
-				    ;;
+				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_GOLD"    || MERCHANT_CONFIRMATION+="+$COST_GOLD" ;;
+			# Item ) # TODO v. 3 (selling pelts n stuff)
 		    esac
-			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="[ + $QUANTITY "
-		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="[ - $QUANTITY "
+		    MERCHANT_CONFIRMATION+="${PAYMENT^^} & [ "
+			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="+ $QUANTITY "
+		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="- $QUANTITY "
 		    case "$MERCHANDISE" in
 		    "Food" | "Tobacco" | "Gold" ) MERCHANT_CONFIRMATION+="${MERCHANDISE^^} ]" ;;
-		    * ) MERCHANT_CONFIRMATION+="ITEM ]" ;;
+		    * )                           MERCHANT_CONFIRMATION+="ITEM ]"             ;;
 		    esac
 		    ;;
 	    esac
@@ -460,7 +452,7 @@ Marketplace_Merchant() {
 	    tput sc
 	    MvAddStr 12 4 "Thanks for the trade!"
 	    tput rc
-		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 10
+		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 6
 	    else
 		tput sc
 		MvAddStr 12 4 "$MERCHANT_CONFIRMATION"
@@ -556,6 +548,18 @@ Marketplace_Grocer() {
     done
     unset PRICE_IN_GOLD PRICE_IN_TOBACCO
 } # Return to GoIntoTown()
+
+
+#-----------------------------------------------------------------------
+# Marketplace_Beggar()                                           Town.sh
+# Used: GoIntoTown()
+#-----------------------------------------------------------------------
+# PLACEHOLDER until I get an ASCII for it.
+#
+# The BEGGAR will accept donations (1-2 x VAL_CHANGE), and will respond
+# to the CHAR with a) simple thank you or b) advice, knowledge, info
+# "If you're shopping, check the prices of both grocer and merchant first!"
+# This is a way of "advertising" the right solution(s) to the player..
 
 #-----------------------------------------------------------------------
 # GoIntoTown()

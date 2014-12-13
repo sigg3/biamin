@@ -75,18 +75,17 @@ FightMode_RemoveBonuses() {
 #-----------------------------------------------------------------------
 FightMode_DefineEnemy() {
     # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
+    # Every enemy should have 3 appearances, not counting HOME.
     RollDice 100
-    case "$SCENARIO" in
-	H ) ((DICE <= 10)) && ENEMY="chthulu" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="imp"    ;;
-	T ) ((DICE <= 35)) && ENEMY="mage"    || ((DICE <= 90)) && ENEMY="bandit" || ENEMY="dragon" ;;
-	C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="dragon" ;;
-	x ) ((DICE <= 20)) && ENEMY="orc"     || ((DICE <= 40)) && ENEMY="varg"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 55)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="dragon" || ENEMY="bear" ;;
-	. ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ENEMY="imp"  ;; # Bear in road was weird..
-	@ ) ((DICE <= 10)) && ENEMY="orc"     || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ((DICE <= 75)) && ENEMY="boar" || ((DICE <= 80)) && ENEMY="bear"   || ENEMY="imp"  ;;
-
-
+    case "$SCENARIO" in # Lowest to Greatest % of encounter ENEMY in areas from civilized, to nature, to wilderness
+	H ) ((DICE <= 10)) && ENEMY="chthulu" || ((DICE <= 30)) && ENEMY="imp"    || ENEMY="dragon" ;; # 10, 20, 70
+	T ) ((DICE <= 10)) && ENEMY="dragon"  || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="bandit" ;; # 10, 35, 55
+	C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 10)) && ENEMY="imp"    || ((DICE <= 50)) && ENEMY="dragon" || ENEMY="mage" ;;  #  5,  5, 40, 50
+	. ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="boar"   || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ENEMY="imp"  ;;  #  5,  5, 20, 30, 40
+	@ ) ((DICE <= 5 )) && ENEMY="bear"    || ((DICE <= 15)) && ENEMY="orc"    || ((DICE <= 30)) && ENEMY="boar"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 70)) && ENEMY="imp" || ENEMY="bandit" ;; #  5, 10, 15, 20, 20, 30
+	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
     esac
-
+    
     # ENEMY ATTRIBUTES
     # EN_FLEE_THRESHOLD - At what Health will enemy flee? :)
     # PL_FLEE_EXP       - Exp player get if he manage to flee from enemy

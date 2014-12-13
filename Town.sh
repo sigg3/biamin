@@ -220,15 +220,14 @@ Marketplace_Merchant() {
 	esac
 
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
-	RollDice 5
+	RollDice 8
 	case "$DICE" in
 	    1 ) MERCHANT_ITEM="Health Potion (5 HP)"  ;; # TODO
 	    2 ) MERCHANT_ITEM="Health Potion (10 HP)" ;; # Construct numbered list in ARRAY instead..?
 	    3 ) MERCHANT_ITEM="Health Potion (15 HP)" ;; # This way we can add more seamlessly..
 	    4 ) MERCHANT_ITEM="Health Potion (20 HP)" ;;
-	    5 ) MERCHANT_ITEM="Almanac"               ;;
+	    5 | 6 | 7 | 8 ) MERCHANT_ITEM="Almanac"   ;;
 	esac
-	(( INV_ALMANAC == 0 )) && MERCHANT_ITEM="Almanac"	
     fi
     # Merchant Loop
     while (true) ; do

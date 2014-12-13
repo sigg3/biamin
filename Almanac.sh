@@ -242,7 +242,7 @@ EOT
 #	 M | m ) Almanac_Moon ;;
 #	 N | n ) Almanac_Notes ;;
 #     esac
-     unset ALM_OPT
+#    unset ALM_OPT
  } # Return to DisplayCharsheet()
 
 

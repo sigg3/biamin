@@ -119,7 +119,7 @@ EOT
 }
 
 GX_Starvation() {
-	clear
+    clear
     cat <<"EOT"
 
 
@@ -226,7 +226,7 @@ GX_Calendar() {
 
 #-----------------------------------------------------------------------
 # GX_Moon()
-# Arguments: $MOON(int[0-7]) (Count of moon phases_
+# Arguments: $MOON(int[0-7]) (Count of moon phases)
 # Used: GX_Rest(), Almanac_Moon()
 #-----------------------------------------------------------------------
 GX_Moon() { 

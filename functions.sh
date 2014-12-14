@@ -111,10 +111,6 @@ INV_ALMANAC: $INV_ALMANAC" > "$CHARSHEET"
 #-----------------------------------------------------------------------
 Intro() { 
     SHORTNAME=$(Capitalize "$CHAR")  # Create capitalized FIGHT CHAR name
-
-# TEST - should not needed now    
-#    (( TURN == 0 )) && TodaysDate    # Fetch today's date in Warhammer calendar (Used in DisplayCharsheet() and FightMode() )
-
     MapCreate                        # Create session map in $MAP  
     HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)    
@@ -210,7 +206,7 @@ Death() {
     	read -sn 1 -t 1 && break || ((COUNTDOWN--))
     done
     unset COUNTDOWN 
-    #echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
+    # echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
@@ -224,7 +220,6 @@ RollForHealing() { # Used in Rest()
     echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
     # TODO!!! Check it - ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." ) - shouldn't that be not () but {} ??? #kstn
     ((DICE > HEALING)) && echo "$2" || ( (( CHAR_HEALTH += $1 )) && echo "You slept well and gained $1 Health." )
-    ((TURN++))
     sleep 2
 }   # Return to Rest()
 
@@ -247,7 +242,6 @@ Rest() {
 	    else
 		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
-	    ((TURN++))
 	    ;;
 	x ) RollForEvent 60 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;; # TODO I need to clean this up..
 	. ) RollForEvent 30 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
@@ -260,7 +254,6 @@ Rest() {
 }   # Return to NewSector()
 
 # THE GAME LOOP
-
 
 #-----------------------------------------------------------------------
 # RollForEvent()
@@ -295,7 +288,7 @@ CheckForStarvation(){
 	    STARVATION=0
 	fi
     else
-    (( STARVATION++ )) && echo -n "You're starving on the "
+	(( STARVATION++ )) && echo -n "You're starving on the "
 	case "$STARVATION" in
 	    1 ) echo "${STARVATION}st day and feeling hungry .."         ;;
 	    2 ) echo "${STARVATION}nd day and feeling weak .."           ;;
@@ -312,9 +305,9 @@ CheckForStarvation(){
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
-		GX_Starvation
-		PressAnyKey
-		Death
+	    GX_Starvation
+	    PressAnyKey
+	    Death
 	fi
     fi
     sleep 4.5 ### DEBUG

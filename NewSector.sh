@@ -98,7 +98,7 @@ MapNav() {
 	* ) echo -n "Loitering.."
     esac
     CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y") # Translate MAP_X numeric back to A-R
-    sleep 1.5 # Merged with sleep from 'case "$DEST"' section
+    Sleep 1.5 # Merged with sleep from 'case "$DEST"' section
 }
 
 #-----------------------------------------------------------------------
@@ -117,7 +117,7 @@ NewSector_GetScenario() {
 # Used: NewSector(), TavernRest()
 #-----------------------------------------------------------------------
 NewTurn() {
-    ((TURN++)) # Nev turn, new date
+    ((TURN++))   # Nev turn, new date
     DateFromTurn # Get year, month, day, weekday
 }
     

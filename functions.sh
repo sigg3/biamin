@@ -13,6 +13,18 @@ Strlen() { awk '{print length($0);}' <<< "$*" ;} # Return lenght of string $*. "
 
 MvAddStr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "mvaddstr" is name similar function from ncurses.h
 
+
+#-----------------------------------------------------------------------
+# IsInt()
+# Checks if $1 is int
+# Arguments: $1
+# Used:
+#-----------------------------------------------------------------------
+IsInt() {
+    grep -E '^[0-9]+$' <<< "$1" && return 0 || return 1
+}
+
+
 #-----------------------------------------------------------------------
 # Ordial()
 # Add postfix to $1 (NUMBER)
@@ -310,7 +322,8 @@ CheckForStarvation(){
 	    Death
 	fi
     fi
-    sleep 4.5 ### DEBUG
+    #sleep 4.5 ### DEBUG
+    Sleep 4.5
 }
 
 #-----------------------------------------------------------------------

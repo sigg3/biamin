@@ -143,8 +143,7 @@ CLIarguments_CheckUpdate() {
  	    echo "Update to Biamin version $REPOVERSION? [Y/N] "
 	    case $(Read) in
 		y | Y ) echo -e "\nUpdating Back in a Minute from $VERSION to $REPOVERSION .."
-			# TODO make it less ugly
-			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail.
+			BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 			BIAMIN_RUNTIME+="/"
 			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
@@ -168,7 +167,7 @@ CLIarguments_CheckUpdate() {
 #-----------------------------------------------------------------------
 CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
-    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) # TODO $0 is a powerful beast, but will sometimes fail..
+    BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
     echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
     read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
     case "$LAUNCHER" in

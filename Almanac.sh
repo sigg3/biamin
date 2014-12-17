@@ -39,7 +39,7 @@ Almanac_Moon() { # Used in Almanac()
     fi
     tput rc
 
-    # TODO Add Left-aligned text "box" (without borders)
+    # TODO v3 Add Left-aligned text "box" (without borders)
     # Follow template:
     # 1. Name of phase
     # 2. Mythological significance (Gods etc.)
@@ -62,7 +62,7 @@ Almanac_Notes() {
     tput rc
     [ -z "$CHAR_NOTES" ] && echo -e " In the back of your almanac, there is a page reserved for Your Notes.\n There is only room for 10 lines, but you may erase obsolete information.\n"
 
-    # TODO
+    # TODO version 3
     # Add creation of mktemp CHAR.notes file that is referenced in $CHARSHEET
     # OR add NOTE0-NOTE9 in .sheet file.
     # Add opportunity to list (default action in Almanac_Notes), (A)dd or (E)rase notes.

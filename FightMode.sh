@@ -106,8 +106,8 @@ FightMode_DefineEnemy() {
     # 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; PL_FLEE_EXP=35  ; EN_FLEE_EXP=75  ; EN_DEFEATED_EXP=150  ;;
     # 	dragon )  EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=120 ; EN_FLEE_THRESHOLD=50 ; PL_FLEE_EXP=45  ; EN_FLEE_EXP=90  ; EN_DEFEATED_EXP=180  ;;
     # 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; PL_FLEE_EXP=200 ; EN_FLEE_EXP=500 ; EN_DEFEATED_EXP=1000 ;;
-    # 	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=60   ;; # TODO: test and confirm these
-    # 	imp )     EN_STRENGTH=2 ; EN_ACCURACY=1 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; PL_FLEE_EXP=2   ; EN_FLEE_EXP=5   ; EN_DEFEATED_EXP=10   ;; # TODO: test and confirm these
+    # 	bear )    EN_STRENGTH=6 ; EN_ACCURACY=1 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; PL_FLEE_EXP=10  ; EN_FLEE_EXP=25  ; EN_DEFEATED_EXP=60   ;;
+    # 	imp )     EN_STRENGTH=2 ; EN_ACCURACY=1 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; PL_FLEE_EXP=2   ; EN_FLEE_EXP=5   ; EN_DEFEATED_EXP=10   ;;
     # esac
     #
     ########################################################################
@@ -115,10 +115,10 @@ FightMode_DefineEnemy() {
 
     ########################################################################
     # TEST NEW EXP SYSTEM
-    # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn
+    # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn # Good idea! Sigge
     case "$ENEMY" in
 	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_DEFEATED_EXP=20   ;; 
-	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_DEFEATED_EXP=10   ;; # TODO: test and confirm these
+	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_DEFEATED_EXP=10   ;;
 	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_DEFEATED_EXP=30   ;; 
 	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; EN_DEFEATED_EXP=40   ;;
 	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_DEFEATED_EXP=50   ;; 
@@ -126,7 +126,7 @@ FightMode_DefineEnemy() {
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; EN_DEFEATED_EXP=150  ;;
 	dragon )  EN_STRENGTH=5 ; EN_ACCURACY=4 ; EN_FLEE=2 ; EN_HEALTH=150 ; EN_FLEE_THRESHOLD=50 ; EN_DEFEATED_EXP=180  ;;
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; EN_DEFEATED_EXP=1000 ;;
-	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_DEFEATED_EXP=60   ;; # TODO: test and confirm these
+	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_DEFEATED_EXP=60   ;;
     esac
     # Temporary - after it'll be count in function ChecForExp()
     PL_FLEE_EXP=$((EN_DEFEATED_EXP / 4))       # - Exp player get if he manage to flee from enemy
@@ -436,7 +436,7 @@ FightMode() {	# Used in NewSector() and Rest()
     SaveCurrentSheet
     Sleep 6
     DisplayCharsheet
-    [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && DICE=111 # Bugfix: Don't roll for heal if pl was attacked.
+    [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && PLAYER_RESTING=3 # Fight occured in Rest().
 }
 #                                                                      #
 #                                                                      #

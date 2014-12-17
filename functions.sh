@@ -255,11 +255,11 @@ Rest() {
 		echo "You slept well in your own bed, and woke up to a beautiful day."
 	    fi
 	    ;;
-	x ) RollForEvent 60 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;; # TODO I need to clean this up..
-	. ) RollForEvent 30 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
-	T ) RollForEvent 15 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 15 "The vices of town life kept you up all night.." ;;
-	@ ) RollForEvent 35 "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
-	C ) RollForEvent 5  "fight" && FightMode || [ -n $DICE ] && [[ $DICE != 111 ]] && RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
+	x ) RollForEvent 60 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
+	. ) RollForEvent 30 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
+	T ) RollForEvent 15 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 15 "The vices of town life kept you up all night.." ;;
+	@ ) RollForEvent 35 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
+	C ) RollForEvent 5  "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
     esac
     unset PLAYER_RESTING # Reset flag
     sleep 2
@@ -299,7 +299,7 @@ CheckForStarvation(){
 	    fi
 	    STARVATION=0
 	fi
-	# TODO sleep here that is semi fast
+	sleep 1 # Npte: This is added to the sleep below
     else
 	(( STARVATION++ )) && echo -n "You're starving on the "
 	case "$STARVATION" in
@@ -322,10 +322,9 @@ CheckForStarvation(){
 	    PressAnyKey
 	    Death
 	fi
-	# TODO longer +1s sleep here (things goes slower when you're starving)
+	sleep 2.5 # Sleep penalty when starving (game goes slower)
     fi
-    # sleep 4.5 # (too slow for play-testing:)
-    sleep 2.5 # DEBUG 
+    sleep 1.5 # DEBUG     # sleep 4.5 # (too slow for play-testing:)
 }
 
 #-----------------------------------------------------------------------

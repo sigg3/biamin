@@ -76,7 +76,7 @@ Announce() {
     ANNOUNCEMENT_TMP=$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< "$ANNOUNCEMENT_TMP"
 
-    HIGH_RACES=("Human" "Elf" "Dwarf" "Hobbit")
+    HIGH_RACES=("" "Human" "Elf" "Dwarf" "Hobbit") # ${HIGH_RACES[0]} is dummy
     highRACE=${HIGH_RACES["$highRACE"]}
     
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"

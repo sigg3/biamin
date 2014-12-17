@@ -213,13 +213,12 @@ Death() {
     echo " The $BIAMIN_DATE_STR:"
     echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
     local COUNTDOWN=20
-    while (( COUNTDOWN > 0 )); do
+    while ((COUNTDOWN--)); do
 	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
-    	read -sn 1 -t 1 && break || ((COUNTDOWN--))
+    	read -sn 1 -t 1 && break
     done
     unset COUNTDOWN 
-    # echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$TODAYS_DATE;$TODAYS_MONTH;$TODAYS_YEAR" >> "$HIGHSCORE"
-    echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$DAY;$MONTH;$(Ordial $YEAR)" >> "$HIGHSCORE"
+    echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$(Ordial $DAY);$(MonthString $MONTH);$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
     # TODO: add showing Highscore list here

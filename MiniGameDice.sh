@@ -29,6 +29,7 @@ declare -r -a DICE_GAME_WINNINGS=("dummy" "dummy" 100 85 70 55 40 25 40 55 70 85
 #-----------------------------------------------------------------------
 MiniGame_Dice() { 
 	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
+	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
 	GX_DiceGame_Table
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
 	    0 ) read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0 ;; # leave
@@ -39,7 +40,7 @@ MiniGame_Dice() {
 	    j | J | y | Y ) ;;                                  # Game on! Do nothing.
 	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ; sleep 2; return 0;; # Leave.
 	esac	
-	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
+
 	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then  # Check if player can afford it
 	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
 	    return 0 # leave

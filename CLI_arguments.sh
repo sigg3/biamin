@@ -73,9 +73,7 @@ Announce() {
     ANNOUNCE_ADJECTIVES=("honorable" "fearless" "courageos" "brave" "legendary" "heroic")
     ADJECTIVE=${ANNOUNCE_ADJECTIVES[RANDOM%6]}
 
-    ANNOUNCEMENT_TMP=$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
-    IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< "$ANNOUNCEMENT_TMP"
-
+    IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< $(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     HIGH_RACES=("" "Human" "Elf" "Dwarf" "Hobbit") # ${HIGH_RACES[0]} is dummy
     highRACE=${HIGH_RACES["$highRACE"]}
     
@@ -84,16 +82,13 @@ Announce() {
 
     highCHAR=$(Capitalize "$highCHAR") # Capitalize
     
-
     ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
-    ANNOUNCEMENT_LENGHT=$(Strlen "$ANNOUNCEMENT" ) 
     GX_HighScore
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"
     echo -e "\n$ANNOUNCEMENT\n" | fmt
     echo "$HR"
-
-    ((ANNOUNCEMENT_LENGHT > 160)) && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
+    (( $(Strlen "$ANNOUNCEMENT" ) > 160)) && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
     exit 0
 }
 

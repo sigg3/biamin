@@ -2,11 +2,13 @@
 #                             GX_Bulletin                              #
 #                                                                      #
 
-
-
 ## WORLD EVENT functions
 
-WorldPriceFixing() { # Used in WorldChangeEconomy() and Intro()
+#-----------------------------------------------------------------------
+# WorldPriceFixing()
+# Used: WorldChangeEconomy(), Intro()
+#-----------------------------------------------------------------------
+WorldPriceFixing() { 
     local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
     # Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
     # O_o. Are you sure that all is right with your encoding settings? #kstn
@@ -55,7 +57,7 @@ CheckForWorldChangeEconomy() {
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
     WorldPriceFixing         # Update all prices    
-} # Return to NewSector()
+}
 
 # Other WorldChangeFUNCTIONs go here:)
 
@@ -72,8 +74,8 @@ MAX_BBSMSG=12
 #-----------------------------------------------------------------------
 GX_Bulletin() { 
     # Create strings for economical situation..
-    VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
-    VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
+    local VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
+    local VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
     case $1 in # MAX 35 chars per line !!!
 	1 ) # Wild Fire Threatens Tobacco (serious)
 	    local BULLETIN=( 
@@ -217,7 +219,7 @@ EOT
     done
     tput rc # restore cursor position
     PressAnyKey
-} # End of GX_Bulletin()
+}
 
 #                                                                      #
 #                                                                      #

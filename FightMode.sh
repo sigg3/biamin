@@ -422,10 +422,16 @@ FightMode() {	# Used in NewSector() and Rest()
     ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
-	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
-	[[ ((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) ]] && unset FIGHTMODE           # Exit loop if player or enemy is dead
+	case "$NEXT_TURN" in                                                    # Define which turn is and make it
+	    "pl") FightMode_CharTurn;;
+	    "en") FightMode_EnemyTurn;;
+	    *) Die "Bug in FIghtMode() with \$NEXT_TURN >>>$NEXT_TURN<<<";
+	esac
+	if ((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)); then
+	    unset FIGHTMODE                                                     # Exit loop if player or enemy is dead
+	fi
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
-	sleep 2			                                                #  after pause
+	Sleep 2			                                                #  after pause
     done
     ########################################################################
     FightMode_CheckForDeath	               # Check if player is alive
@@ -434,7 +440,7 @@ FightMode() {	# Used in NewSector() and Rest()
     FightMode_CheckForPickpocket "$PICKPOCKET" # 
     FightMode_CheckForLoot	               # 
     SaveCurrentSheet
-    sleep 6
+    Sleep 6
     DisplayCharsheet
     [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && DICE=111 # Bugfix: Don't roll for heal if pl was attacked.
 }

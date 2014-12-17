@@ -439,6 +439,13 @@ EOT
 
 }
 
+
+#-----------------------------------------------------------------------
+# GX_Marketplace_Grocer()
+# Display Grocer ASCII. If $1 and $2 also display prices for FOOD and
+# TOBACCO.
+# Arguments: (optional) $PRICE_FxG(float), $PRICE_FxT(float).
+#-----------------------------------------------------------------------
 GX_Marketplace_Grocer() {
     clear
     cat <<"EOT"
@@ -456,6 +463,12 @@ GX_Marketplace_Grocer() {
    
 EOT
     echo "$HR"
+    if [[ "$@" ]] ; then # if args
+	tput sc                                            # save cursor position
+	[[ "$1" ]] && MvAddStr 10 4 "1 FOOD costs $1 Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
+	[[ "$2" ]] && MvAddStr 11 4  "or $2 Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
+	tput rc                                            # restore cursor position
+    fi
 }
 
 

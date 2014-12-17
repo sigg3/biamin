@@ -506,11 +506,13 @@ Marketplace_Merchant() {
 Marketplace_Grocer() { 
     # The PRICE of units are set in WorldPriceFixing()
     while (true); do
-	GX_Marketplace_Grocer
-	tput sc                                      # save cursor position
-	MvAddStr 10 4 "1 FOOD costs $PRICE_FxG Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
-	MvAddStr 11 4  "or $PRICE_FxT Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
-	tput rc                                      # restore cursor position
+	# GX_Marketplace_Grocer
+	# tput sc                                      # save cursor position
+	# MvAddStr 10 4 "1 FOOD costs $PRICE_FxG Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
+	# MvAddStr 11 4  "or $PRICE_FxT Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
+	# tput rc                                      # restore cursor position
+
+	GX_Marketplace_Grocer "$PRICE_FxG" "$PRICE_FxT"
 	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'

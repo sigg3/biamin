@@ -505,10 +505,6 @@ Marketplace_Merchant() {
 #-----------------------------------------------------------------------
 # Marketplace_Grocer()
 # Used: GoIntoTown()
-# IDEA:
-# ? Add stealing from market??? 
-#   Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
-#   Or he call the police (the guards?) and they throw player from town? (kstn)
 #-----------------------------------------------------------------------
 Marketplace_Grocer() { 
     # The PRICE of units are set in WorldPriceFixing()
@@ -561,32 +557,31 @@ Marketplace_Grocer() {
     done
 } # Return to GoIntoTown()
 
-
 #-----------------------------------------------------------------------
 # Marketplace_Beggar()                                           Town.sh
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
 Marketplace_Beggar() {
-	GX_Marketplace_Beggar
-	local B_Y=4                # Setup default greeting
-	local BEGGAR_MSG=("" "Traveller from afar" "Forest Child" "Mountain Warrior" "Master Hobbit") # [0] is dummy
+    GX_Marketplace_Beggar
+    local B_Y=4                # Setup default greeting
+    local BEGGAR_MSG=("" "Traveller from afar" "Forest Child" "Mountain Warrior" "Master Hobbit") # [0] is dummy
     if [ -z "$BEGGAR" ] || [ "$BEGGAR" != "$CHAR_GPS" ] ; then 	# "Name" this beggar as GPS location
 	BEGGAR="$CHAR_GPS"
 	tput sc && MvAddStr $B_Y 4 "Kind ${BEGGAR_MSG[$CHAR_RACE]} .."
 	# Add mercy plea dependent on race (for $DEITY) vs. history/religion.
-#	(( M_Y++ ))                            #lllllllllllllllllllllllllllllllllllll#
-#	local MERCHANT_MSG=( "" "" "" "" "" "" "Please, " "to provide the Finest Merchandise" "in the Realm, and at the best"
-#			     "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?" )  && (( M_Y++ )) # [0-5,11] are dummies
-#	while (( M_Y <= 12 )) ; do # Output default greeting
-#	    MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
-#	    (( M_Y++ ))
-#	done
+	# (( M_Y++ ))                            #lllllllllllllllllllllllllllllllllllll#
+	# local MERCHANT_MSG=( "" "" "" "" "" "" "Please, " "to provide the Finest Merchandise" "in the Realm, and at the best"
+	# 		     "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?" )  && (( M_Y++ )) # [0-5,11] are dummies
+	# while (( M_Y <= 12 )) ; do # Output default greeting
+	#     MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
+	#     (( M_Y++ ))
+	# done
 	tput rc
-	else
+    else
 	tput sc && MvAddStr $B_Y 4 "Hello again, ${BEGGAR_MSG[$CHAR_RACE]} .."
 	tput rc
-	fi
-   	PressAnyKey
+    fi
+    PressAnyKey
 }
 #
 # The BEGGAR will accept donations (1-2 x VAL_CHANGE), and will respond

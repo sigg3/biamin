@@ -30,7 +30,7 @@ TODO 2.0 branch ("survival")
 [?] Implement EchoFightFormula in FightMode from LEGACY
 [ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
-[ ] Check are all checks for gold/tobacco replaced to bc
+[x] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()
 [x] ASCII GX_Monster_boar 
 [x] ASCII GX_Monster_dragon
@@ -113,9 +113,17 @@ TODO ideas for 3.0 branch ("rpg")
 [?] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
 [?] Adventure log (optional)
 [?] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
+[?] Add stealing from market??? 
+    	 Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
+	 Or he call the police (the guards?) and they throw player from town? (kstn) 
+	 We're getting way ahead of ourselves:) Let's just make what we have work first:)
+[?] Add item or magic thing which adds 50 to MAX_HEALTH
+[?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
+[?] Different races eats different quantity of FOOD/turn
+
 
 BLOG/Misc.
-[.] Creation, Mythology, Gods (for 2.0)
+[.] Creation, Mythology, Gods (for 2.0) # For 3.0? #kstn
 [ ] wiki
 [x] LEGACY announcement
 [ ] 2.0 announcement
@@ -123,3 +131,4 @@ BLOG/Misc.
 [x] Update download page
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)
 [ ] Make text for roguebasin's page
+[?] Make GitHub mirror (for 2.0) (only for stable?)

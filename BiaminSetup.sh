@@ -152,32 +152,27 @@ BiaminSetup_MakeNewChar() {
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
-	TURN=$(TurnFromDate) # Player starts from translated _real date_. Afterwards, turns increment.
+	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
 	INV_ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
 
-	# IDEA - why not difference all 4 races by various tobacco/gold offsets ? #kstn
-	#            gold            tobacco                                      # Good idea, implement it
-	#             \/                /\                                        # as long as u detail the math
-	# dwarves |  most         | the smallest                                  # below :) - Sigge
-	# man     |  more         | smaller
-	# elves   |  smaller      | more
-	# hobbits |  the smallest | most
-	#             
 	case "$CHAR_RACE" in
-	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=-3 && OFFSET_TOBACCO=2 ;;
-	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=2 && OFFSET_TOBACCO=-3 ;;
-	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=-3 && OFFSET_TOBACCO=2 ;;
-	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=2 && OFFSET_TOBACCO=-3 ;;
+	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=8  && OFFSET_TOBACCO=12 ;;
+	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=14 && OFFSET_TOBACCO=6  ;;
+	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=6  && OFFSET_TOBACCO=14 ;;
+	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=12 && OFFSET_TOBACCO=8  ;;
 	esac
+	
+	# IDEA v.3 Select Gender (M/F) ?
+	# Most importantly for spoken strings, but may also have other effects.
 
-	# WEALTH formula = D20 + (D6 * CLASS OFFSET)
-	CHAR_GOLD=$(    bc <<< "var = ( $(RollDice2 20) + ($OFFSET_GOLD    * $(RollDice2 6)) ); if (var > 0) var else 0" )
-	CHAR_TOBACCO=$( bc <<< "var = ( $(RollDice2 20) + ($OFFSET_TOBACCO * $(RollDice2 6)) ); if (var > 0) var else 0" )
-
-	# Determine initial food stock (D16 + 4) - player has 5 food minimum
-	CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" )
+	# Determine material wealth
+	RollDice $OFFSET_GOLD    && CHAR_GOLD=$DICE
+	RollDice $OFFSET_TOBACCO && CHAR_TOBACCO=$DICE
+	
+	# Determine initial food stock (D11 + 4) - 5 food min, 15 food max
+	CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" )
 	
 	# Set initial Value of Currencies
 	VAL_GOLD=1        # Default 1

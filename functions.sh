@@ -299,6 +299,7 @@ CheckForStarvation(){
 	    fi
 	    STARVATION=0
 	fi
+	# TODO sleep here that is semi fast
     else
 	(( STARVATION++ )) && echo -n "You're starving on the "
 	case "$STARVATION" in
@@ -321,9 +322,10 @@ CheckForStarvation(){
 	    PressAnyKey
 	    Death
 	fi
+	# TODO longer +1s sleep here (things goes slower when you're starving)
     fi
-    #sleep 4.5 ### DEBUG
-    Sleep 4.5
+    # sleep 4.5 # (too slow for play-testing:)
+    sleep 2.5 # DEBUG 
 }
 
 #-----------------------------------------------------------------------

@@ -118,6 +118,7 @@ TODO ideas for 3.0 branch ("rpg")
 	 Or he call the police (the guards?) and they throw player from town? (kstn) 
 	 We're getting way ahead of ourselves:) Let's just make what we have work first:)
 [?] Add item or magic thing whick add 50 for MAX_HEALTH (
+[?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
 
 BLOG/Misc.
 [.] Creation, Mythology, Gods (for 2.0) # For 3.0? #kstn

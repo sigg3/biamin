@@ -423,7 +423,7 @@ FightMode() {	# Used in NewSector() and Rest()
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
 	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
-	((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) && unset FIGHTMODE           # Exit loop if player or enemy is dead
+	[[ ((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)) ]] && unset FIGHTMODE           # Exit loop if player or enemy is dead
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
 	sleep 2			                                                #  after pause
     done

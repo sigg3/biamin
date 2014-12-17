@@ -62,11 +62,9 @@ CheckForWorldChangeEconomy() {
     	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
     esac
 
-    case "$UNIT" in # Which market is affected?
-	"Tobacco" ) # How is tobacco affected and restrict to 0.25 min
-	    VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;; 
-	"Gold"    ) # How is gold affected and restrict to 0.25 min 
-	    VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;       
+    case "$UNIT" in # Which market is affected and restrict to 0.25 min
+	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;; 
+	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;       
 	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${DICE}<<<" ;;
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..

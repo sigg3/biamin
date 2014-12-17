@@ -336,7 +336,7 @@ FightMode_CheckForDeath() {
 	    Death # And CleanUp
 	fi
 	LUCK=2
-	sleep 8
+	Sleep 8
     fi
 }
 
@@ -422,14 +422,8 @@ FightMode() {	# Used in NewSector() and Rest()
     ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
-	case "$NEXT_TURN" in                                                    # Define which turn is and make it
-	    "pl") FightMode_CharTurn;;
-	    "en") FightMode_EnemyTurn;;
-	    *) Die "Bug in FIghtMode() with \$NEXT_TURN >>>$NEXT_TURN<<<";
-	esac
-	if ((CHAR_HEALTH <= 0)) || ((EN_HEALTH <= 0)); then
-	    unset FIGHTMODE                                                     # Exit loop if player or enemy is dead
-	fi
+	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
+	((CHAR_HEALTH <= 0 || EN_HEALTH <= 0)) && unset FIGHTMODE               # Exit loop if player or enemy is dead
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
 	Sleep 2			                                                #  after pause
     done

@@ -521,7 +521,7 @@ Marketplace_Grocer() {
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		# TODO Perhaps this could help: stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 		local COST=$( bc <<< "$PRICE_FxG * $QUANTITY" )
-		if (( $(bc <<< "$CHAR_GOLD > $COST") )); then
+		if (( $(bc <<< "$CHAR_GOLD >= $COST") )); then
 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
 		    echo " You bought $QUANTITY food for $COST Gold, and you have $CHAR_FOOD Food in your inventory"
@@ -535,7 +535,7 @@ Marketplace_Grocer() {
 		read -p " How much food you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "${PRICE_FxT} * $QUANTITY" )
-		if (( $(bc <<< "$CHAR_TOBACCO > $COST") )); then
+		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
 		    echo " You traded $COST Tobacco for $QUANTITY food, and have $CHAR_FOOD Food in your inventory"
@@ -547,7 +547,7 @@ Marketplace_Grocer() {
 	    *) break;
 	esac
     done
-    unset PRICE_IN_GOLD PRICE_IN_TOBACCO
+    unset PRICE_IN_GOLD PRICE_IN_TOBACCO # TODO - check  - Do we need it now??? #kstn
 } # Return to GoIntoTown()
 
 

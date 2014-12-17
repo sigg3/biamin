@@ -5,10 +5,10 @@
 # Set abilities according to race (each equal to 12) + string var used frequently
 RACES=(
     "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we haven't RACE == 0
-    "human  3       3        3        3     2          -3"
-    "elf    4       3        4        1    -3           2" 
-    "dwarf  2       5        3        2     2          -3"
-    "hobbit 4       1        4        3    -3           2"
+    "human  3       3        3        3    12           8"
+    "elf    4       3        4        1     8          12" 
+    "dwarf  2       5        3        2    14           6"
+    "hobbit 4       1        4        3     6          14"
 )
 
 #-----------------------------------------------------------------------
@@ -152,7 +152,7 @@ BiaminSetup_MakeNewChar() {
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
-	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
+o	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
 	INV_ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1

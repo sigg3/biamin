@@ -152,7 +152,7 @@ BiaminSetup_MakeNewChar() {
 	CHAR_KILLS=0
 	BBSMSG=0
 	STARVATION=0;
-o	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
+	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
 	INV_ALMANAC=0
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
@@ -168,9 +168,8 @@ o	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, 
 	# Most importantly for spoken strings, but may also have other effects.
 
 	# Determine material wealth
-	RollDice $OFFSET_GOLD    && CHAR_GOLD=$DICE
-	RollDice $OFFSET_TOBACCO && CHAR_TOBACCO=$DICE
-	
+	CHAR_GOLD=$(RollDice2 $OFFSET_GOLD)
+	CHAR_TOBACCO=$(RollDice2 $OFFSET_TOBACCO)
 	# Determine initial food stock (D11 + 4) - 5 food min, 15 food max
 	CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" )
 	
@@ -214,7 +213,7 @@ BiaminSetup() {
     BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
     BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
-    (( DISABLE_CHEATS == 1 )) && (( CHAR_HEALTH >= 150 )) && CHAR_HEALTH=150
+    ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150
 }
 #                                                                      #
 #                                                                      #

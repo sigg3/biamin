@@ -4,6 +4,9 @@
 
 # Quick tip: use echo "_____________DEBUG whatever______________" >2 # DEBUG
 # To output debug data to debugger (and not to stdout).
+# Better to use
+#  echo "something" >> /tmp/biamin_debug_file
+# #kstn
 
 
 #-----------------------------------------------------------------------

@@ -66,11 +66,7 @@ HighscoreRead() { # Used in Announce() and HighScore()
 	    3 ) highRACE="Dwarf" ;;
 	    4 ) highRACE="Hobbit" ;;
 	esac
-	if [[ "$highMONTH" ]] ; then # fix for "Witching Day", etc
-	    HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
-	else
-	    HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;the $highDATE ($highYEAR)\n"
-	fi
+	HIGHSCORE_TMP+=" $i.;$highCHAR the $highRACE;$highEXP;$highKILLS/$highBATTLES;$highITEMS/8;$highMONTH $highDATE ($highYEAR)\n"
 	((i++))
     done < "$HIGHSCORE"
     echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!

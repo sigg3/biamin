@@ -84,11 +84,8 @@ Announce() {
 
     highCHAR=$(Capitalize "$highCHAR") # Capitalize
     
-    if [[ "$highMONTH" ]] ; then # fix for "Witching Day", etc
-	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
-    else
-	ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain at the $highDATE in the $highYEAR Cycle."
-    fi
+
+    ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     ANNOUNCEMENT_LENGHT=$(Strlen "$ANNOUNCEMENT" ) 
     GX_HighScore
 

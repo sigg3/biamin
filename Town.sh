@@ -12,17 +12,24 @@
 #  return $FAILURE_VESSAGE
 # Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
 # Used: Tavern()
+#
+# IDEA: If we're going to use these in grocer, merchant ++future functions then perhaps it should ONLY be logical (return 1 or 0).
+# I think it will make the code easier to read later on, see the difference between:
+# CheckForGold 3 "You don't have enough gold, silly dwarf"
+# # vs
+# CheckForGold 3 && Continue_transaction || echo "You don't have enough gold, silly dwarf!"
+# The first one looks as if the silly dwarf doesn't have enough gold from the get go..?
+# On the other hand, a "purchasing function" might be called for, so we don't duplicate so much work.
 #-----------------------------------------------------------------------
 CheckForGold()   {
     if (( $(bc <<< "$CHAR_GOLD < $1") )); then
-	echo -e "${CLEAR_LINE}${2}"               # Idea: If we're going to use these in grocer, merchant ++future functions then perhaps it should ONLY be logical (return 1 or 0).
-	return 1                                  # I think it will make the code easier to read later on, see the difference between:
-    else                                      # CheckForGold 3 "You don't have enough gold, silly dwarf"
-	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")     # # vs
-	return 0                                  # CheckForGold 3 && Continue_transaction || echo "You don't have enough gold, silly dwarf!"
-    fi                                        #
-}                                             # The first one looks as if the silly dwarf doesn't have enough gold from the get go..?
-# On the other hand, a "purchasing function" might be called for, so we don't duplicate so much work.
+	echo -e "${CLEAR_LINE}${2}"               
+	return 1                                  
+    else                                      
+	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")     
+	return 0                                  
+    fi                                        
+}
 
 #-----------------------------------------------------------------------
 # CheckForTobacco()
@@ -506,12 +513,15 @@ Marketplace_Merchant() {
 Marketplace_Grocer() { 
     # The PRICE of units are set in WorldPriceFixing()
     while (true); do
+	#-----------------------------------------------------------------------
+	# BACKUP
 	# GX_Marketplace_Grocer
 	# tput sc                                      # save cursor position
 	# MvAddStr 10 4 "1 FOOD costs $PRICE_FxG Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
 	# MvAddStr 11 4  "or $PRICE_FxT Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
 	# tput rc                                      # restore cursor position
-
+	#-----------------------------------------------------------------------
+	
 	GX_Marketplace_Grocer "$PRICE_FxG" "$PRICE_FxT"
 	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
@@ -549,7 +559,6 @@ Marketplace_Grocer() {
 	    *) break;
 	esac
     done
-    unset PRICE_IN_GOLD PRICE_IN_TOBACCO # TODO - check  - Do we need it now??? #kstn
 } # Return to GoIntoTown()
 
 

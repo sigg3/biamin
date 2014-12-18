@@ -112,7 +112,6 @@ GX_Death() {
                                           `c              
 EOT
     echo "$HR"
-	echo "           DEBUG      \$FIGHTMODE: $FIGHTMODE" >2
     tput sc
 	if ((FIGHTMODE == 1)) ; then
 	MvAddStr 3 9 "YOU WERE DEFEATED"

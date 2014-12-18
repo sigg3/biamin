@@ -356,7 +356,7 @@ FightMode_CheckForExp() {
 	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
 	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
 	*)  # ENEMY was slain!
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!\n" 
+	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
 	    ((CHAR_EXP += EN_DEFEATED_EXP))
 	    ((CHAR_KILLS++))
     esac

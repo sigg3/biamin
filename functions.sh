@@ -190,6 +190,7 @@ DisplayCharsheet() {
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  Inventory:                 $CHARSHEET_INV_STR
  Current Date:              $BIAMIN_DATE_STR
+ 
 EOF
 
     case "$INV_ALMANAC" in		# Define prompt

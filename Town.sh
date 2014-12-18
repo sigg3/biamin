@@ -96,14 +96,29 @@ Tavern() {
 # Marketplace()                                                  Town.sh
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
-Marketplace() { 
-    # The PRICE of a unit (food, ale) is always 1. #??? #kstn
+Marketplace() {
+	if [ -z "$TOWN_GPS" ] || [ "$TOWN_GPS" != "$CHAR_GPS" ] ; then
+	TOWN_GPS="$CHAR_GPS" # Baptize the town
+	RollDice 10 # Determine whether we have a beggar or not
+	(( DICE <= 4 )) && local BEGGAR=1 || local BEGGAR=0
+	# IDEA This can be expanded to have other stuff than beggars (e.g. priests)
+	fi
     while (true); do
 	GX_Marketplace
-	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
-#	MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
+	# TODO v. 3 (we need data for beggar's database first:)
+	#if (( BEGGAR == 1 )) ; then
+	#MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
+	#case $(Read) in
+	#    b | B) Marketplace_Beggar;;
+	#    g | G) Marketplace_Grocer;; 
+	#    m | M) Marketplace_Merchant;; 
+	#    q | Q ) CleanUp ;;
+	#    *) break ;; # Leave marketplace
+	#esac
+    #elif (( BEGGAR == 0 )) ; then
+    #fi
+    MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	case $(Read) in
-#	    b | B) Marketplace_Beggar;;
 	    g | G) Marketplace_Grocer;; 
 	    m | M) Marketplace_Merchant;; 
 	    q | Q ) CleanUp ;;
@@ -306,27 +321,27 @@ Marketplace_Merchant() {
 
 	    case "$MERCHANDISE" in
 		"Food" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
-			    ;;
+			        (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
+			        (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
+			        (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
+			        MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
+			        ;;
 		"Tobacco" ) (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_TxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" ) 
-			    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
-			    ;;
+			        (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" ) 
+			        (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
+			        (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
+			        MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
+			        ;;
 		"Gold" )    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_TxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_GxT * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_FOOD Food or $COST_TOBACCO Tobacco."
-			    ;;
+			        (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
+			        (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_TxG * $QUANTITY" )
+			        (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_GxT * $QUANTITY" )
+			        MERCHANT_ORDER_2+="$COST_FOOD Food or $COST_TOBACCO Tobacco."
+			        ;;
 		"Item" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_IxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxI * $QUANTITY" )
-			    MERCHANT_ORDER_1+="$COST_GOLD Gold."
-			    ;;
+			        (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxI * $QUANTITY" )
+			        MERCHANT_ORDER_1+="$COST_GOLD Gold."
+			        ;;
 	    esac
 	    
 	    Marketplace_Merchant_Bargaining "$MERCHANDISE"
@@ -438,19 +453,19 @@ Marketplace_Merchant() {
 		3 ) MERCHANT_CONFIRMATION="Welcome back anytime, friend!"         ;; # Not interested
 		0 ) # Valid transactions
 		    (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION=" You bought" || MERCHANT_CONFIRMATION=" You sold"
-		    MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for [ "
+		    MERCHANT_CONFIRMATION+=" $QUANTITY $MERCHANDISE for"
 		    case "$PAYMENT" in
-			"Tobacco" ) MERCHANT_CONFIRMATION+="$COST_TOBACCO Tobacco "
+			"Tobacco" ) MERCHANT_CONFIRMATION+=" $COST_TOBACCO Tobacco [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_TOBACCO" || MERCHANT_CONFIRMATION+="+$COST_TOBACCO" ;;
-			"Food" )    MERCHANT_CONFIRMATION_1+="$COST_FOOD Food "
+			"Food" )    MERCHANT_CONFIRMATION_1+=" $COST_FOOD Food [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_FOOD"    || MERCHANT_CONFIRMATION+="+$COST_FOOD" ;;
-			"Gold" )    MERCHANT_CONFIRMATION_1+="$COST_GOLD Gold "
+			"Gold" )    MERCHANT_CONFIRMATION_1+=" $COST_GOLD Gold [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_GOLD"    || MERCHANT_CONFIRMATION+="+$COST_GOLD" ;;
 			# Item ) # TODO v. 3 (selling pelts n stuff)
 		    esac
-		    MERCHANT_CONFIRMATION+="${PAYMENT^^} & [ "
-			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="+ $QUANTITY "
-		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="- $QUANTITY "
+		    MERCHANT_CONFIRMATION+=" ${PAYMENT^^} & "
+			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="+$QUANTITY "
+		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="-$QUANTITY "
 		    case "$MERCHANDISE" in
 		    "Food" | "Tobacco" | "Gold" ) MERCHANT_CONFIRMATION+="${MERCHANDISE^^} ]" ;;
 		    * )                           MERCHANT_CONFIRMATION+="ITEM ]"             ;;
@@ -463,7 +478,7 @@ Marketplace_Merchant() {
 	    tput sc
 	    MvAddStr 12 4 "Thanks for the trade!"
 	    tput rc
-		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 6
+		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 10
 	    else
 		tput sc
 		MvAddStr 12 4 "$MERCHANT_CONFIRMATION"
@@ -563,6 +578,7 @@ Marketplace_Grocer() {
 #-----------------------------------------------------------------------
 # Marketplace_Beggar()                                           Town.sh
 # Used: GoIntoTown()
+# TODO v. 3
 #-----------------------------------------------------------------------
 Marketplace_Beggar() {
     GX_Marketplace_Beggar

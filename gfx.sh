@@ -97,7 +97,6 @@ EOT
 
 
 GX_Death() {
-	[ -z "$1" ] && local CODEATH="murder" || local CODEATH="$1"
 	clear
     cat <<"EOT"
 
@@ -114,13 +113,13 @@ GX_Death() {
 EOT
     echo "$HR"
     tput sc
-	if [ "$CODEATH" = "murder" ] ; then
+	if (( FIGHTMODE == 1 )) ; then
 	MvAddStr 3 9 "YOU WERE DEFEATED"
 	MvAddStr 5 9 "The smell of dirt and"
 	MvAddStr 6 9 "blood will be the last"
 	MvAddStr 7 9 "thing you know."	
 	else
-	MvAddStr 3 9 "YOU STARVED TO DEATH"
+    MvAddStr 3 9 "YOU STARVED TO DEATH"
 	MvAddStr 5 9 "Only death triumphs"
 	MvAddStr 6 9 "over hunger."
 	fi

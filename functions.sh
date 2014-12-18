@@ -298,14 +298,14 @@ CheckForStarvation(){
 	    fi
 	    STARVATION=0
 	fi
-	sleep 1 # Npte: This is added to the sleep below
     else
 	(( STARVATION++ )) && echo -n "You're starving on the "
 	case "$STARVATION" in
-	    1 ) echo "${STARVATION}st day and feeling hungry .."         ;;
-	    2 ) echo "${STARVATION}nd day and feeling weak .."           ;;
-	    3 ) echo "${STARVATION}rd day and feeling famished .."       ;;
-	    * ) echo "${STARVATION}th day, feeling weaker and weaker .." ;;
+	    1 )  echo "${STARVATION}st day and feeling hungry .."            ;;
+	    2 )  echo "${STARVATION}nd day and feeling weak .."              ;;
+	    3 )  echo "${STARVATION}rd day and feeling weaker and weaker .." ;;
+	    15 ) echo "${STARVATION}th day, slowly starving to death .."     ;;
+	    * )  echo "${STARVATION}th day, you're famished .."              ;;
 	esac
 	(( CHAR_HEALTH -= 5 ))
 	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" # Starvation penalty -5HP per turn	    
@@ -317,11 +317,11 @@ CheckForStarvation(){
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
-	    Death "starvation"
+		sleep 2.5 && Death
 	fi
-	sleep 2.5 # Sleep penalty when starving (game goes slower)
+	sleep 1.5 # Sleep penalty when starving (game goes slower)
     fi
-    sleep 1.5 # DEBUG     # sleep 4.5 # (too slow for play-testing:)
+    sleep 2 # DEBUG     # sleep 4.5 # (too slow for play-testing:)
 }
 
 #-----------------------------------------------------------------------

@@ -370,18 +370,18 @@ Marketplace_Merchant() {
 	    esac
 
 	    # DEBUG DATA
-	    echo "        DEBUG       Summary BEFORE transaction" >2
-	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
-	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
-	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
-	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
-	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
-	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
-	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
-	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
-	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+	    #echo "        DEBUG       Summary BEFORE transaction" >2
+	    #echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+	    #echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+	    #echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+	    #echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+	    #echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+	    #echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+	    #echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+	    #echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+	    #echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+	    #echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+	    #echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
 	    # // DEBUG
 	    
 	    
@@ -417,18 +417,18 @@ Marketplace_Merchant() {
 	    fi
 	    
 	    # DEBUG DATA
-	    echo "        DEBUG       Summary AFTER transaction" >2
-	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
-	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
-	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
-	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
-	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
-	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
-	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
-	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
-	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+	    #echo "        DEBUG       Summary AFTER transaction" >2
+	    #echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+	    #echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+	    #echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+	    #echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+	    #echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+	    #echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+	    #echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+	    #echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+	    #echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+	    #echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+	    #echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
 	    # // DEBUG
 	    
 	    
@@ -457,9 +457,9 @@ Marketplace_Merchant() {
 		    case "$PAYMENT" in
 			"Tobacco" ) MERCHANT_CONFIRMATION+=" $COST_TOBACCO Tobacco [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_TOBACCO" || MERCHANT_CONFIRMATION+="+$COST_TOBACCO" ;;
-			"Food" )    MERCHANT_CONFIRMATION_1+=" $COST_FOOD Food [ "
+			"Food" )    MERCHANT_CONFIRMATION+=" $COST_FOOD Food [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_FOOD"    || MERCHANT_CONFIRMATION+="+$COST_FOOD" ;;
-			"Gold" )    MERCHANT_CONFIRMATION_1+=" $COST_GOLD Gold [ "
+			"Gold" )    MERCHANT_CONFIRMATION+=" $COST_GOLD Gold [ "
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_GOLD"    || MERCHANT_CONFIRMATION+="+$COST_GOLD" ;;
 			# Item ) # TODO v. 3 (selling pelts n stuff)
 		    esac
@@ -478,7 +478,7 @@ Marketplace_Merchant() {
 	    tput sc
 	    MvAddStr 12 4 "Thanks for the trade!"
 	    tput rc
-		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 10
+		echo -n "$MERCHANT_CONFIRMATION  " && read -sn 1 -t 8
 	    else
 		tput sc
 		MvAddStr 12 4 "$MERCHANT_CONFIRMATION"

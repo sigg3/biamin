@@ -180,7 +180,7 @@ EOT
                                     ,;'_..__,' .;_._}          ,,::.:-'"--~'
 EOT
 	    ;;
-	"imp" ) # (wh)imp Simplified anime edition, December 2014 ()
+	"imp" ) # (wh)imp Simplified anime edition, December 2014 (0c682c5)
 	cat <<"EOT"
 
 

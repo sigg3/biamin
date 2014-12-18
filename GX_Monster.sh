@@ -10,7 +10,8 @@
 GX_Monster() {
     clear
     case "$1" in
-	"chthulu" ) cat <<"EOT"
+	"chthulu" ) # Created 2013, release 2014 (a684a35)
+	cat <<"EOT"
                         \ \_|\/\      ,.---.      ,/'/            \`\ 
                          \ _    \   ;'      `\   ,/ /              \ \
          T H E            \ \____\.:          \-.J  l._   ____      \`\ 
@@ -27,7 +28,8 @@ GX_Monster() {
                                         )                     `.   (
 EOT
 	    ;;
-	"orc" ) cat <<"EOT"
+	"orc" ) # Created 2013, release 2014 (a684a35)
+	 cat <<"EOT"
                                                   |\            /|
                                                   | \_.::::::._/ |
                                                    |  __ \/__   |
@@ -46,7 +48,8 @@ EOT
                                                  (______)  (______)
 EOT
 	    ;;
-	"varg" ) cat <<"EOT"
+	"varg" ) # Created 2013, release 2014 (a684a35)
+	cat <<"EOT"
 
                                                      ______
                                                ____.:      :.
@@ -63,7 +66,8 @@ EOT
 
 EOT
 	    ;;
-	"mage" ) cat <<"EOT"
+	"mage" ) # Created 2013, release 2014 (a684a35)
+	cat <<"EOT"
                                              ---.         _/""""""\
                                             (( ) )       /_____  |'
                                              \/ /       // \/  \  \
@@ -83,7 +87,8 @@ EOT
                                                    |        \        \
 EOT
 	    ;;
-	"goblin" ) cat <<"EOT"
+	"goblin" ) # Created 2013, release 2014 (a684a35)
+	cat <<"EOT"
                                                     _______                   _
                                                    (       )/|    ===[]]]====(_)
                                                 ____0(0)    /       7 _/^
@@ -100,7 +105,8 @@ EOT
                                             (_____/      (______)
 EOT
 	    ;;
-	"bandit" ) cat <<"EOT"
+	"bandit" ) # Created 2013, release 2014 (a684a35)
+	cat <<"EOT"
                                                        /""""""';   ____
                                                       d = / =  |3 /1--\\
                                                  _____| _____  |_|11 ||||
@@ -117,7 +123,8 @@ EOT
                                                (________)    (________)
 EOT
 	    ;; 
-	"boar" ) cat <<"EOT"
+	"boar" ) # Created June 2014 (2a62c4f)
+	cat <<"EOT"
                                 ;".  ,--~-./L-'"'"'"'"~,   
                                 |\ \/     /, | ~  ` ~   `"`~,-~~._.
                                 (_\/ _  _ \__)~   ~     ~        ~ \.
@@ -134,7 +141,8 @@ EOT
                                       /,__\   /,___\   /___%       /__7
 EOT
 	    ;;
-	"dragon" ) cat <<"EOT"
+	"dragon" ) # Created June 2014 (?)
+	cat <<"EOT"
                                                          ,,_____.
                                                      ,~-'.------.`'~-._
                                  _,-----.._         / /""'       `7-,~-`.
@@ -152,7 +160,8 @@ EOT
                                                    (  C`~-\  `_ `~_/ e`n';m*7
 EOT
 	    ;;
-	"bear" ) cat <<"EOT"
+	"bear" ) # Created September 2014 (860b051)
+	cat <<"EOT"
                                                ,--~~.._                
                                           _.,;'        `-.....__          
                                   ,..-~~^"                      `~~~~-.._       
@@ -171,17 +180,19 @@ EOT
                                     ,;'_..__,' .;_._}          ,,::.:-'"--~'
 EOT
 	    ;;
-	"imp" ) cat <<"EOT"
+	"imp" ) # (wh)imp Simplified anime edition, December 2014 ()
+	cat <<"EOT"
 
 
-                                                         __,__,         
-                                                     ,-. \   (__,       
-         AN YMPE SWOOPS DOWN!                       ;- 7) )     (           
-                                                    `~.  \/  _ _ (      
-         The imp is a common                    ,,~._,-.  ,^y Y Y 
-         nuisance for travellers.                 ``-~_?  l             
-                                                     (_  ,'             
-         Luckily, they are easily defeated.           _;((              
+                                                      _,^--^._ 
+          AN YMPE SWOOPS DOWN!                ,^. ,^. \ ^..^ /,^. ,^.
+                                             / ' ` ' `;  {}  '   '   \ 
+          The imp is a common               /,     `-=/ ,  ,  }=~-  ` \ 
+          nuisance for travellers.          Y^. ,v~^-( (  ( (,~-^~v. ,^Y
+                                               y     _|`   ``|_     y 
+          Luckily, they are easily defeated.        (_ (   (  _) 
+                                                    /  /^^^^\  \    
+                                                    VvV      VvV  
 
 
 EOT
@@ -192,6 +203,24 @@ EOT
     esac
     echo "$HR"
 }
+# BACKUPS or SKETCHES 
+#
+#	"imp" ) # Original imp October 2014 (f8292a2)
+#    cat <<"EOT"
+#
+#
+#                                                         __,__,         
+#                                                     ,-. \   (__,       
+#         AN YMPE SWOOPS DOWN!                       ;- 7) )     (           
+#                                                    `~.  \/  _ _ (      
+#         The imp is a common                    ,,~._,-.  ,^y Y Y 
+#         nuisance for travellers.                 ``-~_?  l             
+#                                                     (_  ,'             
+#         Luckily, they are easily defeated.           _;((              
+#
+#
+#EOT
+#	    ;;
 #                                                                      #
 #                                                                      #
 ########################################################################

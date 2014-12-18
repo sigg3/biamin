@@ -317,9 +317,7 @@ CheckForStarvation(){
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
-	    GX_Starvation
-	    PressAnyKey
-	    Death
+	    Death "starvation"
 	fi
 	sleep 2.5 # Sleep penalty when starving (game goes slower)
     fi

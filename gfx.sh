@@ -97,6 +97,35 @@ EOT
 
 
 GX_Death() {
+	[ -z "$1" ] && local CODEATH="murder" || local CODEATH="$1"
+	clear
+    cat <<"EOT"
+
+
+                                        ///`~ ,~---..._            
+                                 ~~--- \\\\ ',l        `~,.   ~ ~ --  ---  -- --
+                                        _`~--;~,)_     ,',~`.      ,          
+                                 ,-    ;_`-,'_/  ;`~~-;,'    \              o 
+                                 `.`.    `~.'  _; ;    7 \   /                 
+                               -   `.`.       `-~'    /  <\  \____ _          `
+                                     `.`._,           `----\______\_`--        
+                                  ,   ;,~('         -         .     `--`    . 
+                                          `c              
+EOT
+    echo "$HR"
+    tput sc
+	if [ "$CODEATH" = "murder" ] ; then
+	MvAddStr 3 9 "YOU WERE DEFEATED"
+	MvAddStr 5 9 "The smell of dirt and"
+	MvAddStr 6 9 "blood will be the last"
+	MvAddStr 7 9 "thing you know."	
+	else
+	MvAddStr 3 9 "YOU STARVED TO DEATH"
+	MvAddStr 5 9 "Only death triumphs"
+	MvAddStr 6 9 "over hunger."
+	fi
+	tput rc
+	PressAnyKey
     clear
     cat <<"EOT"
 
@@ -118,23 +147,23 @@ EOT
     echo "$HR"
 }
 
-GX_Starvation() {
-    clear
-    cat <<"EOT"
-
-
-                                        ///`~ ,~---..._            
-         YOU STARVED TO DEATH    ~~--- \\\\ ',l        `~,.   ~ ~ --  ---  -- --
-                                        _`~--;~,)_     ,',~`.      ,          
-         Only death triumphs     ,-    ;_`-,'_/  ;`~~-;,'    \              o 
-         over hunger.            `.`.    `~.'  _; ;    7 \   /                 
-                               -   `.`.       `-~'    /  <\  \____ _          `
-                                     `.`._,           `----\______\_`--        
-                                  ,   ;,~('         -         .     `--`    . 
-                                          `c              
-EOT
-    echo "$HR"
-}
+#GX_Starvation() {
+#    clear
+#    cat <<"EOT"
+#
+#
+#                                        ///`~ ,~---..._            
+#         YOU STARVED TO DEATH    ~~--- \\\\ ',l        `~,.   ~ ~ --  ---  -- --
+#                                        _`~--;~,)_     ,',~`.      ,          
+#         Only death triumphs     ,-    ;_`-,'_/  ;`~~-;,'    \              o 
+#         over hunger.            `.`.    `~.'  _; ;    7 \   /                 
+#                               -   `.`.       `-~'    /  <\  \____ _          `
+#                                     `.`._,           `----\______\_`--        
+#                                  ,   ;,~('         -         .     `--`    . 
+#                                          `c              
+#EOT
+#    echo "$HR"
+#}
 
 #-----------------------------------------------------------------------
 # GX_Intro()

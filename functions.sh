@@ -222,6 +222,7 @@ Death() {
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
     # TODO: add showing Highscore list here
+    unset FIGHTMODE # Bugfix for GX_Death (derived from FightMode.sh)
     CleanUp
 }
 

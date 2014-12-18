@@ -420,15 +420,17 @@ FightMode() {	# Used in NewSector() and Rest()
     FightMode_DefineInitiative  # DETERMINE INITIATIVE (will usually be enemy)
     FightMode_RemoveBonuses     # Remove adjustments for items
     ############################ Main fight loop ###########################
-    while ((FIGHTMODE)); do                                                     # If player didn't manage to run
+    while ((FIGHTMODE)); do                                                 # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
 	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
 	((CHAR_HEALTH <= 0 || EN_HEALTH <= 0)) && unset FIGHTMODE               # Exit loop if player or enemy is dead
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
-	Sleep 2			                                                #  after pause
+	Sleep 2			                                                        #  after pause
     done
     ########################################################################
+	FIGHTMODE=1                            # Bugfix for GX_Death
     FightMode_CheckForDeath	               # Check if player is alive
+    unset FIGHTMODE                        # Bugfix for GX_Death
     FightMode_FightTable	               # Display enemy GX last time
     FightMode_CheckForExp "$LUCK"	       # 
     FightMode_CheckForPickpocket "$PICKPOCKET" # 

@@ -75,15 +75,16 @@ GX_Map() {
 #-----------------------------------------------------------------------
 MapNav() { 
     read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
-    if [[ "$1" == "m" || "$1" == "M" ]] ; then	# If player want to see the map
-	GX_Map
-	# If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
-	echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" # PLACE var defined in GX_Place()
-	read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1
-    else  # The player did NOT toggle map, just moved without looking from NewSector()..
-	DEST="$1"
-	GX_Place "$SCENARIO"    # Shows the _current_ scenario scene, not the destination's.
-    fi
+    case "$1" in
+	m | M ) # If player want to see the map
+	    GX_Map ;
+	    # If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
+	    echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" ; # PLACE var defined in GX_Place()
+	    read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1 ;;
+	* ) # The player did NOT toggle map, just moved without looking from NewSector()..
+	    DEST="$1" ;
+	    GX_Place "$SCENARIO" ;    # Shows the _current_ scenario scene, not the destination's.
+    esac
 
     case "$DEST" in # Fix for 80x24. Dirty but better than nothing #kstn
 	w | W | n | N ) echo -n "You go North"; # Going North (Reversed: Y-1)

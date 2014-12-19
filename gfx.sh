@@ -190,25 +190,11 @@ ___                          (         \__ 1                _/             \   \
                                |__| ___\   1                                \___
 EOT
 
-    ### BACKUP - delete it after testing
-    # echo "$HR"
-    # local SPACE="                       " && echo "$SPACE Press (A)ny key to continue" 
-    # local COUNTDOWN=60 && local CDOTS=1 && local DOTS && tput sc # Sorry, had to try it:P
-    # while (( COUNTDOWN >= 0 )) ; do
-    # 	(( CDOTS == 1 )) && DOTS=".. " || DOTS="..."
-    # 	MvAddStr 16 51 "$DOTS $SPACE"
-    # 	read -sn 1 -t 1 && break || ((COUNTDOWN--))
-    # 	(( CDOTS == 1 )) && CDOTS=2 || CDOTS=1
-    # done
-    # tput rc
-    # unset COUNTDOWN
-
     local COUNTDOWN="$1"
     tput civis
     echo "$HR"
     echo -n "                         Press (A)ny key to continue.."
     tput sc    
-    # while (( COUNTDOWN-- > 0 )) ; do # TEST. Should work
     while ((COUNTDOWN--)); do
     tput rc
     	((COUNTDOWN % 2)) && echo -n "." || echo -n " "

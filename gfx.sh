@@ -71,6 +71,12 @@ EOF
 }
 
 
+
+#-----------------------------------------------------------------------
+# GX_CharSheet()
+# Display Charsheet or Almanac banner
+# Arguments: $DISPLAY_WHAT(int)
+#
 GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
     [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
     clear
@@ -96,6 +102,12 @@ EOT
 }
 
 
+#-----------------------------------------------------------------------
+# GX_Death()
+# Display Death ASCII and text
+#
+# Used: Death()
+#-----------------------------------------------------------------------
 GX_Death() {
     clear
     cat <<"EOT"
@@ -114,14 +126,14 @@ EOT
     echo "$HR"
     tput sc
     if ((FIGHTMODE == 1)) ; then
-	MvAddStr 3 9 "YOU WERE DEFEATED"
-	MvAddStr 5 9 "The smell of dirt and"
+	MvAddStr 3 9 "   YOU WERE DEFEATED  "
+	MvAddStr 5 9 "The smell of dirt and "
 	MvAddStr 6 9 "blood will be the last"
-	MvAddStr 7 9 "thing you know."	
+	MvAddStr 7 9 "    thing you know.   "	
     else
 	MvAddStr 3 9 "YOU STARVED TO DEATH"
-	MvAddStr 5 9 "Only death triumphs"
-	MvAddStr 6 9 "over hunger."
+	MvAddStr 5 9 "Only death triumphs "
+	MvAddStr 6 9 "    over hunger.    "
     fi
     tput rc
     PressAnyKey

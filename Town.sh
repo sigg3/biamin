@@ -704,7 +704,7 @@ MiniGame_Dice() {
 	declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 
 	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
-	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
+	DGAME_STAKES=$( bc <<< "$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
 	GX_DiceGame_Table "$DGAME_PLAYERS"			# Display game table depending of count players
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
 	    0 ) PressAnyKey "There's no one at the table. May be you should come back later?";

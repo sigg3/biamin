@@ -680,23 +680,23 @@ EOF
 # Small dice based minigame.
 # Used: Tavern()
 #-----------------------------------------------------------------------
+# Declare $DICE_GAME_CHANCES
+# Chances (%) of any player picking the resulting number
+# Fixed, so declared as array
+# Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
+# ${DICE_GAME_CHANCES[1]} are dummy
+#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12 
+declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
+
+# Declare $DICE_GAME_WINNINGS
+# % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
+# Fixed, so declared as array
+# Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
+# ${DICE_GAME_WINNINGS[1]} are dummy
+#                dice1+dice2    = 0 1  2   3  4  5  6  7  8  9  10 11 12
+declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
+
 MiniGame_Dice() {
-	# $DICE_GAME_CHANCES
-	# Chances (%) of any player picking the resulting number
-	# Fixed, so declared as array
-	# Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
-	# ${DICE_GAME_CHANCES[1]} are dummy
-	#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12 
-	declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
-
-	# $DICE_GAME_WINNINGS
-	# % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
-	# Fixed, so declared as array
-	# Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
-	# ${DICE_GAME_WINNINGS[1]} are dummy
-	#                dice1+dice2    = 0 1  2   3  4  5  6  7  8  9  10 11 12
-	declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
-
 	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
 	DGAME_STAKES=$( bc <<< "$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
 	GX_DiceGame_Table "$DGAME_PLAYERS"			# Display game table depending of count players

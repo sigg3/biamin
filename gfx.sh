@@ -385,7 +385,7 @@ GX_Rest() {
     # Add MOON specific text
     tput cup 8 9
     case "$MOON" in
-	0 ) echo "It is dark, the Moon is" && tput cup 8 33 && echo "Young" ;;
+	0 ) echo "It is dark, the Moon is Young" ;;
 	1 ) echo "It is a Growing Crescent Moon" ;;
 	2 ) echo "The Moon is in its First Quarter" ;;
 	3 ) echo "The Moon is Waxing" ;;

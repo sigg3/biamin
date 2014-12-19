@@ -29,12 +29,30 @@ GX_Marketplace_Grocer() {
 
 #-----------------------------------------------------------------------
 # GX_Marketplace_Merchant()
-# (Goatee == dashing, not hipster)
+# GPL WORKAROUND (FOR THE tput TEXT)
 # Used: Marketplace_Merchant() 
 #-----------------------------------------------------------------------
 GX_Marketplace_Merchant() { 
     clear
-    echo "                                 THE MERCHANT"
+    cat <<"EOT"
+                                                                   
+                                                                   
+              THE MERCHANT                                             
+                                                                      
+                                       ,~-~-~-~-~-~-~-~-~-~-~-~.  
+                                       |                       |      
+                                       | You marvel at the     |     
+                                       | fine goods placed     |
+                                       | around the merchant's |   
+                                       | feet; spices, fabrics,|
+                                       | & rare items from all |
+                                       | over the continent.   |
+                                       l_______________________;
+                                       
+                                      
+                                            
+                                                        
+EOT
     echo "$HR"
 }
 

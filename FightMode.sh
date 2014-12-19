@@ -406,7 +406,7 @@ FightMode() {	# Used in NewSector() and Rest()
 	Sleep 2			                                                        #  after pause
     done
     ########################################################################
-	FIGHTMODE=1                            # Bugfix for GX_Death
+    FIGHTMODE=1                            # Bugfix for GX_Death
     FightMode_CheckForDeath	               # Check if player is alive
     unset FIGHTMODE                        # Bugfix for GX_Death
     FightMode_FightTable	               # Display enemy GX last time

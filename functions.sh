@@ -319,7 +319,8 @@ CheckForStarvation(){
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
-		sleep 2.5 && Death
+	    sleep 2.5
+	    Death
 	fi
 	sleep 1.5 # Sleep penalty when starving (game goes slower)
     fi

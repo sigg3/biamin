@@ -87,15 +87,17 @@ EOF
 MiniGame_Dice() { 
 	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
 	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
-	GX_DiceGame_Table
+	GX_DiceGame_Table "$DGAME_PLAYERS"
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
-	    0 ) read -sn1 -p "There's no one at the table. May be you should come back later?" 2>&1 && return 0 ;; # leave
+	    0 ) PressAnyKey "There's no one at the table. May be you should come back later?" && return 0 ;; # leave
 	    1 ) echo -n "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
 	    * ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;	    
 	esac
 	case $(Read) in
 	    j | J | y | Y ) ;;                                  # Game on! Do nothing.
-	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ; sleep 2; return 0;; # Leave.
+	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
+		Sleep 2;
+		return 0;; # Leave.
 	esac	
 
 	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then  # Check if player can afford it

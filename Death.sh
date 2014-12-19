@@ -49,8 +49,9 @@ CheckForStarvation(){
 	    15 ) echo "${STARVATION}th day, slowly starving to death .."     ;;
 	    * )  echo "${STARVATION}th day, you're famished .."              ;;
 	esac
+	# Starvation penalty -5HP per turn
 	(( CHAR_HEALTH -= 5 ))
-	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" # Starvation penalty -5HP per turn	    
+	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" 
 	
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in

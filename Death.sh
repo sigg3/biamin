@@ -64,9 +64,9 @@ CheckForStarvation(){
 	    sleep 2.5
 	    Death "$DEATH_STARVATION"
 	fi
-	sleep 1.5 # Sleep penalty when starving (game goes slower)
+	sleep 2 # Sleep penalty when starving (game goes slower)
     fi
-    sleep 2 # DEBUG     # sleep 4.5 # (too slow for play-testing:)
+    sleep 1.5 # DEBUG     # sleep 4.5 # (too slow for play-testing:)
 }
 
 

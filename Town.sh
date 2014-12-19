@@ -501,7 +501,7 @@ Marketplace_Merchant() {
 	    [ -n "$MERCHANT_ORDER_CONJUG_2" ] && unset MERCHANT_ORDER_CONJUG_2
 	    [ -n "$MERCHANT_ORDER_1" ]        && unset MERCHANT_ORDER_1
 	    [ -n "$MERCHANT_ORDER_2" ]        && unset MERCHANT_ORDER_2
-	    [ -n "$MERCHANT_CONFIRMATION_1" ] && unset MERCHANT_CONFIRMATION_1
+	    [ -n "$MERCHANT_CONFIRMATION" ]   && unset MERCHANT_CONFIRMATION
 	    [ -n "$MERCHANT_CONFIRMATION_2" ] && unset MERCHANT_CONFIRMATION_2
 	    
 	    (( TRANSACTION_STATUS != 0 )) && PressAnyKey # Return to zero
@@ -573,7 +573,7 @@ Marketplace_Beggar() {
 	BEGGAR="$CHAR_GPS"
 	tput sc && MvAddStr $B_Y 4 "Kind ${BEGGAR_MSG[$CHAR_RACE]} .."
 	# Add mercy plea dependent on race (for $DEITY) vs. history/religion.
-	# (( M_Y++ ))                            #lllllllllllllllllllllllllllllllllllll#
+	# (( M_Y++ ))                            #   length indication of a string     #
 	# local MERCHANT_MSG=( "" "" "" "" "" "" "Please, " "to provide the Finest Merchandise" "in the Realm, and at the best"
 	# 		     "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?" )  && (( M_Y++ )) # [0-5,11] are dummies
 	# while (( M_Y <= 12 )) ; do # Output default greeting

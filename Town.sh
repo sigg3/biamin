@@ -454,7 +454,7 @@ Marketplace_Merchant() {
 				        (( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="-$COST_GOLD"    || MERCHANT_CONFIRMATION+="+$COST_GOLD" ;;
 			# Item ) # TODO v. 3 (selling pelts n stuff)
 		    esac
-		    MERCHANT_CONFIRMATION+=" ${PAYMENT^^} & "
+		    MERCHANT_CONFIRMATION+=" ${PAYMENT^^} , "
 			(( BARGAIN_TYPE == 1 )) && MERCHANT_CONFIRMATION+="+$QUANTITY "
 		    (( BARGAIN_TYPE == 2 )) && MERCHANT_CONFIRMATION+="-$QUANTITY "
 		    case "$MERCHANDISE" in
@@ -516,18 +516,12 @@ Marketplace_Merchant() {
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
 Marketplace_Grocer() { 
-    # The PRICE of units are set in WorldPriceFixing()
+    # Default PRICE of units are set in WorldPriceFixing()
+    # Determine GROCER's price (profit margin = 0.5 $VAL_CHANGE)
+    local GROCER_FxG=$( bc <<< "scale=2;$PRICE_FxG+($VAL_CHANGE/2)" )
+    local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )
     while (true); do
-	#-----------------------------------------------------------------------
-	# BACKUP
-	# GX_Marketplace_Grocer
-	# tput sc                                      # save cursor position
-	# MvAddStr 10 4 "1 FOOD costs $PRICE_FxG Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
-	# MvAddStr 11 4  "or $PRICE_FxT Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
-	# tput rc                                      # restore cursor position
-	#-----------------------------------------------------------------------
-	
-	GX_Marketplace_Grocer "$PRICE_FxG" "$PRICE_FxT"
+	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
 	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
@@ -537,7 +531,7 @@ Marketplace_Grocer() {
 		read -p " How many food items do you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		# TODO Perhaps this could help: stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
-		local COST=$( bc <<< "$PRICE_FxG * $QUANTITY" )
+		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_GOLD >= $COST") )); then
 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
@@ -551,7 +545,7 @@ Marketplace_Grocer() {
 		GX_Marketplace_Grocer
 		read -p " How much food you want to buy? " QUANTITY 2>&1
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
-		local COST=$( bc <<< "${PRICE_FxT} * $QUANTITY" )
+		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")

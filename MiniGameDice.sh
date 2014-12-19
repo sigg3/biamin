@@ -23,6 +23,63 @@ declare -r -a DICE_GAME_CHANCES=("dummy" "dummy" 3 6 9 12 14 17 14 12 9  6  3)
 declare -r -a DICE_GAME_WINNINGS=("dummy" "dummy" 100 85 70 55 40 25 40 55 70 85 100)
 
 #-----------------------------------------------------------------------
+# GX_DiceGame() (GPL)
+# Display dices GX for MiniGame_Dice()
+# Arguments: $DGAME_DICE_1(int), $DGAME_DICE_2(int).
+# Used: MiniGame_Dice()
+#-----------------------------------------------------------------------
+GX_DiceGame() { 
+    GDICE_SYM="@" # @ looks nice:)
+    clear
+    awk ' BEGIN { FS = "" ; OFS = ""; }
+{   # First dice
+    if ('$1' == 1) { if (NR == 5) { $26 = "'$GDICE_SYM'"} } 
+    if ('$1' == 2) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
+ 	             if (NR == 7) { $22 = "'$GDICE_SYM'"; } }
+    if ('$1' == 3) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
+            	     if (NR == 5) { $26 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; } }
+    if ('$1' == 4) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
+    if ('$1' == 5) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $26 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
+    if ('$1' == 6) { if (NR == 3) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $22 = "'$GDICE_SYM'"; $30= "'$GDICE_SYM'"; } }
+    # Second dice
+    if ('$2' == 1) { if (NR == 5) { $53 = "'$GDICE_SYM'"} }
+    if ('$2' == 2) { if (NR == 3) { $57 = "'$GDICE_SYM'"; }
+	             if (NR == 7) { $49 = "'$GDICE_SYM'"; } }
+    if ('$2' == 3) { if (NR == 3) { $57 = "'$GDICE_SYM'"; }
+	             if (NR == 5) { $53 = "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; } }
+    if ('$2' == 4) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+	             if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
+    if ('$2' == 5) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+	             if (NR == 5) { $53 = "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
+    if ('$2' == 6) { if (NR == 3) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+ 	             if (NR == 5) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
+		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
+    # Display numbers too for great justice (or readability)
+    if (NR == 10) { $26 = '$1'; $53 = '$2'; }
+    print; } ' <<"EOF"
+                  _______________            _______________
+                 [               ].         [               ].
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 |               |:         |               |:         
+                 [_______________];         [_______________];
+                  `~------------~`           `~------------~`                
+                                                              
+EOF
+    echo "$HR"
+}
+
+#-----------------------------------------------------------------------
 # MiniGame_Dice()
 # Small dice based minigame.
 # Used: Tavern()

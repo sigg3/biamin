@@ -1,5 +1,5 @@
 ########################################################################
-#                                                                      #
+#                   Death and death-related functions                  #
 #                                                                      #
 
 #-----------------------------------------------------------------------
@@ -30,8 +30,7 @@ ResetStarvation() {
 #-----------------------------------------------------------------------
 # CheckForStarvation()
 # Food check 
-# Used: NewSector() and should be used also in Rest()
-# TODO: add it to Rest() after finishing
+# Used: NewSector()
 # TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
 #-----------------------------------------------------------------------
 CheckForStarvation(){ 
@@ -93,7 +92,6 @@ Death() {
     # TODO: add showing Highscore list here
     CleanUp
 }
-
 
 #                                                                      #
 #                                                                      #

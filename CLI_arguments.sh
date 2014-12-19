@@ -88,7 +88,7 @@ Announce() {
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"
     echo -e "\n$ANNOUNCEMENT\n" | fmt
     echo "$HR"
-    (( $(Strlen "$ANNOUNCEMENT" ) > 160)) && echo "Warning! String longer than 160 chars ($ANNOUNCEMENT_LENGHT)!"
+    (( $(Strlen "$ANNOUNCEMENT") > 160)) && echo "Warning! String longer than 160 chars ($(Strlen "$ANNOUNCEMENT"))!"
     exit 0
 }
 

@@ -238,31 +238,39 @@ Marketplace_Merchant() {
 	
 	# Set any value equal or below 0 to defaults
 	# Ugly yet POSIX compliant code from mywiki.wooledge.org/BashFAQ/022
-	case $(bc <<< "scale=2;$MERCHANT_FxG - 0.00" ) in # TODO simplify/loop this instead..?
-	    0 | -*) MERCHANT_FxG=$PRICE_FxG ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_GxF - 0.00" ) in
-	    0 | -*) MERCHANT_GxF=$PRICE_GxF ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_FxT - 0.00" ) in
-	    0 | -*) MERCHANT_FxT=$PRICE_FxT ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_TxF - 0.00" ) in
-	    0 | -*) MERCHANT_TxF=$PRICE_TxF  ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_GxT - 0.00" ) in
-	    0 | -*) MERCHANT_GxT=$PRICE_GxT ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_TxG - 0.00" ) in
-	    0 | -*) MERCHANT_TxG=$PRICE_TxG  ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_GxI - 0.00" ) in
-	    0 | -*) MERCHANT_GxI=$PRICE_GxI ;;
-	esac
-	case $(bc <<< "scale=2;$MERCHANT_IxG - 0.00" ) in
-	    0 | -*) MERCHANT_IxG=$PRICE_IxG ;;
-	esac
+	# case $(bc <<< "scale=2;$MERCHANT_FxG - 0.00" ) in # TODO simplify/loop this instead..?
+	#     0 | -*) MERCHANT_FxG=$PRICE_FxG ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_GxF - 0.00" ) in
+	#     0 | -*) MERCHANT_GxF=$PRICE_GxF ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_FxT - 0.00" ) in
+	#     0 | -*) MERCHANT_FxT=$PRICE_FxT ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_TxF - 0.00" ) in
+	#     0 | -*) MERCHANT_TxF=$PRICE_TxF  ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_GxT - 0.00" ) in
+	#     0 | -*) MERCHANT_GxT=$PRICE_GxT ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_TxG - 0.00" ) in
+	#     0 | -*) MERCHANT_TxG=$PRICE_TxG  ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_GxI - 0.00" ) in
+	#     0 | -*) MERCHANT_GxI=$PRICE_GxI ;;
+	# esac
+	# case $(bc <<< "scale=2;$MERCHANT_IxG - 0.00" ) in
+	#     0 | -*) MERCHANT_IxG=$PRICE_IxG ;;
+	# esac
 
+	# Set any value equal or below 0 to defaults
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxG < 0) 0 else $PRICE_FxG" )
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxF < 0) 0 else $PRICE_GxF" )
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxT < 0) 0 else $PRICE_FxT" )
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_TxF < 0) 0 else $PRICE_TxF" )
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxI < 0) 0 else $PRICE_GxI" )
+	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_IxG < 0) 0 else $PRICE_IxG" )
+	
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8
 	case "$DICE" in

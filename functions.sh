@@ -3,67 +3,6 @@
 #                          1. FUNCTIONS                                #
 #                    All program functions go here!                    #
 
-Die() { echo -e "$1" && exit 1 ;}
-
-Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1
-
-Toupper() { awk '{ print toupper($0); }' <<< "$*" ;} # Convert $* to uppercase
-
-Strlen() { awk '{print length($0);}' <<< "$*" ;} # Return lenght of string $*. "Strlen" is traditional name :)
-
-MvAddStr() { tput cup "$1" "$2"; printf "%s" "$3"; } # move cursor to $1 $2 and print $3. "mvaddstr" is name similar function from ncurses.h
-
-
-#-----------------------------------------------------------------------
-# IsInt()
-# Checks if $1 is int
-# Arguments: $1
-# Used:
-#-----------------------------------------------------------------------
-IsInt() {
-    grep -E '^[0-9]+$' <<< "$1" && return 0 || return 1
-}
-
-
-#-----------------------------------------------------------------------
-# Ordial()
-# Add postfix to $1 (NUMBER)
-# Arguments: $1(int)
-#-----------------------------------------------------------------------
-Ordial() { 
-    grep -Eq '[^1]?1$'  <<< "$1" && echo "${1}st" && return 0
-    grep -Eq '[^1]?2$'  <<< "$1" && echo "${1}nd" && return 0
-    grep -Eq '[^1]?3$'  <<< "$1" && echo "${1}rd" && return 0
-    grep -Eq '^[0-9]+$' <<< "$1" && echo "${1}th" && return 0
-    Die "Bug in Ordial with ARG $1"
-}
-
-#-----------------------------------------------------------------------
-# MakePrompt()
-# Make centered to 79px promt from $@. Arguments should be separated by ';'
-# Arguments: $PROMPT(string)
-#-----------------------------------------------------------------------
-MakePrompt() { 
-    awk '   BEGIN { FS =";" }
-        {
-            MAXLEN = 79;
-            COUNT = NF; 
-            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
-            if ( STRLEN > MAXLEN ) { exit 1 ; }
-            SPACES = MAXLEN - STRLEN;
-            REMAINDER = SPACES % (NF + 1 ) ;
-            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
-            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
-            SPACES_IN = REMAINDER / 2 ;
-            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
-            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
-            STR = INTRO; 
-            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
-            STR = STR SEPARATOR INTRO
-        }
-        END { printf STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
-    #BACKUP END { print STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
-}
 
 # PRE-CLEANUP tidying function for buggy custom maps
 # Used in MapCreate(), GX_Place(), NewSector()
@@ -215,7 +154,7 @@ RollForHealing() { # Used in Rest()
 	(( CHAR_HEALTH += $1 ))
 	echo "You slept well and gained $1 Health."
     fi
-    sleep 2
+    Sleep 2
 }   # Return to Rest()
 
 #-----------------------------------------------------------------------
@@ -282,7 +221,7 @@ Do you want color? [Y/N]: "
 	    esac
 	    # BUG! Falls in OpenBSD. TODO replace to awk. #kstn
 	    sed -i"~" "/^COLOR:/s/^.*$/COLOR: $COLOR/g" "$GAMEDIR/config" # MacOS fix http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
-	    sleep 2;;
+	    Sleep 2;;
     esac
     if ((COLOR == 1)) ; then
 	YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()

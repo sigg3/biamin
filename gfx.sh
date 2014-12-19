@@ -6,19 +6,6 @@
 # Horizontal ruler used almost everywhere in the game
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
-#-----------------------------------------------------------------------
-# PressAnyKey()
-# Make centered prompt $1 (or default) and read anykey
-# Arguments: (optional) $PROMPT(string)
-#-----------------------------------------------------------------------
-PressAnyKey() {
-    if [[ "$1" ]]; then
-	MakePrompt "$1"
-    else
-	MakePrompt 'Press (A)ny key to continue..'
-    fi
-    read -sn 1
-} 
 
 GX_Credits() {
     GX_BiaminTitle

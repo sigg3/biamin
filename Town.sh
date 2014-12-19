@@ -98,27 +98,44 @@ Tavern() {
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
 Marketplace() {
-	if [ -z "$TOWN_GPS" ] || [ "$TOWN_GPS" != "$CHAR_GPS" ] ; then
+    if [ -z "$TOWN_GPS" ] || [ "$TOWN_GPS" != "$CHAR_GPS" ] ; then
 	TOWN_GPS="$CHAR_GPS" # Baptize the town
 	RollDice 10 # Determine whether we have a beggar or not
 	(( DICE <= 4 )) && local BEGGAR=1 || local BEGGAR=0
 	# IDEA This can be expanded to have other stuff than beggars (e.g. priests)
-	fi
+    fi
     while (true); do
 	GX_Marketplace
-	# TODO v. 3 (we need data for beggar's database first:)
-	#if (( BEGGAR == 1 )) ; then
-	#MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
-	#case $(Read) in
-	#    b | B) Marketplace_Beggar;;
-	#    g | G) Marketplace_Grocer;; 
-	#    m | M) Marketplace_Merchant;; 
-	#    q | Q ) CleanUp ;;
-	#    *) break ;; # Leave marketplace
-	#esac
-    #elif (( BEGGAR == 0 )) ; then
-    #fi
-    MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
+
+	# TODO v. 3 (we need data for beggar's database first:)	
+	# if (( BEGGAR == 1 )) ; then
+	#     MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
+	#     case $(Read) in
+	# 	b | B) Marketplace_Beggar;;
+	# 	g | G) Marketplace_Grocer;; 
+	# 	m | M) Marketplace_Merchant;; 
+	# 	q | Q ) CleanUp ;;
+	# 	*) break ;; # Leave marketplace
+	#     esac
+	# elif (( BEGGAR == 0 )) ; then
+	# fi
+
+	# Make it easier Luke :) # kstn
+	# case "$BEGGAR" in
+	#     1) MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit' ;;
+	#     *) MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
+	# esac
+	# case $(Read) in
+	#     b | B) ((BEGGAR == 1)) && Marketplace_Beggar;;
+	#     g | G) Marketplace_Grocer;; 
+	#     m | M) Marketplace_Merchant;; 
+	#     q | Q ) CleanUp ;;
+	#     *) break ;; # Leave marketplace
+	# esac
+
+
+	
+	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	case $(Read) in
 	    g | G) Marketplace_Grocer;; 
 	    m | M) Marketplace_Merchant;; 

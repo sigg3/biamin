@@ -60,6 +60,7 @@ TavernRest() {
     GX_Rest
     echo -n "You got some much needed rest .."
     if (( CHAR_HEALTH < 150 )); then
+	((STARVATION)) && ResetStarvation          # Reset STARVATION and restore starvation' penalty if any
 	(( CHAR_HEALTH += 30 ))			   # Add Town_Health * 2
 	(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
 	echo " and your HEALTH is $CHAR_HEALTH now"

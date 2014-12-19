@@ -10,28 +10,37 @@ DEATH_FIGHT=0
 DEATH_STARVATION=1
 
 #-----------------------------------------------------------------------
+# ResetStarvation()
+# Reset STARVATION and restore lost ability (race-depended) after
+# overcoming starvation
+# Used: CheckForStarvation(), TavernRest()
+#-----------------------------------------------------------------------
+ResetStarvation() {
+    if (( STARVATION >= 8 )) ; then
+	case "$CHAR_RACE" in
+	    1 | 3 ) (( STRENGTH++ ));
+		    echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;; 
+	    2 | 4 ) (( ACCURACY++ ));
+		    echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;; 
+	esac		    
+    fi
+    STARVATION=0
+}
+
+#-----------------------------------------------------------------------
 # CheckForStarvation()
 # Food check 
 # Used: NewSector() and should be used also in Rest()
 # TODO: add it to Rest() after finishing
 # TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
-# TODO: Tavern also should reset STARVATION and restore starvation penalties if any
 #-----------------------------------------------------------------------
 CheckForStarvation(){ 
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
 	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
-	if (( STARVATION > 0 )) ; then
-	    if (( STARVATION >= 8 )) ; then # Restore lost ability after overcoming starvation
-		case "$CHAR_RACE" in
-		    1 | 3 ) (( STRENGTH++ )) && echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;; 
-		    2 | 4 ) (( ACCURACY++ )) && echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;; 
-		esac		    
-	    fi
-	    STARVATION=0
-	fi
+	((STARVATION)) && ResetStarvation
     else
-	(( STARVATION++ ))
+	((STARVATION++))
 	echo -n "You're starving on the "
 	case "$STARVATION" in
 	    1 )  echo "${STARVATION}st day and feeling hungry .."            ;;
@@ -45,8 +54,10 @@ CheckForStarvation(){
 	
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in
-		1 | 3 ) (( STRENGTH-- )) && echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;; 
-		2 | 4 ) (( ACCURACY-- )) && echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
+		1 | 3 ) (( STRENGTH-- ));
+			echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;; 
+		2 | 4 ) (( ACCURACY-- ));
+			echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then

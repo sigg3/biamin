@@ -55,7 +55,7 @@ TODO 2.0 branch ("survival")
 [.] LoadMap() displaying list of maps to choose from ^^
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
-[ ] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
+[.] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
 [x] 	ASCII GX_Starvation # Great idea! #kstn
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)

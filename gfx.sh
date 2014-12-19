@@ -105,7 +105,7 @@ EOT
 #-----------------------------------------------------------------------
 # GX_Death()
 # Display Death ASCII and text
-#
+# Arguments: $TYPE_OF_DEATH(int) (defined in Death.sh)
 # Used: Death()
 #-----------------------------------------------------------------------
 GX_Death() {
@@ -125,16 +125,16 @@ GX_Death() {
 EOT
     echo "$HR"
     tput sc
-    if ((FIGHTMODE == 1)) ; then
-	MvAddStr 3 9 "   YOU WERE DEFEATED  "
-	MvAddStr 5 9 "The smell of dirt and "
-	MvAddStr 6 9 "blood will be the last"
-	MvAddStr 7 9 "    thing you know.   "	
-    else
-	MvAddStr 3 9 "YOU STARVED TO DEATH"
-	MvAddStr 5 9 "Only death triumphs "
-	MvAddStr 6 9 "    over hunger.    "
-    fi
+    case "$1" in             # define text
+	"$DEATH_FIGHT")      MvAddStr 3 9 "   YOU WERE DEFEATED  " ;
+			     MvAddStr 5 9 "The smell of dirt and " ;
+			     MvAddStr 6 9 "blood will be the last" ;
+			     MvAddStr 7 9 "    thing you know.   " ;;
+	"$DEATH_STARVATION") MvAddStr 3 9 "YOU STARVED TO DEATH" ;
+			     MvAddStr 5 9 "Only death triumphs " ;
+			     MvAddStr 6 9 "    over hunger.    " ;;
+	*)                   Die "Bug in GX_DEATH() with arg >>>$1<<<" ;;
+    esac
     tput rc
     PressAnyKey
     clear

@@ -297,8 +297,10 @@ FightMode_EnemyTurn() {
 
 FightMode_CheckForDeath() {
     if ((CHAR_HEALTH <= 0)); then # If player is dead
-	echo "Your health points are $CHAR_HEALTH" && sleep 2
-	echo "You WERE KILLED by the $ENEMY, and now you are dead..." && sleep 2
+	echo "Your health points are $CHAR_HEALTH"
+	Sleep 2
+	echo "You WERE KILLED by the $ENEMY, and now you are dead..."
+	Sleep 2
 	if ((CHAR_EXP >= 1000)) && ((CHAR_HEALTH > -15)); then
 	    ((CHAR_HEALTH += 20))
 	    echo "However, your $CHAR_EXP Experience Points relates that you have"
@@ -310,8 +312,8 @@ FightMode_CheckForDeath() {
 	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
 	else # DEATH!
 	    echo "Gain 1000 Experience Points to achieve magic healing!"
-	    sleep 4		
-	    Death # And CleanUp
+	    Sleep 4		
+	    Death "$DEATH_FIGHT" # And CleanUp
 	fi
 	LUCK=2
 	Sleep 8
@@ -398,17 +400,15 @@ FightMode() {	# Used in NewSector() and Rest()
     FightMode_DefineInitiative  # DETERMINE INITIATIVE (will usually be enemy)
     FightMode_RemoveBonuses     # Remove adjustments for items
     ############################ Main fight loop ###########################
-    while ((FIGHTMODE)); do                                                 # If player didn't manage to run
+    while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
 	[[ "$NEXT_TURN" == "pl" ]] && FightMode_CharTurn || FightMode_EnemyTurn # Define which turn is and make it
 	((CHAR_HEALTH <= 0 || EN_HEALTH <= 0)) && unset FIGHTMODE               # Exit loop if player or enemy is dead
 	[[ "$NEXT_TURN" == "pl" ]] && NEXT_TURN="en" || NEXT_TURN="pl"          #  or change initiative and next turn
-	Sleep 2			                                                        #  after pause
+	Sleep 2			                                                #  after pause
     done
     ########################################################################
-    FIGHTMODE=1                            # Bugfix for GX_Death
     FightMode_CheckForDeath	               # Check if player is alive
-    unset FIGHTMODE                        # Bugfix for GX_Death
     FightMode_FightTable	               # Display enemy GX last time
     FightMode_CheckForExp "$LUCK"	       # 
     FightMode_CheckForPickpocket "$PICKPOCKET" # 

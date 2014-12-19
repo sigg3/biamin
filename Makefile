@@ -4,7 +4,7 @@ HEADER  = header.sh
 CC      = gfx.sh GX_Item.sh GX_Monster.sh GX_Places.sh GX_Menu.sh GX_DiceGame.sh
 GPL     = GX_Item-gpl.sh GX_Monster-gpl.sh GX_Places-gpl.sh GX_Menu-gpl.sh 
 FILES   = Read.sh BiaminSetup.sh FightMode.sh Items.sh Char.sh MiniGameDice.sh Almanac.sh Bulletin.sh Town.sh \
-	NewSector.sh functions.sh Date.sh Menu.sh CLI_arguments.sh 
+	NewSector.sh Death.sh functions.sh Date.sh Menu.sh CLI_arguments.sh 
 RUNTIME = runtime.sh
 
 all:

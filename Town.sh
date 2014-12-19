@@ -306,7 +306,7 @@ Marketplace_Merchant() {
 	tput rc
 	read -sn 1 -p "$(MakePrompt '(B)uying;(S)elling;(J)ust Looking')" MERCHANTVAR 2>&1
 	Marketplace_Merchant_Bargaining "$MERCHANDISE"
-	local QUANTITY && local COST_GOLD && local COST_TOBACCO && local COST_FOOD && local COST_ITEM && local TRANSACTION_STATUS && local BARGAIN_TYPE
+	local QUANTITY COST_GOLD COST_TOBACCO COST_FOOD COST_ITEM TRANSACTION_STATUS BARGAIN_TYPE
 	case "$MERCHANTVAR" in
 	    b | B ) BARGAIN_TYPE=1  ;; # Buying  MERCHANDISE ($MERCHANDISE) from Merchant using MERCHANT_GxF (G
 	    s | S ) BARGAIN_TYPE=2  ;; # Selling STOCK ($MERCHANDISE) to Merchant

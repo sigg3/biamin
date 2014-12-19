@@ -21,6 +21,11 @@
 # 	echo "$HR"
 # }
 
+#-----------------------------------------------------------------------
+# GX_DiceGame_Table()
+# Display ASCII for game table or empty table if $1 == 0
+# Arguments: $DGAME_PLAYERS(int)
+#-----------------------------------------------------------------------
 GX_DiceGame_Table() {
     clear
     case "$1" in

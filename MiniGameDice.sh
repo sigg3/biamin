@@ -87,9 +87,10 @@ EOF
 MiniGame_Dice() { 
 	DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
 	DGAME_STAKES=$( bc <<< "$(RollDice2 6) * $VAL_CHANGE" ) # Determine stake size (min 0.25, max 1.5)	
-	GX_DiceGame_Table "$DGAME_PLAYERS"
+	GX_DiceGame_Table "$DGAME_PLAYERS"			# Display game table depending of count players
 	case "$DGAME_PLAYERS" in # Ask whether player wants to join
-	    0 ) PressAnyKey "There's no one at the table. May be you should come back later?" && return 0 ;; # leave
+	    0 ) PressAnyKey "There's no one at the table. May be you should come back later?";
+		return 0 ;; # leave
 	    1 ) echo -n "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
 	    * ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;	    
 	esac
@@ -97,17 +98,18 @@ MiniGame_Dice() {
 	    j | J | y | Y ) ;;                                  # Game on! Do nothing.
 	    * ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
 		Sleep 2;
-		return 0;; # Leave.
+		return 0 ;; # Leave.
 	esac	
 
 	if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then  # Check if player can afford it
-	    read -sn1 -p "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.." 2>&1
+	    PressAnyKey "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.."
 	    return 0 # leave
 	fi
 
 	GAME_ROUND=1
 	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
-	echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]" && sleep 3
+	echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]"
+	Sleep 3
 		
 	DGAME_POT=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
 	
@@ -123,7 +125,8 @@ MiniGame_Dice() {
 		1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 ) # Stake!
 		    if (( GAME_ROUND > 1 )) ; then                 # First round is already paid
 		    	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
-		    	echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]" && sleep 3
+		    	echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]"
+			Sleep 3
 		    fi ;;
 		*)  echo "See you around, $CHAR_RACE_STR. Come back with more Gold!" # or leave table
 		    break # leave immediately
@@ -196,7 +199,7 @@ MiniGame_Dice() {
 		break # if not, leave immediately		
 	    fi		
 	done
-	sleep 3 # After 'break' in while-loop
+	Sleep 3 # After 'break' in while-loop
 	SaveCurrentSheet
 }
 

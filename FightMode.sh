@@ -144,8 +144,9 @@ FightMode_DefineEnemy() {
 }
 
 FightMode_DefineInitiative() {
-    GX_Monster "$ENEMY"
-    sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
+    GX_Monster "$ENEMY"		# Display $ENEMY GX - only one time!
+    tput sc 			# Store cursor position for FightMode_FightTable()
+    Sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
     if (( EN_ACCURACY > ACCURACY )) || ((PLAYER_RESTING)) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
@@ -154,7 +155,8 @@ FightMode_DefineInitiative() {
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
-	GX_Monster "$ENEMY" 
+#!	GX_Monster "$ENEMY" 
+	tput rc && tput ed # restore cursor position && clear to the end of display
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
 	    # TODO check this test
@@ -194,7 +196,8 @@ FightMode_DefineInitiative() {
 # Used: FightMode()
 #-----------------------------------------------------------------------
 FightMode_FightTable() {  
-    GX_Monster "$ENEMY"
+#!    GX_Monster "$ENEMY"
+    tput rc && tput ed # restore cursor position && clear to the end of display    
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }

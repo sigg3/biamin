@@ -187,7 +187,7 @@ FightMode_DefineInitiative() {
 	    fi 
 	fi
     fi
-    sleep 2
+    Sleep 2
 }
 
 #-----------------------------------------------------------------------
@@ -197,7 +197,7 @@ FightMode_DefineInitiative() {
 #-----------------------------------------------------------------------
 FightMode_FightTable() {  
 #!    GX_Monster "$ENEMY"
-    tput rc && tput ed # restore cursor position && clear to the end of display    
+    tput rc && tput ed # restore cursor position && clear to the end of display  (GX_Monster "$ENEMY" is already displayed)
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }

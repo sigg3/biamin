@@ -184,7 +184,7 @@ Rest() {
 	C ) RollForEvent 5  "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
     esac
     unset PLAYER_RESTING # Reset flag
-    sleep 2
+    Sleep 2
 }   # Return to NewSector()
 
 # THE GAME LOOP

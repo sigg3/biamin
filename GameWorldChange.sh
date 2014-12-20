@@ -5,6 +5,40 @@
 ## WORLD EVENT functions
 
 #-----------------------------------------------------------------------
+# WorldWeatherSystem()
+# Used: nowhere, until 3.0    THIS IS STILL JUST A SKETCH
+#-----------------------------------------------------------------------
+
+WorldWeatherSystem() {
+	local WS_CORE WS_CORE_X WS_CORE_Y
+	if [ -z "$WS_CORE" ] ; then # Create weather system
+	RollDice 18 && WS_CORE_X="$DICE" # X Pos
+	RollDice 15 && WS_CORE_Y="$DICE" # Y Pos
+	declare -a WS_CORE && WS_CORE[0]=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y")
+	else  # Move existing weather system
+	read -r WS_CORE_X WS_CORE_Y <<< $(GPStoXY "${WEATHER[0]}") # Fixes LOCATION
+	RollDice 5
+	case "$DICE" in
+	1 ) (( WS_CORE_X++ )) ;; # North
+	2 ) (( WS_CORE_X-- )) ;; # South
+	3 ) (( WS_CORE_Y++ )) ;; # East 
+	4 ) (( WS_CORE_Y-- )) ;; # West
+	# 5 ) Don't move ;;
+	esac
+	WS_CORE=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y") # Save back as Mapnav location
+	fi
+	
+	# Update/Create Weather System array
+	WEATHER[0]="$WS_CORE"
+	
+	# TODO Sigg3 pls to be continued..
+	
+}
+
+#WorldWeatherReport() {	
+#}
+
+#-----------------------------------------------------------------------
 # WorldPriceFixing()
 # Used: WorldChangeEconomy(), Intro()
 #-----------------------------------------------------------------------

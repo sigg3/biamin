@@ -11,7 +11,7 @@
 
 WorldWeatherSystem() {
 	# WEATHER SYSTEM CORE
-	local WS_CORE_X WS_CORE_Y
+	local WS_CORE_X WS_CORE_Y MOVE_STORM_CORE
 	if [ -z "$WEATHER" ] ; then # Create weather system
 	declare -a WEATHER
 	while true ; do
@@ -23,8 +23,8 @@ WorldWeatherSystem() {
 	WEATHER[1]=$(RollDice2 18) # Storm severity (Beaufort scale, >8 ~ storm)
 	else  # Move existing weather system
 	read -r WS_CORE_X WS_CORE_Y <<< $(GPStoXY "${WEATHER[0]}") # Fixes LOCATION
-	RollDice 5 # Storm can move in 4 directions + stay put
-	case "$DICE" in
+	MOVE_STORM_CORE=$( RollDice2 5) # Storm can move in 4 directions + stay put
+	case "$MOVE_STORM_CORE" in
 	1 ) (( WS_CORE_X++ )) ;; # Moving North
 	2 ) (( WS_CORE_X-- )) ;; # Moving South
 	3 ) (( WS_CORE_Y++ )) ;; # Moving East 
@@ -43,6 +43,8 @@ WorldWeatherSystem() {
 	# Additional conditions for core
 	WorldWeatherSystemHumidity 1 2
 	
+	
+	if [ -n "$MOVE_STORM_CORE" ] && [ "$MOVE_STORM_CORE" != 5 ] ; then	
 	# WEATHER SYSTEM NEXUS (12 storm tentacles)
 	# 	WEATHER[0,3,6,9,12,15,18,21,24,27,30,33,36]  == Affected GPS locations
 	# 	WEATHER[1,4,7,10,13,16,19,22,25,28,31,34,37] == Weather severity at locations
@@ -104,6 +106,7 @@ WorldWeatherSystem() {
 	WEATHER_AFFECTED_COUNTER=$[[ $WEATHER_AFFECTED_COUNTER + 3 ]]
 	(( WEATHER_AFFECTED_COUNTER_INDEX++ ))
 	done
+	fi
 }
 
 #-----------------------------------------------------------------------

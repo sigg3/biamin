@@ -4,6 +4,12 @@
 
 ## WORLD EVENT functions
 
+# IDEA Weather functions really presume that the map is 18x15,
+# But if we have a grid-system for WorldMap with 0-0 being "home map"
+# this can more easily be coded. E.g. HOME C2 is 0C-02
+# while a house (Home) != $HOME in map east of default is 1C-02.
+# The preceeding INT is an X and Y for the greater map sections.
+
 #-----------------------------------------------------------------------
 # WorldWeatherSystem()
 # Used: nowhere, until 3.0    THIS IS STILL JUST A SKETCH
@@ -96,6 +102,25 @@ WorldWeatherSystem() {
 	#       |    |  6 |    | 21 
 	#   ------------------------
 	#    30 | 18 |    |    | 33 
+	
+	# Add turbulence fields (2 levels)
+	# TODO
+	
+	
+	
+	
+	# Weather system completed      LEGEND             STRENGTH
+	#                           
+	#     3 |  b |  b |  2 |  3     0 = core           1
+	#   ------------------------    1 = child         -1 || 1
+	#     2 |  a |  1 |  a |  b     2 = grandchild    -2 || c
+	#   ------------------------    3 = greatgrandch. -3 || gc
+	#     b |  1 |  0 |  1 |  b     a = inner turmoil -1
+	#   ------------------------    b = outer turmoil -3
+	#     b |  a |  1 |  a |  2 
+	#   ------------------------
+	#     3 |  2 |  b |  b |  3 
+	
 	
 	
 	# WEATHER AFFECTED AREAS (e.g. Hotzone array for weather)

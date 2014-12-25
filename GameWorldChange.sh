@@ -213,23 +213,6 @@ WorldWeatherReport() {
 #-----------------------------------------------------------------------
 WorldPriceFixing() { 
     local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
-
-    # Warning! Old-style echo used on purpose here. Otherwise bc gives "illegal char" due to \n CRs 
-    # O_o. Are you sure that all is right with your encoding settings? #kstn
-    # No I'm not sure. Please test and report :)
-
-    # I've checked it (new-style, without echo) with old and new chars - works fine. Check it pls too. #kstn
-
-    #-----------------------------------------------------------------------
-    # Backup
-    # PRICE_FxG=$( echo "scale=2;$VAL_FOOD/$VAL_GOLD" | bc )
-    # PRICE_FxT=$( echo "scale=2;$VAL_FOOD/$VAL_TOBACCO" | bc ) # Price of 1 Food in Tobacco
-    # PRICE_GxT=$( echo "scale=2;$VAL_GOLD/$VAL_TOBACCO" | bc )
-    # PRICE_GxF=$( echo "scale=2;$VAL_GOLD/$VAL_FOOD" | bc )    # Price of 1 Gold in Food
-    # PRICE_TxG=$( echo "scale=2;$VAL_TOBACCO/$VAL_GOLD" | bc )
-    # PRICE_TxF=$( echo "scale=2;$VAL_TOBACCO/$VAL_FOOD" | bc )
-    #-----------------------------------------------------------------------
-
     PRICE_FxG=$(bc <<< "scale=2; $VAL_FOOD / $VAL_GOLD")
     PRICE_FxT=$(bc <<< "scale=2; $VAL_FOOD / $VAL_TOBACCO") # Price of 1 Food in Tobacco
     PRICE_GxT=$(bc <<< "scale=2; $VAL_GOLD / $VAL_TOBACCO")
@@ -237,7 +220,6 @@ WorldPriceFixing() {
     PRICE_TxG=$(bc <<< "scale=2; $VAL_TOBACCO / $VAL_GOLD")
     PRICE_TxF=$(bc <<< "scale=2; $VAL_TOBACCO / $VAL_FOOD")
     # Items are arbitrarily priced & not set here, but the same logic IxG applies.
-
 }
 
 #-----------------------------------------------------------------------

@@ -250,7 +250,7 @@ CheckForWorldChangeEconomy() {
     case "$UNIT" in # Which market is affected and restrict to 0.25 min
 	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;; 
 	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;       
-	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${DICE}<<<" ;;
+	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${BBSMSG}<<<" ;;
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
@@ -271,7 +271,7 @@ MAX_BBSMSG=12
 # Arguments: $BBSMSG (int)
 #-----------------------------------------------------------------------
 GX_Bulletin() { 
-    # Create strings for economical situation..
+    # Firstly: create strings for economical situation... (for faster drawing afterwards)
     local VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
     local VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
     case $1 in # MAX 35 chars per line !!!

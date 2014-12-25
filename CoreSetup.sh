@@ -10,7 +10,7 @@ declare -r -a RACES=(
     "dwarf  2       5        3        2    14           6"
     "hobbit 4       1        4        3     6          14"
 )
-
+declare -r MAX_RACES=4 		     # Count of game races
 # Initial Value of Currencies - declared as constants, in one place
 # for easier changing afterwards
 declare -r INITIAL_VALUE_GOLD=1      # Initial Value of Gold
@@ -31,7 +31,7 @@ BiaminSetup_SetRaceAbilities() {
 
 #-----------------------------------------------------------------------
 # BiaminSetup_SetItemsAbilities
-# Load bonuses from magic items (items defined in Items.sh)
+# Load bonuses from magic items (items defined in GameItems.sh)
 # Arguments: $CHAR_ITEMS (int)
 #-----------------------------------------------------------------------
 BiaminSetup_SetItemsAbilities() {
@@ -125,9 +125,11 @@ BiaminSetup_LoadCharsheet() {
 
 #-----------------------------------------------------------------------
 # BiaminSetup_MakeBaseChar()
-# Sketch. Main idea is to exclude BiaminSetup_UpdateOldSaves() but
-# make basic char with default settings (gold, values, food, etc) and
-# then BiaminSetup_LoadCharsheet() or BiaminSetup_MakeNewChar()
+# Set default initial values for CHAR characterisitics
+#
+# Main idea is to exclude BiaminSetup_UpdateOldSaves() but make basic
+# char with default settings (gold, values, food, etc) and then
+# BiaminSetup_LoadCharsheet() or BiaminSetup_MakeNewChar()
 #-----------------------------------------------------------------------
 BiaminSetup_MakeBaseChar() {
 # CHARACTER: $CHAR
@@ -154,33 +156,11 @@ BiaminSetup_MakeBaseChar() {
 BiaminSetup_MakeNewChar() {
 	echo " $CHAR is a new character!"
 
-	#### All this are already defined in BiaminSetup_MakeBaseChar()
-	# CHAR_BATTLES=0		# Defined in BiaminSetup_MakeBaseChar()
-	# CHAR_EXP=0		# Defined in BiaminSetup_MakeBaseChar()
-	# CHAR_HEALTH=100		# Defined in BiaminSetup_MakeBaseChar()
-	# CHAR_ITEMS=0		# Defined in BiaminSetup_MakeBaseChar()
-	# CHAR_KILLS=0		# Defined in BiaminSetup_MakeBaseChar()
-	# BBSMSG=0		# Defined in BiaminSetup_MakeBaseChar()
-	# STARVATION=0		# Defined in BiaminSetup_MakeBaseChar()
-	# TURN=$(TurnFromDate)  #Defined in BiaminSetup_MakeBaseChar() # Player starts from _translated real date_. Afterwards, turns increment.
-	# INV_ALMANAC=0		# Defined in BiaminSetup_MakeBaseChar()
-	# Set initial Value of Currencies
-	# VAL_GOLD="$INITIAL_VALUE_GOLD"        # Default 1
-	# VAL_TOBACCO="$INITIAL_VALUE_TOBACCO"     # Default 1	
-	# # Set economic (in)stability
-	# VAL_CHANGE="$INITIAL_VALUE_CHANGE"
-	##############################################################################
-
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
-	case "$CHAR_RACE" in
-	    2 ) echo "You chose to be an ELF"   ;;                
-	    3 ) echo "You chose to be a DWARF"  ;;               
-	    4 ) echo "You chose to be a HOBBIT" ;;              
-	    * ) echo "You chose to be a HUMAN"  ;
-		CHAR_RACE=1 ;;
-	esac
-	BiaminSetup_SetRaceAbilities "$CHAR_RACE"	
+	[[ "$CHAR_RACE" != [1-$MAX_RACES] ]] && CHAR_RACE=1 # fix user's input
+	BiaminSetup_SetRaceAbilities "$CHAR_RACE"
+	echo "You chose to be a $(Toupper $CHAR_RACE_STR)"
 
 	# IDEA v.3 Select Gender (M/F) ?
 	# Most importantly for spoken strings, but may also have other effects.
@@ -189,14 +169,6 @@ BiaminSetup_MakeNewChar() {
 	CHAR_GOLD=$(RollDice2 $OFFSET_GOLD)
 	CHAR_TOBACCO=$(RollDice2 $OFFSET_TOBACCO)
 
-	#### All this are already defined in BiaminSetup_MakeBaseChar()
-	# # Determine initial food stock (D11 + 4) - 5 food min, 15 food max
-	# CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" )
-	# # Add location info
-	# CHAR_GPS="$START_LOCATION"
-	# CHAR_HOME="$START_LOCATION"
-	#########################################
-	
 	# If there IS a CUSTOM.map file, ask where the player would like to start
 	# TODO move it to LoadCustomMap()
 	if [[ "$CUSTOM_MAP" ]] ; then

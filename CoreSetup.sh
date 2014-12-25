@@ -3,13 +3,22 @@
 #                    Load charsheet or make new char                   #
 
 # Set abilities according to race (each equal to 12) + string var used frequently
-RACES=(
+declare -r -a RACES=(
     "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we haven't RACE == 0
     "human  3       3        3        3    12           8"
     "elf    4       3        4        1     8          12" 
     "dwarf  2       5        3        2    14           6"
     "hobbit 4       1        4        3     6          14"
 )
+
+# Initial Value of Currencies - declared as constants, in one place
+# for easier changing afterwards
+declare -r INITIAL_VALUE_GOLD=1      # Initial Value of Gold
+declare -r INITIAL_VALUE_TOBACCO=1   # Initial Value of Tobacco
+declare -r INITIAL_VALUE_CHANGE=0.15 # Initial Market fluctuation key
+# Default 0.15: 0.05 is very stable economy, 0.5 is very unstable.
+# IDEA If we add a (S)ettings page in (M)ain menu, this could be user-configurable.
+
 
 #-----------------------------------------------------------------------
 # BiaminSetup_SetRaceAbilities()
@@ -40,19 +49,19 @@ BiaminSetup_SetItemsAbilities() {
 #-----------------------------------------------------------------------
 BiaminSetup_UpdateOldSaves() {	
     grep -Eq '^HOME:' "$1"        || echo "HOME: $START_LOCATION" >> $1
-    grep -Eq '^GOLD:' "$1"        || echo "GOLD: 10" >> $1
-    grep -Eq '^TOBACCO:' "$1"     || echo "TOBACCO: 10" >> $1
-    grep -Eq '^FOOD:' "$1"        || echo "FOOD: 10" >> $1
     grep -Eq '^BBSMSG:' "$1"      || echo "BBSMSG: 0" >> $1
     grep -Eq '^STARVATION:' "$1"  || echo "STARVATION: 0" >> $1
-    # TODO use  OFFSET_{GOLD,TOBACCO} 
-    grep -Eq '^VAL_GOLD:' "$1"    || echo "VAL_GOLD: 1" >> $1
-    grep -Eq '^VAL_TOBACCO:' "$1" || echo "VAL_TOBACCO: 1" >> $1
-    grep -Eq '^VAL_CHANGE:' "$1"  || echo "VAL_CHANGE: 0.25" >> $1
     # Time 
     grep -Eq '^TURN:' "$1"        || echo "TURN: $(TurnFromDate)" >> $1
     # Almanac
     grep -Eq '^INV_ALMANAC:' "$1" || echo "INV_ALMANAC: 0" >> $1
+    # TODO use  OFFSET_{GOLD,TOBACCO} 
+    grep -Eq '^GOLD:' "$1"        || echo "GOLD: 10" >> $1
+    grep -Eq '^TOBACCO:' "$1"     || echo "TOBACCO: 10" >> $1
+    grep -Eq '^FOOD:' "$1"        || echo "FOOD: 10" >> $1
+    grep -Eq '^VAL_GOLD:' "$1"    || echo "VAL_GOLD: $INITIAL_VALUE_GOLD" >> $1
+    grep -Eq '^VAL_TOBACCO:' "$1" || echo "VAL_TOBACCO: $INITIAL_VALUE_TOBACCO" >> $1
+    grep -Eq '^VAL_CHANGE:' "$1"  || echo "VAL_CHANGE: $INITIAL_VALUE_CHANGE" >> $1
 }
 
 #-----------------------------------------------------------------------
@@ -110,7 +119,6 @@ BiaminSetup_LoadCharsheet() {
                  print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"
                  }' $CHARSHEET )
     IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN INV_ALMANAC <<< "$CHAR_TMP"
-    unset CHAR_TMP
     # If character is dead, don't fool around..
     (( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
 }
@@ -125,7 +133,7 @@ BiaminSetup_MakeBaseChar() {
 # CHARACTER: $CHAR
 # RACE: $CHAR_RACE
     CHAR_BATTLES=0
-# EXPERIENCE: $CHAR_EXP
+    CHAR_EXP=0
     CHAR_GPS="$START_LOCATION"
     CHAR_HEALTH=100
     CHAR_ITEMS=0
@@ -133,11 +141,11 @@ BiaminSetup_MakeBaseChar() {
     CHAR_HOME="$START_LOCATION"
 # GOLD: $CHAR_GOLD
 # TOBACCO: $CHAR_TOBACCO
-    CHAR_FOOD=$( bc <<< "$(RollDice2 16) + 4" ) # Determine initial food stock (D16 + 4) - player has 5 food minimum
+    CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" ) # Determine initial food stock (D16 + 4) - player has 5 food minimum
     BBSMSG=0
-    VAL_GOLD=1 	                # Initial Value of Currencies
-    VAL_TOBACCO=1	        # Initial Value of Currencies
-    VAL_CHANGE=0.25	        # Market fluctuation key
+    VAL_GOLD="$INITIAL_VALUE_GOLD" 	 # Initial Value of Currencies
+    VAL_TOBACCO="$INITIAL_VALUE_TOBACCO" # Initial Value of Currencies
+    VAL_CHANGE="$INITIAL_VALUE_CHANGE"   # Market fluctuation key
     STARVATION=0
     TURN=$(TurnFromDate)	# Count turn from current date
     INV_ALMANAC=0 		# Locked by-default
@@ -145,45 +153,50 @@ BiaminSetup_MakeBaseChar() {
 
 BiaminSetup_MakeNewChar() {
 	echo " $CHAR is a new character!"
-	CHAR_BATTLES=0
-	CHAR_EXP=0
-	CHAR_HEALTH=100
-	CHAR_ITEMS=0
-	CHAR_KILLS=0
-	BBSMSG=0
-	STARVATION=0;
-	TURN=$(TurnFromDate) # Player starts from _translated real date_. Afterwards, turns increment.
-	INV_ALMANAC=0
+
+	#### All this are already defined in BiaminSetup_MakeBaseChar()
+	# CHAR_BATTLES=0		# Defined in BiaminSetup_MakeBaseChar()
+	# CHAR_EXP=0		# Defined in BiaminSetup_MakeBaseChar()
+	# CHAR_HEALTH=100		# Defined in BiaminSetup_MakeBaseChar()
+	# CHAR_ITEMS=0		# Defined in BiaminSetup_MakeBaseChar()
+	# CHAR_KILLS=0		# Defined in BiaminSetup_MakeBaseChar()
+	# BBSMSG=0		# Defined in BiaminSetup_MakeBaseChar()
+	# STARVATION=0		# Defined in BiaminSetup_MakeBaseChar()
+	# TURN=$(TurnFromDate)  #Defined in BiaminSetup_MakeBaseChar() # Player starts from _translated real date_. Afterwards, turns increment.
+	# INV_ALMANAC=0		# Defined in BiaminSetup_MakeBaseChar()
+	# Set initial Value of Currencies
+	# VAL_GOLD="$INITIAL_VALUE_GOLD"        # Default 1
+	# VAL_TOBACCO="$INITIAL_VALUE_TOBACCO"     # Default 1	
+	# # Set economic (in)stability
+	# VAL_CHANGE="$INITIAL_VALUE_CHANGE"
+	##############################################################################
+
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
-
 	case "$CHAR_RACE" in
-	    2 ) echo "You chose to be an ELF"                 && OFFSET_GOLD=8  && OFFSET_TOBACCO=12 ;;
-	    3 ) echo "You chose to be a DWARF"                && OFFSET_GOLD=14 && OFFSET_TOBACCO=6  ;;
-	    4 ) echo "You chose to be a HOBBIT"               && OFFSET_GOLD=6  && OFFSET_TOBACCO=14 ;;
-	    * ) CHAR_RACE=1 && echo "You chose to be a HUMAN" && OFFSET_GOLD=12 && OFFSET_TOBACCO=8  ;;
+	    2 ) echo "You chose to be an ELF"   ;;                
+	    3 ) echo "You chose to be a DWARF"  ;;               
+	    4 ) echo "You chose to be a HOBBIT" ;;              
+	    * ) echo "You chose to be a HUMAN"  ;
+		CHAR_RACE=1 ;;
 	esac
-	
+	BiaminSetup_SetRaceAbilities "$CHAR_RACE"	
+
 	# IDEA v.3 Select Gender (M/F) ?
 	# Most importantly for spoken strings, but may also have other effects.
 
 	# Determine material wealth
 	CHAR_GOLD=$(RollDice2 $OFFSET_GOLD)
 	CHAR_TOBACCO=$(RollDice2 $OFFSET_TOBACCO)
-	# Determine initial food stock (D11 + 4) - 5 food min, 15 food max
-	CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" )
+
+	#### All this are already defined in BiaminSetup_MakeBaseChar()
+	# # Determine initial food stock (D11 + 4) - 5 food min, 15 food max
+	# CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" )
+	# # Add location info
+	# CHAR_GPS="$START_LOCATION"
+	# CHAR_HOME="$START_LOCATION"
+	#########################################
 	
-	# Set initial Value of Currencies
-	VAL_GOLD=1        # Default 1
-	VAL_TOBACCO=1     # Default 1
-	
-	# Set economic (in)stability
-	VAL_CHANGE=0.15   # Default 0.15: 0.05 is very stable economy, 0.5 is very unstable.
-	                  # IDEA If we add a (S)ettings page in (M)ain menu, this could be user-configurable.
-	
-	# Add location info
-	CHAR_GPS="$START_LOCATION"
-	CHAR_HOME="$START_LOCATION"
 	# If there IS a CUSTOM.map file, ask where the player would like to start
 	# TODO move it to LoadCustomMap()
 	if [[ "$CUSTOM_MAP" ]] ; then
@@ -198,20 +211,21 @@ BiaminSetup_MakeNewChar() {
 #-----------------------------------------------------------------------
 # BiaminSetup()
 # Gets char name and load charsheet or make new char
-# Used: runtime.sh
+# Used: CoreRuntime.sh
 # TODO: Argumens: $CHAR(string)
 #-----------------------------------------------------------------------
 BiaminSetup() { 
     # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
+    BiaminSetup_MakeBaseChar
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
     if [[ -f "$CHARSHEET" ]] ; then
 	BiaminSetup_LoadCharsheet
+	BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
+	BiaminSetup_SetItemsAbilities "$CHAR_ITEMS" # We need set item's abilities only for loaded chars
     else
 	BiaminSetup_MakeNewChar
     fi
-    sleep 2
-    BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
-    BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"
+    Sleep 2
     # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150
 }

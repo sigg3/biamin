@@ -16,41 +16,41 @@
 #-----------------------------------------------------------------------
 
 WorldWeatherSystem() {
-	# WEATHER SYSTEM CORE
-	local WS_CORE_X WS_CORE_Y MOVE_STORM_CORE
-	if [ -z "$WEATHER" ] ; then # Create weather system
+    # WEATHER SYSTEM CORE
+    local WS_CORE_X WS_CORE_Y MOVE_STORM_CORE
+    if [ -z "$WEATHER" ] ; then # Create weather system
 	declare -a WEATHER
 	while true ; do
-	WS_CORE_X=$(RollDice2 18) # X Pos
-	WS_CORE_Y=$(RollDice2 15) # Y Pos
-	WEATHER[0]=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y")
-	[[ "${WEATHER[0]}" != "$CHAR_GPS" ]] && break
+	    WS_CORE_X=$(RollDice2 18) # X Pos
+	    WS_CORE_Y=$(RollDice2 15) # Y Pos
+	    WEATHER[0]=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y")
+	    [[ "${WEATHER[0]}" != "$CHAR_GPS" ]] && break
 	done
 	WEATHER[1]=$(RollDice2 18) # Storm severity (Beaufort scale, >8 ~ storm)
-	else  # Move existing weather system
+    else  # Move existing weather system
 	read -r WS_CORE_X WS_CORE_Y <<< $(GPStoXY "${WEATHER[0]}") # Fixes LOCATION
 	MOVE_STORM_CORE=$( RollDice2 5) # Storm can move in 4 directions + stay put
 	case "$MOVE_STORM_CORE" in
-	1 ) (( WS_CORE_X++ )) ;; # Moving North
-	2 ) (( WS_CORE_X-- )) ;; # Moving South
-	3 ) (( WS_CORE_Y++ )) ;; # Moving East 
-	4 ) (( WS_CORE_Y-- )) ;; # Moving West
-	# 5 ) Storm stays put ;;
+	    1 ) (( WS_CORE_X++ )) ;; # Moving North
+	    2 ) (( WS_CORE_X-- )) ;; # Moving South
+	    3 ) (( WS_CORE_Y++ )) ;; # Moving East 
+	    4 ) (( WS_CORE_Y-- )) ;; # Moving West
+	    # 5 ) Storm stays put ;;
 	esac
 	WEATHER[0]=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y") # Save back as Mapnav location
 	RollDice 10
 	if (( DICE <= 5 )) && [[ ${WEATHER[1]} <= 17 ]] ; then
-	WEATHER[1]=$[[ ${WEATHER[1]} + 1 ]] # Storm increases
+	    WEATHER[1]=$[[ ${WEATHER[1]} + 1 ]] # Storm increases
 	elif (( DICE >= 6 )) && [[ ${WEATHER[1]} >=2 ]] ; then
-	WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
+	    WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
 	fi
-	fi
-	
-	# Additional conditions for core
-	WorldWeatherSystemHumidity 1 2
-	
-	
-	if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" != 5 ] ; then	
+    fi
+    
+    # Additional conditions for core
+    WorldWeatherSystemHumidity 1 2
+    
+    
+    if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" != 5 ] ; then	
 	# WEATHER SYSTEM NEXUS (12 storm tentacles)
 	# 	WEATHER[0,3,6,9,12,15,18,21,24,27,30,33,36]  == Affected GPS locations
 	# 	WEATHER[1,4,7,10,13,16,19,22,25,28,31,34,37] == Weather severity at locations
@@ -58,37 +58,37 @@ WorldWeatherSystem() {
 	local WS_CHILD WS_PARENT_X WS_PARENT_Y WS_CHILD_X WS_CHILD_Y WS_CHILD_SEVERITY WS_CHILD_HUMIDITY WS_PARENT_SEVERITY
 	local WS_PARENT_POS=0 WS_CHILD_COUNTER=12 WS_CHILD_COUNTER_INDEX=3 WS_BOOLEAN=0
 	while (( WS_CHILD_COUNTER >=1 )) ; do
-	read -r WS_PARENT_X WS_PARENT_Y <<< $(GPStoXY "${WEATHER[0]}")                 # Center of storm
-	case "$WS_CHILD_COUNTER_INDEX" in
-	3 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y + 1 ))           ;; # Northern child
-	6 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y - 1 ))           ;; # Southern child
-	9 )  WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Eastern  child
-	12 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Western  child
-	15 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Northern grandchild
-	18 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Southern grandchild
-	21 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 1 )) ;; # Eastern  grandchild
-	24 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 1 )) ;; # Western  grandchild
-	27 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Northern greatgrandchild
-	30 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Southern greatgrandchild
-	33 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Eastern  greatgrandchild
-	36 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Western  greatgrandchild
-	esac
-	# 1. GPS location
-	WEATHER[$WS_CHILD_COUNTER_INDEX]=$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y" )
-	(( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item
-	# 2. Severity
-	case "$WS_CHILD_COUNTER_INDEX" in
-	4 | 7 | 10 | 13 ) WS_PARENT=1       ;; # Use core's severity
-	* ) WS_PARENT=$[[ $WS_PARENT + 3 ]] ;; # Use parent's severity
-	esac
-	WS_PARENT_SEVERITY=$WS_PARENT
-	(( WEATHER[$WS_PARENT_SEVERITY] >= 8 )) && WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] || WEATHER[$WS_CHILD_COUNTER_INDEX]=${WEATHER[$WS_PARENT_SEVERITY]}
-	# 3. Humidity
-	WS_CHILD_SEVERITY=${WEATHER[$WS_CHILD_COUNTER_INDEX]} # Tmp var 1 for humidity
-	(( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item
-	WS_CHILD_HUMIDITY=${WEATHER[$WS_CHILD_COUNTER_INDEX]} # Tmp var 2 for humidity
-	WorldWeatherSystemHumidity $WS_CHILD_SEVERITY $WS_CHILD_HUMIDITY # Function saves humidity
-	(( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
+	    read -r WS_PARENT_X WS_PARENT_Y <<< $(GPStoXY "${WEATHER[0]}")                 # Center of storm
+	    case "$WS_CHILD_COUNTER_INDEX" in
+		3 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y + 1 ))           ;; # Northern child
+		6 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y - 1 ))           ;; # Southern child
+		9 )  WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Eastern  child
+		12 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Western  child
+		15 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Northern grandchild
+		18 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Southern grandchild
+		21 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 1 )) ;; # Eastern  grandchild
+		24 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 1 )) ;; # Western  grandchild
+		27 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Northern greatgrandchild
+		30 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Southern greatgrandchild
+		33 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Eastern  greatgrandchild
+		36 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Western  greatgrandchild
+	    esac
+	    # 1. GPS location
+	    WEATHER[$WS_CHILD_COUNTER_INDEX]=$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y" )
+	    (( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item
+	    # 2. Severity
+	    case "$WS_CHILD_COUNTER_INDEX" in
+		4 | 7 | 10 | 13 ) WS_PARENT=1       ;; # Use core's severity
+		* ) WS_PARENT=$[[ $WS_PARENT + 3 ]] ;; # Use parent's severity
+	    esac
+	    WS_PARENT_SEVERITY=$WS_PARENT
+	    (( WEATHER[$WS_PARENT_SEVERITY] >= 8 )) && WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] || WEATHER[$WS_CHILD_COUNTER_INDEX]=${WEATHER[$WS_PARENT_SEVERITY]}
+	    # 3. Humidity
+	    WS_CHILD_SEVERITY=${WEATHER[$WS_CHILD_COUNTER_INDEX]} # Tmp var 1 for humidity
+	    (( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item
+	    WS_CHILD_HUMIDITY=${WEATHER[$WS_CHILD_COUNTER_INDEX]} # Tmp var 2 for humidity
+	    WorldWeatherSystemHumidity $WS_CHILD_SEVERITY $WS_CHILD_HUMIDITY # Function saves humidity
+	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
 	
 	# Weather system illustrated as placed on map
@@ -127,11 +127,11 @@ WorldWeatherSystem() {
 	declare -a WEATHER_AFFECTED
 	local WEATHER_AFFECTED_COUNTER=0 WEATHER_AFFECTED_COUNTER_INDEX=0
 	while ((WEATHER_AFFECTED_COUNTER_INDEX >= )); do
-	WEATHER_AFFECTED[$WEATHER_AFFECTED_COUNTER_INDEX]="${WEATHER[$WEATHER_AFFECTED_COUNTER}"
-	WEATHER_AFFECTED_COUNTER=$[[ $WEATHER_AFFECTED_COUNTER + 3 ]]
-	(( WEATHER_AFFECTED_COUNTER_INDEX++ ))
+	    WEATHER_AFFECTED[$WEATHER_AFFECTED_COUNTER_INDEX]="${WEATHER[$WEATHER_AFFECTED_COUNTER}"
+	    WEATHER_AFFECTED_COUNTER=$[[ $WEATHER_AFFECTED_COUNTER + 3 ]]
+	    (( WEATHER_AFFECTED_COUNTER_INDEX++ ))
 	done
-	fi
+    fi
 }
 
 #-----------------------------------------------------------------------
@@ -140,11 +140,11 @@ WorldWeatherSystem() {
 # Args: INT System severity & INT System humidity (required)
 #-----------------------------------------------------------------------
 WorldWeatherSystemHumidity() {
-	case "${WEATHER[$1]}" in
+    case "${WEATHER[$1]}" in
 	8 | 9 | 1[0-8] ) WEATHER[$2]=$(RollDice2 3) ;; # See WorldWeatherReport() for values
 	1 | 2 | 3 | 4  ) WEATHER[$2]=0              ;; # Fine weather
 	* )              WEATHER[$2]=1              ;; # Viz. rain
-	esac
+    esac
 }
 
 #-----------------------------------------------------------------------
@@ -153,7 +153,7 @@ WorldWeatherSystemHumidity() {
 # Returns 0 for affected and 1 for unaffected
 #-----------------------------------------------------------------------
 CheckWeatherForecast() {
-	[[ "$1" = "${WEATHER_AFFECTED[@]}" ]] && return 0 || return 1
+    [[ "$1" = "${WEATHER_AFFECTED[@]}" ]] && return 0 || return 1
 }
 
 #-----------------------------------------------------------------------
@@ -170,41 +170,41 @@ CheckWeatherForecast() {
 # Args: INT System severity & INT System humidity
 #-----------------------------------------------------------------------
 WorldWeatherReport() {
-	if (( $(CheckWeatherForecast $CHAR_GPS) == 0 )) ; then
+    if (( $(CheckWeatherForecast $CHAR_GPS) == 0 )) ; then
 	local WEATHER_SYSTEM_ID=0 	# Get system "ID"
 	while true ; do
-	[[ "$CHAR_GPS" = "${WEATHER_AFFECTED[$WEATHER_SYSTEM_ID]} " ]] && break
-	(( WEATHER_SYSTEM_ID++ ))
+	    [[ "$CHAR_GPS" = "${WEATHER_AFFECTED[$WEATHER_SYSTEM_ID]} " ]] && break
+	    (( WEATHER_SYSTEM_ID++ ))
 	done
 	local WEATHER_SYSTEM_SEVERITY=$[[ $WEATHER_SYSTEM_ID + 1 ]]
 	local WEATHER_SYSTEM_HUMIDITY=$[[ $WEATHER_SYSTEM_ID + 2 ]]
 	
 	# Core severity string (Beaufort scale)
 	case "${WEATHER[$WEATHER_SYSTEM_SEVERITY]}" in
-	1 )  WEATHER_REPORT="Calm"            ;;
-	2 )  WEATHER_REPORT="Light air"       ;;
-	3 )  WEATHER_REPORT="Light breeze"    ;;
-	4 )  WEATHER_REPORT="Gentle breeze"   ;;
-	5 )  WEATHER_REPORT="Moderate breeze" ;;
-	6 )  WEATHER_REPORT="Fresh breeze"    ;;
-	7 )  WEATHER_REPORT="Strong breeze"   ;;
-	8 )  WEATHER_REPORT="Moderate gale"   ;;
-	9 )  WEATHER_REPORT="Fresh gale"      ;;
-	10 ) WEATHER_REPORT="Whole gale"      ;;
-	11 ) WEATHER_REPORT="Storm"           ;;
-	12 | 13 | 14 | 15 | 16 | 17 | 18 ) WEATHER_REPORT="Hurricane" ;;
+	    1 )  WEATHER_REPORT="Calm"            ;;
+	    2 )  WEATHER_REPORT="Light air"       ;;
+	    3 )  WEATHER_REPORT="Light breeze"    ;;
+	    4 )  WEATHER_REPORT="Gentle breeze"   ;;
+	    5 )  WEATHER_REPORT="Moderate breeze" ;;
+	    6 )  WEATHER_REPORT="Fresh breeze"    ;;
+	    7 )  WEATHER_REPORT="Strong breeze"   ;;
+	    8 )  WEATHER_REPORT="Moderate gale"   ;;
+	    9 )  WEATHER_REPORT="Fresh gale"      ;;
+	    10 ) WEATHER_REPORT="Whole gale"      ;;
+	    11 ) WEATHER_REPORT="Storm"           ;;
+	    12 | 13 | 14 | 15 | 16 | 17 | 18 ) WEATHER_REPORT="Hurricane" ;;
 	esac
 	
 	# Core Humidity conditions
 	case "${WEATHER[$WEATHER_SYSTEM_HUMIDITY]}" in
-	0 ) WEATHER_REPORT+=" and dry"   ;;
-	1 ) WEATHER_REPORT+=" and rainy" ;;
-	2 ) WEATHER_REPORT+=" and snowy" ;;
-	3 ) WEATHER_REPORT+=" and hail"  ;;
+	    0 ) WEATHER_REPORT+=" and dry"   ;;
+	    1 ) WEATHER_REPORT+=" and rainy" ;;
+	    2 ) WEATHER_REPORT+=" and snowy" ;;
+	    3 ) WEATHER_REPORT+=" and hail"  ;;
 	esac
-	else
+    else
 	WEATHER_REPORT="Nice weather conditions"
-	fi
+    fi
 }
 
 #-----------------------------------------------------------------------

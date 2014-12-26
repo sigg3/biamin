@@ -70,16 +70,13 @@ BiaminSetup_UpdateOldSaves() {
 # Arguments: $CHAR_LOC(string)
 # Used: BiaminSetup_LoadCharsheet()
 #-----------------------------------------------------------------------
-BiaminSetup_SanityCheck(){
+BiaminSetup_SanityCheck() {
     local CHAR_LOC_LEN CHAR_LOC_X CHAR_LOC_Y
     read CHAR_LOC_LEN CHAR_LOC_X CHAR_LOC_Y <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$1")
     echo -n "Sanity check.."
     (( CHAR_LOC_LEN < 1 )) && Die "\n Error! Too less characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
     (( CHAR_LOC_LEN > 3 )) && Die "\n Error! Too many characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
-    case "$CHAR_LOC_X" in
-	A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R ) echo -n ".." ;;
-	* ) Die "\n Error! Start location X-Axis $CHAR_LOC_X must be a CAPITAL alphanumeric A-R letter!" ;;
-    esac
+    [[ "$CHAR_LOC_X" == [A-R] ]] &&  echo -n ".." || Die "\n Error! Start location X-Axis $CHAR_LOC_X must be a CAPITAL alphanumeric A-R letter!"
     case "$CHAR_LOC_Y" in
 	1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 ) echo ".. Done!" ;;
 	* ) Die "\n Error! Start location Y-Axis $CHAR_LOC_Y is too big or too small!";;
@@ -155,7 +152,6 @@ BiaminSetup_MakeBaseChar() {
 
 BiaminSetup_MakeNewChar() {
 	echo " $CHAR is a new character!"
-
 	GX_Races
 	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
 	[[ "$CHAR_RACE" != [1-$MAX_RACES] ]] && CHAR_RACE=1 # fix user's input

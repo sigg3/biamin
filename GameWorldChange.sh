@@ -39,9 +39,9 @@ WorldWeatherSystem() {
 	esac
 	WEATHER[0]=$(XYtoGPS "$WS_CORE_X" "$WS_CORE_Y") # Save back as Mapnav location
 	RollDice 10
-	if (( DICE <= 5 )) && [[ ${WEATHER[1]} <= 17 ]] ; then
+	if (( DICE <= 5 )) && [[ ${WEATHER[1]} -le 17 ]] ; then
 	    WEATHER[1]=$[[ ${WEATHER[1]} + 1 ]] # Storm increases
-	elif (( DICE >= 6 )) && [[ ${WEATHER[1]} >=2 ]] ; then
+	elif (( DICE >= 6 )) && [[ ${WEATHER[1]} -ge 2 ]] ; then
 	    WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
 	fi
     fi

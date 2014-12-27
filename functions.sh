@@ -196,7 +196,7 @@ Rest() {
 #-----------------------------------------------------------------------
 RollForEvent() {     
     echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 
-    sleep 1.5
+    Sleep 1.5
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 

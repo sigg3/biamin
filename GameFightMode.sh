@@ -155,7 +155,6 @@ FightMode_DefineInitiative() {
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
-#!	GX_Monster "$ENEMY" 
 	tput rc && tput ed # restore cursor position && clear to the end of display
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
@@ -196,7 +195,6 @@ FightMode_DefineInitiative() {
 # Used: FightMode()
 #-----------------------------------------------------------------------
 FightMode_FightTable() {  
-#!    GX_Monster "$ENEMY"
     tput rc && tput ed # restore cursor position && clear to the end of display  (GX_Monster "$ENEMY" is already displayed)
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
@@ -284,7 +282,7 @@ FightMode_EnemyTurn() {
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     echo "It's the ${ENEMY}'s turn"
-    sleep 2
+    Sleep 2
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
 	echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"

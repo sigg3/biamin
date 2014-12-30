@@ -565,11 +565,12 @@ Marketplace_Grocer() {
 #-----------------------------------------------------------------------
 Marketplace_Beggar() {
     GX_Marketplace_Beggar
+    tput sc
     local B_Y=4                # Setup default greeting
     local BEGGAR_MSG=("" "Traveller from afar" "Forest Child" "Mountain Warrior" "Master Hobbit") # [0] is dummy
     if [ -z "$BEGGAR" ] || [ "$BEGGAR" != "$CHAR_GPS" ] ; then 	# "Name" this beggar as GPS location
 	BEGGAR="$CHAR_GPS"
-	tput sc && MvAddStr $B_Y 4 "Kind ${BEGGAR_MSG[$CHAR_RACE]} .."
+	MvAddStr $B_Y 4 "Kind ${BEGGAR_MSG[$CHAR_RACE]} .."
 	# Add mercy plea dependent on race (for $DEITY) vs. history/religion.
 	# (( M_Y++ ))                            #   length indication of a string     #
 	# local MERCHANT_MSG=( "" "" "" "" "" "" "Please, " "to provide the Finest Merchandise" "in the Realm, and at the best"
@@ -578,11 +579,10 @@ Marketplace_Beggar() {
 	#     MvAddStr $M_Y 4 "${MERCHANT_MSG[$M_Y]}"
 	#     (( M_Y++ ))
 	# done
-	tput rc
     else
-	tput sc && MvAddStr $B_Y 4 "Hello again, ${BEGGAR_MSG[$CHAR_RACE]} .."
-	tput rc
+	MvAddStr $B_Y 4 "Hello again, ${BEGGAR_MSG[$CHAR_RACE]} .."
     fi
+    tput rc
     PressAnyKey
 }
 #
@@ -695,25 +695,24 @@ declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
 declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 
 MiniGame_Dice() {
-    DGAME_PLAYERS=$((RANDOM%6)) # How many players currently at the table (0-5 players)
+    DGAME_PLAYERS=$((RANDOM%6))                              # How many players currently at the table (0-5 players)
     DGAME_STAKES=$( bc <<< "$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
-    GX_DiceGame_Table "$DGAME_PLAYERS"			# Display game table depending of count players
-    case "$DGAME_PLAYERS" in # Ask whether player wants to join
+    GX_DiceGame_Table "$DGAME_PLAYERS"			     # Display game table depending of count players
+    case "$DGAME_PLAYERS" in                                 # Ask whether player wants to join
 	0 ) PressAnyKey "There's no one at the table. May be you should come back later?";
-	    return 0 ;; # leave
+	    return 0 ;;                                      # Leave
 	1 ) echo -n "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
 	* ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;	    
     esac
     case $(Read) in
-	j | J | y | Y ) ;;                                  # Game on! Do nothing.
-	* ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
-	    Sleep 2;
-	    return 0 ;; # Leave.
-    esac	
+	[^yYjJ] ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
+		  Sleep 2;
+		  return 0 ;;                                # Leave
+    esac                                                     # Game on! Do nothing.
 
-    if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then  # Check if player can afford it
+    if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then   # Check if player can afford it
 	PressAnyKey "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.."
-	return 0 # leave
+	return 0                                             # Leave
     fi
 
     GAME_ROUND=1
@@ -751,13 +750,14 @@ MiniGame_Dice() {
 	done
 
 	# Roll the dice (pray for good luck!)
-	echo -n "Rolling for $DGAME_GUESS ($DGAME_COMP% odds).. " && sleep 1
+	echo -n "Rolling for $DGAME_GUESS ($DGAME_COMP% odds).. "
+	Sleep 1
 	case "$DGAME_COMPETITION" in
 	    0 ) echo "No one else playing for $DGAME_GUESS!" ;;
 	    1 ) echo "Sharing bet with another player!" ;;	    
 	    * ) echo "Sharing bet with $DGAME_COMPETITION other players!"		    
 	esac
-	sleep 1
+	Sleep 1
 	
 	DGAME_DICE_1=$(RollDice2 6) 
 	DGAME_DICE_2=$(RollDice2 6) 
@@ -796,7 +796,7 @@ MiniGame_Dice() {
 	    esac
 	    (( DGAME_OTHER_WINNERS > 0 )) && DGAME_POT=$( bc <<< "$DGAME_POT - $DGAME_WINNINGS" ) # Adjust winnings to odds
 	fi
-	sleep 3
+	Sleep 3
 	
 	# Update pot size
 	DGAME_STAKES_TOTAL=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 ) " ) # Assumes player is with us next round too

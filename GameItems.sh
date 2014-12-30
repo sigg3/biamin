@@ -40,7 +40,7 @@ CheckHotzones() {
 # Arguments: $CHAR_ITEMS(int)
 # Used: ItemWasFound(), Intro()
 #-----------------------------------------------------------------------
-HotzonesDistribute() { # 
+HotzonesDistribute() {
     local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))               # Scatter only absent items 
     HOTZONE=()                                                # Reset HOTZONE
     while ((ITEMS_2_SCATTER > 0 )) ; do			      # If player already have all items, ITEMS_2_SCATTER'll be 0

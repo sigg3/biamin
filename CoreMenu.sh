@@ -146,7 +146,7 @@ MainMenu() {
 	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
 	case $(Read) in
 	    p | P ) echo -en "${CLEAR_LINE} Enter character name (case sensitive): ";
- 		    read CHAR 2>&1 ;;
+ 		    read CHAR ;;
 	    l | L ) LoadGame ;;
 	    h | H ) GX_HighScore ; # HighScore
 		    echo "";

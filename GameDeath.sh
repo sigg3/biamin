@@ -6,8 +6,8 @@
 # $DEATH_* - named variables for types of Death :)
 # Used: Death(), GX_Death()
 #-----------------------------------------------------------------------
-DEATH_FIGHT=0
-DEATH_STARVATION=1
+declare -r DEATH_FIGHT=0
+declare -r DEATH_STARVATION=1
 
 #-----------------------------------------------------------------------
 # ResetStarvation()

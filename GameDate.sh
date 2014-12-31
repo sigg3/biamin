@@ -9,16 +9,16 @@
 # Moon month has 32 days
 
 # Declare global calendar variables (used in DateFromTurn() and Almanac())
-YEAR_LENGHT=360     # How many days are in year?
-YEAR_MONTHES=12     # How many monthes are in year?
-MONTH_LENGTH=30     # How many days are in month?
-MOON_PHASE_LENGTH=4                   # How many days one Moon Phase lenghts
-MOON_CYCLE=$((MOON_PHASE_LENGTH * 8)) # How many days are in moon month? (8 phases * $MOON_PHASE_LENGTH) ATM == 32.
+declare -r YEAR_LENGHT=360                       # How many days are in year?
+declare -r YEAR_MONTHES=12                       # How many monthes are in year?
+declare -r MONTH_LENGTH=30                       # How many days are in month?
+declare -r MOON_PHASE_LENGTH=4                   # How many days one Moon Phase lenghts
+declare -r MOON_CYCLE=$((MOON_PHASE_LENGTH * 8)) # How many days are in moon month? (8 phases * $MOON_PHASE_LENGTH) ATM == 32.
 
 # Moon Phases names
-MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
+declare -r MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
 
-MONTH_STR=(
+declare -r -a MONTH_STR=(
     # Month name         # Month trivia
     "Biamin Festival"    "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
     "After-Frost"        "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."       
@@ -44,8 +44,8 @@ MONTH_STR=(
 MonthString()      { echo ${MONTH_STR[((  $1 * 2      ))]} ;} # Return month $1 name
 MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;} # Return month $1 trivia
 
-WEEK_LENGTH=7 # How many days are in week?
-WEEKDAY_STR=(
+declare -r WEEK_LENGTH=7 # How many days are in week?
+declare -r -a WEEKDAY_STR=(
     # Weekday    # Short trivia                       # Long trivia
     "Ringday (Holiday)" "Day of Festivities and Rest" "Men and Halflings celebrate Ringday as the end and beginning of the week."   
     "Moonday"   "Mor's Day (Day of the Moon)"         "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   

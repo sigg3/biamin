@@ -7,16 +7,16 @@
 # Used: ItemWasFound(), GX_Item(), FightMode_AddBonuses(),
 #  FightMode_RemoveBonuses(), BiaminSetup_SetItemsAbilities()
 #-----------------------------------------------------------------------
-GIFT_OF_SIGHT=0
-EMERALD_OF_NARCOLEPSY=1
-GUARDIAN_ANGEL=2
-FAST_MAGIC_BOOTS=3
-QUICK_RABBIT_REACTION=4
-FLASK_OF_TERRIBLE_ODOUR=5
-TWO_HANDED_BROADSWORD=6
-STEADY_HAND_BREW=7
+declare -r GIFT_OF_SIGHT=0
+declare -r EMERALD_OF_NARCOLEPSY=1
+declare -r GUARDIAN_ANGEL=2
+declare -r FAST_MAGIC_BOOTS=3
+declare -r QUICK_RABBIT_REACTION=4
+declare -r FLASK_OF_TERRIBLE_ODOUR=5
+declare -r TWO_HANDED_BROADSWORD=6
+declare -r STEADY_HAND_BREW=7
 
-MAX_ITEMS=8 # Maximum count of items
+declare -r MAX_ITEMS=8 # Maximum count of items
 
 #-----------------------------------------------------------------------
 # HaveItem()

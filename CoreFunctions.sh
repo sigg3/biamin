@@ -38,7 +38,7 @@ Ordial() {
     grep -Eq '[^1]?2$'  <<< "$1" && echo "${1}nd" && return 0
     grep -Eq '[^1]?3$'  <<< "$1" && echo "${1}rd" && return 0
     grep -Eq '^[0-9]+$' <<< "$1" && echo "${1}th" && return 0
-    Die "Bug in Ordial with ARG $1"
+    Die "Bug in Ordial() with ARG >>>$1<<<"
 }
 
 #-----------------------------------------------------------------------

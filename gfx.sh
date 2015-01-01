@@ -81,7 +81,7 @@ EOT
     tput sc
     if (( DISP == 1 )) ; then
 	MvAddStr 4 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T"
-	MvAddStr 6 23 "s t a t i s t i c s"
+	MvAddStr 6 11 "            s t a t i s t i c s           "
     else
 	MvAddStr 4 11 "         A   L   M   A   N   A   C"
     fi
@@ -177,7 +177,7 @@ EOT
     echo -n "                         Press (A)ny key to continue.."
     tput sc    
     while ((COUNTDOWN--)); do
-    tput rc
+	tput rc
     	((COUNTDOWN % 2)) && echo -n "." || echo -n " "
     	read -sn 1 -t 1 && break 
     done
@@ -385,9 +385,6 @@ GX_Rest() {
     tput rc
 }
 
-
-
-
 GX_Tavern() {
     clear
     cat <<"EOT"    
@@ -434,11 +431,13 @@ LoadCustomMap() { # Used in MapCreate()
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
 	echo "" # Empty line 
-	read -n 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1 
+	read -sn 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1 
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
-	    [1-9] ) NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
+	    [1-9] )
+		NUM=$((NUM + OFFSET));                               # Set NUM == selected map num
+		[[ ${MAPS[$NUM]} == "Deleted" ]] && continue         # Do not try to display deleted map
 		MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
 		if grep -q 'Z' <<< "$MAP" ; then # check for errors
 		    CustomMapError "${GAMEDIR}/${MAPS[$NUM]}" 
@@ -447,8 +446,8 @@ LoadCustomMap() { # Used in MapCreate()
 		fi
 		clear
 		echo "$MAP"
-		read -sn1 -p "Play this map? [Y/N]: " VAR 2>&1
-		[[ "$VAR" == "y" || "$VAR" == "Y" ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" ; return 0; # Return to MapCreate()
+		echo -en "Play this map? [Y/N]: "
+		[[ $(Read) == [yY] ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		unset MAP ;;
 	    *     )  break;; 
 	esac
@@ -467,8 +466,8 @@ MapCreate() {
 
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
-	read -sn 1 -p "Would you like to play (C)ustom map or (D)efault? " MAP 2>&1
-	[[ "$MAP" == "C" || "$MAP" == "c" ]] && LoadCustomMap && return 0  #leave
+	MakePrompt 'Would you like to play (C)ustom map or (D)efault?'
+	[[ $(Read) == [Cc] ]] && LoadCustomMap && return 0  # leave
     fi
     MAP=$(cat <<EOT
        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 

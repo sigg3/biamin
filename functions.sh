@@ -225,7 +225,7 @@ Do you want color? [Y/N]: "
     esac
     if ((COLOR == 1)) ; then
 	YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
-	RESET='\033[0m'
+	RESET='\033[0;39m'
     fi
     # Define escape sequences
     # TODO replace to tput or similar

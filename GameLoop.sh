@@ -57,7 +57,7 @@ GX_Map() {
       # All color on map sets here
       if ('${COLOR}' == 1 ) {
          # Terminal color scheme bugfix
-         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
+#         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
          # colorise "o" (player) and "~" (ITEM2C)
 	 if ( NR > 2 && NR < 19 ) {
  	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")

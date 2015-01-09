@@ -111,26 +111,10 @@ CLIarguments_CheckUpdate() {
     else
 	Die "DOWNLOAD ERROR! No curl or wget available"
     fi
-
     REPOVERSION=$( sed -n -r '/^VERSION=/s/^VERSION="([^"]*)".*$/\1/p' "$REPO" )
     echo "Your current Back in a Minute game is version $VERSION"
-
-    # Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
-    # Return 0 if $1 == $2, 1 if $1 > than $2, 2 if $2 < than $1
-    if [[ "$VERSION" == "$REPOVERSION" ]] ; then
-	RETVAL=0  
-    else
-	IFS="\." read -a VER1 <<< "$VERSION"
-	IFS="\." read -a VER2 <<< "$REPOVERSION"
-	for ((i=0; ; i++)); do # until break
-	    [[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; }
-	    [[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; }
-	    (( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; }
-	    (( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; }
-	done
-	unset VER1 VER2
-    fi
-    case "$RETVAL" in
+    CompareVersions $VERSION $REPOVERSION
+    case "$?" in
 	0)  echo "This is the latest version ($VERSION) of Back in a Minute!" ; rm -f "$REPO";;
 	1)  echo "Your version ($VERSION) is newer than $REPOVERSION" ; rm -f "$REPO";;
 	2)  echo "Newer version $REPOVERSION is available!"

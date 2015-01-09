@@ -66,6 +66,30 @@ MakePrompt() {
             END { printf STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
 }
 
+
+#-----------------------------------------------------------------------
+# CompareVersions()
+# Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
+# Return : 0 if $1 == $2,
+#          1 if $1 > than $2,
+#          2 if $2 < than $1
+# Arguments: $VERSION1, $VERSION2
+# Used: CLIarguments_CheckUpdate()
+#-----------------------------------------------------------------------
+CompareVersions() {
+    [[ "$1" == "$2" ]] && return 0
+    IFS="\." read -a VER1 <<< "$1"
+    IFS="\." read -a VER2 <<< "$2"
+    for ((i=0; ; i++)); do # until break
+	[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; }
+	[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; }
+	(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; }
+	(( ${VER1[$i]} < ${VER2[$i]} )) && { RETVAL=2; break; }
+    done
+    unset VER1 VER2
+    return $RETVAL
+}
+
 #-----------------------------------------------------------------------
 # PressAnyKey()
 # Make centered prompt $1 (or default) and read anykey

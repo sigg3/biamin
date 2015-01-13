@@ -56,7 +56,7 @@ WorldWeatherSystem() {
 	# 	WEATHER[1,4,7,10,13,16,19,22,25,28,31,34,37] == Weather severity at locations
 	# 	WEATHER[2,5,8,11,14,17,20,23,26,29,32,35,38] == Humidity at locations
 	local WS_CHILD WS_PARENT_X WS_PARENT_Y WS_CHILD_X WS_CHILD_Y WS_CHILD_SEVERITY WS_CHILD_HUMIDITY WS_PARENT_SEVERITY
-	local WS_PARENT_POS=0 WS_CHILD_COUNTER=12 WS_CHILD_COUNTER_INDEX=3 WS_BOOLEAN=0
+	local WS_PARENT_POS=0 WS_CHILD_COUNTER=12 WS_CHILD_COUNTER_INDEX=3 WS_TURBULENCE=0
 	while (( WS_CHILD_COUNTER >=1 )) ; do
 	    read -r WS_PARENT_X WS_PARENT_Y <<< $(GPStoXY "${WEATHER[0]}")                 # Center of storm
 	    case "$WS_CHILD_COUNTER_INDEX" in
@@ -72,17 +72,33 @@ WorldWeatherSystem() {
 		30 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Southern greatgrandchild
 		33 ) WS_CHILD_X=$(( WS_PARENT_X + 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Eastern  greatgrandchild
 		36 ) WS_CHILD_X=$(( WS_PARENT_X - 2 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Western  greatgrandchild
+		39 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 1 )) ;; # Inner turbulence field 1
+		42 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 1 )) ;; # Inner turbulence field 2
+		45 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 1 )) ;; # Inner turbulence field 3
+		48 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 1 )) ;; # Inner turbulence field 4
+		51 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Outer turbulence field 1
+		54 ) WS_CHILD_X=$WS_PARENT_X           && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Outer turbulence field 2
+		57 ) WS_CHILD_X=$WS_PARENT_X           && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Outer turbulence field 3
+		60 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y - 2 )) ;; # Outer turbulence field 4
 	    esac
 	    # 1. GPS location
 	    WEATHER[$WS_CHILD_COUNTER_INDEX]=$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y" )
 	    (( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item
 	    # 2. Severity
 	    case "$WS_CHILD_COUNTER_INDEX" in
-		4 | 7 | 10 | 13 ) WS_PARENT=1       ;; # Use core's severity
-		* ) WS_PARENT=$[[ $WS_PARENT + 3 ]] ;; # Use parent's severity
+		4 | 7 | 10 | 13 )   WS_PARENT=1 && WS_TURBULENCE=0                     ;; # Use core's severity as base
+		40 | 43 | 46 | 49 | 52 | 55 | 58 | 61 ) WS_PARENT=1 && WS_TURBULENCE=1 ;; # Use core's severity as base
+		* ) WS_PARENT=$[[ $WS_PARENT + 3 ]] && WS_TURBULENCE=0                 ;; # Use parent's severity
 	    esac
 	    WS_PARENT_SEVERITY=$WS_PARENT
+	    if (( WS_TURBULENCE == 1 )) ; then
+	    case "$WS_CHILD_COUNTER_INDEX" in
+		40 | 43 | 46 | 49 ) WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] ;; # core's severity -1 (inner turbulence field)
+		52 | 55 | 58 | 61 ) WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 2 ]] ;; # core's severity -2 (outer turbulence field)
+		esac
+	    else
 	    (( WEATHER[$WS_PARENT_SEVERITY] >= 8 )) && WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] || WEATHER[$WS_CHILD_COUNTER_INDEX]=${WEATHER[$WS_PARENT_SEVERITY]}
+		fi
 	    # 3. Humidity
 	    WS_CHILD_SEVERITY=${WEATHER[$WS_CHILD_COUNTER_INDEX]} # Tmp var 1 for humidity
 	    (( WS_CHILD_COUNTER_INDEX++ )) # Increment to next array item

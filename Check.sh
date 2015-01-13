@@ -21,7 +21,7 @@ CheckDependencies() {
     done
     
     # NONCRITICAL
-    for PROGRAM in "curl" "wget"  "non-critical program 1" "non-critical program 2"
+    for PROGRAM in "curl" "wget" "non-critical program 1" "non-critical program 2"
     do
 	IsInstalled "$PROGRAM" || NONCRITICAL+=("$PROGRAM")
     done
@@ -29,24 +29,21 @@ CheckDependencies() {
     echo
 
     if [[ "${CRITICAL[*]}" || "${NONCRITICAL[*]}" ]]; then
-
-	[[ "${CRITICAL[*]}" ]] && echo "For successfull biamin playing you need install:"
+	echo "In order to play 'Back in a Minute', please install:"
 	for ((i = 0; ; i++)); do
 	    [[ "${CRITICAL[i]}" ]] || break
-	    echo -e "\t${CRITICAL[i]}";
+	    echo -e "\tRequired:\t${CRITICAL[i]}";
 	done
 
-	[[ "${NONCRITICAL[*]}" ]] && echo "Optionals:"
 	for ((i = 0; ; i++)); do
 	    [[ "${NONCRITICAL[i]}" ]] || break
-	    echo -e "\t${NONCRITICAL[i]}";
+	    echo -e "\tOptional:\t${NONCRITICAL[i]}";
 	done
-
 	
 	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1	
 	
-    else
-	echo ""
+#   else
+#	echo "All 'Back in a Minute' dependencies are met!"
     fi
 
     # TODO update old saves
@@ -57,18 +54,13 @@ CheckDependencies() {
 # Checks if $1 installed
 # Arguments: $PROGRAM(string)
 # Used CheckDependencies()
-#
-# There can be used tput for nicer output but I'm not sure if it is a
-# good idea - to use tput in function which check tput.
 #-----------------------------------------------------------------------
 IsInstalled() {
     echo -n "$1"
     if [[ $(which "$1" 2>/dev/null) ]]; then
-	# echo "$(tput hpa 68)[$(tput setaf 2)OK$(tput setaf 7)]"
 	echo -e "\t\t[OK]"
 	return 0
     else
-	# echo "$(tput hpa 68)[$(tput setaf 1)FAIL$(tput setaf 7)]"
 	echo -e "\t\t[FAIL]"
 	return 1
     fi

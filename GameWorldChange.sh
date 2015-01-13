@@ -13,6 +13,7 @@
 #-----------------------------------------------------------------------
 # WorldWeatherSystem()
 # Used: nowhere, until 3.0    THIS IS STILL JUST A SKETCH
+# The complete system takes up 9% of the world map. That's pretty big.
 #-----------------------------------------------------------------------
 
 WorldWeatherSystem() {
@@ -50,18 +51,34 @@ WorldWeatherSystem() {
     WorldWeatherSystemHumidity 1 2
     
     
-    if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" != 5 ] ; then	
+    if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" <= 4 ] ; then	
 	# WEATHER SYSTEM NEXUS (12 storm tentacles)
-	# 	WEATHER[0,3,6,9,12,15,18,21,24,27,30,33,36]  == Affected GPS locations
-	# 	WEATHER[1,4,7,10,13,16,19,22,25,28,31,34,37] == Weather severity at locations
-	# 	WEATHER[2,5,8,11,14,17,20,23,26,29,32,35,38] == Humidity at locations
-	local WS_CHILD WS_PARENT_X WS_PARENT_Y WS_CHILD_X WS_CHILD_Y WS_CHILD_SEVERITY WS_CHILD_HUMIDITY WS_PARENT_SEVERITY
-	local WS_PARENT_POS=0 WS_CHILD_COUNTER=12 WS_CHILD_COUNTER_INDEX=3 WS_TURBULENCE=0
+	# 	WEATHER[0,3,6,9....60] == Affected GPS locations
+	# 	WEATHER[1,4,7,10...61] == Weather severity at locations
+	# 	WEATHER[2,5,8,11...62] == Humidity at locations
+	
+	# Weather system illustrated as placed on map with all fields filled in
+	#                               LEGEND        TYPE                            STRENGTH
+	#    36 | 51 | 54 | 15 | 27     0           = core                          = random
+	#   ------------------------    3,6,9,12    = child N,S,E,W                 = core  -1 OR core
+	#    24 | 39 |  3 | 42 |        15,18,21,24 = grandchild N,S,E,W            = child -1 OR child
+	#   ------------------------    27,30,33,36 = greatgrandchild N,S,E,W       = grandchild -1 OR grandchild
+	#       | 12 |  0 |  9 |        39,42,45,48 = inner turbulence NW,NE,SW,SE  = core  -1
+	#   ------------------------    51,54,57,60 = outer turbulence NW,N,S,SE    = core  -3
+	#       | 45 |  6 | 48 | 21 
+	#   ------------------------
+	#    30 | 18 | 57 | 60 | 33 
+	
+	# WEATHER SYSTEM CHILDREN
+	local WS_PARENT_X WS_PARENT_Y WS_CHILD_X WS_CHILD_Y # For GPS calculations
+	local WS_CHILD_SEVERITY WS_CHILD_HUMIDITY WS_PARENT_SEVERITY WS_TURBULENCE=0 # Severity, humidity, severity, turbulence boolean
+	local WS_CHILD_COUNTER=20       # Total number of cells
+	local WS_CHILD_COUNTER_INDEX=3  # Starting array number of first child to core
 	while (( WS_CHILD_COUNTER >=1 )) ; do
 	    read -r WS_PARENT_X WS_PARENT_Y <<< $(GPStoXY "${WEATHER[0]}")                 # Center of storm
 	    case "$WS_CHILD_COUNTER_INDEX" in
-		3 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y + 1 ))           ;; # Northern child
-		6 )  WS_CHILD_X=$WS_PARENT_X && WS_CHILD_Y=$(( WS_PARENT_Y - 1 ))           ;; # Southern child
+		3 )  WS_CHILD_X=$WS_PARENT_X           && WS_CHILD_Y=$(( WS_PARENT_Y + 1 )) ;; # Northern child
+		6 )  WS_CHILD_X=$WS_PARENT_X           && WS_CHILD_Y=$(( WS_PARENT_Y - 1 )) ;; # Southern child
 		9 )  WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Eastern  child
 		12 ) WS_CHILD_X=$(( WS_PARENT_X - 1 )) && WS_CHILD_Y=$WS_PARENT_Y           ;; # Western  child
 		15 ) WS_CHILD_X=$(( WS_PARENT_X + 1 )) && WS_CHILD_Y=$(( WS_PARENT_Y + 2 )) ;; # Northern grandchild
@@ -94,7 +111,7 @@ WorldWeatherSystem() {
 	    if (( WS_TURBULENCE == 1 )) ; then
 	    case "$WS_CHILD_COUNTER_INDEX" in
 		40 | 43 | 46 | 49 ) WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] ;; # core's severity -1 (inner turbulence field)
-		52 | 55 | 58 | 61 ) WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 2 ]] ;; # core's severity -2 (outer turbulence field)
+		52 | 55 | 58 | 61 ) WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 3 ]] ;; # core's severity -3 (outer turbulence field)
 		esac
 	    else
 	    (( WEATHER[$WS_PARENT_SEVERITY] >= 8 )) && WEATHER[$WS_CHILD_COUNTER_INDEX]=$[[ ${WEATHER[$WS_PARENT_SEVERITY]} - 1 ]] || WEATHER[$WS_CHILD_COUNTER_INDEX]=${WEATHER[$WS_PARENT_SEVERITY]}
@@ -107,43 +124,12 @@ WorldWeatherSystem() {
 	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
 	
-	# Weather system illustrated as placed on map
-	#                           
-	#    36 |    |    | 15 | 27   (lower number = closer to core, more severe)
-	#   ------------------------
-	#    24 |    |  3 |    |    
-	#   ------------------------
-	#       | 12 |  0 |  9 |    
-	#   ------------------------
-	#       |    |  6 |    | 21 
-	#   ------------------------
-	#    30 | 18 |    |    | 33 
-	
-	# Add turbulence fields (2 levels)
-	# TODO
-	
-	
-	
-	
-	# Weather system completed      LEGEND             STRENGTH
-	#                           
-	#     3 |  b |  b |  2 |  3     0 = core           1
-	#   ------------------------    1 = child         -1 || 1
-	#     2 |  a |  1 |  a |  b     2 = grandchild    -2 || c
-	#   ------------------------    3 = greatgrandch. -3 || gc
-	#     b |  1 |  0 |  1 |  b     a = inner turmoil -1
-	#   ------------------------    b = outer turmoil -3
-	#     b |  a |  1 |  a |  2 
-	#   ------------------------
-	#     3 |  2 |  b |  b |  3 
-	
-	
-	
-	# WEATHER AFFECTED AREAS (e.g. Hotzone array for weather)
+	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather)
+	# TODO need to sort out this array..
 	declare -a WEATHER_AFFECTED
 	local WEATHER_AFFECTED_COUNTER=0 WEATHER_AFFECTED_COUNTER_INDEX=0
 	while ((WEATHER_AFFECTED_COUNTER_INDEX >= )); do
-	    WEATHER_AFFECTED[$WEATHER_AFFECTED_COUNTER_INDEX]="${WEATHER[$WEATHER_AFFECTED_COUNTER}"
+	    WEATHER_AFFECTED[$WEATHER_AFFECTED_COUNTER_INDEX]="${WEATHER[$WEATHER_AFFECTED_COUNTER]}"
 	    WEATHER_AFFECTED_COUNTER=$[[ $WEATHER_AFFECTED_COUNTER + 3 ]]
 	    (( WEATHER_AFFECTED_COUNTER_INDEX++ ))
 	done

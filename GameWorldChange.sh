@@ -124,6 +124,21 @@ WorldWeatherSystem() {
 	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
 	
+	# TODO possible simplification: 
+	# This could make all the number stuff irrelevant:) just add to array WEATHER=("${WEATHER[@]}" "$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y")" ...
+	#
+	# Add an element to an existing Bash Array
+	# The following example shows the way to add an element to the existing array.
+    #
+    # cat arraymanip.sh
+    # Unix=('Debian' 'Red hat' 'Ubuntu' 'Suse' 'Fedora' 'UTS' 'OpenLinux');
+    # Unix=("${Unix[@]}" "AIX" "HP-UX")
+    # echo ${Unix[7]}
+    # $./arraymanip.sh
+    # AIX
+	#
+	# In the array called Unix, the elements ‘AIX’ and ‘HP-UX’ are added in 7th and 8th index respectively
+	
 	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather)
 	# TODO need to sort out this array..
 	declare -a WEATHER_AFFECTED

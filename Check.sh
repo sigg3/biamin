@@ -42,8 +42,6 @@ CheckDependencies() {
 	
 	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1	
 	
-#   else
-#	echo "All 'Back in a Minute' dependencies are met!"
     fi
 
     # TODO update old saves
@@ -56,12 +54,9 @@ CheckDependencies() {
 # Used CheckDependencies()
 #-----------------------------------------------------------------------
 IsInstalled() {
-    echo -n "$1"
     if [[ $(which "$1" 2>/dev/null) ]]; then
-	echo -e "\t\t[OK]"
 	return 0
     else
-	echo -e "\t\t[FAIL]"
 	return 1
     fi
 }

@@ -28,7 +28,6 @@ TODO LEGACY branch ("original")
 
 TODO 2.0 branch ("survival")
 [?] Implement EchoFightFormula in FightMode from LEGACY
-[ ] Continue designing a nicer fight prompt
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [x] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()
@@ -43,7 +42,6 @@ TODO 2.0 branch ("survival")
 [x]	ASCII GX_Grocer
 [x]	ASCII GX_Tradesman (RENAMED to Merchant)
 [x] ASCII GX_ for 2 more enemies (10 total)
-[.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [x] ASCII Finish look of GX_Bulletin (left side)
 [ ] Pickpocket tuning
 [x] Add boar
@@ -55,7 +53,7 @@ TODO 2.0 branch ("survival")
 [.] LoadMap() displaying list of maps to choose from ^^
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
-[.] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
+[x] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
 [x] 	ASCII GX_Starvation # Great idea! #kstn
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
@@ -67,9 +65,11 @@ TODO 2.0 branch ("survival")
 [X]		ASCII GX_Calendar
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
-[x] Almanac
+[.] Almanac version 1 (simple frontpage with trivia)
 
 TODO ideas for 3.0 branch ("rpg")
+[.] Almanac version 2 (full experience, including player notes)
+[.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [.] Almanac_Moon
 [.] Almanac_Notes
 [?]	Dicegame Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
@@ -120,6 +120,11 @@ TODO ideas for 3.0 branch ("rpg")
 [?] Add item or magic thing which adds 50 to MAX_HEALTH
 [?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
 [?] Different races eats different quantity of FOOD/turn
+
+
+TODO general stuff
+[ ] Continue designing a nicer fight prompt
+[ ] Continue pruning UI experience (as constant as possible)
 
 
 BLOG/Misc.

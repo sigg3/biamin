@@ -13,7 +13,8 @@ CheckDependencies() {
     echo "Checking dependencies..."
 
     # TODO check BASH version
-
+    # TODO check screen size (80x24 minimum)
+    
     # CRITICAL
     for PROGRAM in "tput" "awk" "bc" "sed" "printf" "critical program 1" "critical program 2"
     do

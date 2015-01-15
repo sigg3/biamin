@@ -8,7 +8,7 @@
 # Moon has 8 phases
 # Moon month has 32 days
 
-# Declare global calendar variables (used in DateFromTurn() and Almanac())
+# Declare global calendar variables (used in DateFromTurn(),Almanac() and MakeCalendar())
 declare -r YEAR_LENGHT=360                       # How many days are in year?
 declare -r YEAR_MONTHES=12                       # How many monthes are in year?
 declare -r MONTH_LENGTH=30                       # How many days are in month?
@@ -18,6 +18,7 @@ declare -r MOON_CYCLE=$((MOON_PHASE_LENGTH * 8)) # How many days are in moon mon
 # Moon Phases names
 declare -r MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
 
+# Month names and trivia
 declare -r -a MONTH_STR=(
     # Month name         # Month trivia
     "Biamin Festival"    "Rarely happens, if ever :(" # Arrays numeration starts from 0, so we need dummy ${MONTH_LENGTH[0]}
@@ -102,6 +103,56 @@ DateFromTurn() { # Some vars used in Almanac(
 
     # Output example "3rd of Year-Turn in the 13th cycle"
     BIAMIN_DATE_STR="$(Ordial $DAY) of $(MonthString $MONTH) in the $(Ordial $YEAR) Cycle"
+}
+
+
+# Global variable for calendar
+CALENDAR=()
+
+#-----------------------------------------------------------------------
+# MakeCalendar()
+# Full calendar array like
+# ---
+# CALENDAR=(
+#     "                 1  2"
+#     "  3  4  5  6  7  8  9"
+#     " 10 11 12 13 14 15 16"
+#     " 17 18 19 20 21 22 23"
+#     " 24 25 26 27 28 29 30"
+# )
+# ---
+# Array can be displayed this way:
+# ---
+# i=0
+# while [[ "${CALENDAR[i]}" ]]; do
+#     echo "${CALENDAR[$((i++))]}"
+# done
+# ---
+# or
+# ---
+# for ((i = 0; ; i++)) ; do
+#     [[ "${CALENDAR[i]}" ]] || break
+#     MvAddStr $(($y + $i)) $x "${CALENDAR[i]}"
+# done
+# ---
+#-----------------------------------------------------------------------
+MakeCalendar() {
+    local a=0 i
+    # reset old calendar
+    CALENDAR=()
+    # find 1st day of month. NB DAYS are 0-29
+    local FIRSTDAY=$((TURN - DAY + 1))
+    # find which day of week it is. NB 0 is Sunday !!!
+    FIRSTDAY=$( bc <<< "$FIRSTDAY % $WEEK_LENGTH" )
+    # fix Sunday from 0 to 7
+    ((FIRSTDAY == 0)) && FIRSTDAY=7
+    # add spaces if not Monday
+    ((FIRSTDAY > 1)) && CALENDAR[a]=$(printf "%$(((FIRSTDAY - 1) * 3 ))c" " ")
+    # and fill Calendar array
+    for ((i = 1; i <= MONTH_LENGTH; i++)) ; do
+	CALENDAR[a]+=$(printf " %2i" $i)
+	(( $(Strlen "${CALENDAR[a]}") == 21)) && ((a++))
+    done
 }
 
 #                                                                      #

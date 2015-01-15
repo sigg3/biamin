@@ -57,8 +57,15 @@ Version changes only in master branch - 1.2.3
 3 - Bugfixes, minor edits, commenting, formatting, etc.
 
 Please use one of the following commit conventions:
- ADDED, BUGFIX, COMMENT, FORMATTING, MINOR, RELEASE, REWRITE
- + a short informative description
+o ADDED/FEATURE for new features
+o BUGFIX        for bugfixes
+o COMMENT       for code comments
+o FORMATTING    for code formatting changes
+o MINOR         for minor edits, cosmetics
+o RELEASE       for public relases (entails version change)
+o REMOVED/MOVED/MERGED etc. for various file manipulations      
+
++ short informative description, preferably including .sh or function!
 
 ------------------------------------------------------------------------
 If you want to hunt down evil bugs and become a debug warrior:

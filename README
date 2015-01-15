@@ -16,6 +16,50 @@ $ ./biamin.sh p
 or
 $ bash biamin.sh p
 
+See also http://sigg3.net/biamin/download
+------------------------------------------------------------------------
+Biamin repo structure:
+
+master
+  |
+  +- dev
+  |   |
+  |   +- experimental
+  |
+  +- text
+
+
+master:
+    compiled biamin.sh viz. official releases managed by sigg3
+    this README file
+    CHANGELOG file generated from development
+
+development:
+    individual .sh code chunks
+    MakeFile
+    
+experimental:
+    new experimental features get their own branch under dev
+    there is no single 'experimental' named branch however
+
+text:
+    backup of background story files, world maps and esoteric contents
+
+Sometimes it makes sense to have different repos. We have the GPL-only
+and legacy editions of Biamin in separate repos.
+
+------------------------------------------------------------------------
+Biamin versioning system:
+
+Version changes only in master branch - 1.2.3
+1 - Official releases that are publicized on sigg3.net/biamin
+2 - Feature added or major code overhauls
+3 - Bugfixes, minor edits, commenting, formatting, etc.
+
+Please use one of the following commit conventions:
+ ADDED, BUGFIX, COMMENT, FORMATTING, MINOR, RELEASE, REWRITE
+ + a short informative description
+
 ------------------------------------------------------------------------
 If you want to hunt down evil bugs and become a debug warrior:
 

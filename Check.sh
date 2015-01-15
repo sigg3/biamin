@@ -15,7 +15,7 @@ CheckDependencies() {
     # TODO check BASH version
 
     # CRITICAL
-    for PROGRAM in "tput" "awk" "bc" "sed" "critical program 1" "critical program 2"
+    for PROGRAM in "tput" "awk" "bc" "sed" "printf" "critical program 1" "critical program 2"
     do
 	IsInstalled "$PROGRAM" || CRITICAL+=("$PROGRAM")
     done

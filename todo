@@ -9,10 +9,11 @@
 Add stuff here discovered while testing and/or working out other problems
 that needs to be done. Or from e-mail discussions. ~ sigg3
 
-LEGEND: x = done, . someone's working on it, ? = open question, - = removed
+LEGEND: x = done, ? = open question, - = removed, " " = open
+        . someone's working on it, s = sigg3's on it, k = kstn's on it
+        b = sigg3 & kstn is working on it
 
 TODO style ideas
-[?] replace [.], to [name], because [someone(WHO???)] is not very informative.
 [?] move todo to 'dev' branch and rename it to TODO (for better difference from dev files)
 
 TODO GPL repo
@@ -41,7 +42,7 @@ TODO 2.0 branch ("survival")
 [x] ASCII GX_Monster_bear
 [x] ASCII GX_Tavern
 [x] 	ASCII GX_DiceGame_Table && _Instructions
-[.]     ASCII GX_DiceGame
+[s]     ASCII GX_DiceGame
 [x] ASCII GX_Marketplace
 [x]	ASCII GX_Grocer
 [x]	ASCII GX_Tradesman (RENAMED to Merchant)
@@ -54,7 +55,8 @@ TODO 2.0 branch ("survival")
 [x] Add cave bear
 [x] Rewrite CUSTOM map functionality to allow >1 map
 [x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
-[.] LoadMap() displaying list of maps to choose from ^^
+[k] LoadMap() displaying list of maps to choose from ^^
+		I'll playtest the visuals ~ sigg3
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
 [x] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
@@ -64,17 +66,17 @@ TODO 2.0 branch ("survival")
 [x] Dice game in tavern
 [x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
 [x] Change the (R)est value in (T)avern to (T)own's x 2
-[.] Calendar() -- Used in DisplayCharsheet()
-[.] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
+[s] Calendar() -- Used in DisplayCharsheet()
+[s] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
 [X]		ASCII GX_Calendar
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
-[.] Almanac version 1 (simple frontpage with trivia)
+[s] Almanac version 1 (simple frontpage with trivia)
 [ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [ ] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 
 TODO ideas for 3.0 branch ("rpg")
-[.] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
+[?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
 [ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
 [ ] Cave: multi-fight allowing >1 enemy in cave.
 [ ] General inventory system (accessed thru 

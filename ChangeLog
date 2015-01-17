@@ -1,0 +1,1594 @@
+2015-01-15  sigg3  <biamin@sigg3.net>
+
+	ADDED repo and versioning info to README
+
+2015-01-15  kstn  <kastian@mail.ru>
+
+	MINOR: Added 'printf' to critical dependencies in CheckDependencies()
+
+	ADDED: MakeCalendar() function.
+	ATM code is quite ugly, but works.
+
+2015-01-13  kstn  <kastian@mail.ru>
+
+	FIX: Remove comments and lighter Check.sh
+	IMHO there is no need in OK, so
+
+	Checking dependencies...
+
+	In order to play 'Back in a Minute', please install:
+	        Required:       critical program 1
+	        Required:       critical program 2
+	        Optional:       non-critical program 1
+	        Optional:       non-critical program 2
+
+	will be enough
+
+2015-01-13  sigg3  <biamin@sigg3.net>
+
+	Just added notes for simplifications
+
+	MINOR adjustments to WorldWeatherSystem(), comments
+
+	WorldWeatherSystem() added inner + outer turbulence
+
+	MINOR Check.sh language and simplification
+
+2015-01-13  kstn  <kastian@mail.ru>
+
+	SKETCH - add file Check.sh with sketch of CheckDependencies().
+
+2015-01-12  kstn  <kastian@mail.ru>
+
+	BUGFIX: Undo terminal color scheme bugfix
+
+2015-01-09  kstn  <kastian@mail.ru>
+
+	FIX CoreFunctions.sh
+
+	BUGFIX: Ordial()
+
+	FIX: Move CLIarguments_CompareVersions() to separate function
+	(We'll need it later)
+
+2015-01-02  kstn  <kastian@mail.ru>
+
+	BUGFIX colors
+
+2015-01-01  kstn  <kastian@mail.ru>
+
+	BUGFIX LoadCustomMap()
+
+2014-12-31  kstn  <kastian@mail.ru>
+
+	FIX declare constants as constants
+
+	FIX MainMenu()
+
+	FIX Ordial()
+
+2014-12-30  kstn  <kastian@mail.ru>
+
+	Formatting code
+
+	FIX MiniGame_Dice()
+
+	Formatting code (no changes)
+
+2014-12-28  kstn  <kastian@mail.ru>
+
+	FIX Marketplace_Merchant() - remove bc backup
+
+2014-12-27  kstn  <kastian@mail.ru>
+
+	FIX CoreMenu.sh
+	We don't need firstly check if $FIGHTMODE exists and secondly if
+	$FIGHTMODE == 1, but only 2nd check. And because FIGHTMODE can be only
+	1 or unsed, check ((FIGHTMODE)) is sufficient
+
+	FIX GameFightMode.sh
+
+	BUGFIX WorldWeatherSystem()
+	[[ ]] uses '=', '!=', etc for stings comparsions, but '-gt', '-lt',
+	'-le', for numbers comparsions
+
+2014-12-26  kstn  <kastian@mail.ru>
+
+	FIX BiaminSetup_SanityCheck()
+
+2014-12-25  kstn  <kastian@mail.ru>
+
+	FIX CoreSetup.sh
+
+	FIX CoreSetup.sh
+
+	BUGFIX CheckForWorldChangeEconomy()
+
+	FIX WorldPriceFixing() - remove backup
+
+	Formatting code (no changes)
+
+2014-12-22  sigg3  <biamin@sigg3.net>
+
+	Sketches for Weather
+
+2014-12-21  sigg3  <biamin@sigg3.net>
+
+	MINOR conditional to avoid unnecessary recalc
+
+	MINOR conditional to avoid unnecessary recalc
+
+	More weather in GameWorldChange.sh
+
+2014-12-20  sigg3  <biamin@sigg3.net>
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	Sketch for WorldWeatherSystem
+
+2014-12-20  kstn  <kastian@mail.ru>
+
+	Makefile idea
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+2014-12-20  sigg3  <biamin@sigg3.net>
+
+	Moved GameBulletin.sh to GameWorldChange.sh
+
+	NEW Filenames suggestion & Makefile
+
+2014-12-20  kstn  <kastian@mail.ru>
+
+	FIX CheckForStarvation() replace sleep to Sleep
+
+2014-12-19  kstn  <kastian@mail.ru>
+
+	Add comment
+
+2014-12-19  kstn  <kastian@mail.ru>
+
+	FIX Marketplace_Merchant()
+	local can be used as
+
+	local VAR1 VAR2 VAR3 ...
+
+	even as
+
+	local VAR1=1 VAR2=2 VAR3=3 ...
+
+2014-12-19  kstn  <kastian@mail.ru>
+
+	FIX Marketplace_Merchant()
+	bc also have if-then-else statement
+
+	BUGFIX NewSector()
+
+	ADD sketch for Marketplace()3.0
+
+2014-12-19  sigg3  <biamin@sigg3.net>
+
+	MINOR moved DICE_GAME declarations outside MiniGameDice()
+
+	MINOR adjustments to Town.sh and GX_DiceGame.sh
+
+	MINOR adjustments to Town.sh and GX_DiceGame.sh
+
+	ADDED small profit margin to grocer's pricing
+
+	MINOR adjustment to DGAME_STAKES
+
+	BUGFIX in MiniGame_Dice() winnings %
+
+	JOINED MiniGameDice.sh with Town.sh
+
+	Marketplace_Merchant() workaround for GPL edition
+
+2014-12-19  kstn  <kastian@mail.ru>
+
+	FIX FightMode.sh
+	To prevent screen blinking in console and old terms (xterm for
+	instance) now we do not call GX_Monster every time, but:
+
+	Call GX_Monster "$ENEMY" first time
+	Store cursor position (tput sc)
+	And then (when we need it) just restore cursor position (tput rc) and
+	clear all from this position to the end of screen (tput ed)
+
+2014-12-19  kstn  <kastian@mail.ru>
+
+	FIX GX_Rest()
+
+	Rename Read.sh to Functions.sh and move all small functions there
+
+	Move all Marketplace-related GX to separate file and add basis for GX_Marketplace-gpl.sh
+
+	FIX GX_DiceGame_Table - added ASCII for empty table.
+
+	FIX MiniGame_Dice() - remove unneeded $JOIN_DICE_GAME
+
+	FIX move GX_DiceGame() from GX_DiceGame.sh (CC) to MiniGameDice.sh (GPL)
+
+	BUGFIX RollForHealing()
+
+	FIX TavernRest()
+	[x] TODO: Tavern also should reset STARVATION and restore starvation penalties if any
+
+	FIX MapNav() - replace if-fi to case (for readability)
+
+	Move Death-related functions to separate file and fix GX_Death(). Now it needs arguments!
+
+	FORMATTING CODE (no changes)
+
+	FIX: GX_Death() - center text
+
+	FORMATTING CODE (no changes)
+
+	FIX GX_Intro() - remove backup
+
+	FIX FightMode_DefineEnemy() - remove backup
+
+2014-12-18  sigg3  <sigg3net@github.com>
+
+	MINOR adjustment to dragon skills
+
+	MINOR bugfixes and adjustments
+
+	REMOVED erroneous debug file '2'
+
+	ADDED variable Market() menu from kstn suggestion
+
+	REMOVED erroneous debug file '2'
+
+	BUGFIX for new dual mode GX_Death
+
+	MINOR removed ancient bug report
+
+	GX_Death and starvation adjustments
+
+	CHANGED GX_Death() to include both defeat and starvation
+
+	MINOR added commit # to GX_Monster imp
+
+	ADDED new imp, anime version:)
+
+2014-12-17  kstn  <kastian@mail.ru>
+
+	FIX CheckForWorldChangeEconomy()
+
+	FIX Announce()
+
+	BUGFIX HighscoreRead()
+
+	BUGFIX Death()
+
+	FIX BiaminSetup.sh
+
+	BUGFIX BiaminSetup.sh
+
+2014-12-17  sigg3  <biamin@sigg3.net>
+
+	REMoved TODO from master branch
+
+	FIXED some TODOs in the code
+
+	Adjusted wealth determinations and minor stuff
+
+2014-12-17  kstn  <kastian@mail.ru>
+
+	BUGFIX MiniGame_Dice() - $DGAME_STAKES should be defined before prompt
+
+	Add tip for debug
+
+	FIX WorldPriceFixing() - Sigge check it with debugger too
+
+	TODO update
+
+	FIX Bulletin.sh
+
+	FIX Re-rewrite FightMode()
+
+	FIX: Some fixes in Announce synstem (Not finished now)
+
+	FIX FightMode()
+
+	BUGFIX Announce()
+
+	BUGFIX FightMode() && TODO update
+
+	ADD IsInt() - check if is $1 int (for Grocer) and replace some 'sleep' to 'Sleep'
+
+	Move IDEA to TODO && formatting code
+
+	Formatting code and remove unneeded now unset
+
+	FIX GX_Marketplace_Grocer(). Move 'displaying prices' to GX_Marketplace_Grocer()
+
+	BUGFIX: Marketplace_Grocer()
+
+2014-12-15  kstn  <kastian@mail.ru>
+
+	TODO update
+
+2014-12-14  kstn  <kastian@mail.ru>
+
+	BUGFIX increasing turn at Rest and formatting code
+
+2014-12-13  sigg3  <biamin@sigg3.net>
+
+	FEATURE added GX_Starvation() version 1
+
+	BUGFIX in CheckForStarvation() + adjustments
+
+	MINOR removed biamin.sh
+
+	Marketplace_Beggar() initialization (commented out)
+
+	FEATURE added GX_Marketplace_Beggar() and placeholder
+
+	Marketplace_Merchant() Item-related shopping strings
+
+	Marketplace_Merchant() disabled forced almanac as item
+
+	Almanac() disabled unfinished features
+
+	MINOR removed biamin.sh
+
+	FightMode_DefineEnemy() Adjusted EN skills
+
+	FightMode_DefineEnemy() adjusted enemy type spread
+
+2014-12-13  kstn  <kastian@mail.ru>
+
+	FIX DateFromTurn() - remove "magick number"
+
+2014-12-12  sigg3  <biamin@sigg3.net>
+
+	FEATURE Marketplace_Merchant() more or less finished
+
+2014-12-12  kstn  <kastian@mail.ru>
+
+	ADD NewTurn() - increased $TURN and gets new date
+
+2014-12-12  kstn  <kastian@mail.ru>
+
+	DATE: New date implementation
+	IMPORTANT
+
+	Now $DAY, $MONTH, $YEAR, $MOON are ints, so if you want string, you
+	should use:
+
+	day    - $(Ordial $DAY)	- 1st, 2nd, ...
+	month  - $(MonthString $MONTH) - After-Frost, Marrsuckur, ...
+	       	 $(MonthTrivia $MONTH) - "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm.", ...
+
+	year   - $(Ordial $YEAR) - 1st, 2nd, ...
+	moon   - ${MOON_STR[$MOON]} - "New Moon","Growing Crescent", ...
+
+	Moon changes:
+
+	"New Moon" is the same that "Old Moon", so I've removed "Old Moon"
+
+	This implementation breaks Almanac, so Almanac.sh should be rewrited
+
+2014-12-12  kstn  <kastian@mail.ru>
+
+	FIX GX_Intro()
+
+	Formatting code (no changes)
+
+	FIX GX_Intro()
+	Now it also gets $SECONDS argument
+
+	FIX DisplayCharsheet()
+
+2014-12-11  sigg3  <biamin@sigg3.net>
+
+	Added small bug report, will fix this weekend
+
+	MINOR fooling around with tput
+
+	Minor typos: ALMANAC to INV_ALMANAC
+
+	Minor typos: ALMANAC to INV_ALMANAC
+
+	Minor fix in DisplayCharsheet()
+
+	FEATURE Marketplace_Merchant() working state
+
+	Added DEBUG units for Marketplace_Merchant()
+
+	Minor commenting
+
+2014-12-10  sigg3  <biamin@sigg3.net>
+
+	Marketplace_Merchant logic and ASCII
+
+	Marketplace_Merchant() minor fixes
+
+	Marketplace_Merchant() logic fix
+
+	Marketplace_Merchant() logic fix
+
+	Minor bug fix in Marketplace_Merchant()
+
+	Marketplace_Merchant() Buying and Selling logic
+
+	Moved Grocer and Merchant to Town.sh
+
+	MINOR edit of README
+
+2014-12-10  kstn  <kastian@mail.ru>
+
+	TODO move ideas from Town.sh to TODO
+
+	Small fixes in Town.sh
+
+2014-12-09  sigg3  <biamin@sigg3.net>
+
+	Marketplace_Merchant() Buying logic
+
+	Marketplace_Merchant() pricing plus minor fixes
+
+	Minor logic for Merchant loop..
+
+	Added random item stock Merchant can sell
+
+	Minor typo fixes
+
+	Rewrote Marketplace_Merchant() in functions.sh plus minor fixes
+
+2014-12-08  kstn  <kastian@mail.ru>
+
+	Sleep() - works like usual sleep, but can be aborted by hitting anykey
+
+	Move Merchant to separate file
+
+	BUGFIX: Prompts in Town.sh
+
+2014-12-07  kstn  <kastian@mail.ru>
+
+	FIX MakePrompt()
+
+	Small fixes
+
+	Move TODO to master from separate branch
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+2014-12-06  sigg3  <biamin@sigg3.net>
+
+	Minor cosmetic in README
+
+2014-12-04  kstn  <kastian@mail.ru>
+
+	Small fix
+
+	README update
+
+2014-12-03  kstn  <kastian@mail.ru>
+
+	BUGFIX: SaveCurrentSheet()
+
+	BUGFIX: FightMode_EnemyTurn (thanks OdnetninI)
+
+	Update README
+
+2014-12-02  kstn  <kastian@mail.ru>
+
+	Add README
+
+	Small fixes
+
+2014-11-21  sigg3  <biamin@sigg3.net>
+
+	Minor future-proofing: Re-named  to
+
+2014-11-18  kstn  <kastian@mail.ru>
+
+	FIX Items.sh (mostly docs and format)
+
+	FIX: GX_Item.sh GX_Item-gpl.sh
+
+	Small fixes && add file for char-related functions
+
+	FIX MainMenu() and PressAnyKey()
+
+2014-11-17  sigg3  <biamin@sigg3.net>
+
+	MINOR: reverted random seed
+
+	RollDice: Fixed seeding in functions.sh
+
+	Bugfix: CTRL+C working code
+
+	Minor: removed last fi
+
+	Bugfix: CTRL+Chickening out bugfix
+
+	MINOR: Added reseeder back in
+
+	MINOR: display FightTable when defeating enemy
+
+	Bugfix: FightMode_RemoveBonuses now removes bonuses:)
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	MINOR cosmetic
+
+	Minor: removed biamin.sh build
+
+	Bugfix: Healthy chars were read as dead (necromancy) without CHAR_TMP
+
+	Bugfix: Don't roll for heal if pl was attacked in rest
+
+2014-11-17  kstn  <kastian@mail.ru>
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	Add sketch for BiaminSetup_MakeBaseChar()
+
+2014-11-13  kstn  <kastian@mail.ru>
+
+	FIX Read()
+
+	Small fixes
+
+2014-11-09  kstn  <kastian@mail.ru>
+
+	ADD console option -p <charname> to load char directly without menu
+
+	Move BiaminSetup_UpdateOldSaves() to separate functions and small fixes
+
+	Small fixes
+
+2014-11-08  kstn  <kastian@mail.ru>
+
+	BUGFIX: remove forgotten debug options
+
+	Move definitions of $VAL_GOLD_STR and $VAL_TOBACCO_STR to GX_Bulletin(), because they needed only there
+
+2014-11-07  kstn  <kastian@mail.ru>
+
+	FIX Almanac(), BUGFIX MapNav()
+
+	FIX FightMode_DefineEnemy()
+
+	Move NewSector_GetScenario() to separate function
+
+	Rewritten Hotzones system.
+	Now $HOTZONE is not "[1-18]-[1-15]" but GPS([A-R][1-15]) array. Eg
+	not ("1-15" "12-3" ...) but ("A1" "B2" "C3" ...)
+
+	Move GX_Bulletin and Town to separate files && small fixes
+
+2014-11-05  kstn  <kastian@mail.ru>
+
+	Add todo
+
+	FIX: LoadCustomMap()
+
+	BUGFIX: HotzonesDistribute()
+	'declare -a HOTZONE=()' was interesting idea, but it seems that
+	'declare' in function declare LOCAL variable, so other functions
+	(GX_Map() for instance) can't see $HOTZONES array.
+
+	BUGFIX: BiaminSetup_SetItemsAbilities() and small fixes FIX GX_Map()
+
+	Small fixes
+
+2014-11-04  kstn  <kastian@mail.ru>
+
+	Test Read() implementation
+
+2014-11-01  kstn  <kastian@mail.ru>
+
+	FIX MiniGameDice()
+
+2014-10-31  kstn  <kastian@mail.ru>
+
+	FIX: HotzonesDistribute() (Items.sh)
+
+	Move NewSector() to separate file. Fix TurnFromDate() (Date.sh) Add GPStoXY() and XYtoGPS() functions
+
+2014-10-29  kstn  <kastian@mail.ru>
+
+	FIX MiniGameDice()
+
+	Move GX for MiniDiceGame to separate file and small fixes in other files
+
+	Move Almanac() and MiniGameDice() to separate files, and add documentation some functions
+
+2014-10-28  kstn  <kastian@mail.ru>
+
+	FIX: CustomMapError()
+
+2014-10-26  kstn  <kastian@mail.ru>
+
+	FIX MiniGameDice()
+
+	Move GX for menu to separate file and add gpl-version
+
+	Fix runtime section, MainMenu, move GX_{Places} to one function and add GX_Places-gpl.sh
+
+2014-10-25  kstn  <kastian@mail.ru>
+
+	FIX: GX_Bulletin
+
+	FIX: Announce() (CLI_arguments.sh)
+
+2014-10-24  kstn  <kastian@mail.ru>
+
+	Small fixes
+
+	FIX: Move menu section to separate file
+
+	FIX Move MapCreateCustom() to CLI_arguments.sh
+	PS We don't need check for $GAMEDIR in MapCreateCustom, because
+	$GAMEDIR is already checked at the beginning of 'runtime section'
+	(runtime.sh)
+
+	FIX FightMode.sh
+
+	Fix CLI_arguments.sh
+
+2014-10-22  kstn  <kastian@mail.ru>
+
+	Move Cli_arguments and GX_Places to separate files
+
+2014-10-19  kstn  <kastian@mail.ru>
+
+	Fix FightMode.sh
+
+2014-10-18  kstn  <kastian@mail.ru>
+
+	FIX BiaminSetup() - move to separate file
+
+	FIX GX_Monster(gpl) - centered prompts
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	FORMATTING (No changes)
+
+2014-10-17  kstn  <kastian@mail.ru>
+
+	Fix CheckForItems()
+
+	Fix GX_Monster_* to one function and add GX_Monster for GPL-edition
+
+	Small fixes
+
+2014-10-15  kstn  <kastian@mail.ru>
+
+	FIX: RollDice()
+	Move reseed random to separate part, because it needed only once
+
+2014-10-15  kstn  <kastian@mail.ru>
+
+	FIX Makefile
+	Bash can be located in diffirent places. For instance in OpenBSD it
+	located in /usr/local/bin/bash. So
+
+	SHABANG = `which bash`
+
+	defines where bash is located, and
+
+	        @echo "#!${SHABANG}" > ${NAME}
+
+	add right sha-bang for current system.
+
+2014-10-15  kstn  <kastian@mail.ru>
+
+	FIX: GX_DiceGame()
+
+2014-10-14  kstn  <kastian@mail.ru>
+
+	Small fixes
+
+	Small fixes
+
+2014-10-13  kstn  <kastian@mail.ru>
+
+	Move GX_Monster_*() to separate file
+
+	Fix Items.sh
+
+	Move GX_Item[0-7]() to separaded file, rewrite them to one function and add GX_Item-gpl.sh
+
+	FightMode.sh - test new exp system
+	For enemy fleeing player gets 1/2 EN_EXp
+	For fleeing from enemy player gets 1/4 EN_EXP
+
+	Fix FightMode.sh
+
+	FightMode.sh : Documentation
+
+2014-10-12  kstn  <kastian@mail.ru>
+
+	Fix FightMode.sh
+
+	Fix FightMode.sh
+
+	Move CheckForFight to FightMode.sh
+
+	Splid old GFX block to gfx sh
+
+2014-10-12  kstn  <kastian@mail.ru>
+
+	MAKE implementation for 'master' branch.
+	After any changes in files, biamin.sh should be assembled using
+
+	$ make
+
+	Old biamin.sh moved to biamin.sh.back ONLY as backup.
+
+	ALL CHANGES SHOULD BE MADE NOT IN IT!!!
+
+	All names such as 'functions.sh', 'header.sh' etc can be changed to more suitable (BUT DO NOT FORGET TO CHANGE MAKEFILE also).
+
+	HowTo split some functions from functions.sh
+
+	1. Cut needed code from functions.sh
+
+	2. Paste it to 'newfile.sh'
+
+	3. add 'newfile.sh' to Makefile in line FILES = FightMode.sh functions.sh newfile.sh
+
+	4. run
+
+	$ make
+
+	5. ?????
+
+	6. PROFIT!!!
+
+2014-10-12  kstn  <kastian@mail.ru>
+
+	Revert "MAKE implementation for 'master' branch."
+	This reverts commit 67036541a44cb42fa2b7b55f16a6799423481d67.
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+2014-10-12  kstn  <kastian@mail.ru>
+
+	MAKE implementation for 'master' branch.
+	After any changes in files, biamin.sh should be assembled using
+
+	$ make
+
+	Old biamin.sh moved to biamin.sh.back ONLY as backup.
+
+	ALL CHANGES SHOULD BE MADE NOT IN IT!!!
+
+	All names such as 'functions.sh', 'header.sh' etc can be changed to
+	more suitable (BUT DO NOT FORGET TO CHANGE MAKEFILE also).
+
+	HowTo split some functions from functions.sh
+
+	1. Cut needed code from functions.sh
+	2. Paste it to 'newfile.sh'
+	3. add 'newfile.sh' to Makefile in line
+	FILES = FightMode.sh functions.sh newfile.sh
+	4. run
+	$ make
+	5. ?????
+	6. PROFIT!!!
+
+2014-10-12  kstn  <kastian@mail.ru>
+
+	BUGFIX Death check()
+	Ugly, very ugly, intolerable but works. I should rewrite this
+	FightMode() in the nearest future
+
+2014-10-11  sigg3  <biamin@sigg3.net>
+
+	BUGFIX no new health saved in RollForHealing()
+
+	MINOR fix to allow nanoseconds for RollDice()
+
+	MINOR bugfixes in Rest() and FightMode()
+
+	FIXES for Marketplace_Merchant().. Too tired :P
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	FIXES for Marketplace_Merchant()
+
+2014-10-11  kstn  <kastian@mail.ru>
+
+	FIX MiniGameDice - move DiceGameCompetition() to separate function
+
+	BUGFIX: FightMode()
+
+2014-10-11  sigg3  <biamin@sigg3.net>
+
+	FIXED math in Marketplace_Merchant() .. beta:)
+
+2014-10-10  sigg3  <biamin@sigg3.net>
+
+	Added WorldPriceFixing() and updated related functions
+
+2014-10-09  sigg3  <biamin@sigg3.net>
+
+	MINOR forgot scale=2 for bc in Marketplace_Merchant(), pricing still wrong though
+
+	More math in Marketplace_Merchant() and altered GX_Marketplace_Merchant()
+
+	Wrote down what I'm thinking about Merchant
+
+	Added some MATH to Marketplace_Merchant()
+
+2014-10-09  kstn  <kastian@mail.ru>
+
+	FIX: Replaced all 'read -p "prompt"' to 'read -p "prompt" 2>&1
+	By default read prints its prompt to STDERR, so it's harder to debug
+	it. (bash -x biamin.sh 2>log). 2>&1 means 'redirect STDERR to STDOUT'
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+2014-10-08  sigg3  <biamin@sigg3.net>
+
+	MINOR fixes
+
+2014-10-08  kstn  <kastian@mail.ru>
+
+	BUGFIX - RollDice()
+
+	Two bugs with OpenBSD's bash $ grep BUG biamin.sh
+
+2014-10-03  sigg3  <biamin@sigg3.net>
+
+	MINOR adjusted bear health and strength
+
+	MINOR bugfixes
+
+	Added bear and imp stats + rearranged enemy type table in FightMode()
+
+	ADDED GX_Monster_imp() sketchy but alright
+
+2014-10-02  kstn  <kastian@mail.ru>
+
+	FIX: FightMode(), '# DETERMINE INITIATIVE' section
+	Works similar previous, but less LOC. Firstly check for PICKPOCKET,
+	then (if success) check for FLEE.
+
+2014-08-29  kstn  <kastian@mail.ru>
+
+	FIX: Almanac() - rewritten calendar section - test implementation
+	Should worked. I'm sorry, it ruined graying currend day in calendar, but I'll fix it some time later
+
+2014-08-28  kstn  <kastian@mail.ru>
+
+	FIX BiaminSetup()
+
+	BUGFIX Almanac(), DateFromTurn() and others
+
+	FIX: Rewritten LoadGame()
+
+	FIX replaced Mvaddstr() to MvAddStr()
+
+2014-08-27  kstn  <kastian@mail.ru>
+
+	BUGFIX: Tavern()
+
+	FIXES
+
+2014-08-27  kstn  <kastian@mail.ru>
+
+	BUGFIX: Almanac()
+	"${YEAR%??}" wasn't 'last 2 of year' but FIRST 2 of year.
+
+	Is there any reason to use BASH's string function - they don't work in
+	older (<4) BASH's version (MacOS 10.6 for instance)
+
+2014-08-27  kstn  <kastian@mail.ru>
+
+	FIX Licence()
+
+	FIX: GX_Map()
+
+	FIX Add wrapper Mvaddstr()
+	Replace 'tput cup $y $x && echo $str' to Mvaddstr $y $x $str
+
+	FIX: License() and remove ShowLicense() (remains moved to License())
+
+2014-08-26  kstn  <kastian@mail.ru>
+
+	FIX: Almanac_Moon()
+
+2014-08-25  kstn  <kastian@mail.ru>
+
+	FIX: DateFromTurn()
+
+2014-08-24  kstn  <kastian@mail.ru>
+
+	FIX: Almanac() and and Toupper()
+	I don't know why but emacs's auto-complete dislike name 'ToUpper' :).
+
+	FIX Almanac() and add Strlen()
+
+2014-08-23  kstn  <kastian@mail.ru>
+
+	FIXES
+
+	FIX MonthString(), MonthLength(), MonthTrivia() and DateFromTurn()
+
+	FIX Almanac()
+
+	FIX: Almanac()
+
+2014-08-23  kstn  <kastian@mail.ru>
+
+	REWRITTEN Calendar system
+	I'm sorry if I've break smth in Almanac(), but this system is really
+	easier and all calendar variables are global (loads only once at
+	start) and in one place - easily to change
+
+	They should be used through functions like -
+
+	echo "$(MonthString 1)"        -> "After-Frost"
+	echo "$(MonthLength 1)"        -> "31"
+	echo "$(MonthTrivia 1)"        -> "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm."
+	echo "$(WeekdayString 1)"      -> "Ringday (Holiday)"
+	echo "$(WeekdayTriviaShort 1)" -> "Day of Festivities and Rest"
+	echo "$(WeekdayTriviaLong 1)"  -> "Men and Halflings celebrate Ringday as the end and beginning of the week."
+
+2014-08-23  kstn  <kastian@mail.ru>
+
+	ADD WEEKDAY_TRIVIA to calendar variables
+
+	ADD: TurnFromDate(), and move calendar variables as global (for Almanac)
+
+	FIX: License(), ShowLicense() and Runtime_Block
+
+	REMOVE Credits() and HighScore(). Remains moved to MainMenu()
+
+	FIX: Ordeal()
+
+	FIX Remove SetupHighscore() and change RUNTIME_BLOCK
+
+2014-08-22  kstn  <kastian@mail.ru>
+
+	FIX: HotzonesDistribute()
+
+	FIX: TodaysDate() and DateFromTurn()
+
+	FIX: DisplayCharsheet()
+
+	FIX BiaminSetup()
+
+	FIX BiaminSetup() (Determine Gold/Tobacco section)
+
+	FIX CheckForDeath()
+
+	FORMATTING CODE (No changes)
+
+	FIX: HighScore()
+
+	FIX PressAnyKey()
+
+	BUGFIX: DateFromTurn() and add Ordeal()
+
+2014-08-18  sigg3  <sigg3net@github.com>
+
+	MINOR fix of GX_Monster_bear
+
+2014-08-17  sigg3  <sigg3net@github.com>
+
+	GX_Monster_bear() CAVE BEAR added:)
+
+	FIXED if statements in DateFromTurn()
+
+	Added GX_Moon, Almanac(), Almanac_Moon(), Almanac_Notes(), changed DateFromTurn, ++
+
+2014-08-12  kstn  <kastian@mail.ru>
+
+	FIX GX_Rest - remove $RESTPHASE variable
+
+2014-08-11  sigg3  <sigg3net@github.com>
+
+	GX_Rest() updated with 8 moonphases
+
+2014-07-29  kstn  <kastian@mail.ru>
+
+	FIX MainMenu() - test MakePromd()
+
+	BUGFIX: LoadCustomMap()
+
+2014-07-27  kstn  <kastian@mail.ru>
+
+	FIX: DateFromTurn() - push Ringday to the right place in array
+
+2014-07-25  sigg3  <biamin@sigg3.net>
+
+	Added Old moon to DateFromTurn
+
+	ADDED an 8th weekday in DateFromTurn() for code compatibility
+
+	CHANGED WEEKDAY_STR in DateFromTurn()
+
+2014-07-24  kstn  <kastian@mail.ru>
+
+	FIX NewSector() and CheckForStarvation() - add death from starvation
+
+2014-07-23  sigg3  <biamin@sigg3.net>
+
+	FIX name of months in TodaysDate()
+
+2014-07-15  kstn  <kastian@mail.ru>
+
+	Small fixes
+
+	Small fixes
+
+	FIX FightMode() and  move Death() to separate function
+
+2014-07-14  kstn  <kastian@mail.ru>
+
+	ADD MakePromt() sketch - function to make 79px centered promts
+
+	FIX Small fixes
+
+	BUGFIX FightMode() - items's bonuses section
+
+	FIX BiaminSetup()
+
+2014-07-11  kstn  <kastian@mail.ru>
+
+	FIX DateFromTurn()
+	if-elif-else is fastest than $(awk)
+	0m0.001s-0m0.002s and 0m0.007s-0m0.009s
+
+2014-07-11  kstn  <kastian@mail.ru>
+
+	Small fixes.
+	PS:
+	<     GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
+	---
+	>     GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I didn't know we could do that :)
+
+	because emacs auto-indent falls in big scripts, when see ' in comments.
+
+2014-07-11  kstn  <kastian@mail.ru>
+
+	Remove commented Marketplace() backup
+
+	FIX HotzonesDistribute() and add RollDice2
+	We can not just add 'echo "$DICE"' to RollDice() - it'll break a half
+	of code. So I think use RollDice2() when we need return from function
+	and bit by bit replace RollDice() to RollDice2(). When all invocations
+	of RollDice() will be replaced we will need just delete RollDice() and
+	rename RollDice2() to RollDice() (and of course fix all invocations).
+
+	FIX remove ITEM_YX() because it was used only in HotzonesDistribute()
+	Remains of ITEM_YX() moved to HotzonesDistribute()
+
+2014-07-10  kstn  <kastian@mail.ru>
+
+	BUGFIX GX_Intro()
+
+2014-07-09  kstn  <kastian@mail.ru>
+
+	FIX NewSector() -  move check for starvation to separate function
+
+	FIX BiaminSetup() and formatting
+
+2014-07-08  kstn  <kastian@mail.ru>
+
+	FIX local variables in WorldChangeEconomy()
+
+2014-07-08  kstn  <kastian@mail.ru>
+
+	FIX local variables
+	I've didn't know but we can declare local variables not only
+	one-per-line
+
+	local VAR1
+	local VAR2
+	local VAR3
+
+	but
+
+	local VAR1 VAR2 VAR3
+
+	and even initialise them
+
+	local VAR1=1 VAR2=2 VAR3=3
+
+2014-07-08  kstn  <kastian@mail.ru>
+
+	FIX BiaminSetup()
+
+	FIX WorldChangeEconomy() Die message
+
+	FIX Rewrite WorldChangeEconomy()
+	all economics moved from NewSector() to WorldChangeEconomy()
+
+	FIX GX_Bulletin()
+
+	FIX Move functions to more logical order (no changes)
+	Intro() after BiaminSetup()
+	SetupHighscore() before Announce()
+
+	FIX GX_Bulletin() - test tput
+
+2014-07-07  kstn  <kastian@mail.ru>
+
+	FIX and formatting code
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+2014-07-07  sigg3  <biamin@sigg3.net>
+
+	MINOR some logic for Marketplace_Merchant
+
+	MINOR fixed GX_Marketplace_Merchant
+
+2014-07-07  kstn  <kastian@mail.ru>
+
+	FIX FightMode()
+
+	BUGFIX FightMode() and add another promt if player was attacked during rest
+
+	BUGFIX FightMode() - forgotten ';;' in 'case'
+
+	FIX FightMode() and minor formatting code
+
+	FIX GX_Marketplace_Merchant() - add base for 'add PRICING case statements at crate-height.'
+
+	FIX GX_Marketplace_Grocer() - add msg on current prices to GX
+
+	FIX Marketplace_Grocer() and formatting code
+
+	FIX: Rest()
+
+	FIX: Rest and RollForHealing - increase TURN after successful Rest()
+
+	FIX Tavern() - increase TURN after rest in Tavern
+
+2014-07-06  kstn  <kastian@mail.ru>
+
+	FIX LoadCustomMap() and BiaminSetup()
+
+	FIX LoadCustomMap() and CustomMapError()
+
+	BUFGIX FightTable() and Fight_Mode()
+
+	FIX DateFromTurn() for 400 days year
+
+	ADD DateFromTurn() - add moon cycle, GX_Marketplace_Merchant() - test tput
+
+	Add Grocer and Merchant in Marketplace.
+
+	Small fixes
+
+	FIX a lot of small fixes
+
+	FIX MiniGame_Dice()
+	It's really better do not use (( VAR ++ )), but ((VAR++)) (without
+	spaces between), because 'VAR++' is typical form and works quite
+	everywhere, and 'VAR ++' only in BASH.
+
+	BUGFIX MiniGame_Dice()
+
+	FIX GX_Races()
+
+	MAJOR FIX - Fully rewritten interior date section
+	Now it doesn't use anything but TURN variable, and YEAR, MOTNTH,
+	WEEKDAY and DAY calculates depending of TURN in DateFromTurn.
+
+2014-07-05  kstn  <kastian@mail.ru>
+
+	FIX: Rewritten GX_DiceGame()
+
+	BUGFIX: BiaminSetup()
+
+2014-07-04  kstn  <kastian@mail.ru>
+
+	Minor fixes and formatting
+
+	Formatting code (no changes)
+
+2014-07-03  sigg3  <biamin@sigg3.net>
+
+	ADDED GX_Marketplace_Merchant
+
+	TODO note-to-self
+
+	ADDED Placeholder for GX_Calendar
+
+	MINOR fix regarding dates
+
+	MINOR fix regarding dates
+
+	MINOR fix in Intro()
+
+	Separated TodaysDate and TodaysDateString
+
+	ADDED TodaysDate to NewSector()
+
+	ADDED BIAMIN_DATE && CREATION
+
+	MINOR todos
+
+	ADDED TODO for Announce()
+
+	MINOR fix of nodice in NewSector()
+
+	ADDED nodice shenanigans in NewSector()
+
+	FIXED Die() errors in --update
+
+	ADDED flee logic from legacy
+
+	ADDED some fixes from legacy + TODOs
+
+	FIX ugly fix for initiative loss during REST
+
+	VERSION: 12 items to X out on todo
+
+2014-07-03  kstn  <kastian@mail.ru>
+
+	INITIAL 2.0 MASTER - move feature-money's biamin.sh to master's biamin.sh
+	This branch'll be used only for more or less stable versions, which
+	are moved (NOT MERGED) from testing branch
+
+2014-07-01  sigg3  <biamin@sigg3.net>
+
+	MINOR fix ...?
+
+	FIX ascii cosmetics for Fight Mode
+
+	BUGFIX stranded repo.* files must be removed
+
+	VERSION and MINOR changes
+
+2014-07-01  kstn  <kastian@mail.ru>
+
+	MINOR fixes
+
+2014-06-30  sigg3  <biamin@sigg3.net>
+
+	MINOR clues for RollDice randomness
+
+	FIX Finalized FLEE in FightMode + GX_Races
+
+2014-06-30  kstn  <kastian@mail.ru>
+
+	Formatting code (no changes)
+
+	FIX ITEM_YX() - use RollDice() instead of RANDOM for more randomness
+
+2014-06-25  kstn  <kastian@mail.ru>
+
+	BUGFIX: BiaminUpdater() for VERSIONS == "[0-9]+.[0-9]+.[0-9]+. LEGACY/non-ASCII/etc"
+	VERSION should be in format "[0-9]+.[0-9]+.[0-9]+. string"
+
+	FIX RollDice - added reseed random number generator
+	I'm not sure but may be it'l make RANDOM more random.
+
+2014-06-24  kstn  <kastian@mail.ru>
+
+	MINOR formatting comments
+
+	FIX MINOR removed underscores for in Die()
+	Die gets a string as argument, so we can use smth like
+	'Die "DOWNLOAD ERROR: No internet with curl"' without
+	unneeded 'tr'
+
+2014-06-23  sigg3  <biamin@sigg3.net>
+
+	MINOR removed a TODO
+
+	MINOR added config for updater in header
+
+	MINOR removed underscores for  in Die()
+
+	FIX fight loop cosmetics and echos
+
+	FIX adjusted FLEE skill on CHAR races vs D20 rolls
+
+2014-06-21  kstn  <kastian@mail.ru>
+
+	Cosmetics to minimize LOC
+
+2014-06-20  kstn  <kastian@mail.ru>
+
+	Small fixes
+
+	Formatting code (no changes)
+
+2014-06-19  sigg3  <biamin@sigg3.net>
+
+	MINOR moved a sleep
+
+	FEATURE EchoFightFormula v.1 in FightMode()
+
+	TESTING EchoFightFormula in FightMode()
+
+	ADDED EchoFightFormula()
+
+	MINOR added --usage text for --update
+
+	MOVED update_biamin.sh-0.8 to archive
+
+	FEATURE inserted update script for LEGACY repo
+
+	VERSIONS fixed  in 1.3.9
+
+	VERSIONS moved 1.3.9 to archive. No need for both in root dir
+
+2014-06-19  kstn  <kastian@mail.ru>
+
+	BUGFIX: FightMode()
+
+	BUGFIX: PrepareLicense()
+
+	FIX: NewSector() - death fix
+
+	FIX: FightMode()
+
+	FIX: NewSector() - NODICE fix
+
+	Small fixes
+
+	FIX: MainMenu()
+
+	BUGFIX: MapCreate() - MacOS compability
+
+	FIX: GX_BiaminTitle()
+
+	FIX: HotzonesDistribute() - backport from 2.0
+
+	FIX: GA and 1000 EXP fix and small fixes
+
+2014-06-17  sigg3  <biamin@sigg3.net>
+
+	FEATURE changed FLEE rolls to D20
+
+	FIX added wget functionality where available
+
+	MINOR removed some old TODOs..
+
+	FIX decisions, decisions..
+
+2014-06-17  kstn  <kastian@mail.ru>
+
+	FIX: HotzonesDistribute()
+
+	FIX: LoadGame()
+
+	BUGFIX: remove forgotten ';;'
+
+	Formatting code  (no changes)
+
+	FIX: Credits() and GX_HowTo()
+
+	FIX: HighScore()
+
+	FIX: HighscoreRead()
+
+	FIX: MainMenu() - formatting code (no changes)
+
+	FIX BiaminSetup()
+
+	BUGFIX: CustomMapError()
+
+2014-06-16  kstn  <kastian@mail.ru>
+
+	BUGFIX: FightMode()
+
+	BUGFIX [?] : FightMode()  uncomment what we need
+
+	BUGFIX [?] FIghtMode()
+
+2014-06-13  sigg3  <biamin@sigg3.net>
+
+	BUGFIX NODICE checked moved AFTER check for Item. Added +1s sleep in dealing out damage when EN is killed
+
+2014-06-09  sigg3  <biamin@sigg3.net>
+
+	Removed todo from master
+
+2014-06-08  kstn  <kastian@mail.ru>
+
+	TODO update
+
+2014-06-08  sigg3  <biamin@sigg3.net>
+
+	TODO update
+
+2014-06-08  kstn  <kastian@mail.ru>
+
+	BUGFIX: LoadGame()
+
+	TODO update
+
+2014-06-07  sigg3  <biamin@sigg3.net>
+
+	TODO update
+
+	TODO update
+
+	TODO rem erroneous chars
+
+	TODO added todo. Feel free to add/edit :)
+
+2014-06-05  sigg3  <biamin@sigg3.net>
+
+	update_biamin.sh v. 08
+
+2014-06-04  kstn  <kastian@mail.ru>
+
+	BUGFIX: License() and ShowLicense()
+
+	update_biamin: v 0.7 added 'define downloader' and some little fixes
+
+2014-06-03  sigg3  <biamin@sigg3.net>
+
+	update_biamin: v 0.7 added INSTALLATION
+
+	ASCII FightMode: consistent roll UI in fight
+
+	CLEANUP: rem kstn changelog block
+
+2014-06-02  kstn  <kastian@mail.ru>
+
+	BUGFIX: Added previous commit changes to biamin.sh-1.3.8
+
+	BUGFIX: Capitalization in Intro(), FightTable() and Announce() for MacOS (it doesn't understand sed  's/^\(.\)/\U\1/')
+
+2014-05-29  sigg3  <biamin@sigg3.net>
+
+	added update_biamin.sh v. 0.5
+
+2014-05-29  kstn  <kastian@mail.ru>
+
+	BUGFIX: HighscoreRead() - forgotten -e in echo
+
+2014-05-28  sigg3  <biamin@sigg3.net>
+
+	Version 1.3.8 incl. LoadGame bugfix
+
+	Version 1.3.8 incl. LoadGame bugfix
+
+2014-05-27  kstn  <kastian@mail.ru>
+
+	BUGFIX: LoadGame() : screen go "up and down" in 80x24 terminal if there are > 9 sheets in GAMEDIR
+
+2014-05-26  kstn  <kastian@mail.ru>
+
+	BUGFIX: FightMode() - forgotten -e in echo -n "\n...
+
+2014-05-25  sigg3  <biamin@sigg3.net>
+
+	Merge branch 'bugfix-colorscheme'
+	Conflicts:
+		biamin.sh
+		biamin.sh-1.3.7.9
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	BUGFIX: GX_Map() same colour on non-coloured entities
+
+2014-05-25  kstn  <kastian@mail.ru>
+
+	BUGFIX: Announce(), replaced highCHAR=${highCHAR^} for MacOS compability
+
+	BUGFIX: HotzonesDistribute() and NewSector() to prevent finding item at 1st turn of 2 or more items at one turn
+
+	BUGFIX: GX_Map(), terminal color scheme bug
+
+	BUGFIX: ColorConfig() for MacOS compability, tested and worked
+
+2014-05-24  sigg3  <biamin@sigg3.net>
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merge commit 'refs/merge-requests/4' of git://gitorious.org/back-in-a-minute/code into merge-requests/4
+
+	Merging branches to 1.3.7.8
+
+2014-05-24  kstn  <kastian@mail.ru>
+
+	1.3.7.9 all 'echo -e "smht\n"', replaced to 'echo "smht"'
+
+	FIX for MapNav() in 1.3.7.8. Added RIGHT 1.3.7.7. Other moved to archive
+
+2014-05-23  sigg3  <biamin@sigg3.net>
+
+	Minor bugfix release 1.3.7.7
+
+	Minor bugfix release 1.3.7.7
+
+	Minor bugfix release 1.3.7.7
+
+	Version 1.3.7.6 bugfixes
+
+	Version 1.3.7.5 bugfixes
+
+2014-05-23  kstn  <kastian@mail.ru>
+
+	Added biamin.sh-1.3.7 with all backports include 2 BUGFIXES and a lot of FIXES
+
+2014-05-22  sigg3  <biamin@sigg3.net>
+
+	Version 1.3.7
+
+2014-05-20  kstn  <kastian@mail.ru>
+
+	BUGFIX: DisplayCharsheet()
+
+2014-05-19  kstn  <kastian@mail.ru>
+
+	FIX ItemWasFound() - delete forgotten 'unset SKIP' line 1319
+
+	FIX BiaminSetup() - compability fixes section.
+
+2014-05-18  kstn  <kastian@mail.ru>
+
+	FIX DisplayCharsheet()
+
+	BUGFIX: MapNav() to prevent the screen go "up and down" in 80x24 terminal
+
+2014-05-16  kstn  <kastian@mail.ru>
+
+	FIX read outputs - all "read -p 'PROMT' 'VAR'" replaced to "read -p 'PROMT' 'VAR' 2>&1" for debugging 'bash -x ./biamin.sh 2>log' man read '-p prompt:  Display prompt on standard error'
+
+	FIX FightMode() - extra pause only if player try to flee
+
+	FIX BiaminSetup()
+
+	FIX DisplayCharsheet() - replace 'if' to 'case'
+
+	FIX all read promts fixed to lengh 79 for for 80x24 terminal
+
+	FIX GX_Map() and LoadGame() - awk comments move into awk body
+
+	FIX ColorConfig(), 'sed -i' replaced to 'sed -i""', for MacOS compability http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
+
+	FIX "Parse CLI" arguments section
+
+	FIX Rewritten CreateBiaminLauncher()
+
+2014-05-15  kstn  <kastian@mail.ru>
+
+	FIX BiaminSetup() and MapNav() for 80x24 terminal
+
+	FIX FightMode() - added FightTable() if enemy falls to flee, to prevent making the screen go "up and down" in 80x24 terminal
+
+	BUGFIX: forgotten 'unset FIGHTMODE' when player kills the enemy.
+
+2014-05-12  kstn  <kastian@mail.ru>
+
+	Rewritten biamin 1.3.6
+
+	Renamed:    biamin.sh-1.3.6 -> archive/biamin.sh-1.3.6
+
+2014-03-22  sigg3  <biamin@sigg3.net>
+
+	3rd Feedback Release
+
+	3rd feedback release
+
+	3rd feedback release
+
+2014-03-14  sigg3  <biamin@sigg3.net>
+
+	Second feedback release, v 1.3
+
+	Second major release, v 1.3
+
+	Second major release, v 1.3
+
+2014-03-06  sigg3  <biamin@sigg3.net>
+
+	First Feedback Release, version 1.2.3
+
+2014-02-22  sigg3  <biamin@sigg3.net>
+
+	First public release, version 1.2

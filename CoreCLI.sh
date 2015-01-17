@@ -80,9 +80,7 @@ Announce() {
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
 
-    highCHAR=$(Capitalize "$highCHAR") # Capitalize
-    
-    ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
+    ANNOUNCEMENT="$(Capitalize "$highCHAR") fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     GX_HighScore
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"

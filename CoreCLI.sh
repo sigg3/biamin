@@ -67,10 +67,13 @@ Announce() {
     echo "TOP 10 BACK IN A MINUTE HIGHSCORES"
     HighscoreRead
     ReadLine "\nSelect the highscore (1-10) you'd like to display or CTRL+C to cancel: "
-    SCORE_TO_PRINT="$REPLY"
+    local SCORE_TO_PRINT="$REPLY"
 
-    ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
-
+    # Check $SCORE_TO_PRINT
+    IsInt "$SCORE_TO_PRINT"                             || Die "\n${SCORE_TO_PRINT} is not int. Quitting.."    
+    ((SCORE_TO_PRINT < 1 || SCORE_TO_PRINT > 10 ))      && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
+    [[ "$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")" ]] || Die "\nThere is no $(Ordial $SCORE_TO_PRINT) line in HIGHSCORE file. Quitting.."
+    
     ANNOUNCE_ADJECTIVES=("honorable" "fearless" "courageos" "brave" "legendary" "heroic")
     ADJECTIVE=${ANNOUNCE_ADJECTIVES[RANDOM%6]}
 
@@ -80,10 +83,8 @@ Announce() {
     
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
-
-    highCHAR=$(Capitalize "$highCHAR") # Capitalize
     
-    ANNOUNCEMENT="$highCHAR fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
+    ANNOUNCEMENT="$(Capitalize "$highCHAR") fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     GX_HighScore
 
     echo "ADVENTURE SUMMARY to copy and paste to your social media of choice:"

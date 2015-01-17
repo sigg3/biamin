@@ -433,20 +433,19 @@ LoadCustomMap() { # Used in MapCreate()
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
-	    [1-9] )
-		NUM=$((NUM + OFFSET));                               # Set NUM == selected map num
-		[[ ${MAPS[$NUM]} == "Deleted" ]] && continue         # Do not try to display deleted map
-		MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
-		if grep -q 'Z' <<< "$MAP" ; then # check for errors
-		    CustomMapError "${GAMEDIR}/${MAPS[$NUM]}" 
-		    MAPS[$NUM]="Deleted"
-		    continue 
-		fi
-		clear
-		echo "$MAP"
-		echo -en "Play this map? [Y/N]: "
-		[[ $(Read) == [yY] ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" && return 0; # Return to MapCreate()
-		unset MAP ;;
+	    [1-9] ) NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
+		    [[ ${MAPS[$NUM]} == "Deleted" ]] && continue     # Do not try to display deleted map
+		    MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
+		    if grep -q 'Z' <<< "$MAP" ; then                 # Check for errors
+			CustomMapError "${GAMEDIR}/${MAPS[$NUM]}" 
+			MAPS[$NUM]="Deleted"
+			continue 
+		    fi
+		    clear
+		    echo "$MAP"
+		    echo -en "Play this map? [Y/N]: "
+		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" && return 0; # Return to MapCreate()
+		    unset MAP ;;
 	    *     )  break;; 
 	esac
     done

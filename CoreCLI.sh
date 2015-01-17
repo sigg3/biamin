@@ -128,7 +128,7 @@ CLIarguments_CheckUpdate() {
 			BIAMIN_RUNTIME+=$( basename "${BASH_SOURCE[0]}")
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
 			mv "$REPO" "$BIAMIN_RUNTIME"
-			chmod +x "$BIAMIN_RUNTIME" || Die "PERMISSION ERROR! Couldnt make biamin executable"
+			chmod +x "$BIAMIN_RUNTIME" || Die "PERMISSION ERROR! Couldn't make biamin executable"
 			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
 			echo "Current file moved to ${BIAMIN_RUNTIME}.bak"
 			;;
@@ -152,7 +152,7 @@ CreateBiaminLauncher() {
     case "$(Read)" in
 	y | Y ) echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')\nalias biamin='$BIAMIN_RUNTIME/biamin.sh'" >> "$HOME/.bashrc";
 	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
-	* ) echo -e "\nDon't worry, not changing anything!";;
+	*     ) echo -e "\nDon't worry, not changing anything!";;
     esac
     Exit 0
 }

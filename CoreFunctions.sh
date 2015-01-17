@@ -2,7 +2,8 @@
 #          Small functions which are used throughout the game          #
 #                                                                      #
 
-Die()        { echo -e "$1" && exit 1 ;}                                           # Display $1 and exit script.
+Die()        { echo -e "$1" && exit 1 ; }                                          # Display $1 and exit script.
+Sleep()      { read -n 1 -t "$1" ; }                                               # Works like usual sleep but can be abortet by hitting key
 Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1.
 Toupper()    { awk '{ print toupper($0); }' <<< "$*" ; }                           # Convert $* to uppercase.
 Strlen()     { awk '{ print length($0); }' <<< "$*" ; }                            # Return lenght of string $*.
@@ -21,23 +22,17 @@ Read() {
 
 #-----------------------------------------------------------------------
 # ReadLine()
-# Flush 512 symbols readed before makes cursor visible and read one
+# Flush 512 symbols readed before, makes cursor visible and read one
 # line, than makes cursor unvisible
+# NB to get answer you need to use $REPLY variable !!!
+# Arguments: (optional) $PROMPT
 #-----------------------------------------------------------------------    
 ReadLine() {
+    [[ "$1" ]] && echo -en "$1" # Display prompt if any (like read -p, but to STDOUT and with '\n', '\t', colors, etc)
     read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
     tput cnorm			# Make cursor visible
-    read		        # Read only one line (to default variable, $REPLY)
+    read		        # Read one line (to default variable, $REPLY)
     tput civis			# Make cursor unvisible
-}
-
-#-----------------------------------------------------------------------
-# Sleep()
-# Works like usual sleep but can be abortet by hitting key
-# Arguments: $SECONDS(int)
-#-----------------------------------------------------------------------    
-Sleep() {
-    read -n 1 -t "$1"
 }
 
 #-----------------------------------------------------------------------
@@ -92,7 +87,7 @@ CompareVersions() {
     [[ "$1" == "$2" ]] && return 0
     IFS="\." read -a VER1 <<< "$1"
     IFS="\." read -a VER2 <<< "$2"
-    for ((i=0; ; i++)); do # until break
+    for ((i=0; ; i++)); do         # until break
 	[[ ! "${VER1[$i]}" ]] && { RETVAL=2; break; }
 	[[ ! "${VER2[$i]}" ]] && { RETVAL=1; break; }
 	(( ${VER1[$i]} > ${VER2[$i]} )) && { RETVAL=1; break; }

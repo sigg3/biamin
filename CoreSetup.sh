@@ -169,7 +169,8 @@ BiaminSetup_MakeNewChar() {
 	# TODO move it to LoadCustomMap()
 	if [[ "$CUSTOM_MAP" ]] ; then
 	    START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
-	    read -p " HOME location for custom maps (ENTER for default $START_LOCATION): " CHAR_LOC 2>&1
+	    ReadLine " HOME location for custom maps (ENTER for default $START_LOCATION): "
+	    CHAR_LOC="$REPLY"
 	    [[ ! -z "$CHAR_LOC" ]] && BiaminSetup_SanityCheck "$CHAR_LOC" 	# Use user input as start location.. but first SANITY CHECK
 	fi
 	echo " Creating fresh character sheet for $CHAR ..."

@@ -526,7 +526,8 @@ Marketplace_Grocer() {
 	case $(Read) in
 	    g | G )
 		GX_Marketplace_Grocer
-		read -p " How many food items do you want to buy? " QUANTITY 2>&1
+		ReadLine " How many food items do you want to buy? "
+		QUANTITY="$REPLY"
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		# TODO Perhaps this could help: stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
 		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
@@ -541,7 +542,8 @@ Marketplace_Grocer() {
 		;;
 	    t | T )
 		GX_Marketplace_Grocer
-		read -p " How much food you want to buy? " QUANTITY 2>&1
+		ReadLine " How much food you want to buy? "
+		QUANTITY="$REPLY"
 		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
 		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
@@ -725,7 +727,8 @@ MiniGame_Dice() {
     # DICE GAME LOOP
     while ( true ) ; do
 	GX_DiceGame_Table
-	read -p "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: " DGAME_GUESS 2>&1
+	ReadLine "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: "
+	DGAME_GUESS="$REPLY"
 	echo " " # Empty line for cosmetical purposes # TODO
 	
 	# Dice Game Instructions (mostly re: payout)

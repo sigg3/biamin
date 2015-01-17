@@ -32,6 +32,7 @@ read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
 
 ColorConfig "$COLOR"               # Color configuration
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
+tput civis			   # Make annoying cursor invisible
 ################################# Main game part ###############################
 [[ "$CHAR" ]] || MainMenu  # Run main menu (Define $CHAR) if game wasn't run as biamin -p <charname>
 BiaminSetup                # Load or make new char

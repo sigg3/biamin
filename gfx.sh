@@ -172,7 +172,6 @@ ___                          (         \__ 1                _/             \   \
 EOT
 
     local COUNTDOWN="$1"
-    tput civis
     echo "$HR"
     echo -n "                         Press (A)ny key to continue.."
     tput sc    
@@ -181,7 +180,6 @@ EOT
     	((COUNTDOWN % 2)) && echo -n "." || echo -n " "
     	read -sn 1 -t 1 && break 
     done
-    tput cnorm
 }
 
 GX_Races() {

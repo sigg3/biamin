@@ -106,17 +106,16 @@ $CC"  > "$GAMEDIR/LICENSE"
 License() {
     GX_BiaminTitle
     if [[ ! -f "$GAMEDIR/LICENSE" ]]; then
-	echo -e "\n License file currently missing in $GAMEDIR/ !"
-	read -p " To DL licenses, about 60kB, type YES (requires internet access): " "DL_LICENSE_OPT" 2>&1
-	case "$DL_LICENSE_OPT" in
+	ReadLine "\n License file currently missing in $GAMEDIR/ !\n To DL licenses, about 60kB, type YES (requires internet access): "
+	case "$REPLY" in
 	    YES ) PrepareLicense ;;
-	    * )   echo -e "
+	    *    )   echo -e "
 Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
 Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
 More info:\t<${WEBURL}about#license>
 Press any key to go back to main menu!";
-		read -sn 1;
-		return 0;;
+		     read -sn 1;
+		     return 0;;
 	esac
     fi
     [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -e "\n License file available at $GAMEDIR/LICENSE" ; PressAnyKey ;} # ShowLicense()
@@ -133,6 +132,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
+    tput cnorm			# Make cursor visible again
     exit 0
 }
 
@@ -145,8 +145,8 @@ MainMenu() {
 	GX_Banner 		
 	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
 	case $(Read) in
-	    p | P ) echo -en "${CLEAR_LINE} Enter character name (case sensitive): ";
- 		    read CHAR ;;
+	    p | P ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
+ 		    CHAR="$REPLY" ;;
 	    l | L ) LoadGame ;;
 	    h | H ) GX_HighScore ; # HighScore
 		    echo "";

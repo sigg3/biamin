@@ -132,7 +132,7 @@ DisplayCharsheet() {
  
 EOF
 
-    case "$INV_ALMANAC" in		# Define prompt
+    case "$INV_ALMANAC" in		                                    # Define prompt
 	1) MakePrompt '(D)isplay Race Info;(A)lmanac;(C)ontinue;(Q)uit'  ;; # Player has    Almanac
 	*) MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit' ;; # Player hasn't Almanac
     esac

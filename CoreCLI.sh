@@ -65,8 +65,8 @@ Announce() {
 
     echo "TOP 10 BACK IN A MINUTE HIGHSCORES"
     HighscoreRead
-    echo -en "\nSelect the highscore (1-10) you'd like to display or CTRL+C to cancel: "
-    read SCORE_TO_PRINT
+    ReadLine "\nSelect the highscore (1-10) you'd like to display or CTRL+C to cancel: "
+    SCORE_TO_PRINT="$REPLY"
 
     ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
 
@@ -173,7 +173,7 @@ ParseCLIarguments() {
 	    echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
 	    exit 0;;
 	-p | --play | p )
-	    shift ; 		     # remove $1 from $*
+	    shift ; 		     # remove $1 from $* (array of biamin.sh arguments)
 	    [[ "$*" ]] && CHAR="$*"; # for long names as "Corum Jhaelen Irsei" for instance
 	    echo "Launching Back in a Minute.." ;;
 	-v | --version )

@@ -10,6 +10,17 @@ Strlen()     { awk '{ print length($0); }' <<< "$*" ; }                         
 MvAddStr()   { tput cup "$1" "$2"; printf "%s" "$3"; }                             # Move cursor to $1 $2 and print $3.
 IsInt()      { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }             # Checks if $1 is int.
 
+
+#-----------------------------------------------------------------------
+# Exit()
+# Makes cursor visible, than exit
+# Arguments: (optional) $EXIT_CODE(int [0-255])
+#-----------------------------------------------------------------------
+Exit() { 
+    tput cnorm			      # Make cursor visible (to prevent leaving player without cursor)
+    [[ "$1" ]] && exit "$1" || exit 0 # If $EXIT_CODE then 'exit $EXIT_CODE' else 'exit 0'
+}
+
 #-----------------------------------------------------------------------
 # Read()
 # Flush 512 symbols readed before and read one symbol

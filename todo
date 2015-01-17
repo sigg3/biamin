@@ -48,8 +48,8 @@ TODO 2.0 branch ("survival")
 [x] Add dragon
 [x] Add imp
 [x] Add cave bear
-[.] Rewrite CUSTOM map functionality to allow >1 map
-[.] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
+[x] Rewrite CUSTOM map functionality to allow >1 map
+[x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [.] LoadMap() displaying list of maps to choose from ^^
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
@@ -67,8 +67,21 @@ TODO 2.0 branch ("survival")
 [x]		ASCII GX_Rest divide into phases
 [.] Almanac version 1 (simple frontpage with trivia)
 [ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
+[ ] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 
 TODO ideas for 3.0 branch ("rpg")
+[.] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
+[ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
+[ ] Cave: multi-fight allowing >1 enemy in cave.
+[ ] General inventory system (accessed thru 
+[ ] Stuff the player can gather from animals and sell
+		- Wildboar: fur, tusks, food
+		- Bear:     pelt (fur), food
+		- Dragon:   claws, dragon eyes
+		etc.
+[ ] Allow ENEMY to pickpocket player (ex-FightMode)
+[ ] Towers, castles (maze-like structures)
+[ ] Catacombs (ordered caves)
 [.] Almanac version 2 (full experience, including player notes)
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [.] Almanac_Moon

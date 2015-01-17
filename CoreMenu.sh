@@ -133,6 +133,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
     fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
+    tput cnorm
     exit 0
 }
 

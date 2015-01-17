@@ -32,6 +32,7 @@ ResetStarvation() {
 # Food check 
 # Used: NewSector()
 # TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
+# TODO: make lesser sleep after successful check
 #-----------------------------------------------------------------------
 CheckForStarvation(){ 
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then

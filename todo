@@ -11,6 +11,10 @@ that needs to be done. Or from e-mail discussions. ~ sigg3
 
 LEGEND: x = done, . someone's working on it, ? = open question, - = removed
 
+TODO style ideas
+[?] replace [.], to [name], because [someone(WHO???)] is not very informative.
+[?] move todo to 'dev' branch and rename it to TODO (for better difference from dev files)
+
 TODO GPL repo
 [x] Create LEGACY for -gpl repo once it hits 1.4
 [x] Add updater to -gpl 1.4, refers to separate repo.
@@ -144,6 +148,7 @@ TODO open ideas for future editions
 [ ] HOME = farm, so we should have a farm cycle, to gather food. This is player's extra repo.
 	(H)ome has a crop, and depending on weather above the farm, it can go bad or good.
 	We can have the player invest Gold in building better irrigation, etc.
+	   Who will be work at farm when player is wandering? Or player is some kind or feudal lord with his own pheasants? #kstn
 
 TODO general stuff
 [ ] Continue designing a nicer fight prompt

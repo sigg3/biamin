@@ -39,5 +39,5 @@ BiaminSetup                # Load or make new char
 Intro	                   # Set world
 NewSector                  # And run main game loop
 ############################## Main game part ends #############################
-exit 0                     # This should never happen:
+Exit 0                     # This should never happen:
                            # .. but why be 'tardy when you can be tidy?

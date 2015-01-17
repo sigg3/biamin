@@ -10,7 +10,8 @@ MapCreateCustom() {
     echo -n "Create custom map template? [Y/N]: "
     case $(Read) in
 	y | Y) echo -e "\nCreating custom map template.." ;;
-	*)     echo -e "\nNot doing anything! Quitting.." ; exit 0 ;;
+	*)     echo -e "\nNot doing anything! Quitting.." ;
+	       Exit 0 ;;
     esac
 	    
     cat <<"EOT" > "${GAMEDIR}/CUSTOM_MAP.template"
@@ -49,7 +50,7 @@ EOT
     echo "2. Spacing must be accurate, so don't touch whitespace or add new lines."
     echo "3. When you are done, simply rename your map file to FILENAME.map"
     echo "Please submit bugs and feedback at <$WEBURL>"
-    exit 0
+    Exit 0
 }
 
 #-----------------------------------------------------------------------
@@ -89,7 +90,7 @@ Announce() {
     echo -e "\n$ANNOUNCEMENT\n" | fmt
     echo "$HR"
     (( $(Strlen "$ANNOUNCEMENT") > 160)) && echo "Warning! String longer than 160 chars ($(Strlen "$ANNOUNCEMENT"))!"
-    exit 0
+    Exit 0
 }
 
 #-----------------------------------------------------------------------
@@ -137,7 +138,7 @@ CLIarguments_CheckUpdate() {
 	    ;;
     esac
     echo "Done. Thanks for playing :)"
-    exit 0
+    Exit 0
 }
 
 #-----------------------------------------------------------------------
@@ -154,7 +155,7 @@ CreateBiaminLauncher() {
 	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
 	* ) echo -e "\nDon't worry, not changing anything!";;
     esac
-    exit 0
+    Exit 0
 }
 
 #-----------------------------------------------------------------------
@@ -171,7 +172,7 @@ ParseCLIarguments() {
 	    echo "For usage: run biamin --usage"
 	    echo "Current dir for game files: $GAMEDIR/"
 	    echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
-	    exit 0;;
+	    Exit 0;;
 	-p | --play | p )
 	    shift ; 		     # remove $1 from $* (array of biamin.sh arguments)
 	    [[ "$*" ]] && CHAR="$*"; # for long names as "Corum Jhaelen Irsei" for instance
@@ -186,7 +187,7 @@ ParseCLIarguments() {
 	    echo "You are free to copy, distribute, transmit and adapt the work."
 	    echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
 	    echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
-	    exit 0 ;;
+	    Exit 0 ;;
 	--update ) CLIarguments_CheckUpdate ;;
 	--usage | * )
 	    echo "Usage: biamin or ./biamin.sh"
@@ -199,7 +200,7 @@ ParseCLIarguments() {
 	    echo "     --update         check for updates"
 	    echo "     --usage          display this usage text and exit"
 	    echo "  -v --version        display version and licensing info and exit"
-	    exit 0;;
+	    Exit 0;;
     esac
 }
 

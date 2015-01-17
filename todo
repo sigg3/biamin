@@ -87,7 +87,11 @@ TODO ideas for 3.0 branch ("rpg")
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?] Messenger?
 [?] Date - internal date not attached to real - one turn - one day
-[?] Weather - changes every turn.
+[.] Weather - changes every turn.
+	The Biamin weather has two systems making a more dynamic experience:
+	a) General, seasonal weather (universal = for entire map)
+	b) Moving storm system, see WorldWeatherSystem()
+		The WorldWeatherSystem() must tie into seasonal variations too.
 [?]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
 [?]	Rain (+/-FLEE, more chanses but less HP from REST)
 [?]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)

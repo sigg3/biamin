@@ -433,8 +433,8 @@ LoadCustomMap() { # Used in MapCreate()
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
-	    [1-9] ) [[ ! "${MAPS[$NUM]}" ]] && continue              # Do not try to display absent map
-		    NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
+	    [1-9] ) NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
+		    [[ ! "${MAPS[$NUM]}" ]] && continue              # Do not try to display absent map
 		    [[ "${MAPS[$NUM]}" == "Deleted" ]] && continue   # Do not try to display deleted map
 		    MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
 		    if grep -q 'Z' <<< "$MAP" ; then                 # Check for errors

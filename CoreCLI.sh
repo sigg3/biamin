@@ -69,7 +69,8 @@ Announce() {
     read SCORE_TO_PRINT
 
     ((SCORE_TO_PRINT < 1)) && ((SCORE_TO_PRINT > 10 )) && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
-
+    [[ "$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")" ]] || Die "\nThere is no line $SCORE_TO_PRINT in your highscore file. Quitting.."
+    
     ANNOUNCE_ADJECTIVES=("honorable" "fearless" "courageos" "brave" "legendary" "heroic")
     ADJECTIVE=${ANNOUNCE_ADJECTIVES[RANDOM%6]}
 

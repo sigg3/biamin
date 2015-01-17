@@ -14,9 +14,21 @@ IsInt()      { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }          
 # Flush 512 symbols readed before and read one symbol
 #-----------------------------------------------------------------------    
 Read() {
-    read -s -t 0 -n 512 	# Flush 512 symbols in in buffer
+    read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
     read -s -n 1		# Read only one symbol (to default variable, $REPLY)
     echo "$REPLY"		# And echo it
+}
+
+#-----------------------------------------------------------------------
+# ReadLine()
+# Flush 512 symbols readed before makes cursor visible and read one
+# line, than makes cursor unvisible
+#-----------------------------------------------------------------------    
+ReadLine() {
+    read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
+    tput cnorm			# Make cursor visible
+    read		        # Read only one line (to default variable, $REPLY)
+    tput civis			# Make cursor unvisible
 }
 
 #-----------------------------------------------------------------------

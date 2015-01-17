@@ -43,7 +43,7 @@ TODO 2.0 branch ("survival")
 [x]	ASCII GX_Tradesman (RENAMED to Merchant)
 [x] ASCII GX_ for 2 more enemies (10 total)
 [x] ASCII Finish look of GX_Bulletin (left side)
-[ ] Pickpocket tuning
+[x] Pickpocket tuning [ This is economy tuning, pickpocket works ]
 [x] Add boar
 [x] Add dragon
 [x] Add imp
@@ -121,6 +121,11 @@ TODO ideas for 3.0 branch ("rpg")
 [?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
 [?] Different races eats different quantity of FOOD/turn
 
+
+TODO open ideas for future editions
+[ ] HOME = farm, so we should have a farm cycle, to gather food. This is player's extra repo.
+	(H)ome has a crop, and depending on weather above the farm, it can go bad or good.
+	We can have the player invest Gold in building better irrigation, etc.
 
 TODO general stuff
 [ ] Continue designing a nicer fight prompt

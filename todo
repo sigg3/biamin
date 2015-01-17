@@ -66,6 +66,7 @@ TODO 2.0 branch ("survival")
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
 [.] Almanac version 1 (simple frontpage with trivia)
+[ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 
 TODO ideas for 3.0 branch ("rpg")
 [.] Almanac version 2 (full experience, including player notes)

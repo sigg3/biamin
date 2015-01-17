@@ -25,8 +25,8 @@ TODO LEGACY branch ("original")
 [x] Remove update_biamin.sh from LEGACY
 [x] Add updater function once it hits 1.4 that refers to separate repo.
 [x] Add LEGACY to $VERSION once it hits 1.4.
-[x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
-[x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
+[x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
+[x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
 [-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 	This requires changing code and blog stuff:P
 
@@ -45,12 +45,12 @@ TODO 2.0 branch ("survival")
 [x] ASCII GX_Marketplace
 [x]	ASCII GX_Grocer
 [x]	ASCII GX_Tradesman (RENAMED to Merchant)
-[x] ASCII GX_ for 2 more enemies (10 total)
+[x] ASCII GX_ for 2 more enemies (10 total)
 [x] ASCII Finish look of GX_Bulletin (left side)
 [x] Pickpocket tuning [ This is economy tuning, pickpocket works ]
 [x] Add boar
 [x] Add dragon
-[x] Add imp
+[x] Add imp
 [x] Add cave bear
 [x] Rewrite CUSTOM map functionality to allow >1 map
 [x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
@@ -58,7 +58,7 @@ TODO 2.0 branch ("survival")
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
 [x] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
-[x] 	ASCII GX_Starvation # Great idea! #kstn
+[x] 	ASCII GX_Starvation # Great idea! #kstn
 [x] Game of chance (for tavern), dice game or card game etc.
 [x] AUTO-update (optional)
 [x] Dice game in tavern

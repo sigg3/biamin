@@ -31,7 +31,7 @@ LoadGame() {
     tput sc
     if [[ ! "${SHEETS[@]}" ]] ; then # If no one sheet was found
     	echo " Sorry! No character sheets in $GAMEDIR/"
-    	read -sn 1 -p " Press any key to return to (M)ain menu and try (P)lay" 2>&1 # St. Anykey - patron of cyberneticists :)
+    	PressAnyKey " Press any key to return to (M)ain menu and try (P)lay" # St. Anykey - patron of cyberneticists :)
     	return 1   # BiaminSetup() will not be run after LoadGame()
     fi
     while (true) ; do

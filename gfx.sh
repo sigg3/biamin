@@ -410,6 +410,7 @@ EOT
 
 
 # GFX MAP FUNCTIONS
+
 LoadCustomMap() { # Used in MapCreate()
     local LIMIT=9 OFFSET=0 NUM=0
     while (true) ; do
@@ -424,7 +425,7 @@ LoadCustomMap() { # Used in MapCreate()
                    if (/^DESCRIPTION:/) { RLENGTH = match($0,/: /); DESCRIPTION = substr($0, RLENGTH+2); }
                    FILE = "'${MAPS[$NUM]}'";
                    gsub(".map$", "", FILE); }
-             END { printf "%s | %-15.15s | %-15.15s | %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}' "${GAMEDIR}/${MAPS[$NUM]}"
+             END { printf "%s | %-15.15s | %-15.15s | %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}' "${MAPS[$NUM]}"
 	    # I remember that it should be centered, but I haven't any ideas how to do it now :( kstn
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
@@ -436,16 +437,16 @@ LoadCustomMap() { # Used in MapCreate()
 	    [1-9] ) NUM=$((NUM + OFFSET));                           # Set NUM == selected map num
 		    [[ ! "${MAPS[$NUM]}" ]] && continue              # Do not try to display absent map
 		    [[ "${MAPS[$NUM]}" == "Deleted" ]] && continue   # Do not try to display deleted map
-		    MAP=$(awk '{ if (NR > 5) { print; }}' "${GAMEDIR}/${MAPS[$NUM]}")
+		    MAP=$(awk '{ if (NR > 5) { print; }}' "${MAPS[$NUM]}")
 		    if grep -q 'Z' <<< "$MAP" ; then                 # Check for errors
-			CustomMapError "${GAMEDIR}/${MAPS[$NUM]}" 
+			CustomMapError "${MAPS[$NUM]}" 
 			MAPS[$NUM]="Deleted"
 			continue 
 		    fi
 		    clear
 		    echo "$MAP"
 		    echo -en "Play this map? [Y/N]: "
-		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${GAMEDIR}/${MAPS[$NUM]}" && return 0; # Return to MapCreate()
+		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		    unset MAP ;;
 	    *     )  break;; 
 	esac
@@ -454,14 +455,9 @@ LoadCustomMap() { # Used in MapCreate()
 }
 
 # FILL THE $MAP file using either default or custom map
-MapCreate() {
-    # CHECK for custom maps 
-    local i=0 # Count of all sheets. We could use ${#array_name[@]}, but I'm not sure if MacOS'll understand that. So let's invent bicycle!
-    # xargs ls -t - sort by date, last played char'll be the first in array
-    for loadMAP in $(find "$GAMEDIR"/ -name '*.map' | sort) ; do # Find all sheets and add to array if any
-	MAPS[((++i))]=$(basename "$loadMAP") # i++ THAN initialize SHEETS[$i]
-    done
-
+MapCreate() {    
+    # # xargs ls -t - sort by date, last played char'll be the first in array
+    MAPS=( $(find "$GAMEDIR"/ -name '*.map' | sort) )     # CHECK for custom maps 
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
 	MakePrompt 'Would you like to play (C)ustom map or (D)efault?'

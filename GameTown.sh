@@ -528,8 +528,11 @@ Marketplace_Grocer() {
 		GX_Marketplace_Grocer
 		ReadLine " How many food items do you want to buy? "
 		QUANTITY="$REPLY"
-		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
-		# TODO Perhaps this could help: stackoverflow.com/questions/806906/how-do-i-test-if-a-variable-is-a-number-in-bash
+		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
+		    echo " I can't sold you $QUANTITY food"
+		    read -n 1
+		    continue
+		fi
 		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_GOLD >= $COST") )); then
 		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
@@ -544,7 +547,11 @@ Marketplace_Grocer() {
 		GX_Marketplace_Grocer
 		ReadLine " How much food you want to buy? "
 		QUANTITY="$REPLY"
-		# TODO check for QUANTITY - if falls if QUANTITY != [0-9]+
+		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
+		    echo " I can't sold you $QUANTITY food"
+		    read -n 1
+		    continue
+		fi
 		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
 		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
 		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")

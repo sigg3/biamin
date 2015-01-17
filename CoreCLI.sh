@@ -148,9 +148,8 @@ CLIarguments_CheckUpdate() {
 CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-    echo "This will add $BIAMIN_RUNTIME/biamin to your .bashrc"
-    read -n 1 -p "Install Biamin Launcher? [Y/N]: " LAUNCHER 2>&1
-    case "$LAUNCHER" in
+    echo -en "This will add $BIAMIN_RUNTIME/biamin to your .bashrc\nInstall Biamin Launcher? [Y/N]: "
+    case "$(Read)" in
 	y | Y ) echo -e "\n# Back in a Minute Game Launcher (just run 'biamin')\nalias biamin='$BIAMIN_RUNTIME/biamin.sh'" >> "$HOME/.bashrc";
 	        echo -e "\nDone. Run 'source \$HOME/.bashrc' to test 'biamin' command." ;;
 	* ) echo -e "\nDon't worry, not changing anything!";;

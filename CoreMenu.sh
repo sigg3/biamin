@@ -55,8 +55,7 @@ LoadGame() {
 
 HighscoreRead() { # Used in Announce() and HighScore()
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
-    local HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
-    local i=1
+    local i=1 HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
     # Read values from highscore file (BashFAQ/001)
     while IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR; do
 	(( i > 10 )) && break	

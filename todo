@@ -56,7 +56,7 @@ TODO 2.0 branch ("survival")
 [x] Rewrite CUSTOM map functionality to allow >1 map
 [x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
 [k] LoadMap() displaying list of maps to choose from ^^
-		I'll playtest the visuals ~ sigg3
+[s]		I'll playtest the visuals ~ sigg3
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also
 [x] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
@@ -76,8 +76,10 @@ TODO 2.0 branch ("survival")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 
 TODO ideas for 3.0 branch ("rpg")
+[?] Internal sub-maps (random?) for locations - caves, etc
 [?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
 [ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
+	May be 1 torch = N dungeon turns is better? kstn
 [ ] Cave: multi-fight allowing >1 enemy in cave.
 [ ] General inventory system (accessed thru 
 [ ] Stuff the player can gather from animals and sell
@@ -85,6 +87,7 @@ TODO ideas for 3.0 branch ("rpg")
 		- Bear:     pelt (fur), food
 		- Dragon:   claws, dragon eyes
 		etc.
+			ATM bear and boar already gives food aren't they? #kstn
 [ ] Allow ENEMY to pickpocket player (ex-FightMode)
 [ ] Towers, castles (maze-like structures)
 [ ] Catacombs (ordered caves)
@@ -116,8 +119,10 @@ TODO ideas for 3.0 branch ("rpg")
 [?]	Hurricane - see lower
 [?] Quests?
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
+[?]	  Find some specific in dungeont (not 10 rat's tail's)
 [?] Messenger?
 [?] Date - internal date not attached to real - one turn - one day
+	Isn't it already realised? O_o? #ksnt
 [.] Weather - changes every turn.
 	The Biamin weather has two systems making a more dynamic experience:
 	a) General, seasonal weather (universal = for entire map)
@@ -133,7 +138,6 @@ TODO ideas for 3.0 branch ("rpg")
 [?]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
 [?] Crime (you're WANTED)? Or perhaps curse?
 [?] World Map (tiles of maps) for a bigger world
-[?] Internal sub-maps (random?) for locations - caves, etc
 [?] Caravans from city to city. 
 [?]	Player can walk with caravan for money (less chances to battle on the road)
 [?]     Player can take work to guard caravan (gets money after, but bigger chances to battle on the road)

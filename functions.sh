@@ -4,10 +4,13 @@
 #                    All program functions go here!                    #
 
 
+#-----------------------------------------------------------------------
+# CustomMapError()
 # PRE-CLEANUP tidying function for buggy custom maps
-# Used in MapCreate(), GX_Place(), NewSector()
+# Used: MapCreate(), GX_Place(), NewSector()
+# Arguments: $ERROR_MAP (string[/path/to/map.map])
+#-----------------------------------------------------------------------
 CustomMapError() { 
-    local ERROR_MAP=$1
     clear
     echo "Whoops! There is an error with your map file!
 Either it contains unknown characters or it uses incorrect whitespace.
@@ -15,17 +18,17 @@ Recognized characters are: x . T @ H C
 Please run game with --map argument to create a new template as a guide.
 
 What to do?
-1) rename $ERROR_MAP to ${ERROR_MAP}.error or
+1) rename $1 to ${1}.error or
 2) delete template file CUSTOM.map (deletion is irrevocable)."
     echo -n "Please select 1 or 2: "
     case "$(Read)" in
-	1 ) mv "${ERROR_MAP}" "${ERROR_MAP}.error" ;
-	    echo -e "\nCustom map file moved to ${ERROR_MAP}.error" ;;
-	2 ) rm -f "${ERROR_MAP}" ;
+	1 ) mv "${1}" "${1}.error" ;
+	    echo -e "\nCustom map file moved to ${1}.error" ;;
+	2 ) rm -f "${1}" ;
 	    echo -e "\nCustom map deleted!" ;;
 	* ) Die "\nBad option! Quitting.." ;;
     esac
-    sleep 4
+    Sleep 4
 }
 
 

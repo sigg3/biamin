@@ -810,7 +810,7 @@ MiniGame_Dice() {
 	
 	# Update pot size
 	DGAME_STAKES_TOTAL=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 ) " ) # Assumes player is with us next round too
-	DGAME_POT=$( bc <<< "$DGAME_POT + $DGAME_STAKES_TOTAL" )		     # If not, the other players won't complain:)
+	DGAME_POT=$( bc <<< "$DGAME_POT + $DGAME_STAKES_TOTAL" )		 # If not, the other players won't complain:)
 
 	(( GAME_ROUND++ ))	# Increment round
 

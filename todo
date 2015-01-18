@@ -73,7 +73,7 @@ TODO 2.0 branch ("survival")
 [x]		ASCII GX_Rest divide into phases
 [s] Almanac version 1 (simple frontpage with trivia)
 [ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
-[ ] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
+[k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 
 TODO ideas for 3.0 branch ("rpg")
 [?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
@@ -92,8 +92,20 @@ TODO ideas for 3.0 branch ("rpg")
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [.] Almanac_Moon
 [.] Almanac_Notes
-[?]	Dicegame Names for all combinations (Dragon Eyes (2), Pillars (12) etc)
+[?]	Dicegame Names for all combinations:
+                 2 - Dragon Eyes
+                 3 - 
+                 4 - Sail
+                 5 - 
+                 6 - 
+                 7 - Axe
+                 8 - Eternity :)
+                 9 - 
+                10 - 
+                11 - Pillars
+		12 -		
 [?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
+[?] Minigame in tavern - shell game
 [ ] Moonphase consequences
 [ ] 	Vargs more likely to be encountered in mountains (for example)
 [ ] Replace bash's pseudo-random RANDOM to smth more random.

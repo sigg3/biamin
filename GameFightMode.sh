@@ -157,7 +157,7 @@ FightMode_DefineInitiative() {
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
 	tput rc && tput ed # restore cursor position && clear to the end of display
 	# Firstly check for pickpocketing
-	if [[ "$FLEE_OPT" == "p" || "$FLEE_OPT" == "P" ]]; then 
+	if [[ "$FLEE_OPT" == [pP] ]]; then 
 	    # TODO check this test
 	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
@@ -173,7 +173,7 @@ FightMode_DefineInitiative() {
 	    fi
 	fi
 	# And secondly for flee
-	if [[ "$FLEE_OPT" == "f" || "$FLEE_OPT" == "F" ]]; then	       
+	if [[ "$FLEE_OPT" == [fF] ]]; then	       
 	    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then

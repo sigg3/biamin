@@ -122,6 +122,30 @@ PressAnyKey() {
     read -sn 1
 } 
 
+#-----------------------------------------------------------------------
+# ReseedRandom()
+# Reseed random numbers generator by date or to $1 if it.
+# Used: CoreRuntime.sh
+# Arguments: (optional) $SEED(int)
+#-----------------------------------------------------------------------
+# TODO:
+#  ? Make separate file with system-depended things
+#  ? Use /dev/random or /dev/urandom
+#-----------------------------------------------------------------------
+# Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
+# RANDOM=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
+#-----------------------------------------------------------------------
+ReseedRandom() {
+    if [[ "$1" ]]; then
+	RANDOM="${1}"
+    else	
+	case "$OSTYPE" in
+	    openbsd* ) RANDOM=$(date '+%S') ;;
+	    *)         RANDOM=$(date '+%N') ;;
+	esac
+    fi
+}
+
 #                                                                      #
 #                                                                      #
 ########################################################################

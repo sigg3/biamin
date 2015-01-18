@@ -31,6 +31,7 @@ read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
                             END { print GAMEDIR, COLOR ;}' "$CONFIG" )
 
 ColorConfig "$COLOR"               # Color configuration
+ReseedRandom			   # Reseed random numbers generator
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
 tput civis			   # Make annoying cursor invisible
 ################################# Main game part ###############################

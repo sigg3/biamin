@@ -75,22 +75,6 @@ Intro() {
 
 ################### GAME SYSTEM #################
 
-#-----------------------------------------------------------------------
-# Reseed RANDOM. Needed only once at start, so moved to separate section
-case "$OSTYPE" in
-    openbsd* ) RANDOM=$(date '+%S') ;;
-    *)         RANDOM=$(date '+%N') ;;
-esac
-
-# TODO:
-#  ? Move it to runtime section
-#  ? Make separate file with system-depended things
-#  ? Use /dev/random or /dev/urandom
-#-----------------------------------------------------------------------
-# SEED=$(head -1 /dev/urandom | od -N 1 | awk '{ print $2 }'| sed s/^0*//)
-# RANDOM=$SEED
-# Suggestion from: http://tldp.org/LDP/abs/html/randomvar.html
-#-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 # RollDice()

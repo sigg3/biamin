@@ -27,7 +27,7 @@ HaveItem() { (( $CHAR_ITEMS > $1 )) && return 0 || return 1; }
 
 #-----------------------------------------------------------------------
 # CheckHotzones()
-# Check if this GPS is in the items array ($HOTZONES[])
+# Check if this GPS is in the items array (${HOTZONE[@]})
 # Arguments: $GPS(string [A-R][1-15])
 #-----------------------------------------------------------------------
 CheckHotzones() {

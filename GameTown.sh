@@ -15,14 +15,21 @@
 #  return $FAILURE_VESSAGE
 # Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
 # Used: Tavern()
+#-----------------------------------------------------------------------
+# IDEA: If we're going to use these in grocer, merchant ++future
+# functions then perhaps it should ONLY be logical (return 1 or 0).  I
+# think it will make the code easier to read later on, see the
+# difference between:
 #
-# IDEA: If we're going to use these in grocer, merchant ++future functions then perhaps it should ONLY be logical (return 1 or 0).
-# I think it will make the code easier to read later on, see the difference between:
 # CheckForGold 3 "You don't have enough gold, silly dwarf"
-# # vs
+#
+# vs
+#
 # CheckForGold 3 && Continue_transaction || echo "You don't have enough gold, silly dwarf!"
-# The first one looks as if the silly dwarf doesn't have enough gold from the get go..?
-# On the other hand, a "purchasing function" might be called for, so we don't duplicate so much work.
+#
+# The first one looks as if the silly dwarf doesn't have enough gold
+# from the get go..?  On the other hand, a "purchasing function" might
+# be called for, so we don't duplicate so much work.
 #-----------------------------------------------------------------------
 CheckForGold()   {
     if (( $(bc <<< "$CHAR_GOLD < $1") )); then
@@ -90,7 +97,6 @@ Tavern() {
 	esac
     done
 } 
-
 
 
 #-----------------------------------------------------------------------
@@ -621,9 +627,13 @@ GoIntoTown() {
     done
 }
 
-#-----------------------------------------------------------------------
-# Tavern Dice game
-#-----------------------------------------------------------------------
+#                                                                      #
+#                                                                      #
+########################################################################
+
+########################################################################
+#                          Tavern Dice game                            #
+#                                                                      #
 
 #-----------------------------------------------------------------------
 # GX_DiceGame() (GPL)
@@ -632,7 +642,7 @@ GoIntoTown() {
 # Used: MiniGame_Dice()
 #-----------------------------------------------------------------------
 GX_DiceGame() { 
-    GDICE_SYM="@" # @ looks nice:)
+    local GDICE_SYM="@" # @ looks nice:)
     clear
     awk ' BEGIN { FS = "" ; OFS = ""; }
 {   # First dice
@@ -683,26 +693,32 @@ EOF
 }
 
 #-----------------------------------------------------------------------
+# $DICE_GAME_CHANCES - Chances (%) of any player picking the resulting
+# number
+# Fixed, so declared as readonly array
+# Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
+# ${DICE_GAME_CHANCES[1]} are dummy
+# Used: MiniGame_Dice()
+#-----------------------------------------------------------------------
+#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12 
+declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
+
+#-----------------------------------------------------------------------
+# $DICE_GAME_WINNINGS - % of POT (initial DGAME_WINNINGS) to be paid
+# out given DGAME_RESULT (odds)
+# Fixed, so declared as readonly array
+# Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
+# ${DICE_GAME_WINNINGS[1]} are dummy
+# Used: MiniGame_Dice()
+#-----------------------------------------------------------------------
+#                dice1+dice2    = 0 1 2   3  4  5  6  7  8  9  10 11 12
+declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
+
+#-----------------------------------------------------------------------
 # MiniGame_Dice()
 # Small dice based minigame.
 # Used: Tavern()
 #-----------------------------------------------------------------------
-# Declare $DICE_GAME_CHANCES
-# Chances (%) of any player picking the resulting number
-# Fixed, so declared as array
-# Player can't dice 0 or 1 so ${DICE_GAME_CHANCES[0]} and
-# ${DICE_GAME_CHANCES[1]} are dummy
-#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12 
-declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
-
-# Declare $DICE_GAME_WINNINGS
-# % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
-# Fixed, so declared as array
-# Player can't dice 0 or 1 so ${DICE_GAME_WINNINGS[0]} and
-# ${DICE_GAME_WINNINGS[1]} are dummy
-#                dice1+dice2    = 0 1  2   3  4  5  6  7  8  9  10 11 12
-declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
-
 MiniGame_Dice() {
     DGAME_PLAYERS=$((RANDOM%6))                              # How many players currently at the table (0-5 players)
     DGAME_STAKES=$( bc <<< "$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE

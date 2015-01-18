@@ -108,7 +108,7 @@ MapNav() {
 # Arguments: $CHAR_GPS(string[A-R][1-15])
 #-----------------------------------------------------------------------
 NewSector_GetScenario() {
-    read -r MAP_X MAP_Y <<< $(GPStoXY "$1") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
+    read -r MAP_X MAP_Y <<< $(GPStoXY "$1")                                   # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
     awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" # MAP_Y+2 MAP_X+2 - padding for borders
 }
 

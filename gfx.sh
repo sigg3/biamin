@@ -413,6 +413,8 @@ EOT
 
 LoadCustomMap() { # Used in MapCreate()
     local LIMIT=9 OFFSET=0 NUM=0
+    MAPS=("dummy" "${MAPS[@]}")	# Add dummy ${MAP[0]}
+    local i=${#MAPS[@]}
     while (true) ; do
 	GX_LoadGame
 	awk '{printf "  | %-15.-15s | %-15.-15s | %-30.-30s\n", $1, $2, $3, $4;}' <<< 'NAME CREATOR DESCRIPTION'

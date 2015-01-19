@@ -111,7 +111,7 @@ BiaminSetup_LoadCharsheet() {
                    if (/^STARVATION:/) { STARVATION = $2 }
                    if (/^TURN:/)        { TURN= $2 }
                    if (/^INV_ALMANAC:/) { INV_ALMANAC = $2 }
-                 }
+                  }
                  END {
                  print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"
                  }' $CHARSHEET )
@@ -129,8 +129,8 @@ BiaminSetup_LoadCharsheet() {
 # BiaminSetup_LoadCharsheet() or BiaminSetup_MakeNewChar()
 #-----------------------------------------------------------------------
 BiaminSetup_MakeBaseChar() {
-# CHARACTER: $CHAR
-# RACE: $CHAR_RACE
+    # CHARACTER: $CHAR
+    # RACE: $CHAR_RACE
     CHAR_BATTLES=0
     CHAR_EXP=0
     CHAR_GPS="$START_LOCATION"
@@ -138,8 +138,8 @@ BiaminSetup_MakeBaseChar() {
     CHAR_ITEMS=0
     CHAR_KILLS=0
     CHAR_HOME="$START_LOCATION"
-# GOLD: $CHAR_GOLD
-# TOBACCO: $CHAR_TOBACCO
+    # GOLD: $CHAR_GOLD
+    # TOBACCO: $CHAR_TOBACCO
     CHAR_FOOD=$( bc <<< "$(RollDice2 11) + 4" ) # Determine initial food stock (D16 + 4) - player has 5 food minimum
     BBSMSG=0
     VAL_GOLD="$INITIAL_VALUE_GOLD" 	 # Initial Value of Currencies
@@ -151,30 +151,30 @@ BiaminSetup_MakeBaseChar() {
 }
 
 BiaminSetup_MakeNewChar() {
-	echo " $CHAR is a new character!"
-	GX_Races
-	read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
-	[[ "$CHAR_RACE" != [1-$MAX_RACES] ]] && CHAR_RACE=1 # fix user's input
-	BiaminSetup_SetRaceAbilities "$CHAR_RACE"
-	echo "You chose to be a $(Toupper $CHAR_RACE_STR)"
+    echo " $CHAR is a new character!"
+    GX_Races
+    read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
+    [[ "$CHAR_RACE" != [1-$MAX_RACES] ]] && CHAR_RACE=1 # fix user's input
+    BiaminSetup_SetRaceAbilities "$CHAR_RACE"
+    echo "You chose to be a $(Toupper $CHAR_RACE_STR)"
 
-	# IDEA v.3 Select Gender (M/F) ?
-	# Most importantly for spoken strings, but may also have other effects.
+    # IDEA v.3 Select Gender (M/F) ?
+    # Most importantly for spoken strings, but may also have other effects.
 
-	# Determine material wealth
-	CHAR_GOLD=$(RollDice2 $OFFSET_GOLD)
-	CHAR_TOBACCO=$(RollDice2 $OFFSET_TOBACCO)
+    # Determine material wealth
+    CHAR_GOLD=$(RollDice2 $OFFSET_GOLD)
+    CHAR_TOBACCO=$(RollDice2 $OFFSET_TOBACCO)
 
-	# If there IS a CUSTOM.map file, ask where the player would like to start
-	# TODO move it to LoadCustomMap()
-	if [[ "$CUSTOM_MAP" ]] ; then
-	    START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
-	    ReadLine " HOME location for custom maps (ENTER for default $START_LOCATION): "
-	    CHAR_LOC="$REPLY"
-	    [[ ! -z "$CHAR_LOC" ]] && BiaminSetup_SanityCheck "$CHAR_LOC" 	# Use user input as start location.. but first SANITY CHECK
-	fi
-	echo " Creating fresh character sheet for $CHAR ..."
-	SaveCurrentSheet
+    # If there IS a CUSTOM.map file, ask where the player would like to start
+    # TODO move it to LoadCustomMap()
+    if [[ "$CUSTOM_MAP" ]] ; then
+	START_LOCATION=$(awk '{ if (/^START LOCATION:/) { print $2; exit; } print "'$START_LOCATION'"; }' <<< "$CUSTOM_MAP" )
+	ReadLine " HOME location for custom maps (ENTER for default $START_LOCATION): "
+	CHAR_LOC="$REPLY"
+	[[ ! -z "$CHAR_LOC" ]] && BiaminSetup_SanityCheck "$CHAR_LOC" 	# Use user input as start location.. but first SANITY CHECK
+    fi
+    echo " Creating fresh character sheet for $CHAR ..."
+    SaveCurrentSheet
 }
 
 #-----------------------------------------------------------------------

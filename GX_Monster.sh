@@ -197,12 +197,11 @@ EOT
 
 EOT
 	    ;;
-	*)
-	    Die "Bug in GX_Monster() with enemy >>>$1<<<"
-	    ;;
+	*)  Die "Bug in GX_Monster() with enemy >>>$1<<<" ;;
     esac
     echo "$HR"
 }
+
 # BACKUPS or SKETCHES
 #
 #	"imp" ) # Original imp October 2014 (f8292a2)
@@ -221,6 +220,7 @@ EOT
 #
 #EOT
 #	    ;;
+
 #                                                                      #
 #                                                                      #
 ########################################################################

@@ -6,7 +6,6 @@
 # Horizontal ruler used almost everywhere in the game
 HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ "
 
-
 GX_Credits() {
     GX_BiaminTitle
     cat <<EOF
@@ -57,13 +56,11 @@ EOF
     read -sn 1
 }
 
-
-
 #-----------------------------------------------------------------------
 # GX_CharSheet()
 # Display Charsheet or Almanac banner
 # Arguments: $DISPLAY_WHAT(int)
-#
+#-----------------------------------------------------------------------
 GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
     [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
     clear
@@ -87,7 +84,6 @@ EOT
     fi
     tput rc
 }
-
 
 #-----------------------------------------------------------------------
 # GX_Death()
@@ -202,7 +198,6 @@ GX_Races() {
 $HR
 EOF
 }
-
 
 #-----------------------------------------------------------------------
 # GX_Calendar()
@@ -406,11 +401,7 @@ EOT
     echo "$HR"
 }
 
-
-
-
 # GFX MAP FUNCTIONS
-
 LoadCustomMap() { # Used in MapCreate()
     local LIMIT=9 OFFSET=0 NUM=0
     MAPS=("dummy" "${MAPS[@]}")	# Add dummy ${MAP[0]}

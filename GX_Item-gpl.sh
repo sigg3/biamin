@@ -133,9 +133,7 @@ EOT
 
 EOT
 	    ;;
-	*)
-	    Die "Bug in GX_Item() with item >>>$1<<<"
-	    ;;
+	*)  Die "Bug in GX_Item() with item >>>$1<<<" ;;
     esac
     echo "$HR"
 }

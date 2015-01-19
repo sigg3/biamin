@@ -41,6 +41,7 @@ declare -r -a MONTH_STR=(
 # Returns $MONTH name and trivia.
 # Arguments: $MONTH(int [0-11])
 # TODO: add check for $1 size
+# TODO: add return current $MONTH name\trivia if [[ ! "$1" ]]
 #-----------------------------------------------------------------------
 MonthString()      { echo ${MONTH_STR[((  $1 * 2      ))]} ;} # Return month $1 name
 MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;} # Return month $1 trivia
@@ -62,6 +63,7 @@ declare -r -a WEEKDAY_STR=(
 # Returns $WEEKDAY name, short and long trivia.
 # Arguments: $WEEKDAY(int [0-6])
 # TODO: add check for $1 size
+# TODO: add return current $WEEKDAY name\trivia if [[ ! "$1" ]]
 #-----------------------------------------------------------------------
 WeekdayString()      { echo ${WEEKDAY_STR[((  $1 * 3      ))]} ;} # Return weekday $1 name
 WeekdayTriviaShort() { echo ${WEEKDAY_STR[(( ($1 * 3) + 1 ))]} ;} # Return weekday $1 short trivia

@@ -84,7 +84,7 @@ Almanac_Notes() {
 # TODO: The Almanac must be "unlocked" in gameplay, e.g. bought from Merchant. This is random (20% chance he has one)
 # TODO: when INV_ALMANAC=1 add NOTES 0-9 in charsheet.
 #-----------------------------------------------------------------------
-Almanac() { 
+Almanac() {
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
     ((WEEKDAY_NUM == 0)) && local ALMANAC_SUB="Ringday $DAY of $MONTH" || local ALMANAC_SUB="$(WeekdayString $WEEKDAY_NUM) $DAY of $MONTH"
@@ -128,7 +128,7 @@ Almanac() {
     # DRAW CALENDAR
     cat <<"EOT"
                                                      ringday
-           Mo Be Mi Ba Me Wa Ri              washday    o    moonday  
+           Mo Be Mi Ba Me Wa Ri              washday    o    moonday
                                                      o . . o
                                          melethday  o . x . o  brenday
                                                      o . . o
@@ -141,10 +141,10 @@ EOT
     #    local WEEKDAY_NUM=$FIRSTDAY
     local MONTH_LENGTH=$(MonthLength "$MONTH_NUM")
     local ARRAY=()
-    local COUNT=0    
+    local COUNT=0
 
     SPACES=$(( (FIRSTDAY + 6) % 7 ))
-    while ((SPACES--)); do 
+    while ((SPACES--)); do
 	ARRAY[((COUNT))]+="   ";
     done
 
@@ -157,7 +157,7 @@ EOT
     COUNT=0
     local YPOS=11
     while (true) ; do
-	tput cup $YPOS 11 
+	tput cup $YPOS 11
 	printf "%s\n" "${ARRAY[$COUNT]}";
 	[[ ${ARRAY[((++COUNT))]} ]] || break
 	(( YPOS++ ))
@@ -174,7 +174,7 @@ EOT
 	 12 | 11 ) MvAddStr 9 15 "${MONTH^}" ;;
 	 10 | 9  ) MvAddStr 9 16 "${MONTH^}" ;;
 	 8       ) MvAddStr 9 17 "${MONTH^}" ;;
-     esac 
+     esac
      tput rc
 
      # Magnify WEEKDAY in HEPTOGRAM

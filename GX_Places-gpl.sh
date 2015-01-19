@@ -8,7 +8,7 @@
 # Arguments: $SCENARIO(char)
 # Used: NewSector(), MapNav()
 #-----------------------------------------------------------------------
-GX_Place() {     
+GX_Place() {
     clear
     case "$1" in
 	H ) PLACE="Home" ;
@@ -22,7 +22,7 @@ EOT
 	x ) PLACE="Mountain" ;
 	    cat <<"EOT"
                         YOU'RE TRAVELLING IN THE MOUNTAINS
-                   
+
                The calls of the wilderness turn your blood to ice!
 
 EOT
@@ -46,7 +46,7 @@ EOT
 	@ ) PLACE="Forest" ;
 	    cat <<"EOT"
                               YOU'RE IN THE WOODS
-                            
+
                    It feels like something is watching you...
 
 EOT
@@ -54,7 +54,7 @@ EOT
 	C ) PLACE="Oldburg Castle" ;
 	    cat <<"EOT"
                                 OLDBURG CASTLE
-                                
+
                  Welcome to the Home of the King, the Royal Court
                            and other silly persons.
 

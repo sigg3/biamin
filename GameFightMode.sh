@@ -9,7 +9,7 @@
 # Used : NewSector(), Rest()
 #-----------------------------------------------------------------------
 CheckForFight() {
-    RollDice 100        # Find out if we're attacked 
+    RollDice 100        # Find out if we're attacked
     case "$1" in        # FightMode() if RollForEvent return 0
 	H ) RollForEvent 1  "fight" && FightMode ;;
 	x ) RollForEvent 50 "fight" && FightMode ;;
@@ -24,7 +24,7 @@ CheckForFight() {
 #-----------------------------------------------------------------------
 # FightMode_ResetFlags()
 # Reset FightMode flags to default
-# $FIGHTMODE: FightMode flag. Also used in CleanUp()'s penaly for exit 
+# $FIGHTMODE: FightMode flag. Also used in CleanUp()'s penaly for exit
 #  during battle
 #	0 - PLAYER is not fighting now
 #	1 - PLAYER is fighting now
@@ -33,20 +33,20 @@ CheckForFight() {
 #	"pl" - PLAYER
 # $LUCK: how many EXP player will get for this battle
 #	0 - ENEMY was slain
-#	1 - ENEMY managed to FLEE 
+#	1 - ENEMY managed to FLEE
 #	2 - PLAYER died but saved by guardian angel or 1000 EXP
 #	3 - PLAYER managed to FLEE during fight!
-# $PICKPOCKET: how many GOLD, TOBACCO and EXP for pickpocketing player 
+# $PICKPOCKET: how many GOLD, TOBACCO and EXP for pickpocketing player
 #  will get for this battle
 #	0 - no pickpocketing was (only loot if any)
 #	1 - successful pickpocketing with loot ($EN_PICKPOCKET_EXP + loot)
 #	2 - successful pickpocketing without loot (only $EN_PICKPOCKET_EXP)
 #-----------------------------------------------------------------------
 FightMode_ResetFlags() {
-    FIGHTMODE=1	  
+    FIGHTMODE=1
     NEXT_TURN="pl"
-    LUCK=0        
-    PICKPOCKET=0  
+    LUCK=0
+    PICKPOCKET=0
 }
 
 #-----------------------------------------------------------------------
@@ -57,7 +57,7 @@ FightMode_ResetFlags() {
 #-----------------------------------------------------------------------
 FightMode_AddBonuses() {
     HaveItem "$QUICK_RABBIT_REACTION"   && ((ACCURACY++))
-    HaveItem "$FLASK_OF_TERRIBLE_ODOUR" && ((EN_FLEE++))    
+    HaveItem "$FLASK_OF_TERRIBLE_ODOUR" && ((EN_FLEE++))
 }
 
 #-----------------------------------------------------------------------
@@ -66,7 +66,7 @@ FightMode_AddBonuses() {
 #  BEFORE fight loop!)
 #-----------------------------------------------------------------------
 FightMode_RemoveBonuses() {
-    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY--)) 
+    HaveItem "$QUICK_RABBIT_REACTION" && ((ACCURACY--))
 }
 
 #-----------------------------------------------------------------------
@@ -90,16 +90,16 @@ FightMode_DefineEnemy() {
 	@ ) ((DICE <= 5 )) && ENEMY="bear"    || ((DICE <= 15)) && ENEMY="orc"    || ((DICE <= 30)) && ENEMY="boar"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 70)) && ENEMY="imp" || ENEMY="bandit" ;; #  5, 10, 15, 20, 20, 30
 	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
     esac
-    
+
     ########################################################################
     # TEST NEW EXP SYSTEM
     # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn # Good idea! Sigge
     case "$ENEMY" in
-	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_DEFEATED_EXP=20   ;; 
+	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_DEFEATED_EXP=20   ;;
 	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_DEFEATED_EXP=10   ;;
-	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_DEFEATED_EXP=30   ;; 
+	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_DEFEATED_EXP=30   ;;
 	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; EN_DEFEATED_EXP=40   ;;
-	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_DEFEATED_EXP=50   ;; 
+	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_DEFEATED_EXP=50   ;;
 	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; EN_DEFEATED_EXP=100  ;;
 	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; EN_DEFEATED_EXP=150  ;;
 	dragon )  EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=2 ; EN_HEALTH=150 ; EN_FLEE_THRESHOLD=50 ; EN_DEFEATED_EXP=180  ;;
@@ -113,7 +113,7 @@ FightMode_DefineEnemy() {
     ########################################################################
 
     ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightMode_FightTable()
-    
+
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
 	bandit )  EN_GOLD=20 ; EN_TOBACCO=10 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=15  ;; # 2.0 Gold, 1.0 tobacco  >  Min: 0.2 Gold, 0.1 Tobacco
@@ -122,13 +122,13 @@ FightMode_DefineEnemy() {
 	orc )     EN_GOLD=15 ; EN_TOBACCO=25 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=35  ;; # 1.5 Gold, 2.5 Tobacco  >  Min: 1.5 Gold, 2.5 Tobacco
 	varg )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=70   ; EN_PICKPOCKET_EXP=0   ;;
 	mage )    EN_GOLD=50 ; EN_TOBACCO=60 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=100 ;; # 5.0 gold, 6.0 tobacco  >  Min: 0.5 Gold, 0.6 Tobacco
-	dragon )  EN_GOLD=30 ; EN_TOBACCO=0  ; EN_FOOD=30   ; EN_PICKPOCKET_EXP=100 ;; 
+	dragon )  EN_GOLD=30 ; EN_TOBACCO=0  ; EN_FOOD=30   ; EN_PICKPOCKET_EXP=100 ;;
 	chthulu ) EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=90   ; EN_PICKPOCKET_EXP=400 ;;
 	bear )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=100  ; EN_PICKPOCKET_EXP=0   ;;
 	imp )     EN_GOLD=5  ; EN_TOBACCO=0  ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=10  ;;
     esac
 
-    # Loot: Determine loot type and size 
+    # Loot: Determine loot type and size
     EN_GOLD=$(    bc <<< "scale=2; if ($(RollDice2 100) > $EN_GOLD   ) 0 else $(RollDice2 10) * ($EN_GOLD / 100)" )
     EN_TOBACCO=$( bc <<< "scale=2; if ($(RollDice2 100) > $EN_TOBACCO) 0 else $(RollDice2 10) * ($EN_TOBACCO / 100)" )
     if (( $(RollDice2 100) <= EN_FOOD )) ; then # Loot: Food table for animal creatures
@@ -157,12 +157,12 @@ FightMode_DefineInitiative() {
 	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
 	tput rc && tput ed # restore cursor position && clear to the end of display
 	# Firstly check for pickpocketing
-	if [[ "$FLEE_OPT" == [pP] ]]; then 
+	if [[ "$FLEE_OPT" == [pP] ]]; then
 	    # TODO check this test
-	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket		    
+	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
-	    else 
+	    else
 		echo -en "\nYou successfully stole the ${ENEMY}'s pouch, "        # "steal success" take loot
 		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in                  # bc return 1 if true, 0 if false
 	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
@@ -173,7 +173,7 @@ FightMode_DefineInitiative() {
 	    fi
 	fi
 	# And secondly for flee
-	if [[ "$FLEE_OPT" == [fF] ]]; then	       
+	if [[ "$FLEE_OPT" == [fF] ]]; then
 	    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
@@ -181,9 +181,9 @@ FightMode_DefineInitiative() {
 		LUCK=3
 		unset FIGHTMODE
 	    else
-		echo "You rolled $DICE and lost your initiative.." 
+		echo "You rolled $DICE and lost your initiative.."
 		NEXT_TURN="en"
-	    fi 
+	    fi
 	fi
     fi
     Sleep 2
@@ -194,7 +194,7 @@ FightMode_DefineInitiative() {
 # Display enemy's GX, player and enemy abilities
 # Used: FightMode()
 #-----------------------------------------------------------------------
-FightMode_FightTable() {  
+FightMode_FightTable() {
     tput rc && tput ed # restore cursor position && clear to the end of display  (GX_Monster "$ENEMY" is already displayed)
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
@@ -205,7 +205,7 @@ FightMode_FightTable() {
 # Display Formula in Fighting
 # Arguments: $DICE_SIZE(int), $FORMULA(string), $SKILLABBREV(string)
 #-----------------------------------------------------------------------
-FightMode_FightFormula() { 
+FightMode_FightFormula() {
     local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
     (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
     case "$FORMULA" in
@@ -215,7 +215,7 @@ FightMode_FightFormula() {
 	ge )    FORMULA=">=" ;;
 	le )    FORMULA="<=" ;;
 	times ) FORMULA="x " ;;
-    esac   
+    esac
     echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( " # skill & roll
     # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
     # determined in the if and cases of the Fight Loop, so don't repeat here.
@@ -263,7 +263,7 @@ FightMode_CharTurn() {
 		((EN_HEALTH -= DAMAGE))
 	    else
 		echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
-	    fi		    
+	    fi
     esac
 }
 
@@ -278,7 +278,7 @@ FightMode_EnemyTurn() {
 	    unset FIGHTMODE
 	    sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
-	fi		
+	fi
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     echo "It's the ${ENEMY}'s turn"
@@ -313,7 +313,7 @@ FightMode_CheckForDeath() {
 	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
 	else # DEATH!
 	    echo "Gain 1000 Experience Points to achieve magic healing!"
-	    Sleep 4		
+	    Sleep 4
 	    Death "$DEATH_FIGHT" # And CleanUp
 	fi
 	LUCK=2
@@ -329,7 +329,7 @@ FightMode_CheckForDeath() {
 FightMode_CheckForExp() {
     case "$1" in
 	1)  # ENEMY managed to FLEE
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!" 
+	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!"
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
@@ -337,7 +337,7 @@ FightMode_CheckForExp() {
 	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
 	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
 	*)  # ENEMY was slain!
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!" 
+	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!"
 	    ((CHAR_EXP += EN_DEFEATED_EXP))
 	    ((CHAR_KILLS++))
     esac
@@ -351,7 +351,7 @@ FightMode_CheckForExp() {
 # Arguments: $PICKPOCKET(int)
 #-----------------------------------------------------------------------
 FightMode_CheckForPickpocket() {
-    case "$1" in 
+    case "$1" in
 	0 ) # no pickpocketing was
 	    if ((LUCK == 0)); then # Only if $ENEMY was slain
 		echo -n "Searching the dead ${ENEMY}'s corpse, you find "
@@ -360,7 +360,7 @@ FightMode_CheckForPickpocket() {
 		else
 		    (( $(bc <<< "$EN_GOLD > 0") )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) || EN_GOLD="no"
 		    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"
-		    echo "$EN_GOLD gold and $EN_TOBACCO tobacco"			
+		    echo "$EN_GOLD gold and $EN_TOBACCO tobacco"
 		fi
 	    fi ;;
 	1 ) # loot and EXP
@@ -378,7 +378,7 @@ FightMode_CheckForPickpocket() {
 
 #-----------------------------------------------------------------------
 # FightMode_CheckForLoot()
-# Check which loot player will take from this enemy 
+# Check which loot player will take from this enemy
 # TODO: check for boar's tusks etc (3.0)
 #-----------------------------------------------------------------------
 FightMode_CheckForLoot() {
@@ -411,9 +411,9 @@ FightMode() {	# Used in NewSector() and Rest()
     ########################################################################
     FightMode_CheckForDeath	               # Check if player is alive
     FightMode_FightTable	               # Display enemy GX last time
-    FightMode_CheckForExp "$LUCK"	       # 
-    FightMode_CheckForPickpocket "$PICKPOCKET" # 
-    FightMode_CheckForLoot	               # 
+    FightMode_CheckForExp "$LUCK"	       #
+    FightMode_CheckForPickpocket "$PICKPOCKET" #
+    FightMode_CheckForLoot	               #
     SaveCurrentSheet
     Sleep 6
     DisplayCharsheet

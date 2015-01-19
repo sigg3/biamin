@@ -12,13 +12,13 @@ GX_Item() {
     clear
     echo "                                  ITEM FOUND!"
     case "$1" in
-	"$GIFT_OF_SIGHT") 
+	"$GIFT_OF_SIGHT")
 	    cat <<"EOT"
                                  Gift of Sight
 
     You give aid to an old woman, carry her firewood and water from the
      stream, and after a few days she reveals herself as a White Witch!
-	
+
      She gives you a blessing and the Gift of Sight in return for your help.
      "The Gift of Sight," she says, "will aide you as you aided me."
 
@@ -41,7 +41,7 @@ EOT
      fetch you a good price at the market. Then you bid each other farewell.
 
      +1 Healing, Chance of Healing Sleep when you are resting.
-	
+
 EOT
 	    ;;
 	"$GUARDIAN_ANGEL")
@@ -55,7 +55,7 @@ EOT
 
 EOT
 	    ;;
-	"$FAST_MAGIC_BOOTS") 
+	"$FAST_MAGIC_BOOTS")
 	    cat <<"EOT"
                                Fast Magic Boots
 
@@ -64,9 +64,9 @@ EOT
      After a day and a night in captivity you decide to counter his riddles
      with one of your own: "What Creature of the Forest is terribly Red and
      Whiny, and Nothing Else without the Shiny?"
-     
+
      The gnome ponders to and fro, talking to himself and spitting, as he gets
-     more and more agitated. At last, furious, he demands "Show me!" and 
+     more and more agitated. At last, furious, he demands "Show me!" and
      releases you from the spell. Before he knows it you've stripped off his
      boots and are running away, magically quicker than your normal pace.
 
@@ -108,7 +108,7 @@ EOT
 	    cat <<"EOT"
                              Two-Handed Broadsword
 
-     From the thickest of forests you come upon and traverse a huge unmarked 
+     From the thickest of forests you come upon and traverse a huge unmarked
      marsh and while crossing, you stumble upon trinkets, shards of weaponry
      and old equipment destroyed by the wet. Suddenly you realize that you are
      standing on the remains of a centuries old, long forgotten battlefield.
@@ -117,9 +117,9 @@ EOT
      chariot, crashed on retreat, its knight pinned under one of its wheels.
      You salvage a beautiful piece of craftmanship from the wreckage;
      a powerful two-handed broadsword, untouched by time.
-		
+
      +1 Strength
-	
+
 EOT
 	    ;;
 	"$STEADY_HAND_BREW")

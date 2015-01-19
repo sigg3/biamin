@@ -14,13 +14,13 @@ CheckDependencies() {
 
     # TODO check BASH version
     # TODO check screen size (80x24 minimum)
-    
+
     # CRITICAL
     for PROGRAM in "tput" "awk" "bc" "sed" "printf" "critical program 1" "critical program 2"
     do
 	IsInstalled "$PROGRAM" || CRITICAL+=("$PROGRAM")
     done
-    
+
     # NONCRITICAL
     for PROGRAM in "curl" "wget" "non-critical program 1" "non-critical program 2"
     do
@@ -40,9 +40,9 @@ CheckDependencies() {
 	    [[ "${NONCRITICAL[i]}" ]] || break
 	    echo -e "\tOptional:\t${NONCRITICAL[i]}";
 	done
-	
-	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1	
-	
+
+	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1
+
     fi
 
     # TODO update old saves

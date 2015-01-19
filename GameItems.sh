@@ -41,7 +41,7 @@ CheckHotzones() {
 # Used: ItemWasFound(), Intro()
 #-----------------------------------------------------------------------
 HotzonesDistribute() {
-    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))               # Scatter only absent items 
+    local ITEMS_2_SCATTER=$(( MAX_ITEMS - $1 ))               # Scatter only absent items
     HOTZONE=()                                                # Reset HOTZONE
     while ((ITEMS_2_SCATTER > 0 )) ; do			      # If player already have all items, ITEMS_2_SCATTER'll be 0
 	local ITEM=$(XYtoGPS $(RollDice2 18) $(RollDice2 15)) # Create random item GPS

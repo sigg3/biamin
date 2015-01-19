@@ -6,21 +6,21 @@
 # MapCreateCustom()
 # Map template generator (CLI arg function)
 #-----------------------------------------------------------------------
-MapCreateCustom() { 
+MapCreateCustom() {
     echo -n "Create custom map template? [Y/N]: "
     case $(Read) in
 	y | Y) echo -e "\nCreating custom map template.." ;;
 	*)     echo -e "\nNot doing anything! Quitting.." ;
 	       Exit 0 ;;
     esac
-	    
+
     cat <<"EOT" > "${GAMEDIR}/CUSTOM_MAP.template"
 NAME: Despriptive name of map goes here
 CREATOR: Name of the map creator
 DESCRIPTION: Short and not exceeding 50 chars
 START LOCATION: Where person'll start?
 MAP:
-       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
+       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R
    #=========================================================================#
  1 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
  2 )   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z   Z (
@@ -70,20 +70,20 @@ Announce() {
     local SCORE_TO_PRINT="$REPLY"
 
     # Check $SCORE_TO_PRINT
-    IsInt "$SCORE_TO_PRINT"                             || Die "\n${SCORE_TO_PRINT} is not int. Quitting.."    
+    IsInt "$SCORE_TO_PRINT"                             || Die "\n${SCORE_TO_PRINT} is not int. Quitting.."
     ((SCORE_TO_PRINT < 1 || SCORE_TO_PRINT > 10 ))      && Die "\nOut of range. Please select an entry between 1-10. Quitting.."
     [[ "$(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")" ]] || Die "\nThere is no $(Ordial $SCORE_TO_PRINT) line in HIGHSCORE file. Quitting.."
-    
+
     ANNOUNCE_ADJECTIVES=("honorable" "fearless" "courageos" "brave" "legendary" "heroic")
     ADJECTIVE=${ANNOUNCE_ADJECTIVES[RANDOM%6]}
 
     IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR <<< $(sed -n "${SCORE_TO_PRINT}"p "$HIGHSCORE")
     HIGH_RACES=("" "Human" "Elf" "Dwarf" "Hobbit") # ${HIGH_RACES[0]} is dummy
     highRACE=${HIGH_RACES["$highRACE"]}
-    
+
     (( highBATTLES == 1 )) && highBATTLES+=" battle" || highBATTLES+=" battles"
     (( highITEMS == 1 ))   && highITEMS+=" item"     || highITEMS+=" items"
-    
+
     ANNOUNCEMENT="$(Capitalize "$highCHAR") fought $highBATTLES, $highKILLS victoriously, won $highEXP EXP and $highITEMS. This $ADJECTIVE $highRACE was finally slain the $highDATE of $highMONTH in the $highYEAR Cycle."
     GX_HighScore
 
@@ -105,7 +105,7 @@ CLIarguments_CheckUpdate() {
     REPO_SRC="https://gitorious.org/back-in-a-minute/code/raw/biamin.sh"
     GX_BiaminTitle
     echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
-    REPO=$( mktemp $GAMEDIR/repo.XXXXXX ) 
+    REPO=$( mktemp $GAMEDIR/repo.XXXXXX )
     if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
 	wget -q -O "$REPO" "$REPO_SRC" || Die "DOWNLOAD ERROR! No internet with wget"
     elif [[ $(which curl 2>/dev/null) ]]; then # Try curl, -L - for redirect
@@ -130,7 +130,7 @@ CLIarguments_CheckUpdate() {
 			mv "$BIAMIN_RUNTIME" "${BIAMIN_RUNTIME}.bak" # backup current file
 			mv "$REPO" "$BIAMIN_RUNTIME"
 			chmod +x "$BIAMIN_RUNTIME" || Die "PERMISSION ERROR! Couldn't make biamin executable"
-			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!" 
+			echo "Run 'sh $BIAMIN_RUNTIME --install' to add launcher!"
 			echo "Current file moved to ${BIAMIN_RUNTIME}.bak"
 			;;
 		* ) echo -e "\nNot updating! Removing temporary file ..";
@@ -147,7 +147,7 @@ CLIarguments_CheckUpdate() {
 # Add alias for biamin in $HOME/.bashrc
 #-----------------------------------------------------------------------
 CreateBiaminLauncher() {
-    grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!" 
+    grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!"
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
     echo -en "This will add $BIAMIN_RUNTIME/biamin to your .bashrc\nInstall Biamin Launcher? [Y/N]: "
     case "$(Read)" in
@@ -162,7 +162,7 @@ CreateBiaminLauncher() {
 # ParseCLIarguments()
 # Parse CLI arguments if any
 #-----------------------------------------------------------------------
-ParseCLIarguments() {    
+ParseCLIarguments() {
     case "$1" in
 	-a | --announce ) Announce ;;
 	-i | --install )  CreateBiaminLauncher ;;
@@ -192,7 +192,7 @@ ParseCLIarguments() {
 	--usage | * )
 	    echo "Usage: biamin or ./biamin.sh"
 	    echo "  (NO ARGUMENTS)      display this usage text and exit"
-	    echo "  -p --play or p      PLAY the game \"Back in a minute\""	    
+	    echo "  -p --play or p      PLAY the game \"Back in a minute\""
 	    echo "  -a --announce       DISPLAY an adventure summary for social media and exit"
 	    echo "  -i --install        ADD biamin.sh to your .bashrc file"
 	    echo "     --map            CREATE custom map template with instructions and exit"

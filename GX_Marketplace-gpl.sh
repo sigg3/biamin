@@ -2,7 +2,7 @@
 #                       Marketplace-related ASCII                      #
 #                             (gpl-version)                            #
 
-GX_Marketplace() { 
+GX_Marketplace() {
     clear
     echo "Several Town shoppes view'd from end o' the street"
     echo "$HR"
@@ -19,7 +19,7 @@ GX_Marketplace_Grocer() {
     echo "                                  THE GROCER"
     echo ""
     echo "        \"Welcome to my humble store, traveller, tell me what you need!"
-    echo "           If we don't have it, I suspect nobody else will neither.\""           
+    echo "           If we don't have it, I suspect nobody else will neither.\""
     echo "$HR"
     if [[ "$@" ]]; then
 	echo "                   1 FOOD costs $1 Gold or $2 Tobacco."
@@ -30,28 +30,28 @@ GX_Marketplace_Grocer() {
 #-----------------------------------------------------------------------
 # GX_Marketplace_Merchant()
 # GPL WORKAROUND (FOR THE tput TEXT)
-# Used: Marketplace_Merchant() 
+# Used: Marketplace_Merchant()
 #-----------------------------------------------------------------------
-GX_Marketplace_Merchant() { 
+GX_Marketplace_Merchant() {
     clear
     cat <<"EOT"
-                                                                   
-                                                                   
-              THE MERCHANT                                             
-                                                                      
-                                       ,~-~-~-~-~-~-~-~-~-~-~-~.  
-                                       |                       |      
-                                       | You marvel at the     |     
+
+
+              THE MERCHANT
+
+                                       ,~-~-~-~-~-~-~-~-~-~-~-~.
+                                       |                       |
+                                       | You marvel at the     |
                                        | fine goods placed     |
-                                       | around the merchant's |   
+                                       | around the merchant's |
                                        | feet; spices, fabrics,|
                                        | & rare items from all |
                                        | over the continent.   |
                                        l_______________________;
-                                       
-                                      
-                                            
-                                                        
+
+
+
+
 EOT
     echo "$HR"
 }

@@ -12,29 +12,29 @@ GX_DiceGame_Table() {
     case "$1" in
 	0 ) # Empty table, come back later
 	    cat <<"EOT"
-                                      
-                                                                            
-                                                     
-                           ________                                        
-                          ||       |       ~.                        
-                   _______ll_______l_______||______________    
-                  :\  __   __  _   _____ ,-jl-. _  _____   \     
+
+
+
+                           ________
+                          ||       |       ~.
+                   _______ll_______l_______||______________
+                  :\  __   __  _   _____ ,-jl-. _  _____   \
                   ':\  ____  _   ____   _`~--~' ___    ___  \
-                  |':\_______________________________________\ 
+                  |':\_______________________________________\
                   ||'L.______________________________________]
 EOT
         ;;
 	* )
 	    cat <<"EOT"
                              __,"#`._
-                           <' ;_   _; `>                                    
-                            `-_______~'              
-                           .~';;,_;; ~.      ____                        
-                          /    ;:;'    \    `----'                 
-                   ______(  (   ' __,7  )___ )  ( _________    
-                  :\  __  \__\   (/____/ _  (____) _____   \     
+                           <' ;_   _; `>
+                            `-_______~'
+                           .~';;,_;; ~.      ____
+                          /    ;:;'    \    `----'
+                   ______(  (   ' __,7  )___ )  ( _________
+                  :\  __  \__\   (/____/ _  (____) _____   \
                   ':\  ____ (_7  * *    ___________    ___  \
-                   ':\_______________________________________\ 
+                   ':\_______________________________________\
                     'L.______________________________________]
 EOT
 	    ;;
@@ -50,7 +50,7 @@ GX_DiceGame_Instructions() {
   We're playing Charm the Dice, friend. You put down your stake each round,
   which go in the pot on the table. Ask your deity for which number to bet,
   ranging from Dragon Eyes (2) to Pillars (12), and pray she smiles on you.
- 
+
   Some numbers are more blessed than others. Lucky 7 being the safest bet,
   it pays out the least, while Dragon Eyes and Pillars pay out the full pot!
   If no one wins the round, the stakes go on into the next round. No one can

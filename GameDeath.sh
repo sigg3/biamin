@@ -19,25 +19,25 @@ ResetStarvation() {
     if (( STARVATION >= 8 )) ; then
 	case "$CHAR_RACE" in
 	    1 | 3 ) (( STRENGTH++ ));
-		    echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;; 
+		    echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;;
 	    2 | 4 ) (( ACCURACY++ ));
-		    echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;; 
-	esac		    
+		    echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
+	esac
     fi
     STARVATION=0
 }
 
 #-----------------------------------------------------------------------
 # CheckForStarvation()
-# Food check 
+# Food check
 # Used: NewSector()
 # TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
 # TODO: make lesser sleep after successful check
 #-----------------------------------------------------------------------
-CheckForStarvation(){ 
+CheckForStarvation(){
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
-	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .." 
+	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .."
 	((STARVATION)) && ResetStarvation
     else
 	((STARVATION++))
@@ -51,12 +51,12 @@ CheckForStarvation(){
 	esac
 	# Starvation penalty -5HP per turn
 	(( CHAR_HEALTH -= 5 ))
-	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" 
-	
+	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)"
+
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in
 		1 | 3 ) (( STRENGTH-- ));
-			echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;; 
+			echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;;
 		2 | 4 ) (( ACCURACY-- ));
 			echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
 	    esac
@@ -76,13 +76,13 @@ CheckForStarvation(){
 # Used: FightMode()
 # Arguments: $TYPE_OF_DEATH(int)
 #-----------------------------------------------------------------------
-Death() { 
+Death() {
     GX_Death "$1"
     echo " The $BIAMIN_DATE_STR:"
     echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
     local COUNTDOWN=20
     while ((COUNTDOWN--)); do
-	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence." 
+	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence."
     	read -sn 1 -t 1 && break
     done
     unset COUNTDOWN

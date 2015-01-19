@@ -34,7 +34,7 @@ WorldWeatherSystem() {
 	case "$MOVE_STORM_CORE" in
 	    1 ) (( WS_CORE_X++ )) ;; # Moving North
 	    2 ) (( WS_CORE_X-- )) ;; # Moving South
-	    3 ) (( WS_CORE_Y++ )) ;; # Moving East 
+	    3 ) (( WS_CORE_Y++ )) ;; # Moving East
 	    4 ) (( WS_CORE_Y-- )) ;; # Moving West
 	    # 5 ) Storm stays put ;;
 	esac
@@ -46,17 +46,17 @@ WorldWeatherSystem() {
 	    WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
 	fi
     fi
-    
+
     # Additional conditions for core
     WorldWeatherSystemHumidity 1 2
-    
-    
-    if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" <= 4 ] ; then	
+
+
+    if [ -z "$MOVE_STORM_CORE" ] || [ "$MOVE_STORM_CORE" <= 4 ] ; then
 	# WEATHER SYSTEM NEXUS (12 storm tentacles)
 	# 	WEATHER[0,3,6,9....60] == Affected GPS locations
 	# 	WEATHER[1,4,7,10...61] == Weather severity at locations
 	# 	WEATHER[2,5,8,11...62] == Humidity at locations
-	
+
 	# Weather system illustrated as placed on map with all fields filled in
 	#                               LEGEND        TYPE                            STRENGTH
 	#    36 | 51 | 54 | 15 | 27     0           = core                          = random
@@ -65,10 +65,10 @@ WorldWeatherSystem() {
 	#   ------------------------    27,30,33,36 = greatgrandchild N,S,E,W       = grandchild -1 OR grandchild
 	#       | 12 |  0 |  9 |        39,42,45,48 = inner turbulence NW,NE,SW,SE  = core  -1
 	#   ------------------------    51,54,57,60 = outer turbulence NW,N,S,SE    = core  -3
-	#       | 45 |  6 | 48 | 21 
+	#       | 45 |  6 | 48 | 21
 	#   ------------------------
-	#    30 | 18 | 57 | 60 | 33 
-	
+	#    30 | 18 | 57 | 60 | 33
+
 	# WEATHER SYSTEM CHILDREN
 	local WS_PARENT_X WS_PARENT_Y WS_CHILD_X WS_CHILD_Y # For GPS calculations
 	local WS_CHILD_SEVERITY WS_CHILD_HUMIDITY WS_PARENT_SEVERITY WS_TURBULENCE=0 # Severity, humidity, severity, turbulence boolean
@@ -123,8 +123,8 @@ WorldWeatherSystem() {
 	    WorldWeatherSystemHumidity $WS_CHILD_SEVERITY $WS_CHILD_HUMIDITY # Function saves humidity
 	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
-	
-	# TODO possible simplification: 
+
+	# TODO possible simplification:
 	# This could make all the number stuff irrelevant:) just add to array WEATHER=("${WEATHER[@]}" "$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y")" ...
 	#
 	# Add an element to an existing Bash Array
@@ -138,7 +138,7 @@ WorldWeatherSystem() {
     # AIX
 	#
 	# In the array called Unix, the elements ‘AIX’ and ‘HP-UX’ are added in 7th and 8th index respectively
-	
+
 	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather)
 	# TODO need to sort out this array..
 	declare -a WEATHER_AFFECTED
@@ -195,7 +195,7 @@ WorldWeatherReport() {
 	done
 	local WEATHER_SYSTEM_SEVERITY=$[[ $WEATHER_SYSTEM_ID + 1 ]]
 	local WEATHER_SYSTEM_HUMIDITY=$[[ $WEATHER_SYSTEM_ID + 2 ]]
-	
+
 	# Core severity string (Beaufort scale)
 	case "${WEATHER[$WEATHER_SYSTEM_SEVERITY]}" in
 	    1 )  WEATHER_REPORT="Calm"            ;;
@@ -211,7 +211,7 @@ WorldWeatherReport() {
 	    11 ) WEATHER_REPORT="Storm"           ;;
 	    12 | 13 | 14 | 15 | 16 | 17 | 18 ) WEATHER_REPORT="Hurricane" ;;
 	esac
-	
+
 	# Core Humidity conditions
 	case "${WEATHER[$WEATHER_SYSTEM_HUMIDITY]}" in
 	    0 ) WEATHER_REPORT+=" and dry"   ;;
@@ -228,7 +228,7 @@ WorldWeatherReport() {
 # WorldPriceFixing()
 # Used: WorldChangeEconomy(), Intro()
 #-----------------------------------------------------------------------
-WorldPriceFixing() { 
+WorldPriceFixing() {
     local VAL_FOOD=1 # Why constant? Player eats .25/day, so it's always true that 1 FOOD = 4 turns.
     PRICE_FxG=$(bc <<< "scale=2; $VAL_FOOD / $VAL_GOLD")
     PRICE_FxT=$(bc <<< "scale=2; $VAL_FOOD / $VAL_TOBACCO") # Price of 1 Food in Tobacco
@@ -243,11 +243,11 @@ WorldPriceFixing() {
 # CheckForWorldChangeEconomy()
 # Used: NewSector()
 #-----------------------------------------------------------------------
-CheckForWorldChangeEconomy() {  
+CheckForWorldChangeEconomy() {
     (( --WORLDCHANGE_COUNTDOWN > 0 )) && return 0 # Decrease $WORLDCHANGE_COUNTDOWN then check for change
     (( $(RollDice2 100) > 15 )) && return 0       # Roll to 15% chance for economic event transpiring or leave immediately
     BBSMSG=$(RollDice2 "$MAX_BBSMSG")             # = Number of possible scenarios (+ default 0) and Update BBSMSG
-    
+
     case "$BBSMSG" in
     	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
     	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
@@ -265,13 +265,13 @@ CheckForWorldChangeEconomy() {
     esac
 
     case "$UNIT" in # Which market is affected and restrict to 0.25 min
-	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;; 
-	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;       
+	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
+	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
 	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${BBSMSG}<<<" ;;
     esac
     WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
-    WorldPriceFixing         # Update all prices    
+    WorldPriceFixing         # Update all prices
 }
 
 # Other WorldChangeFUNCTIONs go here:)
@@ -287,14 +287,14 @@ MAX_BBSMSG=12
 # Display custom message (BBSMSG)
 # Arguments: $BBSMSG (int)
 #-----------------------------------------------------------------------
-GX_Bulletin() { 
+GX_Bulletin() {
     # Firstly: create strings for economical situation... (for faster drawing afterwards)
     local VAL_GOLD_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_GOLD )       # Usual printf is locale-depended - it cant work with '.' as delimiter when
     local VAL_TOBACCO_STR=$( awk '{ printf "%4.2f", $0 }' <<< $VAL_TOBACCO ) #  locale's delimiter is ',' (cyrillic locale for instance) #kstn
     case $1 in # MAX 35 chars per line !!!
 	1 ) # Wild Fire Threatens Tobacco (serious)
-	    local BULLETIN=( 
-		"WILD FIRE THREATENS TOBACCO SUPPLY! "                                    
+	    local BULLETIN=(
+		"WILD FIRE THREATENS TOBACCO SUPPLY! "
 		"Many Travellers have told of Wild   "
 		"Forest Fires that may threaten the  "
 		"steady Supply of Tobacco to the     "
@@ -334,7 +334,7 @@ GX_Bulletin() {
 		"Summon an Army and Go to War! ~{K}~ ") ;;
 	6 ) # Gold Required for New Fashion
 	    local BULLETIN=(
-		"       GOLDEN FASHION SPREADS       "                                    
+		"       GOLDEN FASHION SPREADS       "
 		"The Rich Habits of ye Royal Court   "
 		"spreads to the Kingdom's Nobility.  "
 		"The Price of Gold heightens as the  "
@@ -396,7 +396,7 @@ GX_Bulletin() {
 		"Rewarde to be pay'd in Golde for ye "
 		"Delivery of a Dragon to ye Schoole, "
 		"preferably deceased, for study.     ") ;;
-    esac    
+    esac
     case $1 in # Add generic consequence string
 	1 | 2 | 10 ) BULLETIN[6]="TOBACCO RAISED TO: $VAL_TOBACCO_STR" ;;
 	3 | 4 | 12 ) BULLETIN[6]="TOBACCO LOWERED TO: $VAL_TOBACCO_STR" ;;
@@ -407,22 +407,22 @@ GX_Bulletin() {
     # Ok, let's draw !!!
     clear
     cat <<"EOT"
-                 ___                                     ____  
-                (___) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (____)  
-                 | T-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-T ||     
- ^^              | |                                     | ||   
+                 ___                                     ____
+                (___) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (____)
+                 | T-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-T ||
+ ^^              | |                                     | ||
     ^^           | |                                     | ||   ____________
         ___      | |                                     | ||  /           /\
      _ (   )_    | |                                     | || /           /||\
    (  )      )   | |                                     | ||/___________/ ||_\
- (__   ) (  ) )  | |                                     | ||  ||          || 
-(     __)  ___)  | |                                     | || _||__________|| 
+ (__   ) (  ) )  | |                                     | ||  ||          ||
+(     __)  ___)  | |                                     | || _||__________||
  (_____)T^T      | |                                     | || 1 T  T  T  T  T!
    |^|  |^|      | l___________,____________,____________j || 1_ 1 _| __  1_ !
 -  |^|  |^|     -| ||  -       &            &       -    | || 1   __  1  1  _1_
   '""" '"""'     | ||        ,-6------------6-.          | || 1  1  1  1   | `-'
   -           -  | ||       :   Y e  N e w s   :         | || '""'""'""""'"|___|
-                 | ||       `-.................'         | || .       -        
+                 | ||       `-.................'         | || .       -
        -         1 ll         -                          1 ll               -
             -~'"'""""'""~-                       --~""'"'"""""'~-
 EOT

@@ -10,7 +10,7 @@
 # Used: MapCreate(), GX_Place(), NewSector()
 # Arguments: $ERROR_MAP (string[/path/to/map.map])
 #-----------------------------------------------------------------------
-CustomMapError() { 
+CustomMapError() {
     clear
     echo "Whoops! There is an error with your map file!
 Either it contains unknown characters or it uses incorrect whitespace.
@@ -36,7 +36,7 @@ What to do?
 # SaveCurrentSheet()
 # Saves current game values to CHARSHEET file (overwriting)
 #-----------------------------------------------------------------------
-SaveCurrentSheet() { 
+SaveCurrentSheet() {
     echo "CHARACTER: $CHAR
 RACE: $CHAR_RACE
 BATTLES: $CHAR_BATTLES
@@ -61,13 +61,13 @@ INV_ALMANAC: $INV_ALMANAC" > "$CHARSHEET"
 #-----------------------------------------------------------------------
 # Intro()
 # Intro function basically gets the game going
-# Used: runtime section. 
+# Used: runtime section.
 #-----------------------------------------------------------------------
-Intro() { 
+Intro() {
     SHORTNAME=$(Capitalize "$CHAR")  # Create capitalized FIGHT CHAR name
-    MapCreate                        # Create session map in $MAP  
+    MapCreate                        # Create session map in $MAP
     HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
-    WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)    
+    WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)
     WorldPriceFixing                 # Set all prices
     GX_Intro 60                      # With countdown 60 seconds
     NODICE=1                         # Do not roll on first section after loading/starting a game in NewSector()
@@ -81,7 +81,7 @@ Intro() {
 # Arguments: $DICE_SIZE (int)
 # Used: RollForEvent(), RollForHealing(), etc
 #-----------------------------------------------------------------------
-RollDice() {     
+RollDice() {
     DICE_SIZE=$1         # DICE_SIZE used in RollForEvent()
     DICE=$((RANDOM%$DICE_SIZE+1))
 }
@@ -92,17 +92,17 @@ RollDice() {
 # Arguments: $DICE_SIZE (int)
 # Used: RollForEvent(), RollForHealing(), etc
 #-----------------------------------------------------------------------
-RollDice2() { RollDice $1 ; echo "$DICE" ; } 
+RollDice2() { RollDice $1 ; echo "$DICE" ; }
 
 #-----------------------------------------------------------------------
-# DisplayCharsheet() 
+# DisplayCharsheet()
 # Display character sheet.
 # Used: NewSector(), FightMode()
 #-----------------------------------------------------------------------
-DisplayCharsheet() { 
+DisplayCharsheet() {
     local MURDERSCORE=$(bc <<< "if ($CHAR_KILLS > 0) {scale=zero; 100 * $CHAR_KILLS/$CHAR_BATTLES } else 0" ) # kill/fight percentage
     local RACE=$(Capitalize "$CHAR_RACE_STR")   # Capitalize
-    local CHARSHEET_INV_STR="$CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food" # Create Inventory string 
+    local CHARSHEET_INV_STR="$CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco, $CHAR_FOOD Food" # Create Inventory string
     (( INV_ALMANAC == 1 )) && CHARSHEET_INV_STR+=", Almanac" # Add below as necessary..
     GX_CharSheet
     cat <<EOF
@@ -116,7 +116,7 @@ DisplayCharsheet() {
  Special Skills:            Healing $HEALING, Strength $STRENGTH, Accuracy $ACCURACY, Flee $FLEE
  Inventory:                 $CHARSHEET_INV_STR
  Current Date:              $BIAMIN_DATE_STR
- 
+
 EOF
 
     case "$INV_ALMANAC" in		                                    # Define prompt
@@ -151,7 +151,7 @@ RollForHealing() { # Used in Rest()
 # Arguments: $SCENARIO(char)
 # Used: NewSector()
 #-----------------------------------------------------------------------
-Rest() {  
+Rest() {
     PLAYER_RESTING=1 # Set flag for FightMode()
     RollDice 100
     GX_Rest
@@ -181,8 +181,8 @@ Rest() {
 # Arguments: $DICE_SIZE(int), $EVENT(string)
 # Used: Rest(), CheckForFight()
 #-----------------------------------------------------------------------
-RollForEvent() {     
-    echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE" 
+RollForEvent() {
+    echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE"
     Sleep 1.5
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()

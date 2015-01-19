@@ -16,7 +16,7 @@ IsInt()      { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }          
 # Makes cursor visible, than exit
 # Arguments: (optional) $EXIT_CODE(int [0-255])
 #-----------------------------------------------------------------------
-Exit() { 
+Exit() {
     tput cnorm			      # Make cursor visible (to prevent leaving player without cursor)
     [[ "$1" ]] && exit "$1" || exit 0 # If $EXIT_CODE then 'exit $EXIT_CODE' else 'exit 0'
 }
@@ -24,7 +24,7 @@ Exit() {
 #-----------------------------------------------------------------------
 # Read()
 # Flush 512 symbols readed before and read one symbol
-#-----------------------------------------------------------------------    
+#-----------------------------------------------------------------------
 Read() {
     read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
     read -s -n 1		# Read only one symbol (to default variable, $REPLY)
@@ -37,7 +37,7 @@ Read() {
 # line, than makes cursor unvisible
 # NB to get answer you need to use $REPLY variable !!!
 # Arguments: (optional) $PROMPT
-#-----------------------------------------------------------------------    
+#-----------------------------------------------------------------------
 ReadLine() {
     [[ "$1" ]] && echo -en "$1" # Display prompt if any (like read -p, but to STDOUT and with '\n', '\t', colors, etc)
     read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
@@ -51,7 +51,7 @@ ReadLine() {
 # Add postfix to $1 (NUMBER)
 # Arguments: $1(int)
 #-----------------------------------------------------------------------
-Ordial() { 
+Ordial() {
     grep -Eq '^([0-9]*[^1])?1$'  <<< "$1" && echo "${1}st" && return 0
     grep -Eq '^([0-9]*[^1])?2$'  <<< "$1" && echo "${1}nd" && return 0
     grep -Eq '^([0-9]*[^1])?3$'  <<< "$1" && echo "${1}rd" && return 0
@@ -65,10 +65,10 @@ Ordial() {
 # string!). Arguments should be separated by ';'
 # Arguments: $PROMPT(string)
 #-----------------------------------------------------------------------
-MakePrompt() { 
+MakePrompt() {
     awk '   BEGIN { FS =";" }
         {   MAXLEN = 79;
-            COUNT = NF; 
+            COUNT = NF;
             for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
             if ( STRLEN > MAXLEN ) { exit 1 ; }
             SPACES = MAXLEN - STRLEN;
@@ -78,7 +78,7 @@ MakePrompt() {
             SPACES_IN = REMAINDER / 2 ;
             while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
             while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
-            STR = INTRO; 
+            STR = INTRO;
             for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
             STR = STR SEPARATOR INTRO }
             END { printf STR; }' <<< "$@" || Die "Too long promt >>>$*<<<"
@@ -120,7 +120,7 @@ PressAnyKey() {
 	MakePrompt 'Press (A)ny key to continue..'
     fi
     read -sn 1
-} 
+}
 
 #-----------------------------------------------------------------------
 # ReseedRandom()
@@ -138,7 +138,7 @@ PressAnyKey() {
 ReseedRandom() {
     if [[ "$1" ]]; then
 	RANDOM="${1}"
-    else	
+    else
 	case "$OSTYPE" in
 	    openbsd* ) RANDOM=$(date '+%S') ;;
 	    *)         RANDOM=$(date '+%N') ;;

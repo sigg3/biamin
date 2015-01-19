@@ -6,7 +6,7 @@
 declare -r -a RACES=(
     "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we haven't RACE == 0
     "human  3       3        3        3    12           8"
-    "elf    4       3        4        1     8          12" 
+    "elf    4       3        4        1     8          12"
     "dwarf  2       5        3        2    14           6"
     "hobbit 4       1        4        3     6          14"
 )
@@ -47,15 +47,15 @@ BiaminSetup_SetItemsAbilities() {
 # Arguments: $CHARSHEET(string)
 # Used: BiaminSetup_LoadCharsheet()
 #-----------------------------------------------------------------------
-BiaminSetup_UpdateOldSaves() {	
+BiaminSetup_UpdateOldSaves() {
     grep -Eq '^HOME:' "$1"        || echo "HOME: $START_LOCATION" >> $1
     grep -Eq '^BBSMSG:' "$1"      || echo "BBSMSG: 0" >> $1
     grep -Eq '^STARVATION:' "$1"  || echo "STARVATION: 0" >> $1
-    # Time 
+    # Time
     grep -Eq '^TURN:' "$1"        || echo "TURN: $(TurnFromDate)" >> $1
     # Almanac
     grep -Eq '^INV_ALMANAC:' "$1" || echo "INV_ALMANAC: 0" >> $1
-    # TODO use  OFFSET_{GOLD,TOBACCO} 
+    # TODO use  OFFSET_{GOLD,TOBACCO}
     grep -Eq '^GOLD:' "$1"        || echo "GOLD: 10" >> $1
     grep -Eq '^TOBACCO:' "$1"     || echo "TOBACCO: 10" >> $1
     grep -Eq '^FOOD:' "$1"        || echo "FOOD: 10" >> $1
@@ -87,10 +87,10 @@ BiaminSetup_SanityCheck() {
 }
 
 BiaminSetup_LoadCharsheet() {
-    echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn	
+    echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn
     BiaminSetup_UpdateOldSaves "$CHARSHEET"
     local CHAR_TMP=$(awk '
-                  { 
+                  {
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
                   	                 CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { RACE= $2 }
@@ -112,7 +112,7 @@ BiaminSetup_LoadCharsheet() {
                    if (/^TURN:/)        { TURN= $2 }
                    if (/^INV_ALMANAC:/) { INV_ALMANAC = $2 }
                  }
-                 END { 
+                 END {
                  print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"
                  }' $CHARSHEET )
     IFS=";" read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN INV_ALMANAC <<< "$CHAR_TMP"
@@ -183,7 +183,7 @@ BiaminSetup_MakeNewChar() {
 # Used: CoreRuntime.sh
 # TODO: Argumens: $CHAR(string)
 #-----------------------------------------------------------------------
-BiaminSetup() { 
+BiaminSetup() {
     # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     BiaminSetup_MakeBaseChar
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"

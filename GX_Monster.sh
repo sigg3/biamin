@@ -12,13 +12,13 @@ GX_Monster() {
     case "$1" in
 	"chthulu" ) # Created 2013, release 2014 (a684a35)
 	cat <<"EOT"
-                        \ \_|\/\      ,.---.      ,/'/            \`\ 
+                        \ \_|\/\      ,.---.      ,/'/            \`\
                          \ _    \   ;'      `\   ,/ /              \ \
-         T H E            \ \____\.:          \-.J  l._   ____      \`\ 
+         T H E            \ \____\.:          \-.J  l._   ____      \`\
          M I G H T Y       \_    _|            |       `,/ __ )      \ \
                              \  /,\    .\  /.  |        / |_ (_   __  \`\
-         C H T H U L U ' S    \/,* '.         /       _/ /|  | \_/  )  \ \     
-                              7  , _;        t      / _/   \/   /-/|    \`\    
+         C H T H U L U ' S    \/,* '.         /       _/ /|  | \_/  )  \ \
+                              7  , _;        t      / _/   \/   /-/|    \`\
          W R A T H   I S     ;  ; / ,(((| ;\,`\    / /          \/ |     \ \   (
          U P O N   Y O U    ;  .'( ',  "| :   \}  (, |~~~~~~~~~~L /       \`\ _/
                            ,' ,.  `~'   ' ',       \_) `.       |/         \_/
@@ -55,7 +55,7 @@ EOT
                                                ____.:      :.
                                         _____.:               \___
          YOU ENCOUNTER A         _____/  _  )      __            :.__
-         TERRIBLE VARG!         |       7             `      _       \ 
+         TERRIBLE VARG!         |       7             `      _       \
                                   ^^^^^ \    ___        1___ /        |
          It looks hungry.           ^^^^  __/   |    __/    \1     /\  |
                                      \___/     /   _|        |    / | /  _
@@ -81,8 +81,8 @@ EOT
                                              || \   /^\ \ ______/  ___   \
          "Lorem ipsum dolor sit amet..."     ||  \_/  |           /  __   |
                                              ||       |          |  /__|  |
-                                             ||       |          \  |__/  | 
-                                             ||      /            \_____/ 
+                                             ||       |          \  |__/  |
+                                             ||      /            \_____/
                                              ^      /               \
                                                    |        \        \
 EOT
@@ -92,13 +92,13 @@ EOT
                                                     _______                   _
                                                    (       )/|    ===[]]]====(_)
                                                 ____0(0)    /       7 _/^
-                                                L__  _)  __/       / / 
-         A GOBLIN JUMPS YOU!                      /_V)__/ 1       / / 
+                                                L__  _)  __/       / /
+         A GOBLIN JUMPS YOU!                      /_V)__/ 1       / /
                                              ______/_      \____ / /
          He raises his club to attack..     /   .    \      _____/
                                            |  . _ .   | .__/|
                                            | . (_) .  |_____|
-                                           |  . . .   |$$$$$|  
+                                           |  . . .   |$$$$$|
                                             \________/$$$$$/ \
                                                  /  /\$$$$/\  \
                                              ___/  /      __|  \
@@ -110,22 +110,22 @@ EOT
                                                        /""""""';   ____
                                                       d = / =  |3 /1--\\
                                                  _____| _____  |_|11 ||||
-         YOU ARE INEXPLICABLY                   /     \_\\\\\\_/  \111/// 
-         AMBUSHED BY A LOWLIFE CRIMINAL!       /  _ /             _\1// \ 
+         YOU ARE INEXPLICABLY                   /     \_\\\\\\_/  \111///
+         AMBUSHED BY A LOWLIFE CRIMINAL!       /  _ /             _\1// \
                                               /  ) (     |        \ 1|\  \
          "Hand over your expensive stuffs,   /   )(o____ (   ____o) 1|(  7
          puny poncer, or have your skull     \   \ :              . 1/  /
          cracked open by the mighty club!"    \\\_\'.     *       ;|___/
-                                                   /\____________/ 
+                                                   /\____________/
                                                   / #############/
                                                  (    ##########/ \
                                                 __\    \    \      )__
                                                (________)    (________)
 EOT
-	    ;; 
+	    ;;
 	"boar" ) # Created June 2014 (2a62c4f)
 	cat <<"EOT"
-                                ;".  ,--~-./L-'"'"'"'"~,   
+                                ;".  ,--~-./L-'"'"'"'"~,
                                 |\ \/     /, | ~  ` ~   `"`~,-~~._.
                                 (_\/ _  _ \__)~   ~     ~        ~ \.
                                    ) 6) 6       ~    ~       ~       \_
@@ -146,11 +146,11 @@ EOT
                                                          ,,_____.
                                                      ,~-'.------.`'~-._
                                  _,-----.._         / /""'       `7-,~-`.
-                                /,-~"`-_ v,;.      / / ,......    /(     
-                                \(,-~t,.`\( `\.   ( l,;"'' '"::.   \  
+                                /,-~"`-_ v,;.      / / ,......    /(
+                                \(,-~t,.`\( `\.   ( l,;"'' '"::.   \
                                  `\     Y_\\ `\.  \\;:::.     ':.  `\
          A DRAGON SWOOPS IN!             ,`\\  `\  \\  `:.      `:. \\
-                                     ___/(__))   \,; )  `:.       `:. \ 
+                                     ___/(__))   \,; )  `:.       `:. \
          There is nowhere        ,_,'~   (~-^^^`~ ',^    `:.        `:.\  >>:.
          to hide or run.        ;__.-,  '_(       (       `:.        ,`;\   \W.
                                   ` _; ,Y `-.  ^           `:.      /(`\|    ;M
@@ -162,9 +162,9 @@ EOT
 	    ;;
 	"bear" ) # Created September 2014 (860b051)
 	cat <<"EOT"
-                                               ,--~~.._                
-                                          _.,;'        `-.....__          
-                                  ,..-~~^"                      `~~~~-.._       
+                                               ,--~~.._
+                                          _.,;'        `-.....__
+                                  ,..-~~^"                      `~~~~-.._
                                 ,^ l`)                                    :.
                               ,'                                           `:.
          SUDDENLY,            )`~                    (  `                   `:.
@@ -175,7 +175,7 @@ EOT
          It kicks the ground              :        ;             ;       ..;'
          and charges. Brace yourself.     ;'      ;~--'.~^~-__..;      .;'
                                           `:    ;\   .;         .:    ,;  \
-                                          .;   ;  ;   :         :.   ./    \    
+                                          .;   ;  ;   :         :.   ./    \
                                        _,'    ;  _;  ;           :.   : `   }
                                     ,;'_..__,' .;_._}          ,,::.:-'"--~'
 EOT
@@ -184,15 +184,15 @@ EOT
 	cat <<"EOT"
 
 
-                                                      _,^--^._ 
+                                                      _,^--^._
           AN YMPE SWOOPS DOWN!                ,^. ,^. \ ^..^ /,^. ,^.
-                                             / ' ` ' `;  {}  '   '   \ 
-          The imp is a common               /,     `-=/ ,  ,  }=~-  ` \ 
+                                             / ' ` ' `;  {}  '   '   \
+          The imp is a common               /,     `-=/ ,  ,  }=~-  ` \
           nuisance for travellers.          Y^. ,v~^-( (  ( (,~-^~v. ,^Y
-                                               y     _|`   ``|_     y 
-          Luckily, they are easily defeated.        (_ (   (  _) 
-                                                    /  /^^^^\  \    
-                                                    VvV      VvV  
+                                               y     _|`   ``|_     y
+          Luckily, they are easily defeated.        (_ (   (  _)
+                                                    /  /^^^^\  \
+                                                    VvV      VvV
 
 
 EOT
@@ -203,20 +203,20 @@ EOT
     esac
     echo "$HR"
 }
-# BACKUPS or SKETCHES 
+# BACKUPS or SKETCHES
 #
 #	"imp" ) # Original imp October 2014 (f8292a2)
 #    cat <<"EOT"
 #
 #
-#                                                         __,__,         
-#                                                     ,-. \   (__,       
-#         AN YMPE SWOOPS DOWN!                       ;- 7) )     (           
-#                                                    `~.  \/  _ _ (      
-#         The imp is a common                    ,,~._,-.  ,^y Y Y 
-#         nuisance for travellers.                 ``-~_?  l             
-#                                                     (_  ,'             
-#         Luckily, they are easily defeated.           _;((              
+#                                                         __,__,
+#                                                     ,-. \   (__,
+#         AN YMPE SWOOPS DOWN!                       ;- 7) )     (
+#                                                    `~.  \/  _ _ (
+#         The imp is a common                    ,,~._,-.  ,^y Y Y
+#         nuisance for travellers.                 ``-~_?  l
+#                                                     (_  ,'
+#         Luckily, they are easily defeated.           _;((
 #
 #
 #EOT

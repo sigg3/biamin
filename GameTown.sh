@@ -33,12 +33,12 @@
 #-----------------------------------------------------------------------
 CheckForGold()   {
     if (( $(bc <<< "$CHAR_GOLD < $1") )); then
-	echo -e "${CLEAR_LINE}${2}"               
-	return 1                                  
-    else                                      
-	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")     
-	return 0                                  
-    fi                                        
+	echo -e "${CLEAR_LINE}${2}"
+	return 1
+    else
+	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")
+	return 0
+    fi
 }
 
 #-----------------------------------------------------------------------
@@ -80,23 +80,23 @@ TavernRest() {
 # Sub-loop for Tavern
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
-Tavern() { 
+Tavern() {
     while (true); do
-	GX_Tavern 
+	GX_Tavern
 	MakePrompt "(R)ent a room and rest safely;(P)lay dice;(A)ny key to Exit"
 	case $(Read) in
-	    r | R) 
+	    r | R)
 		echo -en "${CLEAR_LINE}      Rent for 1 (G)old      Rent for 1 (T)obacco      (A)ny key to Exit"
 		case $(Read) in
 		    g | G ) CheckForGold 1    "You don't have enough Gold to rent a room in the Tavern"    && TavernRest ;;
 		    t | T ) CheckForTobacco 1 "You don't have enough Tobacco to rent a room in the Tavern" && TavernRest ;;
-		esac 
+		esac
 		sleep 1 ;;
  	    p | P ) MiniGame_Dice ;;
 	    * ) break ;; # Leave tavern
 	esac
     done
-} 
+}
 
 
 #-----------------------------------------------------------------------
@@ -113,13 +113,13 @@ Marketplace() {
     while (true); do
 	GX_Marketplace
 
-	# TODO v. 3 (we need data for beggar's database first:)	
+	# TODO v. 3 (we need data for beggar's database first:)
 	# if (( BEGGAR == 1 )) ; then
 	#     MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit'
 	#     case $(Read) in
 	# 	b | B) Marketplace_Beggar;;
-	# 	g | G) Marketplace_Grocer;; 
-	# 	m | M) Marketplace_Merchant;; 
+	# 	g | G) Marketplace_Grocer;;
+	# 	m | M) Marketplace_Merchant;;
 	# 	q | Q ) CleanUp ;;
 	# 	*) break ;; # Leave marketplace
 	#     esac
@@ -133,18 +133,18 @@ Marketplace() {
 	# esac
 	# case $(Read) in
 	#     b | B) ((BEGGAR == 1)) && Marketplace_Beggar;;
-	#     g | G) Marketplace_Grocer;; 
-	#     m | M) Marketplace_Merchant;; 
+	#     g | G) Marketplace_Grocer;;
+	#     m | M) Marketplace_Merchant;;
 	#     q | Q ) CleanUp ;;
 	#     *) break ;; # Leave marketplace
 	# esac
 
 
-	
+
 	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	case $(Read) in
-	    g | G) Marketplace_Grocer;; 
-	    m | M) Marketplace_Merchant;; 
+	    g | G) Marketplace_Grocer;;
+	    m | M) Marketplace_Merchant;;
 	    q | Q ) CleanUp ;;
 	    *) break ;; # Leave marketplace
 	esac
@@ -214,11 +214,11 @@ Marketplace_Merchant() {
 
 	# Set BUY & SELL prices at defaults (Food, Tobacco, Gold)
 	MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT && MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
-	
+
 	# Set prices for items (1 item is worth 2x Food)
 	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG
 	PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
-	
+
 	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
 	RollDice 3
 	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
@@ -227,11 +227,11 @@ Marketplace_Merchant() {
 	RollDice 3
 	case "$DICE" in                                                              # Merchant WANTS to buy and only reluctantly sells:
 	    1 ) MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's cost in gold purchasing food)
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )        # Food (player's discount in food purchasing gold) 
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )        # Food (player's discount in food purchasing gold)
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" )
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ) ;;
 	    2 ) MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's cost in gold purchasing tobacco)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )        # Tobacco (player's discount in tobacco purchasing gold) 
+		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )        # Tobacco (player's discount in tobacco purchasing gold)
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" )
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ) ;;
 	    3 ) MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's cost in food purchasing gold)
@@ -241,7 +241,7 @@ Marketplace_Merchant() {
 		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )        # You can only buy/sell items with gold
 		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
 	esac
-	
+
 	# Set any value equal or below 0 to defaults
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxG < 0) 0 else $PRICE_FxG" )
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxF < 0) 0 else $PRICE_GxF" )
@@ -249,7 +249,7 @@ Marketplace_Merchant() {
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_TxF < 0) 0 else $PRICE_TxF" )
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxI < 0) 0 else $PRICE_GxI" )
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_IxG < 0) 0 else $PRICE_IxG" )
-	
+
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8
 	case "$DICE" in
@@ -279,7 +279,7 @@ Marketplace_Merchant() {
 	    F | f | T | t | G | g | I | i ) Marketplace_Merchant_Bargaining	"$MERCHANTVAR" ;;
 	    * ) break ;;
 	esac
-	
+
 	tput sc
 	MvAddStr 12 4 "Are you buying or selling?"
 	tput rc
@@ -291,15 +291,15 @@ Marketplace_Merchant() {
 	    s | S ) BARGAIN_TYPE=2  ;; # Selling STOCK ($MERCHANDISE) to Merchant
 	    * )     BARGAIN_TYPE=3  ;; # Invalid input
 	esac
-	
-	if (( BARGAIN_TYPE != 3 )) && [[ MERCHANDISE != "unknown" ]] ; then	
+
+	if (( BARGAIN_TYPE != 3 )) && [[ MERCHANDISE != "unknown" ]] ; then
 	    # Prompt for Quantity
 	    local QUANTITYPROMPT
 	    [[ "$MERCHANDISE" = "Item" ]] && QUANTITYPROMPT=" How many $MERCHANT_ITEM" && QUANTITYPROMPT+="s" || QUANTITYPROMPT=" How much $MERCHANDISE"
 	    QUANTITYPROMPT+=" do you want to "
 	    (( BARGAIN_TYPE == 1 )) && QUANTITYPROMPT+="buy? " || QUANTITYPROMPT+="sell? "
 	    echo -en "$QUANTITYPROMPT" && read QUANTITY 2>&1
-	    
+
 	    if (( $(bc <<< "$QUANTITY < 1") )) ; then
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"
 		tput sc
@@ -314,11 +314,11 @@ Marketplace_Merchant() {
 		    "Item" ) local MERCHANT_ORDER_CONJUG_1="s " ;;
 		    * )      local MERCHANT_ORDER_CONJUG_1=" "  ;;
 		esac
-		local MERCHANT_ORDER_CONJUG_2="cost " 
+		local MERCHANT_ORDER_CONJUG_2="cost "
 	    else # Construct merchant string
-		local MERCHANT_ORDER_CONJUG_1=" " && local MERCHANT_ORDER_CONJUG_2="costs " 
+		local MERCHANT_ORDER_CONJUG_1=" " && local MERCHANT_ORDER_CONJUG_2="costs "
 	    fi
-	    
+
 	    # Calculate COST (for PLAYER or MERCHANT depending on BARGAIN TYPE)
 	    local MERCHANT_ORDER_1 && local MERCHANT_ORDER_2
 	    (( BARGAIN_TYPE == 1 )) && MERCHANT_ORDER_1="$QUANTITY $MERCHANDISE$MERCHANT_ORDER_CONJUG_1$MERCHANT_ORDER_CONJUG_2"
@@ -332,7 +332,7 @@ Marketplace_Merchant() {
 			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
 			    ;;
 		"Tobacco" ) (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_TxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" ) 
+			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" )
 			    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
 			    (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
 			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
@@ -348,13 +348,13 @@ Marketplace_Merchant() {
 			    MERCHANT_ORDER_1+="$COST_GOLD Gold."
 			    ;;
 	    esac
-	    
+
 	    Marketplace_Merchant_Bargaining "$MERCHANDISE"
 	    tput sc
 	    MvAddStr 12 4 "$MERCHANT_ORDER_1"
 	    MvAddStr 13 4 "$MERCHANT_ORDER_2"
 	    tput rc
-	    
+
 	    # Create bargaining prompt
 	    case "$MERCHANDISE" in
 		"Food" )    read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (T)obacco;(N)ot Interested')" MERCHANTVAR 2>&1        ;;
@@ -363,7 +363,7 @@ Marketplace_Merchant() {
 		"Item" )    (( BARGAIN_TYPE == 1 )) && read -sn 1 -p "$(MakePrompt 'Trade for (G)old;(N)ot Interested')" MERCHANTVAR 2>&1
 			    (( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (have no items to sell)
 	    esac
-	    
+
 	    # Determine that player has CURRENCY to cover COST or STOCK to cover SALE
 	    case "$MERCHANTVAR" in
 		T | t ) MERCHANTVAR="Tobacco" && (( $(bc <<< "$CHAR_TOBACCO > $COST_TOBACCO") )) && TRANSACTION_STATUS=0 || TRANSACTION_STATUS=1 ;; # Legend
@@ -388,8 +388,8 @@ Marketplace_Merchant() {
 	    #echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
 	    #echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
 	    # // DEBUG
-	    
-	    
+
+
 	    # Do the transaction if it is valid
 	    # Info: The COST can be the player's (for BARGAIN_TYPE 1 ) or the merchant's (for BARGAIN_TYPE 2).
 	    if (( TRANSACTION_STATUS == 0 )) ; then
@@ -420,13 +420,13 @@ Marketplace_Merchant() {
 		                     ;; # invalid input of other type (e.g. hitting (T)obacco to buy Item. Nice try:)
 		esac
 	    fi
-	    
+
 	    # DEBUG DATA
 	    #echo "        DEBUG       Summary AFTER transaction" >2
 	    ## COPY/PASTE the above debug lines here whenever needed.
 	    # // DEBUG
-	    
-	    
+
+
 	    # Create transaction status output (MERCHANT_CONFIRMATION)
 	    Marketplace_Merchant_Bargaining "$MERCHANDISE"
 	    if (( TRANSACTION_STATUS == 0 )) ; then
@@ -434,7 +434,7 @@ Marketplace_Merchant() {
 	    else
 		local PAYMENT="$MERCHANTVAR"
 	    fi
-	    
+
 	    local MERCHANT_CONFIRMATION
 	    case "$TRANSACTION_STATUS" in
 		1 ) MERCHANT_CONFIRMATION="You don't have enough $PAYMENT"          # Invalid transaction
@@ -443,7 +443,7 @@ Marketplace_Merchant() {
 			"Item" ) MERCHANT_CONFIRMATION_2+="this $MERCHANT_ITEM."    ;;
 			* )      MERCHANT_CONFIRMATION_2+="$QUANTITY $MERCHANDISE." ;;
 		    esac
-		    ;; 
+		    ;;
 		2 ) MERCHANT_CONFIRMATION="Sorry, I can't accept that trade .."   ;; # Invalid input
 		3 ) MERCHANT_CONFIRMATION="Welcome back anytime, friend!"         ;; # Not interested
 		0 ) # Valid transactions
@@ -467,7 +467,7 @@ Marketplace_Merchant() {
 		    esac
 		    ;;
 	    esac
-	    
+
 	    # Output MERCHANT_CONFIRMATION ("goodbye")
 	    if (( TRANSACTION_STATUS == 0 )) ; then
 		tput sc
@@ -480,7 +480,7 @@ Marketplace_Merchant() {
 		(( TRANSACTION_STATUS == 1 )) && MvAddStr 13 4 "$MERCHANT_CONFIRMATION_2"
 		tput rc
 	    fi
-	    
+
 	    # Post purchase actions for items
 	    if [[ $BARGAIN_TYPE = 1 ]] && [[ $TRANSACTION_STATUS = 0 ]] && [[ "$MERCHANDISE" = "Item" ]] ; then # Post purchase immediate usage of items (TODO we can change this later)
 		Marketplace_Merchant_Bargaining "$MERCHANDISE"                                       # TODO This should change when we have inventory system setup..
@@ -498,7 +498,7 @@ Marketplace_Merchant() {
 		    echo " You drink the $MERCHANT_ITEM, restoring $POTIONMODIFIER health points [ + $POTIONMODIFIER HEALTH ]"
 		fi
 	    fi # TODO add elif here for removal of items (BARGAIN_TYPE=2) from inventory later
-	    
+
 	    # Unset constructed strings otherwise they may be repeated.. (TODO: use 'local QUANTITYPROMPT=""' as initiation perhaps..)
 	    [ -n "$QUANTITYPROMPT" ]          && unset QUANTITYPROMPT
 	    [ -n "$MERCHANT_ORDER_CONJUG_1" ] && unset MERCHANT_ORDER_CONJUG_1
@@ -507,7 +507,7 @@ Marketplace_Merchant() {
 	    [ -n "$MERCHANT_ORDER_2" ]        && unset MERCHANT_ORDER_2
 	    [ -n "$MERCHANT_CONFIRMATION" ]   && unset MERCHANT_CONFIRMATION
 	    [ -n "$MERCHANT_CONFIRMATION_2" ] && unset MERCHANT_CONFIRMATION_2
-	    
+
 	    (( TRANSACTION_STATUS != 0 )) && PressAnyKey # Return to zero
 	    (( TRANSACTION_STATUS == 3 )) && break       # Leave loop if we're not interested
 
@@ -519,7 +519,7 @@ Marketplace_Merchant() {
 # Marketplace_Grocer()
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
-Marketplace_Grocer() { 
+Marketplace_Grocer() {
     # Default PRICE of units are set in WorldPriceFixing()
     # Determine GROCER's price (profit margin = 0.5 $VAL_CHANGE)
     local GROCER_FxG=$( bc <<< "scale=2;$PRICE_FxG+($VAL_CHANGE/2)" )
@@ -547,7 +547,7 @@ Marketplace_Grocer() {
 		else
 		    echo " You don't have enough Gold to buy $QUANTITY food yet. Try a little less!"
 		fi
-		read -n 1		
+		read -n 1
 		;;
 	    t | T )
 		GX_Marketplace_Grocer
@@ -566,7 +566,7 @@ Marketplace_Grocer() {
 		else
 		    echo " You don't have enough Tobacco to trade for $QUANTITY food yet. Try a little less!"
 		fi
-		read -n 1		
+		read -n 1
 		;;
 	    *) break;
 	esac
@@ -611,12 +611,12 @@ Marketplace_Beggar() {
 # Secondary loop for Town
 # Used: NewSector()
 # TODO:
-# ? Add separate GX for this? 
+# ? Add separate GX for this?
 # ? What about add separate GX for Town and use current GX_Town() here? #kstn
 #-----------------------------------------------------------------------
-GoIntoTown() { 
+GoIntoTown() {
     while (true); do
-	GX_Place "T" # GX_Town 
+	GX_Place "T" # GX_Town
 	MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
 	case $(Read) in
 	    t | T ) Tavern ;;
@@ -641,12 +641,12 @@ GoIntoTown() {
 # Arguments: $DGAME_DICE_1(int), $DGAME_DICE_2(int).
 # Used: MiniGame_Dice()
 #-----------------------------------------------------------------------
-GX_DiceGame() { 
+GX_DiceGame() {
     local GDICE_SYM="@" # @ looks nice:)
     clear
     awk ' BEGIN { FS = "" ; OFS = ""; }
 {   # First dice
-    if ('$1' == 1) { if (NR == 5) { $26 = "'$GDICE_SYM'"} } 
+    if ('$1' == 1) { if (NR == 5) { $26 = "'$GDICE_SYM'"} }
     if ('$1' == 2) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
  	             if (NR == 7) { $22 = "'$GDICE_SYM'"; } }
     if ('$1' == 3) { if (NR == 3) { $30 = "'$GDICE_SYM'"; }
@@ -680,14 +680,14 @@ GX_DiceGame() {
     print; } ' <<"EOF"
                   _______________            _______________
                  [               ].         [               ].
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
-                 |               |:         |               |:         
+                 |               |:         |               |:
+                 |               |:         |               |:
+                 |               |:         |               |:
+                 |               |:         |               |:
+                 |               |:         |               |:
                  [_______________];         [_______________];
-                  `~------------~`           `~------------~`                
-                                                              
+                  `~------------~`           `~------------~`
+
 EOF
     echo "$HR"
 }
@@ -700,7 +700,7 @@ EOF
 # ${DICE_GAME_CHANCES[1]} are dummy
 # Used: MiniGame_Dice()
 #-----------------------------------------------------------------------
-#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12 
+#               dice1+dice2    = 0 1 2 3 4 5  6  7  8  9  10 11 12
 declare -r -a DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9  6  3)
 
 #-----------------------------------------------------------------------
@@ -727,7 +727,7 @@ MiniGame_Dice() {
 	0 ) PressAnyKey "There's no one at the table. May be you should come back later?";
 	    return 0 ;;                                      # Leave
 	1 ) echo -n "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
-	* ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;	    
+	* ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
     esac
     case $(Read) in
 	[^yYjJ] ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
@@ -744,16 +744,16 @@ MiniGame_Dice() {
     CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
     echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]"
     Sleep 3
-    
+
     DGAME_POT=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
-    
+
     # DICE GAME LOOP
     while ( true ) ; do
 	GX_DiceGame_Table
 	ReadLine "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: "
 	DGAME_GUESS="$REPLY"
 	echo " " # Empty line for cosmetical purposes # TODO
-	
+
 	# Dice Game Instructions (mostly re: payout)
 	case "$DGAME_GUESS" in
 	    i | I ) GX_DiceGame_Instructions ; continue ;;     # Start loop from the beginning
@@ -767,7 +767,7 @@ MiniGame_Dice() {
 		break # leave immediately
 	esac
 
-	DGAME_COMP=${DICE_GAME_CHANCES[$DGAME_GUESS]} # Determine if we're sharing the bet based on odds percentage.. 
+	DGAME_COMP=${DICE_GAME_CHANCES[$DGAME_GUESS]} # Determine if we're sharing the bet based on odds percentage..
 
 	# Run that through a loop of players num and % dice..
 	DGAME_COMPETITION=0
@@ -780,18 +780,18 @@ MiniGame_Dice() {
 	Sleep 1
 	case "$DGAME_COMPETITION" in
 	    0 ) echo "No one else playing for $DGAME_GUESS!" ;;
-	    1 ) echo "Sharing bet with another player!" ;;	    
-	    * ) echo "Sharing bet with $DGAME_COMPETITION other players!"		    
+	    1 ) echo "Sharing bet with another player!" ;;
+	    * ) echo "Sharing bet with $DGAME_COMPETITION other players!"
 	esac
 	Sleep 1
-	
-	DGAME_DICE_1=$(RollDice2 6) 
-	DGAME_DICE_2=$(RollDice2 6) 
+
+	DGAME_DICE_1=$(RollDice2 6)
+	DGAME_DICE_2=$(RollDice2 6)
 	DGAME_RESULT=$( bc <<< "$DGAME_DICE_1 + $DGAME_DICE_2" )
 	# IDEA: If we later add an item or charm for LUCK, add adjustments here.
-	
+
 	GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2" # Display roll result graphically
-	
+
 	# Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
 	DGAME_WINNINGS=$( bc <<< "$DGAME_POT * ${DICE_GAME_WINNINGS[$DGAME_RESULT]}" )
 	DGAME_WINNINGS=$( bc <<< "scale=2;$DGAME_WINNINGS/100" ) # Remember it's a % of the pot
@@ -803,7 +803,7 @@ MiniGame_Dice() {
 	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $DGAME_WINNINGS" )
 	else # You didn't win
 	    echo -n "You rolled $DGAME_RESULT and lost.. "
-	    
+
 	    # Check if other player(s) won the pot
 	    DGAME_COMPETITION=$( bc <<< "$DGAME_PLAYERS - $DGAME_COMPETITION" )
 	    DGAME_OTHER_WINNERS=0
@@ -814,16 +814,16 @@ MiniGame_Dice() {
 		RollDice 100 # bugfix
 		(( DICE <= DGAME_COMP )) && (( DGAME_OTHER_WINNERS++ )) # +1 more winner
 	    done
-	    
+
 	    case "$DGAME_OTHER_WINNERS" in
 		0) echo "luckily there were no other winners either!" ;;
 		1) echo "another player got $DGAME_RESULT and won $DGAME_WINNINGS Gold.";;
-		*) echo "but $DGAME_OTHER_WINNERS other players rolled $DGAME_RESULT and $DGAME_WINNINGS Gold." ;;			
+		*) echo "but $DGAME_OTHER_WINNERS other players rolled $DGAME_RESULT and $DGAME_WINNINGS Gold." ;;
 	    esac
 	    (( DGAME_OTHER_WINNERS > 0 )) && DGAME_POT=$( bc <<< "$DGAME_POT - $DGAME_WINNINGS" ) # Adjust winnings to odds
 	fi
 	Sleep 3
-	
+
 	# Update pot size
 	DGAME_STAKES_TOTAL=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 ) " ) # Assumes player is with us next round too
 	DGAME_POT=$( bc <<< "$DGAME_POT + $DGAME_STAKES_TOTAL" )		 # If not, the other players won't complain:)
@@ -833,8 +833,8 @@ MiniGame_Dice() {
 	if (( $(bc <<< "$CHAR_GOLD < $DGAME_STAKES") )) ; then # Check if we've still got gold for 1 stake...
 	    GX_DiceGame_Table
 	    echo "You're out of gold, $CHAR_RACE_STR. Come back when you have some more!"
-	    break # if not, leave immediately		
-	fi		
+	    break # if not, leave immediately
+	fi
     done
     Sleep 3 # After 'break' in while-loop
     SaveCurrentSheet

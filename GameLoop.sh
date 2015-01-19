@@ -43,21 +43,21 @@ GX_Map() {
     { # place "o" (player) on map
       if (NR == '$(( MAP_Y + 2 ))') {  # lazy fix for ASCII borders
          if ('$MAP_X' == 18 ) { $'$(( MAP_X + 1 ))'="o ("; }
-         else                 { $'$(( MAP_X + 1 ))'="o";   } 
+         else                 { $'$(( MAP_X + 1 ))'="o";   }
          }
       # if player has Gift-Of-Sight and not all items are found
       if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
-         # place ITEM2C on map 
+         # place ITEM2C on map
          # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
  	 if (NR == '$(( ITEM2C_Y + 2 ))') {
             if ( '$ITEM2C_X' == 18 ) { $'$(( ITEM2C_X + 1 ))'="~ ("; }
-            else                     { $'$(( ITEM2C_X + 1 ))'="~";   } 
+            else                     { $'$(( ITEM2C_X + 1 ))'="~";   }
             }
          }
       # All color on map sets here
       if ('${COLOR}' == 1 ) {
          # Terminal color scheme bugfix
-         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); } 
+         if ( NR == 1 ) { gsub(/^/, "'$(printf "%s" "${RESET}")'"); }
          # colorise "o" (player) and "~" (ITEM2C)
 	 if ( NR > 2 && NR < 19 ) {
  	    gsub(/~/, "'$(printf "%s" "${YELLOW}~${RESET}")'")
@@ -73,7 +73,7 @@ GX_Map() {
 # Arguments: $DESTINATION(string)
 # Used: NewSector()
 #-----------------------------------------------------------------------
-MapNav() { 
+MapNav() {
     read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
     case "$1" in
 	m | M ) # If player want to see the map
@@ -92,7 +92,7 @@ MapNav() {
 	d | D | e | E ) echo -n "You go East" # Going East (X+1)
 	    (( MAP_X != 18 )) && (( MAP_X++ )) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
 	s | S ) echo -n "You go South" # Going South (Reversed: Y+1)
-	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;; 
+	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;;
 	a | A ) echo -n "You go West" # Going West (X-1)
 	    (( MAP_X != 1  )) && (( MAP_X-- )) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
 	q | Q ) CleanUp ;; # Save and exit
@@ -121,20 +121,20 @@ NewTurn() {
     ((TURN++))   # Nev turn, new date
     DateFromTurn # Get year, month, day, weekday
 }
-    
+
 #-----------------------------------------------------------------------
 # NewSector()
 # Main game loop
 # Used in runtime section
 #-----------------------------------------------------------------------
-NewSector() { 
-    while (true); do  # While (player-is-alive) :) 
+NewSector() {
+    while (true); do  # While (player-is-alive) :)
 	NewTurn
 	CheckForItem "$CHAR_GPS" # Look for treasure @ current GPS location  - Checks current section for treasure
 	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS") # Get scenario char at current GPS
-	GX_Place "$SCENARIO"	
+	GX_Place "$SCENARIO"
 	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
-	    unset NODICE 
+	    unset NODICE
 	else
 	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
 	    GX_Place "$SCENARIO"

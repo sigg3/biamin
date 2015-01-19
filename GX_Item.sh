@@ -11,24 +11,24 @@
 GX_Item() {
     clear
     case "$1" in
-	"$GIFT_OF_SIGHT") 
+	"$GIFT_OF_SIGHT")
 	    cat <<"EOT"
-		
+
                           G I F T   O F   S I G H T
 
-                                .............. 
-                                ____________**:,.                      
-                             .-'  /      \  ``-.*:,..             
-                         _.-*    |  .jM O |     `-..*;,,              
-                        `-.      :   WW   ;       .-'                 
-                   ....    '._    \______/     _.'   .:              
+                                ..............
+                                ____________**:,.
+                             .-'  /      \  ``-.*:,..
+                         _.-*    |  .jM O |     `-..*;,,
+                        `-.      :   WW   ;       .-'
+                   ....    '._    \______/     _.'   .:
                       *::...  `-._ _________,;'    .:*
-                          *::...                 ..:*      
-                               *::............::*                  
-                                                                   
+                          *::...                 ..:*
+                               *::............::*
+
      You give aid to an old woman, carry her firewood and water from the
      stream, and after a few days she reveals herself as a White Witch!
-	
+
      She gives you a blessing and the Gift of Sight in return for your help.
      "The Gift of Sight," she says, "will aide you as you aided me."
 
@@ -42,12 +42,12 @@ EOT
 
                   E M E R A L D   O F   N A R C O L E P S Y
                              .   .  ____  .   .
-                                .  /.--.\  .  
-                               .  //    \\  .  
+                                .  /.--.\  .
+                               .  //    \\  .
                             .  .  \\    //  .  .
-                                .  \\  //  .     
-                             .   .  \`//  .   .        
-                                     \/     
+                                .  \\  //  .
+                             .   .  \`//  .   .
+                                     \/
      You encounter a strange merchant from east of all maps who joins you
      for a stretch of road. He is a likeable fellow, so when he asks if he
      could share a campfire with you and finally get some much needed rest in
@@ -58,26 +58,26 @@ EOT
      fetch you a good price at the market. Then you bid each other farewell.
 
      +1 Healing, Chance of Healing Sleep when you are resting.
-	
+
 EOT
 	    ;;
 	"$GUARDIAN_ANGEL")
 	    cat <<"EOT"
 
                           G U A R D I A N   A N G E L
-                        .    . ___            __ ,  .            
-                      .      /* * *\  ,~-.  / * *\    .         
-                            /*   .:.\ l`; )/*    *\             
-                     .     |*  /\ :-,_,' ()*  /\  *|    .       
-                           \* |  ||\__   ~'  |  | */           
-                      .     \* \/ |  / /\ \  \ / */   .      
-                             \*     / ^  ^ \    */               
+                        .    . ___            __ ,  .
+                      .      /* * *\  ,~-.  / * *\    .
+                            /*   .:.\ l`; )/*    *\
+                     .     |*  /\ :-,_,' ()*  /\  *|    .
+                           \* |  ||\__   ~'  |  | */
+                      .     \* \/ |  / /\ \  \ / */   .
+                             \*     / ^  ^ \    */
                         .     )* _  ^|^|^|^^ _ *(    .
-                             /* /     |  |    \ *\ 
+                             /* /     |  |    \ *\
                        .    (*  \__,   | | .__/  *)   .
-                             \*  *_*_ // )*_*   */     
-                        .     \* /.,  `-'   .\* /    .  
-                          .    \/    .   .   `\/        
+                             \*  *_*_ // )*_*   */
+                        .     \* /.,  `-'   .\* /    .
+                          .    \/    .   .   `\/
                             .     .         .     .
                               .                 .
      You rescue a magical fairy caught in a cobweb, and in return she
@@ -87,24 +87,24 @@ EOT
 
 EOT
 	    ;;
-	"$FAST_MAGIC_BOOTS") 
+	"$FAST_MAGIC_BOOTS")
 	    cat <<"EOT"
 
                         F A S T   M A G I C   B O O T S
-                              _______  _______                                 
-                             /______/ /______/                            
-                              |   / __ |   / __                           
-                             /   /_(  \'  /_(  \                       
-                            (_________/________/       
-                                                                     
+                              _______  _______
+                             /______/ /______/
+                              |   / __ |   / __
+                             /   /_(  \'  /_(  \
+                            (_________/________/
+
      You are taken captive by a cunning gnome with magic boots, holding you
      with a spell that can only be broken by guessing his riddles.
      After a day and a night in captivity you decide to counter his riddles
      with one of your own: "What Creature of the Forest is terribly Red and
      Whiny, and Nothing Else without the Shiny?"
-     
+
      The gnome ponders to and fro, talking to himself and spitting, as he gets
-     more and more agitated. At last, furious, he demands "Show me!" and 
+     more and more agitated. At last, furious, he demands "Show me!" and
      releases you from the spell. Before he knows it you've stripped off his
      boots and are running away, magically quicker than your normal pace.
 
@@ -117,13 +117,13 @@ EOT
 
                     Q U I C K   R A B B I T   R E A C T I O N
 
-                                   .^,^   
+                                   .^,^
                                 __/ ; /____
-                               / c   -'    `-.                            
-                              (___            )              
-                                  _) .--     _')                
-                                  `--`  `---'               
-                                                        
+                               / c   -'    `-.
+                              (___            )
+                                  _) .--     _')
+                                  `--`  `---'
+
      Having spent quite a few days and nights out in the open, you have grown
      accustomed to sleeping with one eye open and quickly react to the dangers
      of the forests, roads and mountains in the old world, that seek every
@@ -141,15 +141,15 @@ EOT
 
                   F L A S K   O F   T E R R I B L E   O D O U R
                         /  /    * *  /    _\ \       ___ _
-                        ^ /   /  *  /     ____)     /,- \ \              
-                         /      __*_     / / _______   \ \ \             
-                 ,_,_,_,_ ^_/  (_+ _) ,_,_/_/       ) __\ \_\___        
-                /          /  / |  |/     /         \(   \7     \    
+                        ^ /   /  *  /     ____)     /,- \ \
+                         /      __*_     / / _______   \ \ \
+                 ,_,_,_,_ ^_/  (_+ _) ,_,_/_/       ) __\ \_\___
+                /          /  / |  |/     /         \(   \7     \
            ,   :'      \    ^ __| *|__    \    \  ___):.    ___) \____/)
-          / \  :.       |    / +      \  __\    \      :.              (\  
-        _//^\\  ;.      )___(~~~~~~~*~~)_\_____  )_______:___            }   
-        \ |  \\_) ) _____,)  \________/   /_______)          vvvVvvvVvvvV 
-         \|   `-.,'               
+          / \  :.       |    / +      \  __\    \      :.              (\
+        _//^\\  ;.      )___(~~~~~~~*~~)_\_____  )_______:___            }
+        \ |  \\_) ) _____,)  \________/   /_______)          vvvVvvvVvvvV
+         \|   `-.,'
      Under a steep rock wall you encounter a dragon pup's undiscovered carcass.
      You notice that its rotten fumes curiously scare away all wildlife and
      lowlife in the surrounding area.
@@ -164,13 +164,13 @@ EOT
 	    cat <<"EOT"
 
                    T W O - H A N D E D    B R O A D S W O R D
-                       .   .   .  .  .  .  .  .  .  .  .  . 
+                       .   .   .  .  .  .  .  .  .  .  .  .
                   .  .   /]______________________________   .
-                .  ,~~~~~|/_____________________________ \   
+                .  ,~~~~~|/_____________________________ \
                 .  `=====|\______________________________/  .
-                  .  .   \]   .  .  .  .  .  .  .  .  .   .      
-                        .  .                                                           
-     From the thickest of forests you come upon and traverse a huge unmarked 
+                  .  .   \]   .  .  .  .  .  .  .  .  .   .
+                        .  .
+     From the thickest of forests you come upon and traverse a huge unmarked
      marsh and while crossing, you stumble upon trinkets, shards of weaponry
      and old equipment destroyed by the wet. Suddenly you realize that you are
      standing on the remains of a centuries old, long forgotten battlefield.
@@ -179,28 +179,28 @@ EOT
      chariot, crashed on retreat, its knight pinned under one of its wheels.
      You salvage a beautiful piece of craftmanship from the wreckage;
      a powerful two-handed broadsword, untouched by time.
-		
+
      +1 Strength
-	
+
 EOT
 	    ;;
 	"$STEADY_HAND_BREW")
 	    cat <<"EOT"
 
                       S T E A D Y   H A N D   B R E W
-                              ___                                
-                             (___)            _  _  _ _             
-                              | |           ,(  ( )  ) )                
+                              ___
+                             (___)            _  _  _ _
+                              | |           ,(  ( )  ) )
                              /   \         (. ^ ( ^) ^ ^)_
-                            |     |        ( ~( _)- ~ )-_ \    
-                            |-----|         [_[[ _[[ _{  } :       
-                            |X X X|         [_[[ _[[ _{__; ;      
-                            |-----|         [_[[ _[[ _)___/                    
-              ______________|     |   _____ [_________]                 
+                            |     |        ( ~( _)- ~ )-_ \
+                            |-----|         [_[[ _[[ _{  } :
+                            |X X X|         [_[[ _[[ _{__; ;
+                            |-----|         [_[[ _[[ _)___/
+              ______________|     |   _____ [_________]
              |     | >< |   \___ _| _(     )__
-             |     | >< |    __()__           )_                              
-             |_____|_><_|___/     (__          _)                      
-                                    (_________)      
+             |     | >< |    __()__           )_
+             |_____|_><_|___/     (__          _)
+                                    (_________)
 
      Through the many years of travel you have found that your acquired taste
      of a strong northlandic brew served cool keeps you on your toes.

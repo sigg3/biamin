@@ -7,13 +7,13 @@
 # Display chars in $GAMEDIR and load one
 # Used: MainMenu()
 #-----------------------------------------------------------------------
-LoadGame() { 
+LoadGame() {
     local SHEETS FILES i=0 LIMIT=9 OFFSET=0 NUM=0 a # Declare all needed local variables
     # xargs ls -t - sort by date, last played char'll be the first in array
     for loadSHEET in $(find "$GAMEDIR/" -name '*.sheet') ; do # Find all sheets and add to array if any
-	((++i)) 
+	((++i))
 	FILES[$i]="$loadSHEET"
-   	SHEETS[$i]=$(awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance 
+   	SHEETS[$i]=$(awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance
                    if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
                    if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
                		                 if ($2 == 2 ) { RACE="Elf"; }
@@ -23,8 +23,8 @@ LoadGame() {
                    if (/^HEALTH:/)     { HEALTH = $2 }
                    if (/^ITEMS:/)      { ITEMS = $2 }
                    if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
-                 END { 
-                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")" 
+                 END {
+                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")"
                  }' "$loadSHEET")
     done
     GX_LoadGame 		# Just one time!
@@ -58,7 +58,7 @@ HighscoreRead() { # Used in Announce() and HighScore()
     local i=1 HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
     # Read values from highscore file (BashFAQ/001)
     while IFS=";" read -r highEXP highCHAR highRACE highBATTLES highKILLS highITEMS highDATE highMONTH highYEAR; do
-	(( i > 10 )) && break	
+	(( i > 10 )) && break
 	case "$highRACE" in
 	    1 ) highRACE="Human" ;;
 	    2 ) highRACE="Elf" ;;
@@ -85,7 +85,7 @@ PrepareLicense() {
     GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
     echo " Download CC BY-NC-SA 4.0 ..."
     CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
-    if [[ $GPL && $CC ]] ; then 
+    if [[ $GPL && $CC ]] ; then
 	echo -e "\t\t   BACK IN A MINUTE BASH CODE LICENSE:\t\t\t(Q)uit\n
 $HR
 $GPL
@@ -118,7 +118,7 @@ Press any key to go back to main menu!";
 	esac
     fi
     [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -e "\n License file available at $GAMEDIR/LICENSE" ; PressAnyKey ;} # ShowLicense()
-}   # Return to Credits() 
+}   # Return to Credits()
 
 
 CleanUp() { # Used in MainMenu(), NewSector(),
@@ -140,7 +140,7 @@ CleanUp() { # Used in MainMenu(), NewSector(),
 #-----------------------------------------------------------------------
 MainMenu() {
     while [[ ! "$CHAR" ]] ; do # Until $CHAR is defined
-	GX_Banner 		
+	GX_Banner
 	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
 	case $(Read) in
 	    p | P ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
@@ -153,7 +153,7 @@ MainMenu() {
 		    echo "" ; # empty line TODO fix it
 		    PressAnyKey 'Press the any key to go to (M)ain menu';;
 	    c | C ) GX_Credits ; # Credits
-		    MakePrompt '(H)owTo;(L)icense;(M)ain menu'; 
+		    MakePrompt '(H)owTo;(L)icense;(M)ain menu';
 		    case $(Read) in
 			L | l ) License ;;
 			H | h ) GX_HowTo ;;

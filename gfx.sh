@@ -9,8 +9,8 @@ HR="- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ 
 
 GX_Credits() {
     GX_BiaminTitle
-    cat <<EOF 
-          
+    cat <<EOF
+
    Back in a minute is an adventure game with 4 playable races, 6 enemies,
    8 items and 6 scenarios spread across the 270 sections of the world map.
    Biamin saves character sheets between sessions and keeps a highscore!
@@ -21,7 +21,7 @@ GX_Credits() {
    This timekiller's written entirely in BASH. It was intended for sysadmins
    but please note that it isn't console-friendly and it looks best in 80x24
    terminal emulators (white on black). Make sure it's a window you can close.
-      
+
    BASH code (C) Sigg3.net GNU GPL Version 3 2014
    ASCII art (C) Sigg3.net CC BY-NC-SA 4.0 2014 (except figlet banners)
 
@@ -34,20 +34,20 @@ EOF
 GX_HowTo() {
     GX_BiaminTitle
     cat <<EOF
-    
+
                           HOW TO PLAY Back in a Minute
 
    Go to Main Menu and hit (P)lay and enter the NAME of the character you want
    to create or whose character sheet you want to load (case-sensitive).
    You enter the World of Back in a Minute. The first sector is Home.
-   
+
    Each sector gives you these action alternatives:
    (C)haracter sheet: Toggle Character Sheet
    (R)est: Sleep to gain health points
    (M)ap and travel: Toggle Map to find yourself, items and to travel
    (Q)uit: Save current status and quit the world of Back in a Minute
    Use W, A, S, D keys to travel North, West, South or East directly.
-      
+
    Travelling and resting involves the risk of being attacked by the creatures
    inhabiting the different scenarios. Some places are safer than others.
    For more information please visit <$WEBURL>
@@ -68,13 +68,13 @@ GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
     [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
     clear
     cat <<"EOT"
- 
-                               /T\                           /""""""""\ 
+
+                               /T\                           /""""""""\
       o-+----------------------------------------------+-o  /  _ ++ _  \
         |/                                            \|   |  / \  / \  \
         |                                              |   | | , | |, | |
         |                                              |   | |   |_|  | |
-        |\                                            /|    \|   ...; |; 
+        |\                                            /|    \|   ...; |;
       o-+----------------------------------------------+-o    \______/
 
 EOT
@@ -100,15 +100,15 @@ GX_Death() {
     cat <<"EOT"
 
 
-                                        ///`~ ,~---..._            
+                                        ///`~ ,~---..._
                                  ~~--- \\\\ ',l        `~,.   ~ ~ --  ---  -- --
-                                        _`~--;~,)_     ,',~`.      ,          
-                                 ,-    ;_`-,'_/  ;`~~-;,'    \              o 
-                                 `.`.    `~.'  _; ;    7 \   /                 
+                                        _`~--;~,)_     ,',~`.      ,
+                                 ,-    ;_`-,'_/  ;`~~-;,'    \              o
+                                 `.`.    `~.'  _; ;    7 \   /
                                -   `.`.       `-~'    /  <\  \____ _          `
-                                     `.`._,           `----\______\_`--        
-                                  ,   ;,~('         -         .     `--`    . 
-                                          `c              
+                                     `.`._,           `----\______\_`--
+                                  ,   ;,~('         -         .     `--`    .
+                                          `c
 EOT
     echo "$HR"
     tput sc
@@ -127,15 +127,15 @@ EOT
     clear
     cat <<"EOT"
 
-     
+
          __   _  _  _/_   ,  __
-        / (__(/_/_)_(__  _(_/ (_    __    _  _   _   _                __ 
+        / (__(/_/_)_(__  _(_/ (_    __    _  _   _   _                __
                                     /_)__(/_(_(_(___(/_              /\ \
-                                 .-/                                /  \ \   
-         YOU ARE A STIFF,       (_/           # #  # #  # # #      /  \/\ \  
-         PUSHING UP THE DAISIES          # # #  # # # # # # #  #  /   /\ \_\ 
-         YOU ARE IRREVOCABLY DEAD     # # # # # #  # # # # #  # # \  /   / / 
-                                    # # # # # # # # # ## # # # # # \    / /     
+                                 .-/                                /  \ \
+         YOU ARE A STIFF,       (_/           # #  # #  # # #      /  \/\ \
+         PUSHING UP THE DAISIES          # # #  # # # # # # #  #  /   /\ \_\
+         YOU ARE IRREVOCABLY DEAD     # # # # # #  # # # # #  # # \  /   / /
+                                    # # # # # # # # # ## # # # # # \    / /
          Better luck next time!   # # # # #  # # # # # # # # #  # # \  / /
                                  # # #  #  # # # # # # # # # # # # # \/_/
                                    # #  # # # # # # ## # # # # ## #
@@ -154,31 +154,31 @@ EOT
 GX_Intro() {
     clear
     cat <<"EOT"
-                                                                         
-       YOU WAKE UP TO A VAST AND UNFAMILIAR LANDSCAPE !                   
-                                                                          
-       Use the MAP to move around                                         
-       REST to regain health points                                             
-                                 ___                ^^                /\        
-       HOME, TOWNS and the    __/___\__                   ^^         /~~\      
+
+       YOU WAKE UP TO A VAST AND UNFAMILIAR LANDSCAPE !
+
+       Use the MAP to move around
+       REST to regain health points
+                                 ___                ^^                /\
+       HOME, TOWNS and the    __/___\__                   ^^         /~~\
        CASTLE are safest       _(   )_                           /\ /    \  /\
                               /       \    1                  __/  \      \/  \
 ___                          (         \__ 1                _/             \   \
    \________                  \       L___| )           @ @ @ @ @@ @ @@ @
             \_______________   |     |     1     @ @ @ @@ @ @ @@ @ @ @ @ @@ @
                             \__|  |  |_____1____                    @ @ @@ @@ @@
-                               |  |  |_    1    \___________________________  
+                               |  |  |_    1    \___________________________
                                |__| ___\   1                                \___
 EOT
 
     local COUNTDOWN="$1"
     echo "$HR"
     echo -n "                         Press (A)ny key to continue.."
-    tput sc    
+    tput sc
     while ((COUNTDOWN--)); do
 	tput rc
     	((COUNTDOWN % 2)) && echo -n "." || echo -n " "
-    	read -sn 1 -t 1 && break 
+    	read -sn 1 -t 1 && break
     done
 }
 
@@ -189,13 +189,13 @@ GX_Races() {
                         C H A R A C T E R   R A C E S :
 
       1. MAN            2. ELF              3. DWARF            4. HOBBIT
- 
-   Healing:  3/6      Healing:  4/6       Healing:  2/6        Healing:  4/6   
+
+   Healing:  3/6      Healing:  4/6       Healing:  2/6        Healing:  4/6
    Strength: 3/6      Strength: 3/6       Strength: 5/6        Strength: 1/6
    Accuracy: 3/6      Accuracy: 4/6       Accuracy: 3/6        Accuracy: 4/6
    Flee:     3/6      Flee:     1/6       Flee:     2/6        Flee:     3/6
-   
-   
+
+
    Dice rolls on each turn. Accuracy also initiative. Healing during resting.
    Men and Dwarves start with more gold, Elves and Hobbits with more tobacco.
 
@@ -222,13 +222,13 @@ GX_Calendar() {
 # Arguments: $MOON(int[0-7]) (Count of moon phases)
 # Used: GX_Rest(), Almanac_Moon()
 #-----------------------------------------------------------------------
-GX_Moon() { 
+GX_Moon() {
     case "$1" in
 	0 ) cat <<"EOT"
 
 
-                                                           .  - . 
-                                                        ,         ` 
+                                                           .  - .
+                                                        ,         `
                                                                     .
                                                       '
                                                                      '
@@ -244,7 +244,7 @@ EOT
 
                                                                ~-.
                                                                  `'.
-                                                                  ` : 
+                                                                  ` :
                                                                    ' :
                                                                    ) :
                                                                    ; '
@@ -258,8 +258,8 @@ EOT
 
 
                                                               ,~-.
-                                                              :   `. 
-                                                              '     `. 
+                                                              :   `.
+                                                              '     `.
                                                               :      :
                                                               '      :
                                                               :     ;'
@@ -272,9 +272,9 @@ EOT
 	3 ) cat <<"EOT"
 
 
-                                                          ,-~ ~-. 
-                                                        ;'        `. 
-                                                       ,           `:. 
+                                                          ,-~ ~-.
+                                                        ;'        `.
+                                                       ,           `:.
                                                        .             :
                                                        .             :
                                                        .            ;'
@@ -302,7 +302,7 @@ EOT
 	5 ) cat <<"EOT"
 
 
-                                                          ,.---. 
+                                                          ,.---.
                                                        ,;^      `.
                                                       :           .
                                                      ;             .
@@ -317,7 +317,7 @@ EOT
 	6 ) cat <<"EOT"
 
 
-                                                         ,~-. 
+                                                         ,~-.
                                                        ,^   t
                                                       .     '
                                                      ;      :
@@ -332,14 +332,14 @@ EOT
 	7 ) cat <<"EOT"
 
                                                            _
-                                                        ,;`  
-                                                      .:. 
-                                                     .:. 
-                                                     ; . 
-                                                     l . 
-                                                     `  . 
-                                                      `: . 
-                                                        `-:._ 
+                                                        ,;`
+                                                      .:.
+                                                     .:.
+                                                     ; .
+                                                     l .
+                                                     `  .
+                                                      `: .
+                                                        `-:._
 
 
 EOT
@@ -352,7 +352,7 @@ EOT
 # GX_Rest()
 # Relies on GX_Moon for ASCII
 #-----------------------------------------------------------------------
-GX_Rest() { 
+GX_Rest() {
     clear
     GX_Moon "$MOON" # Draw moon
 
@@ -385,23 +385,23 @@ GX_Rest() {
 
 GX_Tavern() {
     clear
-    cat <<"EOT"    
-     __________             
-    |  ______  |       ___________________________________          
+    cat <<"EOT"
+     __________
+    |  ______  |       ___________________________________
     |  `\VV/   |      / \_|___|___|___|___|___|___|___|_/ \         /T\
     |    \/    |     /\ /    _                      \   \ /\     __/___\__
      \   /\   /     /__/   C|`|  _  _                \___\__\   | no orcs |
-      \ (__) /      |__| ...|_|c[_]|_]D..            |   |__|   | allowed |   
-       \ ** /  _____|__|  ''''''''''''''''           |   |__|   |_________| 
-        \__/  |\    \ _|   __              __        |   |__|       ________ 
-              |\\    \_|___||_____________ XX __     |`. |__|      // /  \  \ 
+      \ (__) /      |__| ...|_|c[_]|_]D..            |   |__|   | allowed |
+       \ ** /  _____|__|  ''''''''''''''''           |   |__|   |_________|
+        \__/  |\    \ _|   __              __        |   |__|       ________
+              |\\    \_|___||_____________ XX __     |`. |__|      // /  \  \
               |\\\        (__)            (__)  \    ,;: |__|     |==========|
               |\\\\______________________________\ ,;;:;:|__|     | | |   |  |
   ____________\\\\|_  __   __   ___  ____________| ::;:;;|__|_____|==========|
                \\\|_______  ______  __  ___  ____|  """"\|__|     | | |   |  |
                 \\|__  _  ____  _____   ____  ___|                 \________/
                  \|______________________________|
-               
+
 EOT
     echo "$HR"
 }
@@ -420,7 +420,7 @@ LoadCustomMap() { # Used in MapCreate()
 	awk '{printf "  | %-15.-15s | %-15.-15s | %-30.-30s\n", $1, $2, $3, $4;}' <<< 'NAME CREATOR DESCRIPTION'
 	for (( a=1; a <= LIMIT ; a++)); do
 	    NUM=$(( a + OFFSET ))
-	    [[ ! ${MAPS[$NUM]} ]] && break	    
+	    [[ ! ${MAPS[$NUM]} ]] && break
 	    [[ ${MAPS[$NUM]} == "Deleted" ]] && echo "  | Deleted" && continue
 	    awk '{ if (/^NAME:/)        { RLENGTH = match($0,/: /); NAME = substr($0, RLENGTH+2); }
                    if (/^CREATOR:/)     { RLENGTH = match($0,/: /); CREATOR = substr($0, RLENGTH+2); }
@@ -431,8 +431,8 @@ LoadCustomMap() { # Used in MapCreate()
 	    # I remember that it should be centered, but I haven't any ideas how to do it now :( kstn
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
-	echo "" # Empty line 
-	read -sn 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1 
+	echo "" # Empty line
+	read -sn 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
@@ -441,32 +441,32 @@ LoadCustomMap() { # Used in MapCreate()
 		    [[ "${MAPS[$NUM]}" == "Deleted" ]] && continue   # Do not try to display deleted map
 		    MAP=$(awk '{ if (NR > 5) { print; }}' "${MAPS[$NUM]}")
 		    if grep -q 'Z' <<< "$MAP" ; then                 # Check for errors
-			CustomMapError "${MAPS[$NUM]}" 
+			CustomMapError "${MAPS[$NUM]}"
 			MAPS[$NUM]="Deleted"
-			continue 
+			continue
 		    fi
 		    clear
 		    echo "$MAP"
 		    echo -en "Play this map? [Y/N]: "
 		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		    unset MAP ;;
-	    *     )  break;; 
+	    *     )  break;;
 	esac
     done
     return 1; # Return to MapCreate() and load default map
 }
 
 # FILL THE $MAP file using either default or custom map
-MapCreate() {    
+MapCreate() {
     # # xargs ls -t - sort by date, last played char'll be the first in array
-    MAPS=( $(find "$GAMEDIR"/ -name '*.map' | sort) )     # CHECK for custom maps 
+    MAPS=( $(find "$GAMEDIR"/ -name '*.map' | sort) )     # CHECK for custom maps
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
 	GX_LoadGame
 	MakePrompt 'Would you like to play (C)ustom map or (D)efault?'
 	[[ $(Read) == [Cc] ]] && LoadCustomMap && return 0  # leave
     fi
     MAP=$(cat <<EOT
-       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
+       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R
    #=========================================================================#
  1 )   x   x   x   x   x   @   .   .   .   T   x   x   x   x   x   x   @   T (
  2 )   x   x   H   x   @   @   .   @   @   x   x   x   x   x   @   @   @   @ (

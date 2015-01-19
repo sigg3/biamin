@@ -6,10 +6,10 @@
 # GX_BiaminTitle()
 # Used: GX_Banner(), GX_Credits(), GX_HowTo(), CleanUp(), License()
 #-----------------------------------------------------------------------
-GX_BiaminTitle() { 
+GX_BiaminTitle() {
     clear
     echo "                       B A C K   I N   A   M I N U T E"
-}  
+}
 
 #-----------------------------------------------------------------------
 # GX_Banner()
@@ -17,7 +17,7 @@ GX_BiaminTitle() {
 GX_Banner() {
     GX_BiaminTitle
     cat <<"EOT"
-                       
+
                               NON-ASCII VERSION
 
                          a simple bash adventure game

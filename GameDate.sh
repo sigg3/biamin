@@ -47,14 +47,14 @@ MonthTrivia()      { echo ${MONTH_STR[(( ($1 * 2) + 1 ))]} ;} # Return month $1 
 
 declare -r WEEK_LENGTH=7 # How many days are in week?
 declare -r -a WEEKDAY_STR=(
-    # Weekday    # Short trivia                       # Long trivia
-    "Ringday (Holiday)" "Day of Festivities and Rest" "Men and Halflings celebrate Ringday as the end and beginning of the week."   
-    "Moonday"   "Mor's Day (Day of the Moon)"         "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   
-    "Brenday"   "Brenia's Day (God of Courage)"       "Visit the Temple on Brenia's Day to honor those who perished in warfare."    
-    "Midweek"   "Middle of the Week (Day of Balance)" "In some places, Midweek Eve is celebrated with village dances and ale."      
-    "Braigday"  "Braig's Day (God of Wilderness)"     "Historically, a day of hunting. Nobility still hunt every Braig's Day."      
-    "Melethday" "Melethril's Day (God of Love)"       "Commonly considered Lovers' Day, it is also a day of mischief and trickery." 
-    "Washday"   "Final Workday of the Week"           "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      
+    # Weekday           # Short trivia                        # Long trivia
+    "Ringday (Holiday)" "Day of Festivities and Rest"         "Men and Halflings celebrate Ringday as the end and beginning of the week."   
+    "Moonday"           "Mor's Day (Day of the Moon)"         "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do."   
+    "Brenday"           "Brenia's Day (God of Courage)"       "Visit the Temple on Brenia's Day to honor those who perished in warfare."    
+    "Midweek"           "Middle of the Week (Day of Balance)" "In some places, Midweek Eve is celebrated with village dances and ale."      
+    "Braigday"          "Braig's Day (God of Wilderness)"     "Historically, a day of hunting. Nobility still hunt every Braig's Day."      
+    "Melethday"         "Melethril's Day (God of Love)"       "Commonly considered Lovers' Day, it is also a day of mischief and trickery." 
+    "Washday"           "Final Workday of the Week"           "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls."      
 )
 
 #-----------------------------------------------------------------------
@@ -138,19 +138,13 @@ CALENDAR=()
 #-----------------------------------------------------------------------
 MakeCalendar() {
     local a=0 i
-    # reset old calendar
-    CALENDAR=()
-    # find 1st day of month. NB DAYS are 0-29
-    local FIRSTDAY=$((TURN - DAY + 1))
-    # find which day of week it is. NB 0 is Sunday !!!
-    FIRSTDAY=$( bc <<< "$FIRSTDAY % $WEEK_LENGTH" )
-    # fix Sunday from 0 to 7
-    ((FIRSTDAY == 0)) && FIRSTDAY=7
-    # add spaces if not Monday
-    ((FIRSTDAY > 1)) && CALENDAR[a]=$(printf "%$(((FIRSTDAY - 1) * 3 ))c" " ")
-    # and fill Calendar array
-    for ((i = 1; i <= MONTH_LENGTH; i++)) ; do
-	CALENDAR[a]+=$(printf " %2i" $i)
+    CALENDAR=()                                                                # Reset old calendar
+    local FIRSTDAY=$((TURN - DAY + 1))                                         # Find 1st day of month. NB DAYS are 0-29
+    FIRSTDAY=$( bc <<< "$FIRSTDAY % $WEEK_LENGTH" )                            # Find which day of week is FIRSTDAY. NB 0 is Sunday !!!
+    ((FIRSTDAY == 0)) && FIRSTDAY=7                                            # Fix Sunday from 0 to 7 
+    ((FIRSTDAY > 1)) && CALENDAR[a]=$(printf "%$(((FIRSTDAY - 1) * 3 ))c" " ") # Add spaces if FIRSDAY is not Monday
+    for ((i = 1; i <= MONTH_LENGTH; i++)) ; do                                 #  and fill Calendar array 
+	CALENDAR[a]+=$(printf " %2i" "$i")
 	(( $(Strlen "${CALENDAR[a]}") == 21)) && ((a++))
     done
 }

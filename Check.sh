@@ -12,9 +12,9 @@ CheckDependencies() {
     clear
     echo "Checking dependencies..."
 
-    # TODO check BASH version
-    # TODO check screen size (80x24 minimum)
-
+    # Check BASH version (we don't need it now, but will need after 2.0 #kstn) 
+    # (( "${BASH_VERSINFO[0]}" < 4)) && Die "Biamin requires BASH version >= 4 to run (atm $BASH_VERSION)"
+    
     # CRITICAL
     for PROGRAM in "tput" "awk" "bc" "sed" "printf" "critical program 1" "critical program 2"
     do
@@ -45,6 +45,8 @@ CheckDependencies() {
 
     fi
 
+    # TODO check screen size (80x24 minimum)
+    (( $(tput cols) > 79 && $(tput lines) > 23)) || Die "Biamin requires at least a 24x80 screen to run on (atm $(tput lines)x$(tput cols))."
     # TODO update old saves
 }
 

@@ -13,9 +13,6 @@ LEGEND: x = done, ? = open question, - = removed, " " = open
         . someone's working on it, s = sigg3's on it, k = kstn's on it
         b = sigg3 & kstn is working on it
 
-TODO style ideas
-[?] move todo to 'dev' branch and rename it to TODO (for better difference from dev files)
-
 TODO GPL repo
 [x] Create LEGACY for -gpl repo once it hits 1.4
 [x] Add updater to -gpl 1.4, refers to separate repo.

@@ -72,10 +72,10 @@ TODO 2.0 branch ("survival")
 [X]		ASCII GX_Calendar
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
-[s] Almanac version 1 (simple frontpage with trivia)
+[x] Almanac version 1 (simple frontpage with trivia)
 [ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
-[ ] Language on Town.sh, ...
+[s] Language on Town.sh, ...
 
 TODO ideas for 3.0 branch ("rpg")
 [?] Internal sub-maps (random?) for locations - caves, etc
@@ -172,6 +172,7 @@ TODO open ideas for future editions
 
 TODO general stuff
 [?] Add diagonal moving (eg north-east, south-west) to main map
+		I don't think this is a good idea. It makes the map smaller, easier to avoid danger etc.
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
 

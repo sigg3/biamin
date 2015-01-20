@@ -86,10 +86,17 @@ Explanation:
     p         -> play (run ./biamin --help)
     2>log     -> redirect STDERR to file 'log'
 
+Also to have
+
+$ tail -f log
+
+in another terminal is very usable.
+
 When you've found a bug, you can either send the log to us or use any
 pastebin service and provide us with a link. This improves the chances
 of our catching the error and fixing it, and it makes the gods happy!
 
+------------------------------------------------------------------------
 WHATEVER YOU CHOOSE, AND HOWEVER YOU ROLL, THANKS FOR PLAYING!
 
 Regards, kstn & sigg3

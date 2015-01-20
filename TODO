@@ -105,8 +105,9 @@ TODO ideas for 3.0 branch ("rpg")
                  9 - 
                 10 - 
                 11 - Pillars
-				12 -
+		12 -
 		I think it makes sense to name a few of them. And isn't it the 12 pillars? Must check my history file:DD
+			11 - seems like pillars :) #ksnt
 [?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [?] Minigame in tavern - shell game
 [ ] Moonphase consequences
@@ -116,7 +117,6 @@ TODO ideas for 3.0 branch ("rpg")
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
-[.]	Hurricane - see lower
 [?] Quests?
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?]	  Find some specific in dungeont (not 10 rat's tail's)
@@ -136,8 +136,6 @@ TODO ideas for 3.0 branch ("rpg")
 [ ]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
 [ ]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
 [ ] Seasons - winter, spring, summer, autumn
-[-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
-		Too much trouble. The trading alliances counteracts "acts of Gods":)
 [?] Crime (you're WANTED)? Or perhaps curse?
 [?] World Map (tiles of maps) for a bigger world
 [?] Caravans from city to city. 
@@ -148,14 +146,6 @@ TODO ideas for 3.0 branch ("rpg")
 [?]		Enemy - merchant/caravan-master???
 [?]	Player can meet caravan whet it is robbing and can choose - go avay or help
 [?] NPC system to complete the experience of a living place
-[-] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
-        I'm thinking about doing this also. Perhaps it would be better to
-        create a subsystem of NPC() that populate certain areas, scattered like
-        HotzoneDistribute()
-        REMOVED because we're going a different route:) There will be talks in Taverns, but we'll
-        construct this system to be independent of Taverns.
-[-] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
-		We have other people for this (beggar, npcs)
 [?] Adventure log (optional)
 [ ] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
 [?] Add stealing from market??? 
@@ -192,3 +182,17 @@ BLOG/Misc.
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)
 [ ] Make text for roguebasin's page
 [?] Make GitHub mirror (for 2.0) (only for stable?)
+
+
+MEMORIAL. May be it'll be useful someday (not sure do we need, delete it if so)
+
+[-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
+		Too much trouble. The trading alliances counteracts "acts of Gods":)
+[-] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
+        I'm thinking about doing this also. Perhaps it would be better to
+        create a subsystem of NPC() that populate certain areas, scattered like
+        HotzoneDistribute()
+        REMOVED because we're going a different route:) There will be talks in Taverns, but we'll
+        construct this system to be independent of Taverns.
+[-] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
+		We have other people for this (beggar, npcs)

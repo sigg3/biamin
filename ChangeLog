@@ -1,0 +1,291 @@
+2015-01-20  sigg3 
+	Merge branch 'dev' of gitorious.org:back-in-a-minute/code into dev
+	
+	MINOR cosmetics in GameTown.sh & updated TODO
+
+2015-01-20  kstn 
+
+	ADDED "alternatively quit" to LoadCustomMap()
+	"and go back to (M)ain menu" will be some time later
+
+2015-01-20  sigg3 
+
+	MINOR visual adjustments to LoadCustomMap() and MapCreate()
+
+	REMOVED playtesting debug file
+
+	FIXED non-working Almanac() frontpage for 2.0
+
+	ADDED seasons to GameWorldChange.sh weather strength calculations
+
+2015-01-19  kstn 
+
+	FORMATTING CoreSetup.sh
+
+	COMMENT add todos for Month_*() and Weater_*() functions (GameDate.sh)
+
+	ADDED checks for screen size and BASH version to CheckDependencies() (Check.sh)
+
+	FORMATTING
+
+	FORMATTING remove unneeded empty spaces at the end of lines thorough all *.sh
+	sed -i 's/\s*$//g' *.sh
+
+	FORMATTING GameDate.sh
+
+2015-01-18  kstn 
+
+	FORMATTING and add some documentation
+
+	MINOR merge two local declarations to one line in HighscoreRead()
+
+	ADDED move reseeding RANDOM to separate function ReseedRandom() (CoreFunctions.sh)
+
+	MINOR optimize and add documentation to CustomMapError() (functions.sh)
+
+	MINOR cosmetics in FightMode_DefineInitiative()
+
+	BUGFIX LoadCustomMap() fix array numeration
+
+	MINOR optimize MapCreate() and LoadCustomMap()
+	NOW array $MAPS is not (CUSTOM_MAP_01.map CUSTOM_MAP_02.map
+	CUSTOM_MAP_03.map ...), but ($GAMEDIR/CUSTOM_MAP_01.map
+	$GAMEDIR/CUSTOM_MAP_02.map $GAMEDIR/CUSTOM_MAP_03.map ... )
+
+	BUGFIX LoadCustomMap() - check user input to prevent loading unexist custom map - correction
+
+	BUGFIX LoadCustomMap() - check user input to prevent loading unexist custom map
+
+2015-01-17  kstn 
+
+	FORMATTING
+
+	BUGFIX Announce(). Add user input checks.
+
+	MINOR cosmetics CoreCLI.sh
+
+	MINOR optimize CustomMapError()
+
+	MINOR optimize CreateBiaminLauncher()
+
+	MINOR replace "read -sn 1 -p" to "PressAnyKey" in LoadGame()
+
+	BUGFIX add user input check in Marketplace_Grocer()
+
+	MINOR all 'exit N' replace to 'Exit N'
+
+	ADDED Exit() - Makes cursor visible, than exit, to prevent leaving player without cursor
+
+	FEATURE Annoyng cursor disabled!
+	If you need read more than one symbol and see your input use Readline() (see documentation for it in CoreFunctions.sh)
+
+	ADDED ReadLine() - makes cursor visible, read line to default variable $REPLY, than makes cursor unvisible
+
+2015-01-17  sigg3 
+
+	REMOVED file README from dev branch
+
+	REMOVED ChangeLog from dev
+
+	MOVING dev files to dev
+
+	REMoved TODO from dev
+
+	REMoved archive/ from dev tree
+
+	INITializing 'dev' branch
+
+	ADDED ideas from e-mail exchange
+
+	MINOR notes on weather system for 3.0
+
+	MINOR added note on repo changes
+
+	MINOR ideas,changes in TODO
+
+2014-08-17  sigg3  <sigg3net@github.com>
+
+	X'ed out GX_Monster_bear
+
+2014-06-08  kstn 
+
+	BUGFIX: LoadGame()
+
+2014-06-05  sigg3 
+
+	update_biamin.sh v. 08
+
+2014-06-04  kstn 
+
+	BUGFIX: License() and ShowLicense()
+
+	update_biamin: v 0.7 added 'define downloader' and some little fixes
+
+2014-06-03  sigg3 
+
+	update_biamin: v 0.7 added INSTALLATION
+
+	ASCII FightMode: consistent roll UI in fight
+
+	CLEANUP: rem kstn changelog block
+
+2014-06-02  kstn 
+
+	BUGFIX: Added previous commit changes to biamin.sh-1.3.8
+
+	BUGFIX: Capitalization in Intro(), FightTable() and Announce() for MacOS (it doesn't understand sed  's/^\(.\)/\U\1/')
+
+2014-05-29  sigg3 
+
+	added update_biamin.sh v. 0.5
+
+2014-05-29  kstn 
+
+	BUGFIX: HighscoreRead() - forgotten -e in echo
+
+2014-05-28  sigg3 
+
+	Version 1.3.8 incl. LoadGame bugfix
+
+	Version 1.3.8 incl. LoadGame bugfix
+
+2014-05-27  kstn 
+
+	BUGFIX: LoadGame() : screen go "up and down" in 80x24 terminal if there are > 9 sheets in GAMEDIR
+
+2014-05-26  kstn 
+
+	BUGFIX: FightMode() - forgotten -e in echo -n "\n...
+
+2014-05-25  sigg3 
+
+	Merge branch 'bugfix-colorscheme'
+	Conflicts:
+		biamin.sh
+		biamin.sh-1.3.7.9
+
+	Merge branch 'master' of gitorious.org:back-in-a-minute/code
+
+	BUGFIX: GX_Map() same colour on non-coloured entities
+
+2014-05-25  kstn 
+
+	BUGFIX: Announce(), replaced highCHAR=${highCHAR^} for MacOS compability
+
+	BUGFIX: HotzonesDistribute() and NewSector() to prevent finding item at 1st turn of 2 or more items at one turn
+
+	BUGFIX: GX_Map(), terminal color scheme bug
+
+	BUGFIX: ColorConfig() for MacOS compability, tested and worked
+
+2014-05-24  sigg3 
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merging kstn commits to v. 1.3.7.9
+
+	Merge commit 'refs/merge-requests/4' of git://gitorious.org/back-in-a-minute/code into merge-requests/4
+
+	Merging branches to 1.3.7.8
+
+2014-05-24  kstn 
+
+	1.3.7.9 all 'echo -e "smht\n"', replaced to 'echo "smht"'
+
+	FIX for MapNav() in 1.3.7.8. Added RIGHT 1.3.7.7. Other moved to archive
+
+2014-05-23  sigg3 
+
+	Minor bugfix release 1.3.7.7
+
+	Minor bugfix release 1.3.7.7
+
+	Minor bugfix release 1.3.7.7
+
+	Version 1.3.7.6 bugfixes
+
+	Version 1.3.7.5 bugfixes
+
+2014-05-23  kstn 
+
+	Added biamin.sh-1.3.7 with all backports include 2 BUGFIXES and a lot of FIXES
+
+2014-05-22  sigg3 
+
+	Version 1.3.7
+
+2014-05-20  kstn 
+
+	BUGFIX: DisplayCharsheet()
+
+2014-05-19  kstn 
+
+	FIX ItemWasFound() - delete forgotten 'unset SKIP' line 1319
+
+	FIX BiaminSetup() - compability fixes section.
+
+2014-05-18  kstn 
+
+	FIX DisplayCharsheet()
+
+	BUGFIX: MapNav() to prevent the screen go "up and down" in 80x24 terminal
+
+2014-05-16  kstn 
+
+	FIX read outputs - all "read -p 'PROMT' 'VAR'" replaced to "read -p 'PROMT' 'VAR' 2>&1" for debugging 'bash -x ./biamin.sh 2>log' man read '-p prompt:  Display prompt on standard error'
+
+	FIX FightMode() - extra pause only if player try to flee
+
+	FIX BiaminSetup()
+
+	FIX DisplayCharsheet() - replace 'if' to 'case'
+
+	FIX all read promts fixed to lengh 79 for for 80x24 terminal
+
+	FIX GX_Map() and LoadGame() - awk comments move into awk body
+
+	FIX ColorConfig(), 'sed -i' replaced to 'sed -i""', for MacOS compability http://stackoverflow.com/questions/7573368/in-place-edits-with-sed-on-os-x
+
+	FIX "Parse CLI" arguments section
+
+	FIX Rewritten CreateBiaminLauncher()
+
+2014-05-15  kstn 
+
+	FIX BiaminSetup() and MapNav() for 80x24 terminal
+
+	FIX FightMode() - added FightTable() if enemy falls to flee, to prevent making the screen go "up and down" in 80x24 terminal
+
+	BUGFIX: forgotten 'unset FIGHTMODE' when player kills the enemy.
+
+2014-05-12  kstn 
+
+	Rewritten biamin 1.3.6
+
+	Renamed:    biamin.sh-1.3.6 -> archive/biamin.sh-1.3.6
+
+2014-03-22  sigg3 
+
+	3rd Feedback Release
+
+	3rd feedback release
+
+	3rd feedback release
+
+2014-03-14  sigg3 
+
+	Second feedback release, v 1.3
+
+	Second major release, v 1.3
+
+	Second major release, v 1.3
+
+2014-03-06  sigg3 
+
+	First Feedback Release, version 1.2.3
+
+2014-02-22  sigg3 
+
+	First public release, version 1.2

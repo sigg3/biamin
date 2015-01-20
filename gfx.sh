@@ -65,7 +65,6 @@ GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
     [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
     clear
     cat <<"EOT"
-
                                /T\                           /""""""""\
       o-+----------------------------------------------+-o  /  _ ++ _  \
         |/                                            \|   |  / \  / \  \
@@ -77,10 +76,10 @@ GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
 EOT
     tput sc
     if (( DISP == 1 )) ; then
-	MvAddStr 4 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T"
-	MvAddStr 6 11 "            s t a t i s t i c s           "
+	MvAddStr 3 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T"
+	MvAddStr 5 11 "            s t a t i s t i c s           "
     else
-	MvAddStr 4 11 "         A   L   M   A   N   A   C"
+	MvAddStr 3 11 "         A   L   M   A   N   A   C"
     fi
     tput rc
 }

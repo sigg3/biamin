@@ -155,7 +155,7 @@ WorldWeatherSystem() {
 	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather to be checked in world map turns)
 	declare -a WEATHER_AFFECTED
 	local WEATHER_SYSTEMS=0
-	while (( WEATHER_SYSTEMS <= 60 )) ; then
+	while (( WEATHER_SYSTEMS <= 60 )) ; do
 		WEATHER_AFFECTED[$WEATHER_SYSTEMS]="${WEATHER[$WEATHER_SYSTEMS]}"
 		WEATHER_SYSTEMS=$[[ $WEATHER_SYSTEMS + 3 ]]	
 	done

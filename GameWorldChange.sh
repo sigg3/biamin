@@ -18,7 +18,7 @@
 
 WorldWeatherSystem() {
     # WEATHER SYSTEM CORE
-    local WS_CORE_X WS_CORE_Y MOVE_STORM_CORE
+    local WS_CORE_X WS_CORE_Y MOVE_STORM_CORE CORE_SEVERITY CORE_SEVERITY_MODIFIER
     if [ -z "$WEATHER" ] ; then # Create weather system
 	declare -a WEATHER
 	while true ; do
@@ -46,6 +46,19 @@ WorldWeatherSystem() {
 	    WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
 	fi
     fi
+    
+    # Global adjust weather strength according to calendar (and pressure mean)
+    case "$MONTH" in
+    0 | 1 | 1[1-2] ) CORE_SEVERITY_MODIFIER=-2 ;; # Winter = high pressure, less storms (but cold)
+    2 | 3 | 4 )      CORE_SEVERITY_MODIFIER=1  ;; # Spring = low pressure, more storms (warmer)
+    5 | 6 | 7 )      CORE_SEVERITY_MODIFIER=0  ;; # Summer = high pressure, less storms (but very warm)
+    8 | 9 | 10 )     CORE_SEVERITY_MODIFIER=2  ;; # Autumn = low pressure, more storms (warm)
+    esac
+	CORE_SEVERITY=${WEATHER[1]}
+    CORE_SEVERITY=$( bc <<< "$CORE_SEVERITY + $CORE_SEVERITY_MODIFIER" )
+	(( CORE_SEVERITY > 18 )) && CORE_SEVERITY=18
+	(( CORE_SEVERITY < 1  )) && CORE_SEVERITY=1
+    WEATHER[1]=$CORE_SEVERITY
 
     # Additional conditions for core
     WorldWeatherSystemHumidity 1 2
@@ -139,14 +152,12 @@ WorldWeatherSystem() {
 	#
 	# In the array called Unix, the elements ‘AIX’ and ‘HP-UX’ are added in 7th and 8th index respectively
 
-	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather)
-	# TODO need to sort out this array..
+	# WEATHER AFFECTED AREAS (viz. Hotzone array for weather to be checked in world map turns)
 	declare -a WEATHER_AFFECTED
-	local WEATHER_AFFECTED_COUNTER=0 WEATHER_AFFECTED_COUNTER_INDEX=0
-	while ((WEATHER_AFFECTED_COUNTER_INDEX >= )); do
-	    WEATHER_AFFECTED[$WEATHER_AFFECTED_COUNTER_INDEX]="${WEATHER[$WEATHER_AFFECTED_COUNTER]}"
-	    WEATHER_AFFECTED_COUNTER=$[[ $WEATHER_AFFECTED_COUNTER + 3 ]]
-	    (( WEATHER_AFFECTED_COUNTER_INDEX++ ))
+	local WEATHER_SYSTEMS=0
+	while (( WEATHER_SYSTEMS <= 60 )) ; then
+		WEATHER_AFFECTED[$WEATHER_SYSTEMS]="${WEATHER[$WEATHER_SYSTEMS]}"
+		WEATHER_SYSTEMS=$[[ $WEATHER_SYSTEMS + 3 ]]	
 	done
     fi
 }

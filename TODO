@@ -72,7 +72,7 @@ TODO 2.0 branch ("survival")
 [x] Almanac version 1 (simple frontpage with trivia)
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
-[s] Language on Town.sh, ...
+[x] Language on Town.sh, ...
 
 TODO ideas for 3.0 branch ("rpg")
 [?] Internal sub-maps (random?) for locations - caves, etc
@@ -116,26 +116,28 @@ TODO ideas for 3.0 branch ("rpg")
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
-[?]	Hurricane - see lower
+[.]	Hurricane - see lower
 [?] Quests?
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?]	  Find some specific in dungeont (not 10 rat's tail's)
 [?] Messenger?
-[?] Date - internal date not attached to real - one turn - one day
+[x] Date - internal date not attached to real - one turn - one day
 	Isn't it already realised? O_o? #ksnt
+	We realized it differently, but it is attached to real date now, yes:)
 [.] Weather - changes every turn.
 	The Biamin weather has two systems making a more dynamic experience:
 	a) General, seasonal weather (universal = for entire map)
 	b) Moving storm system, see WorldWeatherSystem()
 		The WorldWeatherSystem() must tie into seasonal variations too.
-[?]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
-[?]	Rain (+/-FLEE, more chanses but less HP from REST)
-[?]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)
-[?]	Wind (+/- FLEE from animal enemies - varg, boar)
-[?]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
-[?]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
-[?] Seasons - winter, spring, summer, autumn
-[?]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
+[ ]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
+[ ]	Rain (+/-FLEE, more chanses but less HP from REST)
+[ ]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)
+[ ]	Wind (+/- FLEE from animal enemies - varg, boar)
+[ ]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
+[ ]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
+[ ] Seasons - winter, spring, summer, autumn
+[-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
+		Too much trouble. The trading alliances counteracts "acts of Gods":)
 [?] Crime (you're WANTED)? Or perhaps curse?
 [?] World Map (tiles of maps) for a bigger world
 [?] Caravans from city to city. 
@@ -146,13 +148,16 @@ TODO ideas for 3.0 branch ("rpg")
 [?]		Enemy - merchant/caravan-master???
 [?]	Player can meet caravan whet it is robbing and can choose - go avay or help
 [?] NPC system to complete the experience of a living place
-[?] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
+[-] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
         I'm thinking about doing this also. Perhaps it would be better to
         create a subsystem of NPC() that populate certain areas, scattered like
         HotzoneDistribute()
-[?] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
+        REMOVED because we're going a different route:) There will be talks in Taverns, but we'll
+        construct this system to be independent of Taverns.
+[-] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
+		We have other people for this (beggar, npcs)
 [?] Adventure log (optional)
-[?] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
+[ ] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
 [?] Add stealing from market??? 
     	 Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
 	 Or he call the police (the guards?) and they throw player from town? (kstn) 
@@ -160,7 +165,8 @@ TODO ideas for 3.0 branch ("rpg")
 [?] Add item or magic thing which adds 50 to MAX_HEALTH
 [?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
 [?] Different races eats different quantity of FOOD/turn
-
+		Since 1 FOOD is cornerstone of economy, I don't think we should mess with 0.25.
+		However, we can make OTHER items have different effects; magic potions, mushrooms, elixirs etc.
 
 TODO open ideas for future editions
 [ ] HOME = farm, so we should have a farm cycle, to gather food. This is player's extra repo.

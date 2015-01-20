@@ -2,13 +2,6 @@
 #                        Town (secondary loop)                         #
 #                                                                      #
 
-# Quick tip: use echo "_____________DEBUG whatever______________" >2 # DEBUG
-# To output debug data to debugger (and not to stdout).
-# Better to use
-#  echo "something" >> /tmp/biamin_debug_file
-# #kstn
-
-
 #-----------------------------------------------------------------------
 # CheckForGold()
 # Check if char have $PRICE Gold and divide it from $CHAR_GOLD or
@@ -131,6 +124,17 @@ Marketplace() {
 	#     1) MakePrompt '(G)rocer;(M)erchant;(B)eggar;(L)eave;(Q)uit' ;;
 	#     *) MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	# esac
+	#
+	# Or perhaps even:
+	# case "$(RollDice2 3)" in
+	# 1 ) TOWN_FEATURE="Beggar"  ;;
+	# 2 ) TOWN_FEATURE="Priest"  ;;
+	# 3 ) TOWN_FEATURE="Gambler" ;;
+	# esac
+	#
+	# MakePrompt '(G)rocer;(M)erchant;(${TOWN_FEATURE:0:1})${TOWN_FEATURE:1:6};(L)eave;(Q)uit'
+	# # ~ sigg3 :)
+	#
 	# case $(Read) in
 	#     b | B) ((BEGGAR == 1)) && Marketplace_Beggar;;
 	#     g | G) Marketplace_Grocer;;
@@ -532,10 +536,10 @@ Marketplace_Grocer() {
 	case $(Read) in
 	    g | G )
 		GX_Marketplace_Grocer
-		ReadLine " How many food items do you want to buy? "
+		ReadLine " How many Food items do you want to buy? "
 		QUANTITY="$REPLY"
 		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
-		    echo " I can't sold you $QUANTITY food"
+		    echo " I can't sell you $QUANTITY Food.."
 		    read -n 1
 		    continue
 		fi
@@ -545,7 +549,7 @@ Marketplace_Grocer() {
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
 		    echo " You bought $QUANTITY food for $COST Gold, and you have $CHAR_FOOD Food in your inventory"
 		else
-		    echo " You don't have enough Gold to buy $QUANTITY food yet. Try a little less!"
+		    echo " You don't have enough Gold to buy $QUANTITY Food. Try a little less!"
 		fi
 		read -n 1
 		;;
@@ -554,7 +558,7 @@ Marketplace_Grocer() {
 		ReadLine " How much food you want to buy? "
 		QUANTITY="$REPLY"
 		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
-		    echo " I can't sold you $QUANTITY food"
+		    echo " I can't sell you $QUANTITY Food.."
 		    read -n 1
 		    continue
 		fi
@@ -564,7 +568,7 @@ Marketplace_Grocer() {
 		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
 		    echo " You traded $COST Tobacco for $QUANTITY food, and have $CHAR_FOOD Food in your inventory"
 		else
-		    echo " You don't have enough Tobacco to trade for $QUANTITY food yet. Try a little less!"
+		    echo " You don't have enough Tobacco to trade for $QUANTITY Food. Try a little less!"
 		fi
 		read -n 1
 		;;

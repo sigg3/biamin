@@ -407,7 +407,7 @@ LoadCustomMap() { # Used in MapCreate()
     local i=${#MAPS[@]}
     while (true) ; do
 	GX_LoadGame
-	awk '{printf "  | %-15.-15s | %-15.-15s | %-30.-30s\n", $1, $2, $3, $4;}' <<< 'NAME CREATOR DESCRIPTION'
+	awk '{printf "#   %-15.-15s   %-15.-15s   %-30.-30s\n", $1, $2, $3, $4;}' <<< 'NAME CREATOR DESCRIPTION'
 	for (( a=1; a <= LIMIT ; a++)); do
 	    NUM=$(( a + OFFSET ))
 	    [[ ! ${MAPS[$NUM]} ]] && break
@@ -417,12 +417,11 @@ LoadCustomMap() { # Used in MapCreate()
                    if (/^DESCRIPTION:/) { RLENGTH = match($0,/: /); DESCRIPTION = substr($0, RLENGTH+2); }
                    FILE = "'${MAPS[$NUM]}'";
                    gsub(".map$", "", FILE); }
-             END { printf "%s | %-15.15s | %-15.15s | %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}' "${MAPS[$NUM]}"
-	    # I remember that it should be centered, but I haven't any ideas how to do it now :( kstn
+             END { printf "%s   %-15.15s   %-15.15s   %-30.30s\n", "'$a'", NAME, CREATOR, DESCRIPTION ;}' "${MAPS[$NUM]}"
 	done
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
 	echo "" # Empty line
-	read -sn 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1
+	read -sn 1 -p "Enter NUMBER of map to load or any letter to play (D)efault map: " NUM 2>&1 # TODO change to "Enter NUMBER of map to load, load (D)efault map or go to (M)ain menu: "
 	case "$NUM" in
 	    n | N ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
 	    p | P ) ((OFFSET > 0))         && ((OFFSET -= LIMIT)) ;; # Previous part of list
@@ -436,8 +435,9 @@ LoadCustomMap() { # Used in MapCreate()
 			continue
 		    fi
 		    clear
-		    echo "$MAP"
-		    echo -en "Play this map? [Y/N]: "
+		    # Get ready for some ugly workaround TODO
+			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R"
+		    echo -en "\n$HR\nPlay this map? [Y/N]: " # Display map NAME, CREATOR and DESCRIPTION here? IDEA
 		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		    unset MAP ;;
 	    *     )  break;;
@@ -451,8 +451,7 @@ MapCreate() {
     # # xargs ls -t - sort by date, last played char'll be the first in array
     MAPS=( $(find "$GAMEDIR"/ -name '*.map' | sort) )     # CHECK for custom maps
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
-	GX_LoadGame
-	MakePrompt 'Would you like to play (C)ustom map or (D)efault?'
+    echo -en "\n Custom maps found in $GAMEDIR\n Would you like to play a (C)ustom map or the (D)efault? " #&& read -sn 1 CUSTOM_MAP_PROMPT
 	[[ $(Read) == [Cc] ]] && LoadCustomMap && return 0  # leave
     fi
     MAP=$(cat <<EOT

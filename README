@@ -59,6 +59,7 @@ Version changes only in master branch - 1.2.3
 Please use one of the following commit conventions:
 o ADDED/FEATURE for new features
 o BUGFIX        for bugfixes
+o FIXED/EDIT    for code making a feature work correctly
 o COMMENT       for code comments
 o FORMATTING    for code formatting changes
 o MINOR         for minor edits, cosmetics

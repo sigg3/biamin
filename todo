@@ -171,6 +171,7 @@ TODO open ideas for future editions
 	   Who will be work at farm when player is wandering? Or player is some kind or feudal lord with his own pheasants? #kstn
 
 TODO general stuff
+[?] Add diagonal moving (eg north-east, south-west) to main map
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
 

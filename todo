@@ -30,6 +30,7 @@ TODO LEGACY branch ("original")
 [x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
 [-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 	This requires changing code and blog stuff:P
+[ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
 
 TODO 2.0 branch ("survival")
 [?] Implement EchoFightFormula in FightMode from LEGACY
@@ -74,6 +75,7 @@ TODO 2.0 branch ("survival")
 [s] Almanac version 1 (simple frontpage with trivia)
 [ ] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
+[ ] Language on Town.sh, ...
 
 TODO ideas for 3.0 branch ("rpg")
 [?] Internal sub-maps (random?) for locations - caves, etc

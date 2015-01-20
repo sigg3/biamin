@@ -1,0 +1,190 @@
+            _                      _____ ___  ____   ___  
+           | |    __ _ _____   _  |_   _/ _ \|  _ \ / _ \ 
+           | |   / _` |_  / | | |   | || | | | | | | | | |
+           | |__| (_| |/ /| |_| |   | || |_| | |_| | |_| |
+           |_____\__,_/___|\__, |   |_| \___/|____/ \___/ 
+                           |___/      
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Add stuff here discovered while testing and/or working out other problems
+that needs to be done. Or from e-mail discussions. ~ sigg3
+
+LEGEND: x = done, ? = open question, - = removed, " " = open
+        . someone's working on it, s = sigg3's on it, k = kstn's on it
+        b = sigg3 & kstn is working on it
+
+TODO style ideas
+[?] move todo to 'dev' branch and rename it to TODO (for better difference from dev files)
+
+TODO GPL repo
+[x] Create LEGACY for -gpl repo once it hits 1.4
+[x] Add updater to -gpl 1.4, refers to separate repo.
+[x] Updated sprites in wait for 1.4
+[-] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
+
+TODO LEGACY branch ("original")
+[x] Remove update_biamin.sh from LEGACY
+[x] Add updater function once it hits 1.4 that refers to separate repo.
+[x] Add LEGACY to $VERSION once it hits 1.4.
+[x] BUGFIX Player is still attacked the round s/he finds and item. NODICE problem..
+[x] Finalize fight prompt for LEGACY (this can be changed later in 2.0)
+[-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
+	This requires changing code and blog stuff:P
+[ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
+
+TODO 2.0 branch ("survival")
+[-] Implement EchoFightFormula in FightMode from LEGACY
+[x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
+[x] Check are all checks for gold/tobacco replaced to bc
+[x] Add world economy event in NewSector()
+[x] ASCII GX_Monster_boar 
+[x] ASCII GX_Monster_dragon
+[x] ASCII GX_Monster_imp
+[x] ASCII GX_Monster_bear
+[x] ASCII GX_Tavern
+[x] 	ASCII GX_DiceGame_Table && _Instructions
+[s]     ASCII GX_DiceGame
+[x] ASCII GX_Marketplace
+[x]	ASCII GX_Grocer
+[x]	ASCII GX_Tradesman (RENAMED to Merchant)
+[x] ASCII GX_ for 2 more enemies (10 total)
+[x] ASCII Finish look of GX_Bulletin (left side)
+[x] Pickpocket tuning [ This is economy tuning, pickpocket works ]
+[x] Add boar
+[x] Add dragon
+[x] Add imp
+[x] Add cave bear
+[x] Rewrite CUSTOM map functionality to allow >1 map
+[x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
+[k] LoadMap() displaying list of maps to choose from ^^
+[x]		I'll playtest the visuals ~ sigg3
+[x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
+[x] Allow trading gold->tobacco / tobacco-> gold also
+[x] ASCII Cosmetics e.g. text on: starvation, pre-fight prompts etc. 
+[x] 	ASCII GX_Starvation # Great idea! #kstn
+[x] Game of chance (for tavern), dice game or card game etc.
+[x] AUTO-update (optional)
+[x] Dice game in tavern
+[x] Change the (R)est value in (T)own to something lower, for have the Taverns be worthwile to sleep in.
+[x] Change the (R)est value in (T)avern to (T)own's x 2
+[x] Calendar() -- Used in DisplayCharsheet()
+[x] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
+[X]		ASCII GX_Calendar
+[x]		ASCII add moon phase case statements to Rest()
+[x]		ASCII GX_Rest divide into phases
+[x] Almanac version 1 (simple frontpage with trivia)
+[x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
+[k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
+[s] Language on Town.sh, ...
+
+TODO ideas for 3.0 branch ("rpg")
+[?] Internal sub-maps (random?) for locations - caves, etc
+[?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
+[ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
+	May be 1 torch = N dungeon turns is better? kstn
+[ ] Cave: multi-fight allowing >1 enemy in cave.
+[ ] General inventory system (accessed thru 
+[ ] Stuff the player can gather from animals and sell
+		- Wildboar: fur, tusks, food
+		- Bear:     pelt (fur), food
+		- Dragon:   claws, dragon eyes
+		etc.
+			ATM bear and boar already gives food aren't they? #kstn
+[ ] Allow ENEMY to pickpocket player (ex-FightMode)
+[ ] Towers, castles (maze-like structures)
+[ ] Catacombs (ordered caves)
+[.] Almanac version 2 (full experience, including player notes)
+[.] Add 4 more Economy scenarios with different values (current: 12 + default)
+[.] Almanac_Moon
+[.] Almanac_Notes
+[?]	Dicegame Names for all combinations:
+                 2 - Dragon Eyes
+                 3 - 
+                 4 - Sail
+                 5 - 
+                 6 - 
+                 7 - Axe
+                 8 - Eternity :)
+                 9 - 
+                10 - 
+                11 - Pillars
+				12 -
+		I think it makes sense to name a few of them. And isn't it the 12 pillars? Must check my history file:DD
+[?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
+[?] Minigame in tavern - shell game
+[ ] Moonphase consequences
+[ ] 	Vargs more likely to be encountered in mountains (for example)
+[ ] Replace bash's pseudo-random RANDOM to smth more random.
+[-] Gods ???  (I'm putting this under Mythology)
+[?] (S)ettings
+[?]	  Show math / Show only text in FightMode()
+[?] Other WorldChangeEVENTS ?
+[?]	Hurricane - see lower
+[?] Quests?
+[?] 	  Kill the dragon and get 500 gold (bullutin0)
+[?]	  Find some specific in dungeont (not 10 rat's tail's)
+[?] Messenger?
+[?] Date - internal date not attached to real - one turn - one day
+	Isn't it already realised? O_o? #ksnt
+[.] Weather - changes every turn.
+	The Biamin weather has two systems making a more dynamic experience:
+	a) General, seasonal weather (universal = for entire map)
+	b) Moving storm system, see WorldWeatherSystem()
+		The WorldWeatherSystem() must tie into seasonal variations too.
+[?]	Sunny (-FLEE for dwarves, -ENEMY_FLEE if player is human, elf, hobbit, +EN_FLEE if player is dwarf. ec race depended LIGHT bonus (for enemy also)
+[?]	Rain (+/-FLEE, more chanses but less HP from REST)
+[?]	Thunderstorm (less chances to move, chance to go astray (player press East, but lose his way and go North)
+[?]	Wind (+/- FLEE from animal enemies - varg, boar)
+[?]	Snow (+/-FLEE, greatest chanses but LEAST HP from REST), if MOUNTAIN - player cant go away until the weather changed, chanses to go astray.
+[?]	Hurricane - no chances to move, chances to lose some HP, RAREST!; and see lower
+[?] Seasons - winter, spring, summer, autumn
+[?]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
+[?] Crime (you're WANTED)? Or perhaps curse?
+[?] World Map (tiles of maps) for a bigger world
+[?] Caravans from city to city. 
+[?]	Player can walk with caravan for money (less chances to battle on the road)
+[?]     Player can take work to guard caravan (gets money after, but bigger chances to battle on the road)
+[?]	Player cat meet caravan on the road, and buy smth for lower price.
+[?]	Player can ROB caravans on the road!!!
+[?]		Enemy - merchant/caravan-master???
+[?]	Player can meet caravan whet it is robbing and can choose - go avay or help
+[?] NPC system to complete the experience of a living place
+[?] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)
+        I'm thinking about doing this also. Perhaps it would be better to
+        create a subsystem of NPC() that populate certain areas, scattered like
+        HotzoneDistribute()
+[?] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
+[?] Adventure log (optional)
+[?] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
+[?] Add stealing from market??? 
+    	 Good idea, but we'd have to arrange a fight and new enemy type (shopkeep)..
+	 Or he call the police (the guards?) and they throw player from town? (kstn) 
+	 We're getting way ahead of ourselves:) Let's just make what we have work first:)
+[?] Add item or magic thing which adds 50 to MAX_HEALTH
+[?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
+[?] Different races eats different quantity of FOOD/turn
+
+
+TODO open ideas for future editions
+[ ] HOME = farm, so we should have a farm cycle, to gather food. This is player's extra repo.
+	(H)ome has a crop, and depending on weather above the farm, it can go bad or good.
+	We can have the player invest Gold in building better irrigation, etc.
+	   Who will be work at farm when player is wandering? Or player is some kind or feudal lord with his own pheasants? #kstn
+
+TODO general stuff
+[?] Add diagonal moving (eg north-east, south-west) to main map
+		I don't think this is a good idea. It makes the map smaller, easier to avoid danger etc. ~ sigg3
+[ ] Continue designing a nicer fight prompt
+[ ] Continue pruning UI experience (as constant as possible)
+
+
+BLOG/Misc.
+[.] Creation, Mythology, Gods (for 2.0) # For 3.0? #kstn
+[ ] wiki
+[x] LEGACY announcement
+[ ] 2.0 announcement
+[.] Re-write About page
+[x] Update download page
+[ ] Publish 2.0 with much fanfare: "Survival mode" :)
+[ ] Make text for roguebasin's page
+[?] Make GitHub mirror (for 2.0) (only for stable?)

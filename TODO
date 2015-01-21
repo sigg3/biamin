@@ -104,10 +104,11 @@ TODO ideas for 3.0 branch ("rpg")
                  8 - Eternity :)
                  9 - 
                 10 - 
-                11 - Pillars
-		12 -
+                11 - 
+		12 - Pillars
 		I think it makes sense to name a few of them. And isn't it the 12 pillars? Must check my history file:DD
 			11 - seems like pillars :) #ksnt
+			UPD, really "Pillars (12)". May be attach combinations names to mythology
 [?]	Dicegame Thing for luck in game - Dragon's eyes, player can take it from a dragon's corpse, lightly increase chances to win
 [?] Minigame in tavern - shell game
 [ ] Moonphase consequences
@@ -167,6 +168,10 @@ TODO open ideas for future editions
 TODO general stuff
 [?] Add diagonal moving (eg north-east, south-west) to main map
 		I don't think this is a good idea. It makes the map smaller, easier to avoid danger etc. ~ sigg3
+			Yes, it makes map smaller, but as RPG-part
+			will be increase, it'll means a little. Player
+			will need go thorough the map many times. #ksnt
+			
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
 
@@ -182,9 +187,11 @@ BLOG/Misc.
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)
 [ ] Make text for roguebasin's page
 [?] Make GitHub mirror (for 2.0) (only for stable?)
-
+[?] ADD to 'ADDED', 'FIXED', etc 'TODO'. When you'll be make changelog it'll be easier to use smth like `sed '/!TODO/p'` (skip all lines with 'TODO')
 
 MEMORIAL. May be it'll be useful someday (not sure do we need, delete it if so)
+or
+RIP. Maybe someday you'll be digged up.
 
 [-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
 		Too much trouble. The trading alliances counteracts "acts of Gods":)

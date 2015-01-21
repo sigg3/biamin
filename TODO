@@ -30,7 +30,6 @@ TODO LEGACY branch ("original")
 [ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
 
 TODO 2.0 branch ("survival")
-[-] Implement EchoFightFormula in FightMode from LEGACY
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
 [x] Check are all checks for gold/tobacco replaced to bc
 [x] Add world economy event in NewSector()
@@ -171,12 +170,18 @@ TODO general stuff
 			Yes, it makes map smaller, but as RPG-part
 			will be increase, it'll means a little. Player
 			will need go thorough the map many times. #ksnt
-			
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
 [?] Add (O)ptions menu in MainMenu, which works with $GAMEDIR/$CONFIG. Options
+		We should have this for:
+		Color [off/moderate/aggressive]   : moderate (default)
+		Difficulty [baby/hardcore]        : hardcore (default)
+		Economic (in)stability [0.1-0.99] : 0.15     (default)
 [?]	Do not save every turn (save only on exit)
-[?]	Agressive colors (colorized map, etc), off by-default
+		Perhaps be a boolean? "Difficulty [Baby/Hardcore]: Hardcore" in (O)ptions or (S)ettings menu.
+		Baby means _save only on exit_ viz. allows save-scumming (exit/load until fortunate circumstance)
+		Hardcore is current mode. Each step is saved _because_ it makes the game harder. Everything matters.
+		We'll put this on the backburner, it's low priority atm. ~ sigg3
 
 
 BLOG/Misc.
@@ -192,10 +197,8 @@ BLOG/Misc.
 [?] Make GitHub mirror (for 2.0) (only for stable?)
 [?] ADD to 'ADDED', 'FIXED', etc 'TODO'. When you'll be make changelog it'll be easier to use smth like `sed '/!TODO/p'` (skip all lines with 'TODO')
 
-MEMORIAL. May be it'll be useful someday (not sure do we need, delete it if so)
-or
-RIP. Maybe someday you'll be digged up.
-
+MEMORIAL:
+[-] Implement EchoFightFormula in FightMode from LEGACY
 [-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
 		Too much trouble. The trading alliances counteracts "acts of Gods":)
 [-] Talks in tavern ? (good idea but i can't imangine what it should be #kstn)

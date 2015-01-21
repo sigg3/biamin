@@ -52,7 +52,7 @@ TODO 2.0 branch ("survival")
 [x] Add cave bear
 [x] Rewrite CUSTOM map functionality to allow >1 map
 [x] Add .map format with required header containing: NAME | AUTHOR | HOME | START_LOCATION
-[k] LoadMap() displaying list of maps to choose from ^^
+[x] LoadMap() displaying list of maps to choose from ^^
 [x]		I'll playtest the visuals ~ sigg3
 [x] Restrict chthulu to H $SCENARIO (perhaps add a couple percent? 3/100?)
 [x] Allow trading gold->tobacco / tobacco-> gold also

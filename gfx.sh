@@ -203,6 +203,7 @@ EOF
 # Used: DisplayCharsheet()
 # TODO: The Idea is simply put to have a calendar on the right side
 # and some info about the current month on the left (or vice-versa)
+# TODO is this obsolete?
 #-----------------------------------------------------------------------
 GX_Calendar() {
     clear
@@ -437,9 +438,17 @@ LoadCustomMap() { # Used in MapCreate()
 			continue
 		    fi
 		    clear
-		    # Get ready for some ugly workaround TODO
-			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R"
-		    echo -en "\n   MAP NAME by CREATOR\n   DESCRIPTION\n$HR\n Play this map? [Y/N]: " # Display map NAME, CREATOR and DESCRIPTION here? IDEA
+		    # Simple map preview to confirm/reject choice of map
+		    local MAP_NAME=$(grep "NAME:" "${MAPS[$NUM]}" | sed 's/NAME: //g')
+		    local MAP_AUTH=$(grep "CREATOR:" "${MAPS[$NUM]}" | sed 's/CREATOR: //g')
+		    local MAP_DESC=$(grep "DESCRIPTION:" "${MAPS[$NUM]}" | sed 's/DESCRIPTION:/Description:/g')
+			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R" # Display without LEGEND
+			local MAP_AUTH_XPOS=75
+			MAP_AUTH_XPOS=$( bc <<< "$MAP_AUTH_XPOS - ${#MAP_AUTH}" )
+			tput sc
+			MvAddStr 20 $MAP_AUTH_XPOS "By $MAP_AUTH" # Put CREATOR to the far right on same row as NAME
+			tput rc
+		    echo -en "\n   Custom map:  $MAP_NAME\n   $MAP_DESC\n$HR\n Play this map? [Y/N]: "
 		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		    unset MAP ;;
 	    [qQ]  ) CleanUp ;;

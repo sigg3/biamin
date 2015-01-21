@@ -439,7 +439,7 @@ LoadCustomMap() { # Used in MapCreate()
 		    clear
 		    # Get ready for some ugly workaround TODO
 			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R"
-		    echo -en "\n$HR\nPlay this map? [Y/N]: " # Display map NAME, CREATOR and DESCRIPTION here? IDEA
+		    echo -en "\n   MAP NAME by CREATOR\n   DESCRIPTION\n$HR\n Play this map? [Y/N]: " # Display map NAME, CREATOR and DESCRIPTION here? IDEA
 		    [[ $(Read) == [yY] ]] && CUSTOM_MAP="${MAPS[$NUM]}" && return 0; # Return to MapCreate()
 		    unset MAP ;;
 	    [qQ]  ) CleanUp ;;

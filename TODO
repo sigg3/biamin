@@ -174,6 +174,9 @@ TODO general stuff
 			
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
+[?] Add (O)ptions menu in MainMenu, which works with $GAMEDIR/$CONFIG. Options
+[?]	Do not save every turn (save only on exit)
+[?]	Agressive colors (colorized map, etc), off by-default
 
 
 BLOG/Misc.

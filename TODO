@@ -65,15 +65,16 @@ TODO 2.0 branch ("survival")
 [x] Change the (R)est value in (T)avern to (T)own's x 2
 [x] Calendar() -- Used in DisplayCharsheet()
 [x] 	Finish all related to dates, months, moons (we'll add e.g. moon phase _consequences_ later!)
-[X]		ASCII GX_Calendar
+[x]		ASCII GX_Calendar
 [x]		ASCII add moon phase case statements to Rest()
 [x]		ASCII GX_Rest divide into phases
 [x] Almanac version 1 (simple frontpage with trivia)
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
-[k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 [x] Language on Town.sh, ...
 
 TODO ideas for 3.0 branch ("rpg")
+[k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
+	It is good idea but it is not critical for 2.0, so I've moved it here #kstn
 [?] Internal sub-maps (random?) for locations - caves, etc
 [?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
 [ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
@@ -112,8 +113,6 @@ TODO ideas for 3.0 branch ("rpg")
 [?] Minigame in tavern - shell game
 [ ] Moonphase consequences
 [ ] 	Vargs more likely to be encountered in mountains (for example)
-[ ] Replace bash's pseudo-random RANDOM to smth more random.
-[-] Gods ???  (I'm putting this under Mythology)
 [?] (S)ettings
 [?]	  Show math / Show only text in FightMode()
 [?] Other WorldChangeEVENTS ?
@@ -144,7 +143,8 @@ TODO ideas for 3.0 branch ("rpg")
 [?]	Player cat meet caravan on the road, and buy smth for lower price.
 [?]	Player can ROB caravans on the road!!!
 [?]		Enemy - merchant/caravan-master???
-[?]	Player can meet caravan whet it is robbing and can choose - go avay or help
+[?]			Use Merchant ASCII for him?
+[?]	Player can meet caravan whet it is robbed and can choose - go avay or help
 [?] NPC system to complete the experience of a living place
 [?] Adventure log (optional)
 [ ] Add possible loot items for wildlife (e.g. pelts, tusks, horns etc.) and create market system around it.
@@ -154,22 +154,22 @@ TODO ideas for 3.0 branch ("rpg")
 	 We're getting way ahead of ourselves:) Let's just make what we have work first:)
 [?] Add item or magic thing which adds 50 to MAX_HEALTH
 [?] If ACCURACY == EN_ACCURACY and ENEMY tries to flee player can resolve to let enemy go or not
-[?] Different races eats different quantity of FOOD/turn
-		Since 1 FOOD is cornerstone of economy, I don't think we should mess with 0.25.
-		However, we can make OTHER items have different effects; magic potions, mushrooms, elixirs etc.
+
 
 TODO open ideas for future editions
 [ ] HOME = farm, so we should have a farm cycle, to gather food. This is player's extra repo.
 	(H)ome has a crop, and depending on weather above the farm, it can go bad or good.
 	We can have the player invest Gold in building better irrigation, etc.
 	   Who will be work at farm when player is wandering? Or player is some kind or feudal lord with his own pheasants? #kstn
+	   But to have (H)ome as stronghold is an idea
 
 TODO general stuff
+[ ] Replace bash's pseudo-random RANDOM to smth more random.
 [?] Add diagonal moving (eg north-east, south-west) to main map
 		I don't think this is a good idea. It makes the map smaller, easier to avoid danger etc. ~ sigg3
 			Yes, it makes map smaller, but as RPG-part
 			will be increase, it'll means a little. Player
-			will need go thorough the map many times. #ksnt
+			will need go thorough the map many times. #kstn
 [ ] Continue designing a nicer fight prompt
 [ ] Continue pruning UI experience (as constant as possible)
 [?] Add (O)ptions menu in MainMenu, which works with $GAMEDIR/$CONFIG. Options
@@ -198,6 +198,7 @@ BLOG/Misc.
 [?] ADD to 'ADDED', 'FIXED', etc 'TODO'. When you'll be make changelog it'll be easier to use smth like `sed '/!TODO/p'` (skip all lines with 'TODO')
 
 MEMORIAL:
+[-] Gods ???  (I'm putting this under Mythology)
 [-] Implement EchoFightFormula in FightMode from LEGACY
 [-]	If there was hurricane in summer - WorldEconomicChanges - tobacco and food raises!
 		Too much trouble. The trading alliances counteracts "acts of Gods":)
@@ -209,3 +210,6 @@ MEMORIAL:
         construct this system to be independent of Taverns.
 [-] Talks with merchants - during buing they add some sentences about last WorldChangeEvents.
 		We have other people for this (beggar, npcs)
+[-] Different races eats different quantity of FOOD/turn
+		Since 1 FOOD is cornerstone of economy, I don't think we should mess with 0.25.
+		However, we can make OTHER items have different effects; magic potions, mushrooms, elixirs etc.

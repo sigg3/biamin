@@ -249,7 +249,7 @@ FightMode_CharTurn() {
 	    if (( DICE <= FLEE )); then # first check for flee
 		(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
 		echo -n " $FLEE ) You try to flee the battle .."
-		sleep 2
+		Sleep 2
 		FightMode_FightTable
 		RollDice 6
 		FightMode_FightFormula 6 le eA
@@ -285,13 +285,13 @@ FightMode_CharTurn() {
 FightMode_EnemyTurn() {
     if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 	echo -e "Rolling for enemy flee: D20 < $EN_FLEE"
-	sleep 2
+	Sleep 2
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
 	    echo -e "ROLL D20: ${DICE}\tThe $ENEMY uses an opportunity to flee!"
 	    LUCK=1
 	    unset FIGHTMODE
-	    sleep 2
+	    Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	fi
 	FightMode_FightTable # If enemy didn't manage to run

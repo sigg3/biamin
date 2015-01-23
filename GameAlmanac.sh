@@ -1,6 +1,9 @@
+
 ########################################################################
 #                               Almanac                                #
 #                                                                      #
+
+declare -r TODO3=1
 
 # TODO Adjust Almanac_Moon etc. for -1 Y positions (moved ASCII upwards, Jan 2015)
 
@@ -59,6 +62,17 @@ Almanac_Moon() { # Used in Almanac()
 Almanac_Notes() {
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     tput sc
+
+    #                          /T\                           /""""""""\
+    # o-+----------------------------------------------+-o  /  _ ++ _  \
+    #   |/                                            \|   |  / \  / \  \
+    #   |           A   L   M   A   N   A   C          |   | | , | |, | |
+    #   |                                              |   | |   |_|  | |
+    #   |\                                            /|    \|   ...; |;
+    # o-+-------------------N O T E S------------------+-o    \______/
+
+    # this is "N O T E S" position ATM. Is it right? #kstn
+    
     MvAddStr 6 28 "N O T E S" # add"NOTES" subheader
     tput rc
     [ -z "$CHAR_NOTES" ] && echo -e " In the back of your almanac, there is a page reserved for Your Notes.\n There is only room for 10 lines, but you may erase obsolete information.\n"
@@ -105,11 +119,10 @@ Almanac() {
 EOT
     # Draw calendar
     MakeCalendar
-    local CAL_Y=10 CAL_X=10 # tput initial coordinates for calendar
     tput sc
     for ((i = 0; ; i++)) ; do
 	[[ "${CALENDAR[i]}" ]] || break
-	MvAddStr $(($CAL_Y + $i)) $CAL_X "${CALENDAR[i]}"
+	MvAddStr $((10 + $i)) 10 "${CALENDAR[i]}"
     done
     tput rc
 
@@ -127,14 +140,14 @@ EOT
 
     # Magnify WEEKDAY in HEPTOGRAM
     tput sc
-    case $(WeekdayString "$WEEKDAY") in
-	"Ringday (Holiday)" ) tput cup 8 53 ;;
-	"Moonday" )   tput cup 9 61         ;;
-	"Brenday" )   tput cup 11 63        ;;
-	"Midweek" )   tput cup 13 60        ;;
-	"Braigday" )  tput cup 13 45        ;;
-	"Melethday" ) tput cup 11 41        ;;
-	"Washday" )   tput cup 9 45         ;;
+    case "$WEEKDAY" in
+	0 ) tput cup 8 53  ;; # "Ringday (Holiday)"
+	1 ) tput cup 9 61  ;; # "Moonday"   
+	2 ) tput cup 11 63 ;; # "Brenday"   
+	3 ) tput cup 13 60 ;; # "Midweek"   
+	4 ) tput cup 13 45 ;; # "Braigday"  
+	5 ) tput cup 11 41 ;; # "Melethday" 
+	6 ) tput cup 9 45  ;; # "Washday"   
     esac
     ((WEEKDAY == 0))  && echo "RINGDAY" || echo "$(Toupper $(WeekdayString "$WEEKDAY"))"
     tput rc
@@ -183,14 +196,16 @@ EOT
     # Output Trivia (mind the space before sentences)
     echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
     echo "$HR"
-    read -sn 1 -p "$(MakePrompt '(R)eturn')" # TODO change/update when features are ready
-    # TODO v. 3
-    #    read -sn 1 -p "$(MakePrompt '(M)oon phase;(N)otes;(R)eturn')" ALM_OPT 2>&1
-    #    case "$ALM_OPT" in
-    #	 M | m ) Almanac_Moon ;;
-    #	 N | n ) Almanac_Notes ;;
-    #     esac
-    #    unset ALM_OPT
+
+    if [[ "TODO3" ]] ; then # debug
+	MakePrompt '(M)oon phase;(N)otes;(R)eturn'
+	case "$(Read)" in
+	    [mM] ) Almanac_Moon  ;;
+    	    [nN] ) Almanac_Notes ;;
+	esac
+    else
+	read -sn 1 -p "$(MakePrompt '(R)eturn')" # TODO change/update when features are ready
+    fi
 } # Return to DisplayCharsheet()
 
 

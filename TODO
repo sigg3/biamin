@@ -20,6 +20,7 @@ TODO GPL repo
 [-] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
 [ ] Move license to repo & makefile
 [ ] 2.0 graphic update
+[ ] canvas: for i in {{0.. needed_rows}}; do echo "" (vertical n of rows for corresp. GX_ "canvas")
 
 TODO LEGACY branch ("original")
 [x] Remove update_biamin.sh from LEGACY

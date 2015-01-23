@@ -18,6 +18,7 @@ TODO GPL repo
 [x] Add updater to -gpl 1.4, refers to separate repo.
 [x] Updated sprites in wait for 1.4
 [-] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
+[ ] Move license to repo & makefile
 
 TODO LEGACY branch ("original")
 [x] Remove update_biamin.sh from LEGACY
@@ -28,6 +29,7 @@ TODO LEGACY branch ("original")
 [-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 	This requires changing code and blog stuff:P
 [ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
+[ ] Move licenses to repo & makefile
 
 TODO 2.0 branch ("survival")
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
@@ -71,6 +73,7 @@ TODO 2.0 branch ("survival")
 [x] Almanac version 1 (simple frontpage with trivia)
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [x] Language on Town.sh, ...
+[ ] Move licenses to repo & makefile
 
 TODO ideas for 3.0 branch ("rpg")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
@@ -195,7 +198,6 @@ BLOG/Misc.
 [ ] Publish 2.0 with much fanfare: "Survival mode" :)
 [ ] Make text for roguebasin's page
 [?] Make GitHub mirror (for 2.0) (only for stable?)
-[?] ADD to 'ADDED', 'FIXED', etc 'TODO'. When you'll be make changelog it'll be easier to use smth like `sed '/!TODO/p'` (skip all lines with 'TODO')
 
 MEMORIAL:
 [-] Gods ???  (I'm putting this under Mythology)

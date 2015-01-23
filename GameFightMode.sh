@@ -106,6 +106,7 @@ FightMode_DefineEnemy() {
 	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
     esac
 
+    ENEMY="mage"
     ########################################################################
     # TEST NEW EXP SYSTEM
     # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn # Good idea! Sigge
@@ -303,7 +304,7 @@ FightMode_EnemyTurn() {
 	echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
-	echo "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!"
+	echo -n "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!" # !!! -n - fix for 80x24
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet
     else

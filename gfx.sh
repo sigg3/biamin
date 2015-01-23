@@ -60,9 +60,10 @@ EOF
 # GX_CharSheet()
 # Display Charsheet or Almanac banner
 # Arguments: $DISPLAY_WHAT(int)
+#	EMPTY/1 = CHARSHEET,
+#	2       = ALMANAC
 #-----------------------------------------------------------------------
-GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
-    [[ -z "$1" ]] && local DISP=1 || local DISP="$1"
+GX_CharSheet() {
     clear
     cat <<"EOT"
                                /T\                           /""""""""\
@@ -75,12 +76,11 @@ GX_CharSheet() { # Optional arg: EMPTY/1 = CHARSHEET, 2 = ALMANAC
 
 EOT
     tput sc
-    if (( DISP == 1 )) ; then
-	MvAddStr 3 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T"
-	MvAddStr 5 11 "            s t a t i s t i c s           "
-    else
-	MvAddStr 3 11 "         A   L   M   A   N   A   C"
-    fi
+    case "$1" in 
+	2 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;;  
+	* ) MvAddStr 3 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T" ;
+	    MvAddStr 5 11 "            s t a t i s t i c s           " ;;	
+    esac
     tput rc
 }
 

@@ -216,12 +216,12 @@ Do you want color? [Y/N]: "
 	    Sleep 2;;
     esac
     if ((COLOR == 1)) ; then
-	YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
-	RESET='\033[0;39m'
+	declare -gr YELLOW='\033[1;33m' # Used in MapNav() and GX_Map()
+	declare -gr RESET='\033[0;39m'  # -g global, usual declare declares local variable
     fi
     # Define escape sequences
     # TODO replace to tput or similar
-    CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
+    declare -gr CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward
 }
 #                           END FUNCTIONS                              #
 #                                                                      #

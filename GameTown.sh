@@ -691,7 +691,7 @@ GX_DiceGame() {
                  |               |:         |               |:
                  [_______________];         [_______________];
                   `~------------~`           `~------------~`
-
+                                                             
 EOF
     echo "$HR"
 }
@@ -734,12 +734,13 @@ MiniGame_Dice() {
 	* ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
     esac
     case $(Read) in
-	[^yYjJ] ) echo -e "\nToo high stakes for you, $CHAR_RACE_STR?" ;
-		  Sleep 2;
+	[^yYjJ] ) echo -en "${CLEAR_LINE}" ;
+		  PressAnyKey "Too high stakes for you, $CHAR_RACE_STR?" ;
 		  return 0 ;;                                # Leave
     esac                                                     # Game on! Do nothing.
 
     if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then   # Check if player can afford it
+	echo -en "${CLEAR_LINE}"
 	PressAnyKey "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.."
 	return 0                                             # Leave
     fi

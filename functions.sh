@@ -140,6 +140,7 @@ RollForHealing() { # Used in Rest()
     else
 	(( CHAR_HEALTH += $1 ))
 	echo "You slept well and gained $1 Health."
+	# TODO add restriction to 150 HEALTH
     fi
     Sleep 2
 }   # Return to Rest()
@@ -172,6 +173,7 @@ Rest() {
 	    @ ) RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
 	    C ) RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
 	esac
+	NewTurn 		# Increase turn if there was no fight
     fi
     unset PLAYER_RESTING # Reset flag
     Sleep 2

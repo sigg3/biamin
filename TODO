@@ -76,6 +76,7 @@ TODO 2.0 branch ("survival")
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [x] Language on Town.sh, ...
 [ ] Move licenses to repo & makefile
+[ ] Bug in (R)est sequence that allows Roll for healing after Fightmode as occured.
 
 TODO ideas for 3.0 branch ("rpg")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)

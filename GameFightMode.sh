@@ -106,7 +106,6 @@ FightMode_DefineEnemy() {
 	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
     esac
 
-    ENEMY="mage"
     ########################################################################
     # TEST NEW EXP SYSTEM
     # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn # Good idea! Sigge
@@ -374,15 +373,15 @@ FightMode_CheckForPickpocket() {
 		if (( $(bc <<< "($EN_GOLD + $EN_TOBACCO) == 0") )) ; then
 		    echo "mostly just lint .."
 		else
-		    (( $(bc <<< "$EN_GOLD > 0") )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) || EN_GOLD="no"
+		    (( $(bc <<< "$EN_GOLD > 0")    )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )          || EN_GOLD="no"
 		    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"
 		    echo "$EN_GOLD gold and $EN_TOBACCO tobacco"
 		fi
 	    fi ;;
 	1 ) # loot and EXP
+	    (( $(bc <<< "$EN_GOLD > 0")    )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )          || EN_GOLD="no"
+	    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"	    
 	    echo "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
-	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" ) ;
-	    CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) ;
 	    echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing the ${ENEMY}!" ;
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
 	2)  # no loot but EXP

@@ -19,6 +19,7 @@ TODO GPL repo
 [x] Updated sprites in wait for 1.4
 [-] rename GPL's biamin.sh to biamin-gpl.sh (if player will want have all versions)
 [ ] Move license to repo & makefile
+[ ] 2.0 graphic update
 
 TODO LEGACY branch ("original")
 [x] Remove update_biamin.sh from LEGACY

@@ -65,6 +65,7 @@ o FORMATTING    for code formatting changes
 o MINOR         for minor edits, cosmetics
 o RELEASE       for public relases (entails version change)
 o REMOVED/MOVED/MERGED etc. for various file manipulations      
+0 TODO          for things TODO, or future versions (e.g. TODO v. 4)
 
 + short informative description, preferably including .sh or function!
 

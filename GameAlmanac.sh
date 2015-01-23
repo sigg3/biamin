@@ -174,7 +174,7 @@ EOT
     # TODO make custom trivia a separate function instead..
 
     if [ -z "$TRIVIA1" ] && [ -z "$TRIVIA2" ] ; then
-	case "$(WeekdayString $WEEKDAY)+$MOON" in
+	case "$(WeekdayString $WEEKDAY)+$MOON" in #  $MOON is int [0-9] so this check will fall every time #kstn
 	    "Moonday+Full Moon" ) local TRIVIA1="A Full Moon on Moon's day is considered a powerful combination." ;;
 	    "Moonday+Waning Crescent" ) local TRIVIA1="An aging Crescent on Moon's Day makes evil magic more powerful." ;;
 	    "Brenday+New Moon" )  local TRIVIA1="New Moon on Brenia's day means your courage will be needed." ;;
@@ -184,7 +184,7 @@ EOT
 	esac
 
 	# CUSTOM Month and Moon combinations (TRIVIA2)
-	case "$(MonthString $MONTH)+$MOON" in
+	case "$(MonthString $MONTH)+$MOON" in #  $MOON is int [0-9] so this check will fall every time #kstn
 	    "Harvest Month+Growing Crescent" ) local TRIVIA2="A Growing Crescent in Harvest Month foretells a Good harvest!" ;;
 	    "Ringorin+Old Moon" ) local TRIVIA2="An Old Moon in Ringorin means the ancestors are watching. Tread Careful." ;;
 	    "Ringorin+New Moon" ) local TRIVIA2="A New Moon in Ringorin is a good omen for the future if the aim is true." ;;
@@ -197,7 +197,7 @@ EOT
     echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
     echo "$HR"
 
-    if [[ "TODO3" ]] ; then # debug
+    if [[ "TODO3" ]] ; then # debug , just comment 'declare -r TODO3=1' at the beginning of this file when you'll not need it
 	MakePrompt '(M)oon phase;(N)otes;(R)eturn'
 	case "$(Read)" in
 	    [mM] ) Almanac_Moon  ;;

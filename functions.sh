@@ -156,20 +156,23 @@ Rest() {
     RollDice 100
     GX_Rest
     echo "$HR"
-    case "$1" in
-	H ) if (( CHAR_HEALTH < 100 )); then
-		CHAR_HEALTH=100
-		echo "You slept well in your own bed. Health restored to 100."
-	    else
-		echo "You slept well in your own bed, and woke up to a beautiful day."
-	    fi
-	    ;;
-	x ) RollForEvent 60 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
-	. ) RollForEvent 30 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
-	T ) RollForEvent 15 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 15 "The vices of town life kept you up all night.." ;;
-	@ ) RollForEvent 35 "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
-	C ) RollForEvent 5  "fight" && FightMode || (( PLAYER_RESTING != 3 )) && RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
-    esac
+    CheckForFight "$1" 		# Check for fight current scenario
+    if (($? == 0)); then		# no fight was
+	case "$1" in
+	    H ) if (( CHAR_HEALTH < 100 )); then
+		    CHAR_HEALTH=100
+		    echo "You slept well in your own bed. Health restored to 100."
+		else
+		    echo "You slept well in your own bed, and woke up to a beautiful day."
+		fi
+		;;
+	    x ) RollForHealing 5  "The terrors of the mountains kept you awake all night.." ;;
+	    . ) RollForHealing 10 "The dangers of the roads gave you little sleep if any.." ;;
+	    T ) RollForHealing 15 "The vices of town life kept you up all night.." ;;
+	    @ ) RollForHealing 5  "Possibly dangerous wood owls kept you awake all night.." ;;
+	    C ) RollForHealing 35 "Rowdy castle soldiers on a drinking binge kept you awake.." ;;
+	esac
+    fi
     unset PLAYER_RESTING # Reset flag
     Sleep 2
 }   # Return to NewSector()

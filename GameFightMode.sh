@@ -4,21 +4,36 @@
 
 #-----------------------------------------------------------------------
 # CheckForFight()
-# Calls FightMode if player is attacked at current scenario or returns 0
+# Calls FightMode if player is attacked at current scenario.
+# Returns	0 - check succsees, no attack
+#		1 - check fails, fight mode
 # Arguments : $SCENARIO (char)
 # Used : NewSector(), Rest()
 #-----------------------------------------------------------------------
 CheckForFight() {
     RollDice 100        # Find out if we're attacked
-    case "$1" in        # FightMode() if RollForEvent return 0
-	H ) RollForEvent 1  "fight" && FightMode ;;
-	x ) RollForEvent 50 "fight" && FightMode ;;
-	. ) RollForEvent 20 "fight" && FightMode ;;
-	T ) RollForEvent 15 "fight" && FightMode ;;
-	@ ) RollForEvent 35 "fight" && FightMode ;;
-	C ) RollForEvent 10 "fight" && FightMode ;;
-	* ) CustomMapError ;;
-    esac
+    if [[ ! "$PLAYER_RESTING" ]] ; then # usual fight
+	case "$1" in        # FightMode() if RollForEvent return 0
+	    H ) RollForEvent 1  "fight" && FightMode && return 1 ;;
+	    x ) RollForEvent 50 "fight" && FightMode && return 1 ;;
+	    . ) RollForEvent 20 "fight" && FightMode && return 1 ;;
+	    T ) RollForEvent 15 "fight" && FightMode && return 1 ;;
+	    @ ) RollForEvent 35 "fight" && FightMode && return 1 ;;
+	    C ) RollForEvent 10 "fight" && FightMode && return 1 ;;
+	    * ) CustomMapError ;;
+	esac
+    else 			# player was attacked at rest
+	case "$1" in
+	    H ) ;;			#  do nothing
+	    x ) RollForEvent 60 "fight" && FightMode && return 1 ;;
+	    . ) RollForEvent 30 "fight" && FightMode && return 1 ;;
+	    T ) RollForEvent 15 "fight" && FightMode && return 1 ;;
+	    @ ) RollForEvent 35 "fight" && FightMode && return 1 ;;
+	    C ) RollForEvent 5  "fight" && FightMode && return 1 ;;
+	    * ) CustomMapError ;;
+	esac
+    fi
+    return 0 			# check falls
 }
 
 #-----------------------------------------------------------------------
@@ -417,6 +432,7 @@ FightMode() {	# Used in NewSector() and Rest()
     SaveCurrentSheet
     Sleep 6
     DisplayCharsheet
+    # TODO not forget to remove it after test
     [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && PLAYER_RESTING=3 # Fight occured in Rest().
 }
 #                                                                      #

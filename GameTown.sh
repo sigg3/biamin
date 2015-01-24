@@ -526,7 +526,13 @@ Marketplace_Merchant() {
 # Used: Marketplace_Grocer() Marketplace_Merchant()
 #-----------------------------------------------------------------------
 Marketplace_Statusline() {
-    echo -e " You have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
+	local MARKETPLACE_STATUSLINE="You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
+	local MARKETPLACE_STATUSLINE_XPOS=$( bc <<< "39 - (${#MARKETPLACE_STATUSLINE})/2")
+	tput sc
+	tput cuf $MARKETPLACE_STATUSLINE_XPOS
+	echo -e "$MARKETPLACE_STATUSLINE"
+	tput rc
+	echo " " # Necessary workaround
 }
 
 #-----------------------------------------------------------------------

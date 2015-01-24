@@ -31,8 +31,10 @@ TODO LEGACY branch ("original")
 [-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 	This requires changing code and blog stuff:P
 [ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
-[ ] Move licenses to repo & makefile
+[-] Move licenses to repo & makefile
 	Do we have makefile in LEGACY? O_o #kstn
+		Of course, not. I was drunk :) ~ sigge
+[ ] Move licenses to repo
 
 TODO 2.0 branch ("survival")
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float

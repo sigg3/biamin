@@ -89,6 +89,7 @@ TODO ideas for 3.0 branch ("rpg")
 [ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.
 	May be 1 torch = N dungeon turns is better? kstn
 [ ] Cave: multi-fight allowing >1 enemy in cave.
+	AFAIR atm ememies are static so there can not be multi-fight #kstn
 [ ] General inventory system (accessed thru 
 [ ] Stuff the player can gather from animals and sell
 		- Wildboar: fur, tusks, food

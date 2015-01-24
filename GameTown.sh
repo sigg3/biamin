@@ -520,9 +520,13 @@ Marketplace_Merchant() {
 } # Return to Marketplace
 
 
+
+#-----------------------------------------------------------------------
+# Marketplace_Statusline()
+# Used: Marketplace_Grocer() Marketplace_Merchant()
+#-----------------------------------------------------------------------
 Marketplace_Statusline() {
-    echo "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
-    echo ""
+    echo -e " You have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory\n"
 }
 
 #-----------------------------------------------------------------------

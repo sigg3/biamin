@@ -32,6 +32,7 @@ TODO LEGACY branch ("original")
 	This requires changing code and blog stuff:P
 [ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
 [ ] Move licenses to repo & makefile
+	Do we have makefile in LEGACY? O_o #kstn
 
 TODO 2.0 branch ("survival")
 [x] Replace all checks for gold/tobacco to bc!!! (( GOLD > 0 )) doesn't work with float
@@ -75,7 +76,7 @@ TODO 2.0 branch ("survival")
 [x] Almanac version 1 (simple frontpage with trivia)
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [x] Language on Town.sh, ...
-[ ] Move licenses to repo & makefile
+[x] Move licenses to repo & makefile
 [x] Bug in (R)est sequence that allows Roll for healing after Fightmode as occured.
 [ ] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
 		EchoRight() or equivalent. Output text on the far right of same Y axis.

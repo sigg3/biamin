@@ -127,8 +127,6 @@ FightMode_DefineEnemy() {
     #
     ########################################################################
 
-    ENEMY_NAME=$(Capitalize "$ENEMY") # Capitalize "enemy" to "Enemy" for FightMode_FightTable()
-
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
 	bandit )  EN_GOLD=20 ; EN_TOBACCO=10 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=15  ;; # 2.0 Gold, 1.0 tobacco  >  Min: 0.2 Gold, 0.1 Tobacco
@@ -178,7 +176,7 @@ FightMode_DefineInitiative() {
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
 	    else
-		echo -en "\nYou successfully stole the ${ENEMY}'s pouch, "        # "steal success" take loot
+		echo -en "You successfully stole the ${ENEMY}'s pouch, "        # "steal success" take loot
 		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in                  # bc return 1 if true, 0 if false
 	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
 	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
@@ -189,14 +187,14 @@ FightMode_DefineInitiative() {
 	fi
 	# And secondly for flee
 	if [[ "$FLEE_OPT" == [fF] ]]; then
-	    echo -e "\nTrying to slip away unseen.. (Flee: $FLEE)"
+	    echo -e "\nTrying to slip away unseen.."
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
-		echo "You rolled $DICE and managed to run away!"
+		Echo "You managed to run away!" "[Flee:D6 $FLEE >= $DICE]"
 		LUCK=3
 		unset FIGHTMODE
 	    else
-		echo "You rolled $DICE and lost your initiative.."
+		Echo "You lost your initiative.." "[Flee:D6 $FLEE < $DICE]"
 		NEXT_TURN="en"
 	    fi
 	fi
@@ -212,7 +210,7 @@ FightMode_DefineInitiative() {
 FightMode_FightTable() {
     tput rc && tput ed # restore cursor position && clear to the end of display  (GX_Monster "$ENEMY" is already displayed)
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$ENEMY_NAME" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$(Capitalize "$ENEMY")" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
 
 #-----------------------------------------------------------------------
@@ -237,82 +235,81 @@ FightMode_FightFormula() {
 }
 
 FightMode_CharTurn() {
-    read -sn 1 -p "It's your turn, press any key to (R)oll or (F) to Flee" "FIGHT_PROMPT" 2>&1
+    local FIGHT_PROMPT
+    echo -n "It's your turn, press any key to (R)oll or (F) to Flee"
+    FIGHT_PROMPT=$(Read)
     RollDice 6
     FightMode_FightTable
-    echo -n "ROLL D6: $DICE "
     case "$FIGHT_PROMPT" in
 	f | F ) # Player tries to flee!
-	    RollDice 6 	# ????? Do we need it ??? #kstn
-	    FightMode_FightFormula 6 le F
-	    unset FIGHT_PROMPT
 	    if (( DICE <= FLEE )); then # first check for flee
-		(( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
-		echo -n " $FLEE ) You try to flee the battle .."
+		Echo "You try to flee the battle .." "[Flee:D6 $DICE <= $FLEE]"
 		Sleep 2
-		FightMode_FightTable
 		RollDice 6
-		FightMode_FightFormula 6 le eA
 		if (( DICE <= EN_ACCURACY )); then # second check for flee
-		    (( DICE == FLEE )) && echo -n "$DICE =" || echo -n "$DICE <"
-		    echo -n " $EN_ACCURACY ) The $ENEMY blocks your escape route!"
+		    Echo "\nThe $ENEMY blocks your escape route!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"
 		else # Player managed to flee
-		    echo -n "$DICE > $EN_ACCURACY ) You managed to flee!"
+		    Echo "\nYou managed to flee!" "[EnemyAccuracy:D6 $EN_ACCURACY < $DICE]"
 		    unset FIGHTMODE
 		    LUCK=3
 		    return 0
 		fi
 	    else
-		echo -n "$DICE > $FLEE ) Your escape was unsuccessful!"
+		Echo "Your escape was unsuccessful!" "[Flee:D6 $FLEE < $DICE]"
 	    fi
 	    ;;
 	*)  # Player fights
-	    unset FIGHT_PROMPT
 	    if (( DICE <= ACCURACY )); then
-		echo -e "\tAccuracy [D6 $DICE <= $ACCURACY] Your weapon hits the target!"
-		read -sn 1 -p "Press the R key to (R)oll for damage" "FIGHT_PROMPT" 2>&1
+		Echo "Your weapon hits the target!" "[Accuracy:D6 $ACCURACY >= $DICE]"
+		echo -en "\nPress the R key to (R)oll for damage"
+		FIGHT_PROMPT=$(Read)
 		RollDice 6
-		echo -en "\nROLL D6: $DICE"
 		DAMAGE=$(( DICE * STRENGTH ))
-		echo -en "\tYour blow dishes out $DAMAGE damage points!"
+		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[-${DAMAGE} ENEMY_HEALTH]"
 		((EN_HEALTH -= DAMAGE))
 	    else
-		echo -e "\tAccuracy [D6 $DICE > $ACCURACY] You missed!"
+		Echo "You missed!" "[Accuracy:D6 $ACCURACY < $DICE]"
 	    fi
     esac
 }
 
 FightMode_EnemyTurn() {
+    echo -n "It's the ${ENEMY}'s turn:"
+    Sleep 2
     if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
-	echo -e "Rolling for enemy flee: D20 < $EN_FLEE"
+	echo -e "${CLEAR_LINE}Rolling for enemy flee:"
 	Sleep 2
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
-	    echo -e "ROLL D20: ${DICE}\tThe $ENEMY uses an opportunity to flee!"
+	    Echo "The $ENEMY uses an opportunity to flee!" "[EnemyFlee:D20  EN_FLEE > $DICE]"
 	    LUCK=1
 	    unset FIGHTMODE
 	    Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
-	fi
+	else
+	    Echo "You blocks ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
+	    Sleep 2
+	fi	
+
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
-    echo "It's the ${ENEMY}'s turn"
-    Sleep 2
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
-	echo "Accuracy [D6 $DICE < $EN_ACCURACY] The $ENEMY strikes you!"
+	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"	
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
-	echo -n "-$DAMAGE HEALTH: The $ENEMY's blow hits you with $DAMAGE points!" # !!! -n - fix for 80x24
+	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet
     else
-	echo "Accuracy [D6 $DICE > $EN_ACCURACY] The $ENEMY misses!"
+	Echo "${CLEAR_LINE}The $ENEMY misses!" "[Accuracy:D6 $EN_ACCURACY < $DICE]"
     fi
+#    read -sn 1 ### DEBUG
 }
 
 FightMode_CheckForDeath() {
     if ((CHAR_HEALTH <= 0)); then # If player is dead
+	FightMode_FightTable
 	echo "Your health points are $CHAR_HEALTH"
 	Sleep 2
 	echo "You WERE KILLED by the $ENEMY, and now you are dead..."
@@ -321,11 +318,11 @@ FightMode_CheckForDeath() {
 	    ((CHAR_HEALTH += 20))
 	    echo "However, your $CHAR_EXP Experience Points relates that you have"
 	    echo "learned many wondrous and magical things in your travels..!"
-	    echo "+20 HEALTH: Health restored by 20 points (HEALTH: $CHAR_HEALTH)"
+	    Echo "Health restored by 20 points (HEALTH: $CHAR_HEALTH)" "[+20 HEALTH]"
 	elif HaveItem "$GUARDIAN_ANGEL" && ((CHAR_HEALTH > -5)); then
 	    ((CHAR_HEALTH += 5))
 	    echo "Suddenly you awake again, SAVED by your Guardian Angel!"
-	    echo "+5 HEALTH: Health restored by 5 points (HEALTH: $CHAR_HEALTH)"
+	    Echo "Health restored by 5 points (HEALTH: $CHAR_HEALTH)" "[+5 HEALTH]"
 	else # DEATH!
 	    echo "Gain 1000 Experience Points to achieve magic healing!"
 	    Sleep 4
@@ -344,15 +341,15 @@ FightMode_CheckForDeath() {
 FightMode_CheckForExp() {
     case "$1" in
 	1)  # ENEMY managed to FLEE
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_FLEE_EXP Experience Points!"
+	    Echo "You defeated the $ENEMY!" "[+${EN_FLEE_EXP} EXP]"
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
-	    echo -e "\nWhen you come to, the $ENEMY has left the area ..." ;;
+	    echo -e "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight!
-	    echo -e "\nYou got away while the $ENEMY wasn't looking, gaining $PL_FLEE_EXP Experience Points!"
+	    Echo "You got away while the $ENEMY wasn't looking!" "[+${PL_FLEE_EXP} EXP]"
 	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
 	*)  # ENEMY was slain!
-	    echo -e "\nYou defeated the $ENEMY and gained $EN_DEFEATED_EXP Experience Points!"
+	    Echo "You defeated the $ENEMY!" "[+${EN_DEFEATED_EXP} EXP]"
 	    ((CHAR_EXP += EN_DEFEATED_EXP))
 	    ((CHAR_KILLS++))
     esac
@@ -369,7 +366,7 @@ FightMode_CheckForPickpocket() {
     case "$1" in
 	0 ) # no pickpocketing was
 	    if ((LUCK == 0)); then # Only if $ENEMY was slain
-		echo -n "Searching the dead ${ENEMY}'s corpse, you find "
+		echo -en "\nSearching the dead ${ENEMY}'s corpse, you find "
 		if (( $(bc <<< "($EN_GOLD + $EN_TOBACCO) == 0") )) ; then
 		    echo "mostly just lint .."
 		else
@@ -381,12 +378,12 @@ FightMode_CheckForPickpocket() {
 	1 ) # loot and EXP
 	    (( $(bc <<< "$EN_GOLD > 0")    )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )          || EN_GOLD="no"
 	    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"	    
-	    echo "In the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
-	    echo "$CHAR gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing the ${ENEMY}!" ;
+	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
+	    Echo " and gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
 	2)  # no loot but EXP
-	    echo "In the pouch lifted from the ${ENEMY}, you find nothing but ..." ;
-	    echo "gained $EN_PICKPOCKET_EXP Experience Points for successfully pickpocketing" ;
+	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find nothing but ..." ;
+	    Echo " gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
     esac
 }
@@ -399,7 +396,7 @@ FightMode_CheckForPickpocket() {
 FightMode_CheckForLoot() {
     if ((LUCK == 0)); then                       # Only if $ENEMY was slain
 	if (( $(bc <<< "$EN_FOOD > 0") )); then	 #  and have some FOOD
-	    echo "You scavenge $EN_FOOD food from the ${ENEMY}'s body"
+	    Echo "\nYou scavenge $EN_FOOD food from the ${ENEMY}'s body" "[+${EN_FOOD} FOOD]"
 	    CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
 	fi
     fi
@@ -432,8 +429,6 @@ FightMode() {	# Used in NewSector() and Rest()
     SaveCurrentSheet
     Sleep 6
     DisplayCharsheet
-    # TODO not forget to remove it after test
-    [ -n PLAYER_RESTING ] && (( PLAYER_RESTING == 1 )) && PLAYER_RESTING=3 # Fight occured in Rest().
 }
 #                                                                      #
 #                                                                      #

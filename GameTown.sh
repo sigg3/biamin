@@ -84,7 +84,7 @@ Tavern() {
 		    g | G ) CheckForGold 1    "You don't have enough Gold to rent a room in the Tavern"    && TavernRest ;;
 		    t | T ) CheckForTobacco 1 "You don't have enough Tobacco to rent a room in the Tavern" && TavernRest ;;
 		esac
-		sleep 1 ;;
+		Sleep 1 ;;
  	    p | P ) MiniGame_Dice ;;
 	    * ) break ;; # Leave tavern
 	esac

@@ -366,10 +366,12 @@ LoadCustomMap() { # Used in MapCreate()
 		    fi
 		    clear
 		    # Simple map preview to confirm/reject choice of map
-		    local MAP_NAME=$(grep "NAME:" "${MAPS[$NUM]}" | sed 's/NAME: //g')
-		    local MAP_AUTH=$(grep "CREATOR:" "${MAPS[$NUM]}" | sed 's/CREATOR: //g')
-		    local MAP_DESC=$(grep "DESCRIPTION:" "${MAPS[$NUM]}" | sed 's/DESCRIPTION:/Description:/g')
-			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R" # Display without LEGEND
+		    local MAP_NAME=$(sed -n '/^NAME:/s/NAME: //gp' "${MAPS[$NUM]}")
+		    local MAP_AUTH=$(sed -n '/^CREATOR:/s/CREATOR: //gp' "${MAPS[$NUM]}" )
+		    local MAP_DESC=$(sed -n '/^DESCRIPTION:/s/DESCRIPTION:/Description:/gp' "${MAPS[$NUM]}")
+#			echo -e "\n$MAP" | grep -B 1 -A 17 "       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R" # Display without LEGEND
+			echo 	# empty line
+			sed -n 6,23p  "${MAPS[$NUM]}" # Display without LEGEND
 			local MAP_AUTH_XPOS=75
 			MAP_AUTH_XPOS=$( bc <<< "$MAP_AUTH_XPOS - ${#MAP_AUTH}" )
 			tput sc

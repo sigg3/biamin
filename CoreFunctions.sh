@@ -85,20 +85,6 @@ MakePrompt() {
 }
 
 #-----------------------------------------------------------------------
-# MakeCenter()
-# Like MakePrompt except it's only for centering a string including $VARS
-#-----------------------------------------------------------------------
-MakeCenter() {
-	local CENTERED_LINE="$1"
-	local CENTERED_XPOS=$( bc <<< "39 - (${#CENTERED_LINE})/2")
-	tput sc
-	tput cuf $CENTERED_XPOS
-	echo -e "$CENTERED_LINE"
-	tput rc
-}
-
-
-#-----------------------------------------------------------------------
 # CompareVersions()
 # Compare versions $1 and $2. Versions should be [0-9]+.[0-9]+.[0-9]+. ...
 # Return : 0 if $1 == $2,

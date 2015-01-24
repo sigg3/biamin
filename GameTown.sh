@@ -526,9 +526,8 @@ Marketplace_Merchant() {
 # Used: Marketplace_Grocer() Marketplace_Merchant()
 #-----------------------------------------------------------------------
 Marketplace_Statusline() {
-#	MakeCenter "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	MakePrompt "You currently have ${CHAR_GOLD} Gold, ${CHAR_TOBACCO} Tobacco and ${CHAR_FOOD} Food in your inventory"
-#	echo -e "\n$HR" # Necessary workaround
+	echo "" # Give us some space here, people
 }
 
 #-----------------------------------------------------------------------

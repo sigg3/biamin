@@ -30,6 +30,7 @@ read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
                                    if (/^COLOR:/)    { COLOR = $2  } }
                             END { print GAMEDIR, COLOR ;}' "$CONFIG" )
 
+CheckBiaminDependencies		   # Check all needed programs and screen size
 ColorConfig "$COLOR"               # Color configuration
 ReseedRandom			   # Reseed random numbers generator
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp

@@ -2,14 +2,14 @@
 #          Small functions which are used throughout the game          #
 #                                                                      #
 
-Die()        { echo -e "$1" && Exit 1 ; }                                          # Display $1 and exit script.
-Sleep()      { read -n 1 -t "$1" ; }                                               # Works like usual sleep but can be abortet by hitting key
-Capitalize() { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1.
-Toupper()    { awk '{ print toupper($0); }' <<< "$*" ; }                           # Convert $* to uppercase.
-Strlen()     { awk '{ print length($0); }' <<< "$*" ; }                            # Return lenght of string $*.
-MvAddStr()   { tput cup "$1" "$2"; printf "%s" "$3"; }                             # Move cursor to $1 $2 and print $3.
-IsInt()      { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }             # Checks if $1 is int.
-
+Die()         { echo -e "$1" && Exit 1 ; }                                          # Display $1 and exit script.
+Sleep()       { read -n 1 -t "$1" ; }                                               # Works like usual sleep but can be abortet by hitting key
+Capitalize()  { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1.
+Toupper()     { awk '{ print toupper($0); }' <<< "$*" ; }                           # Convert $* to uppercase.
+Strlen()      { awk '{ print length($0); }' <<< "$*" ; }                            # Return lenght of string $*.
+MvAddStr()    { tput cup "$1" "$2"; printf "%s" "$3"; }                             # Move cursor to $1 $2 and print $3.
+IsInt()       { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }             # Checks if $1 is int.
+IsInstalled() { [[ $(which "$1" 2>/dev/null) ]] && return 0 || return 1 ; }         # Checks if $1(string) installed
 
 #-----------------------------------------------------------------------
 # Exit()

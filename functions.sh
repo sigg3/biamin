@@ -192,6 +192,52 @@ RollForEvent() {
     (( DICE <= $1 )) && return 0 || return 1
 }   # Return to NewSector() or Rest()
 
+#-----------------------------------------------------------------------
+# CheckBiaminDependencies()
+# Checks needed programs
+# Used: CoreRuntime.sh, ParseCLIarguments()
+#-----------------------------------------------------------------------
+CheckBiaminDependencies() {
+    declare -a CRITICAL NONCRITICAL
+    local PROGRAM
+    echo "Checking dependencies..."
+
+    # Check BASH version (we don't need it now, but will need after 2.0 #kstn) 
+    # (( "${BASH_VERSINFO[0]}" < 4)) && Die "Biamin requires BASH version >= 4 to run (atm $BASH_VERSION)"
+    
+    # CRITICAL
+    for PROGRAM in "tput" "awk" "bc" "sed" "printf" "date" # "critical program 1" "critical program 2"
+    do
+	IsInstalled "$PROGRAM" || CRITICAL+=("$PROGRAM")
+    done
+    # NONCRITICAL
+    for PROGRAM in "curl" "wget" # "non-critical program 1" "non-critical program 2"
+    do
+	IsInstalled "$PROGRAM" || NONCRITICAL+=("$PROGRAM")
+    done
+
+    if [[ "${CRITICAL[*]}" || "${NONCRITICAL[*]}" ]]; then
+	echo -e "\nIn order to play 'Back in a Minute', please install:"
+	for ((i = 0; ; i++)); do
+	    [[ "${CRITICAL[i]}" ]] || break
+	    echo -e "\tRequired:\t${CRITICAL[i]}";
+	done
+
+	for ((i = 0; ; i++)); do
+	    [[ "${NONCRITICAL[i]}" ]] || break
+	    echo -e "\tOptional:\t${NONCRITICAL[i]}";
+	done
+
+	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1
+
+    fi
+
+    # Check screen size (80x24 minimum)
+    (( $(tput cols) > 79 && $(tput lines) > 23)) || Die "Biamin requires at least a 24x80 screen to run on (atm $(tput lines)x$(tput cols))."
+    # TODO update old saves
+
+    unset CRITICAL NONCRITICAL PROGRAM
+}
 
 #-----------------------------------------------------------------------
 # ColorConfig()

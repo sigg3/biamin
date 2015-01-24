@@ -125,27 +125,6 @@ EOT
     done
 }
 
-GX_Races() {
-    clear
-    cat <<EOF
-
-                        C H A R A C T E R   R A C E S :
-
-      1. MAN            2. ELF              3. DWARF            4. HOBBIT
-
-   Healing:  3/6      Healing:  4/6       Healing:  2/6        Healing:  4/6
-   Strength: 3/6      Strength: 3/6       Strength: 5/6        Strength: 1/6
-   Accuracy: 3/6      Accuracy: 4/6       Accuracy: 3/6        Accuracy: 4/6
-   Flee:     3/6      Flee:     1/6       Flee:     2/6        Flee:     3/6
-
-
-   Dice rolls on each turn. Accuracy also initiative. Healing during resting.
-   Men and Dwarves start with more gold, Elves and Hobbits with more tobacco.
-
-$HR
-EOF
-}
-
 #-----------------------------------------------------------------------
 # GX_Calendar()
 # Used: DisplayCharsheet()

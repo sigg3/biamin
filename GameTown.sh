@@ -526,12 +526,7 @@ Marketplace_Merchant() {
 # Used: Marketplace_Grocer() Marketplace_Merchant()
 #-----------------------------------------------------------------------
 Marketplace_Statusline() {
-	local MARKETPLACE_STATUSLINE="You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
-	local MARKETPLACE_STATUSLINE_XPOS=$( bc <<< "39 - (${#MARKETPLACE_STATUSLINE})/2")
-	tput sc
-	tput cuf $MARKETPLACE_STATUSLINE_XPOS
-	echo -e "$MARKETPLACE_STATUSLINE"
-	tput rc
+	MakeCenter "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	echo " " # Necessary workaround
 }
 
@@ -551,7 +546,7 @@ Marketplace_Grocer() {
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
 	case $(Read) in
 	    g | G )
-		GX_Marketplace_Grocer
+		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 		ReadLine " How many Food items do you want to buy? "
 		QUANTITY="$REPLY"
 		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
@@ -570,7 +565,7 @@ Marketplace_Grocer() {
 		read -n 1
 		;;
 	    t | T )
-		GX_Marketplace_Grocer
+		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 		ReadLine " How much food you want to buy? "
 		QUANTITY="$REPLY"
 		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+

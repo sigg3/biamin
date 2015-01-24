@@ -102,7 +102,7 @@ CLIarguments_CheckUpdate() {
     # Removes stranded repo files before proceeding..
     STRANDED_REPO_FILES=$(find "$GAMEDIR"/repo.* | wc -l)
     (( STRANDED_REPO_FILES > 0 )) && rm -f "$GAMEDIR/repo.*"
-    REPO_SRC="https://gitorious.org/back-in-a-minute/code/raw/biamin.sh"
+    REPO_SRC="$REPO/raw/biamin.sh"
     GX_BiaminTitle
     echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
     REPO=$( mktemp $GAMEDIR/repo.XXXXXX )

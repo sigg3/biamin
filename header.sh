@@ -2,9 +2,9 @@
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
 VERSION="1.9" # 12 items on TODO. Change to 2.0 when list is x'd out
 WEBURL="http://sigg3.net/biamin/"
+REPO="https://gitorious.org/back-in-a-minute/code"
 
-########################################################################
-# BEGIN CONFIGURATION                                                  #
+########################  CONFIGURATION  ###############################
 # Default dir for config, saves, etc, change at runtime                #
 GAMEDIR="$HOME/.biamin" # (no trailing slash!)                         #
 # Default file for config, change at runtime                           #

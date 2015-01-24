@@ -82,9 +82,14 @@ HighscoreRead() { # Used in Announce() and HighScore()
 #-----------------------------------------------------------------------
 PrepareLicense() {
     echo " Download GNU GPL Version 3 ..."
-    GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
+    GPL=$(curl -s "$REPO/raw/licenses/GPL" || "" ) # TODO test these
+#   GPL=$(curl -s "http://www.gnu.org/licenses/gpl-3.0.txt" || "") # I did not know we could do that :)
     echo " Download CC BY-NC-SA 4.0 ..."
-    CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+	CC=$(curl -s "$REPO/raw/licenses/CC" || "" )   # TODO test these
+#   CC=$(curl -s "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt" || "")
+	# TODO Check md5sums of files :
+	# d32239bcb673463ab874e80d47fae504  GPL
+	# 6991e89af15ce0d1037ddd018f05029e  CC
     if [[ $GPL && $CC ]] ; then
 	echo -e "\t\t   BACK IN A MINUTE BASH CODE LICENSE:\t\t\t(Q)uit\n
 $HR

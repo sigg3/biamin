@@ -77,6 +77,9 @@ TODO 2.0 branch ("survival")
 [x] Language on Town.sh, ...
 [ ] Move licenses to repo & makefile
 [x] Bug in (R)est sequence that allows Roll for healing after Fightmode as occured.
+[ ] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
+		EchoRight() or equivalent. Output text on the far right of same Y axis.
+[ ] IF ^ successful, implement in FightMode & related functions, and buying/selling.
 
 TODO ideas for 3.0 branch ("rpg")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)

@@ -53,6 +53,7 @@ EOT
 	[[ "$2" ]] && MvAddStr 11 4  "or $2 Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
 	tput rc                                            # restore cursor position
     fi
+    Marketplace_Statusline
 }
 
 
@@ -83,6 +84,7 @@ GX_Marketplace_Merchant() {
                                                           \_/
 EOT
     echo "$HR"
+    Marketplace_Statusline
 }
 
 

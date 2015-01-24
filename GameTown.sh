@@ -519,6 +519,12 @@ Marketplace_Merchant() {
     done
 } # Return to Marketplace
 
+
+Marketplace_Statusline() {
+    echo "You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
+    echo ""
+}
+
 #-----------------------------------------------------------------------
 # Marketplace_Grocer()
 # Used: GoIntoTown()
@@ -530,8 +536,8 @@ Marketplace_Grocer() {
     local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
-	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
+#	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
+#	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
 	case $(Read) in
 	    g | G )

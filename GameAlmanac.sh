@@ -98,6 +98,7 @@ Almanac_Notes() {
 # TODO: when INV_ALMANAC=1 add NOTES 0-9 in charsheet.
 #-----------------------------------------------------------------------
 Almanac() {
+    MakeCalendar   # Takes some time so do it first BEFORE any graphics
     GX_CharSheet 2 # Display GX banner with ALMANAC header
     # Add DATE string subheader
     ALMANAC_SUB="$(WeekdayString $WEEKDAY) $(Ordial $DAY) of $(MonthString $MONTH)"
@@ -117,8 +118,7 @@ Almanac() {
 
 
 EOT
-    # Draw calendar
-    MakeCalendar
+    # Draw ALREADY maked calendar
     tput sc
     for ((i = 0; ; i++)) ; do
 	[[ "${CALENDAR[i]}" ]] || break

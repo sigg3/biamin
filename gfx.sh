@@ -10,6 +10,7 @@
 # Arguments: $DISPLAY_WHAT(int)
 #	EMPTY/1 = CHARSHEET,
 #	2       = ALMANAC
+#       3       = ALMANAC NOTES
 #-----------------------------------------------------------------------
 GX_CharSheet() {
     clear
@@ -24,7 +25,9 @@ GX_CharSheet() {
 
 EOT
     tput sc
-    case "$1" in 
+    case "$1" in
+	3 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;
+	    MvAddStr 5 11 "                 N O T E S                " ;;
 	2 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;;  
 	* ) MvAddStr 3 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T" ;
 	    MvAddStr 5 11 "            s t a t i s t i c s           " ;;	

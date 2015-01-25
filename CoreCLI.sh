@@ -195,26 +195,32 @@ CLI_Usage() {
 
 
 #-----------------------------------------------------------------------
-# ParseCLIarguments()
+# CLI_ParseArguments()
 # Parse CLI arguments if any
 #-----------------------------------------------------------------------
-ParseCLIarguments() {
-    case "$1" in
-	-a | --announce ) CLI_Announce ;;
-	-i | --install )  CLI_CreateBiaminLauncher ;;
-	--map )           CLI_CreateCustomMapTemplate ;;
-	-h | --help )     CLI_Help ;;
-
-	-p | --play | p )
-	    shift ; 		     # remove $1 from $* (array of biamin.sh arguments)
-	    [[ "$*" ]] && CHAR="$*"; # for long names as "Corum Jhaelen Irsei" for instance
-	    echo "Launching Back in a Minute.." ;;
-	-v | --version ) CLI_Version ;;
-
-	--update ) CLI_CheckUpdate ;;
-	--usage | * ) CLI_Usage ;;
-
-    esac
+CLI_ParseArguments() {
+    [[ ! "$@" ]] && CLI_Usage 	# emulation '(NO ARGUMENTS)      display this usage text and exit'
+                                # Sigge, do we need it? It's not typical for unix-way. #kstn
+    while [[ "$@" ]]; do
+	case "$1" in
+	    -a | --announce ) CLI_Announce ;;
+	    -i | --install  ) CLI_CreateBiaminLauncher ;;
+	    --map           ) CLI_CreateCustomMapTemplate ;;
+	    -h | --help     ) CLI_Help ;;
+	    -p | --play | p ) shift ; 		                         # remove $1 from $@ (array of biamin.sh arguments)
+			      if [[ ! $(grep -Eq '^-' <<< "$1") ]]; then # if next argument is not key
+				  CHAR="$1"                              # long names as "Corum Jhaelen Irsei" should be double or single quoted
+			      fi
+			      echo "Launching Back in a Minute.." ;;
+	    -v | --version  ) CLI_Version ;;
+	    --update        ) CLI_CheckUpdate ;;
+	    --usage         ) CLI_Usage ;;
+	    *               ) echo "$0: unrecognized option '$1'";
+			      echo "$0: use the --help or --usage options for more information";
+			      Exit 0;;
+	esac
+	shift
+    done 
 }
 
 #                                                                      #

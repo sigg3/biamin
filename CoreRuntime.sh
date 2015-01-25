@@ -22,7 +22,7 @@ if [[ ! "$PAGER" ]] ; then # Define PAGER (for ShowLicense() )
     for PAGER in less more ; do PAGER=$(which "$PAGER" 2>/dev/null); [[ "$PAGER" ]] && break; done
 fi
 
-ParseCLIarguments "$@"			  # Parse CLI args if any
+CLI_ParseArguments "$@"			  # Parse CLI args if any
 echo "Putting on the traveller's boots.." # OK lets play!
 
 # Load variables from $GAMEDIR/config. Need if player wants to keep his saves not in ~/.biamin . NB variables should not be empty !

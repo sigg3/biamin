@@ -3,10 +3,10 @@
 #                                                                      #
 
 #-----------------------------------------------------------------------
-# MapCreateCustom()
+# CLI_CreateCustomMapTemplate()
 # Map template generator (CLI arg function)
 #-----------------------------------------------------------------------
-MapCreateCustom() {
+CLI_CreateCustomMapTemplate() {
     echo -n "Create custom map template? [Y/N]: "
     case $(Read) in
 	y | Y) echo -e "\nCreating custom map template.." ;;
@@ -54,13 +54,13 @@ EOT
 }
 
 #-----------------------------------------------------------------------
-# Announce()
+# CLI_Announce()
 # Simply outputs a 160 char text you can cut & paste to social media.
 # TODO: Once date is decoupled from system date (with CREATION and
 # DATE), create new message. E.g.  $CHAR died $DATE having fought
 # $BATTLES ($KILLS victoriously) etc...
 #-----------------------------------------------------------------------
-Announce() {
+CLI_Announce() {
     # Die if $HIGHSCORE is empty
     [[ ! -s "$HIGHSCORE" ]] && Die "Sorry, can't do that just yet!\nThe highscore list is unfortunately empty right now."
 
@@ -95,10 +95,10 @@ Announce() {
 }
 
 #-----------------------------------------------------------------------
-# CLIarguments_CheckUpdate()
+# CLI_CheckUpdate()
 # Update function
 #-----------------------------------------------------------------------
-CLIarguments_CheckUpdate() {
+CLI_CheckUpdate() {
     # Removes stranded repo files before proceeding..
     STRANDED_REPO_FILES=$(find "$GAMEDIR"/repo.* | wc -l)
     (( STRANDED_REPO_FILES > 0 )) && rm -f "$GAMEDIR/repo.*"
@@ -146,7 +146,7 @@ CLIarguments_CheckUpdate() {
 # CreateBiaminLauncher()
 # Add alias for biamin in $HOME/.bashrc
 #-----------------------------------------------------------------------
-CreateBiaminLauncher() {
+CLI_CreateBiaminLauncher() {
     grep -q 'biamin' "$HOME/.bashrc" && Die "Found existing launcher in $HOME/.bashrc.. skipping!"
     BIAMIN_RUNTIME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
     echo -en "This will add $BIAMIN_RUNTIME/biamin to your .bashrc\nInstall Biamin Launcher? [Y/N]: "
@@ -158,49 +158,62 @@ CreateBiaminLauncher() {
     Exit 0
 }
 
+CLI_Help() {
+    echo "Run BACK IN A MINUTE with '-p', '--play' or 'p' argument to play!"
+    echo "For usage: run biamin --usage"
+    echo "Current dir for game files: $GAMEDIR/"
+    echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
+    Exit 0
+}
+
+CLI_Version() {
+    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
+    echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
+    echo "This is free software: you are free to change and redistribute it."
+    echo "There is NO WARRANTY, to the extent permitted by law."
+    echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
+    echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
+    echo "You are free to copy, distribute, transmit and adapt the work."
+    echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
+    echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
+    Exit 0
+}
+
+CLI_Usage() {
+    echo "Usage: biamin or ./biamin.sh"
+    echo "  (NO ARGUMENTS)      display this usage text and exit"
+    echo "  -p --play or p      PLAY the game \"Back in a minute\""
+    echo "  -a --announce       DISPLAY an adventure summary for social media and exit"
+    echo "  -i --install        ADD biamin.sh to your .bashrc file"
+    echo "     --map            CREATE custom map template with instructions and exit"
+    echo "     --help           display help text and exit"
+    echo "     --update         check for updates"
+    echo "     --usage          display this usage text and exit"
+    echo "  -v --version        display version and licensing info and exit"
+    Exit 0
+}
+
+
 #-----------------------------------------------------------------------
 # ParseCLIarguments()
 # Parse CLI arguments if any
 #-----------------------------------------------------------------------
 ParseCLIarguments() {
     case "$1" in
-	-a | --announce ) Announce ;;
-	-i | --install )  CreateBiaminLauncher ;;
-	--map )           MapCreateCustom ;;
-	-h | --help )
-	    echo "Run BACK IN A MINUTE with '-p', '--play' or 'p' argument to play!"
-	    echo "For usage: run biamin --usage"
-	    echo "Current dir for game files: $GAMEDIR/"
-	    echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
-	    Exit 0;;
+	-a | --announce ) CLI_Announce ;;
+	-i | --install )  CLI_CreateBiaminLauncher ;;
+	--map )           CLI_CreateCustomMapTemplate ;;
+	-h | --help )     CLI_Help ;;
+
 	-p | --play | p )
 	    shift ; 		     # remove $1 from $* (array of biamin.sh arguments)
 	    [[ "$*" ]] && CHAR="$*"; # for long names as "Corum Jhaelen Irsei" for instance
 	    echo "Launching Back in a Minute.." ;;
-	-v | --version )
-	    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
-	    echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
-	    echo "This is free software: you are free to change and redistribute it."
-	    echo "There is NO WARRANTY, to the extent permitted by law."
-	    echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
-	    echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
-	    echo "You are free to copy, distribute, transmit and adapt the work."
-	    echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
-	    echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
-	    Exit 0 ;;
-	--update ) CLIarguments_CheckUpdate ;;
-	--usage | * )
-	    echo "Usage: biamin or ./biamin.sh"
-	    echo "  (NO ARGUMENTS)      display this usage text and exit"
-	    echo "  -p --play or p      PLAY the game \"Back in a minute\""
-	    echo "  -a --announce       DISPLAY an adventure summary for social media and exit"
-	    echo "  -i --install        ADD biamin.sh to your .bashrc file"
-	    echo "     --map            CREATE custom map template with instructions and exit"
-	    echo "     --help           display help text and exit"
-	    echo "     --update         check for updates"
-	    echo "     --usage          display this usage text and exit"
-	    echo "  -v --version        display version and licensing info and exit"
-	    Exit 0;;
+	-v | --version ) CLI_Version ;;
+
+	--update ) CLI_CheckUpdate ;;
+	--usage | * ) CLI_Usage ;;
+
     esac
 }
 

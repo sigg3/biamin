@@ -91,7 +91,7 @@ MakePrompt() {
 #          1 if $1 > than $2,
 #          2 if $2 < than $1
 # Arguments: $VERSION1, $VERSION2
-# Used: CLIarguments_CheckUpdate()
+# Used: CLI_CheckUpdate()
 #-----------------------------------------------------------------------
 CompareVersions() {
     [[ "$1" == "$2" ]] && return 0

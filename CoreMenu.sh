@@ -53,7 +53,7 @@ LoadGame() {
     CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${FILES[$NUM]}" );
 }   # return to MainMenu()
 
-HighscoreRead() { # Used in Announce() and HighScore()
+HighscoreRead() { # Used in CLI_Announce() and HighScore()
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
     local i=1 HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
     # Read values from highscore file (BashFAQ/001)

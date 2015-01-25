@@ -3,8 +3,6 @@
 #                               Almanac                                #
 #                                                                      #
 
-#declare -r TODO3=1
-
 # TODO Adjust Almanac_Moon etc. for -1 Y positions (moved ASCII upwards, Jan 2015)
 
 # GAME ACTION: USE INV_ALMANAC (MOON info, NOTES, MAIN info)
@@ -227,7 +225,7 @@ EOT
     echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
     echo "$HR"
 
-    if [[ "$TODO3" ]] ; then # debug , just comment 'declare -r TODO3=1' at the beginning of this file when you'll not need it
+    if [[ "$DEBUG" ]] ; then 
 	MakePrompt '(M)oon phase;(N)otes;(R)eturn'
 	case "$(Read)" in
 	    [mM] ) Almanac_Moon  ;;

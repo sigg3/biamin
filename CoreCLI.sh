@@ -215,6 +215,7 @@ CLI_ParseArguments() {
 	    -v | --version  ) CLI_Version ;;
 	    --update        ) CLI_CheckUpdate ;;
 	    --usage         ) CLI_Usage ;;
+	    -d | --debug    ) DEBUG=1;;                                  # set DEBUG mode 
 	    *               ) echo "$0: unrecognized option '$1'";
 			      echo "$0: use the --help or --usage options for more information";
 			      Exit 0;;

@@ -22,6 +22,7 @@ ResetStarvation() {
 		    echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;;
 	    2 | 4 ) (( ACCURACY++ ));
 		    echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
+	    *     ) Die "BUG in ResetStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	esac
     fi
     STARVATION=0
@@ -59,6 +60,7 @@ CheckForStarvation(){
 			echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;;
 		2 | 4 ) (( ACCURACY-- ));
 			echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
+		*     ) Die "BUG in CheckForStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then

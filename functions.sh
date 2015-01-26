@@ -37,7 +37,8 @@ What to do?
 # Saves current game values to CHARSHEET file (overwriting)
 #-----------------------------------------------------------------------
 SaveCurrentSheet() {
-    echo "CHARACTER: $CHAR
+    echo "VERSION: $VERSION
+CHARACTER: $CHAR
 RACE: $CHAR_RACE
 BATTLES: $CHAR_BATTLES
 EXPERIENCE: $CHAR_EXP

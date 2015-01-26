@@ -31,9 +31,6 @@ TODO LEGACY branch ("original")
 [-] rename LEGACY's biamin.sh to biamin-legacy.sh (if player will want have all versions)
 	This requires changing code and blog stuff:P
 [ ] Bug in loadgame. If there are no charsheets, the load game screen will fill up with empty lines of "" the "" in "" etc..
-[-] Move licenses to repo & makefile
-	Do we have makefile in LEGACY? O_o #kstn
-		Of course, not. I was drunk :) ~ sigge
 [ ] Move licenses to repo
 
 TODO 2.0 branch ("survival")
@@ -80,8 +77,9 @@ TODO 2.0 branch ("survival")
 [x] Language on Town.sh, ...
 [x] Move licenses to repo & makefile
 [x] Bug in (R)est sequence that allows Roll for healing after Fightmode as occured.
-[ ] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
+[x] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
 		EchoRight() or equivalent. Output text on the far right of same Y axis.
+[s] Look at result in 'echo' branch.
 [ ] IF ^ successful, implement in FightMode & related functions, and buying/selling.
 
 TODO ideas for 3.0 branch ("rpg")
@@ -195,7 +193,7 @@ TODO general stuff
 		Baby means _save only on exit_ viz. allows save-scumming (exit/load until fortunate circumstance)
 		Hardcore is current mode. Each step is saved _because_ it makes the game harder. Everything matters.
 		We'll put this on the backburner, it's low priority atm. ~ sigg3
-
+[?] Uber-hardcore mode - player plays only one person (whoami), saves only on exit, and can't make another char while first is alive
 
 BLOG/Misc.
 [ ] Update repo blurbs

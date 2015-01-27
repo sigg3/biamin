@@ -284,19 +284,19 @@ FightMode_EnemyTurn() {
 	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
 	    LUCK=1
 	    unset FIGHTMODE
-	    Sleep 2
+	    PressAnyKey # TODO test instead of Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
 	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"
-	    Sleep 2.5 # TODO test
+	    Sleep 2.5
 	fi	
 
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
-	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY"
-	Sleep 2 # TODO test
+	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY]"
+	Sleep 2
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 

@@ -188,6 +188,7 @@ TODO general stuff
 		Color [off/moderate/aggressive]   : moderate (default)
 		Difficulty [baby/hardcore]        : hardcore (default)
 		Economic (in)stability [0.1-0.99] : 0.15     (default)
+		Ignore custom maps [Yes/No]       : No       (default)
 [?]	Do not save every turn (save only on exit)
 		Perhaps be a boolean? "Difficulty [Baby/Hardcore]: Hardcore" in (O)ptions or (S)ettings menu.
 		Baby means _save only on exit_ viz. allows save-scumming (exit/load until fortunate circumstance)

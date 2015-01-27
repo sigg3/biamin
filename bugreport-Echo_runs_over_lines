@@ -1,0 +1,2589 @@
++ VERSION=1.9
++ WEBURL=http://sigg3.net/biamin/
++ REPO=https://gitorious.org/back-in-a-minute/code
++ GAMEDIR=/home/sigg3/.biamin
++ CONFIG=/home/sigg3/.biamin/config
++ HIGHSCORE=/home/sigg3/.biamin/highscore
++ unset HISTFILE
++ START_LOCATION=C2
++ DISABLE_CHEATS=0
++ HR='- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MAX_BBSMSG=12
++ declare -r YEAR_LENGHT=360
++ declare -r YEAR_MONTHES=12
++ declare -r MONTH_LENGTH=30
++ declare -r MOON_PHASE_LENGTH=4
++ declare -r MOON_CYCLE=32
++ MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
++ declare -r MOON_STR
++ MONTH_STR=("Biamin Festival" "Rarely happens, if ever :(" "After-Frost" "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm." "Marrsuckur" "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting." "Plough-Tide" "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide." "Anorlukis" "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves." "Summer-Tide" "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" "Summer-Turn" "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good." "Merentimes" "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers." "Harvest Month" "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness." "Ringorin" "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers." "Brew-Tasting Tide" "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone." "Winter Month" "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in." "Midwinter Offering" "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike.")
++ declare -r -a MONTH_STR
++ declare -r WEEK_LENGTH=7
++ WEEKDAY_STR=("Ringday (Holiday)" "Day of Festivities and Rest" "Men and Halflings celebrate Ringday as the end and beginning of the week." "Moonday" "Mor's Day (Day of the Moon)" "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do." "Brenday" "Brenia's Day (God of Courage)" "Visit the Temple on Brenia's Day to honor those who perished in warfare." "Midweek" "Middle of the Week (Day of Balance)" "In some places, Midweek Eve is celebrated with village dances and ale." "Braigday" "Braig's Day (God of Wilderness)" "Historically, a day of hunting. Nobility still hunt every Braig's Day." "Melethday" "Melethril's Day (God of Love)" "Commonly considered Lovers' Day, it is also a day of mischief and trickery." "Washday" "Final Workday of the Week" "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls.")
++ declare -r -a WEEKDAY_STR
++ CALENDAR=()
++ declare -r DEATH_FIGHT=0
++ declare -r DEATH_STARVATION=1
++ declare -r GIFT_OF_SIGHT=0
++ declare -r EMERALD_OF_NARCOLEPSY=1
++ declare -r GUARDIAN_ANGEL=2
++ declare -r FAST_MAGIC_BOOTS=3
++ declare -r QUICK_RABBIT_REACTION=4
++ declare -r FLASK_OF_TERRIBLE_ODOUR=5
++ declare -r TWO_HANDED_BROADSWORD=6
++ declare -r STEADY_HAND_BREW=7
++ declare -r MAX_ITEMS=8
++ DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9 6 3)
++ declare -r -a DICE_GAME_CHANCES
++ DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
++ declare -r -a DICE_GAME_WINNINGS
++ RACES=("Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" "human  3       3        3        3    12           8" "elf    4       3        4        1     8          12" "dwarf  2       5        3        2    14           6" "hobbit 4       1        4        3     6          14")
++ declare -r -a RACES
++ declare -r MAX_RACES=4
++ declare -r INITIAL_VALUE_GOLD=1
++ declare -r INITIAL_VALUE_TOBACCO=1
++ declare -r INITIAL_VALUE_CHANGE=0.15
++ [[ ! -d /home/sigg3/.biamin ]]
++ [[ ! -f /home/sigg3/.biamin/config ]]
++ [[ -f /home/sigg3/.biamin/highscore ]]
++ grep -q d41d8cd98f00b204e9800998ecf8427e /home/sigg3/.biamin/highscore
++ [[ ! -n '' ]]
++ for PAGER in less more
+++ which less
++ PAGER=/usr/bin/less
++ [[ -n /usr/bin/less ]]
++ break
++ CLI_ParseArguments p
++ [[ ! -n p ]]
++ [[ -n p ]]
++ case "$1" in
++ shift
+++ grep -Eq '^-'
++ [[ ! -n '' ]]
++ CHAR=
++ echo 'Launching Back in a Minute..'
++ shift
++ [[ -n '' ]]
++ echo 'Putting on the traveller'\''s boots..'
++ read -r GAMEDIR COLOR
+++ awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
+                                   if (/^COLOR:/)    { COLOR = $2  } }
+                            END { print GAMEDIR, COLOR ;}' /home/sigg3/.biamin/config
++ CheckBiaminDependencies
++ declare -a CRITICAL NONCRITICAL
++ local PROGRAM
++ echo 'Checking dependencies...'
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled tput
+++ which tput
++ [[ -n /usr/bin/tput ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled awk
+++ which awk
++ [[ -n /usr/bin/awk ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled bc
+++ which bc
++ [[ -n /usr/bin/bc ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled sed
+++ which sed
++ [[ -n /usr/bin/sed ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled printf
+++ which printf
++ [[ -n /usr/bin/printf ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled date
+++ which date
++ [[ -n /usr/bin/date ]]
++ return 0
++ for PROGRAM in '"curl"' '"wget"'
++ IsInstalled curl
+++ which curl
++ [[ -n /usr/bin/curl ]]
++ return 0
++ for PROGRAM in '"curl"' '"wget"'
++ IsInstalled wget
+++ which wget
++ [[ -n /usr/bin/wget ]]
++ return 0
++ [[ -n '' ]]
++ [[ -n '' ]]
+++ tput cols
+++ tput lines
++ ((  80 > 79 && 24 > 23 ))
++ unset CRITICAL NONCRITICAL PROGRAM
++ ColorConfig 1
++ case "$1" in
++ echo 'Enabling color for maps!'
++ (( COLOR == 1 ))
++ declare -gr 'YELLOW=\033[1;33m'
++ declare -gr 'RESET=\033[0;39m'
++ declare -gr 'CLEAR_LINE=\e[1K\e[80D'
++ ReseedRandom
++ [[ -n '' ]]
++ case "$OSTYPE" in
+++ date +%N
++ RANDOM=873415639
++ trap CleanUp SIGHUP SIGINT SIGTERM
++ tput civis
++ [[ -n '' ]]
++ MainMenu
++ [[ ! -n '' ]]
++ GX_Banner
++ GX_BiaminTitle
++ clear
++ cat
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo l
++ LoadGame
++ local SHEETS FILES i=0 LIMIT=9 OFFSET=0 NUM=0 a
+++ find /home/sigg3/.biamin/ -name '*.sheet'
++ for loadSHEET in '$(find "$GAMEDIR/" -name '\''*.sheet'\'')'
++ (( ++i ))
++ FILES[$i]=/home/sigg3/.biamin/giro.sheet
+++ awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
+               		                 if ($2 == 2 ) { RACE="Elf"; }
+             		                 if ($2 == 3 ) { RACE="Dwarf"; }
+            		                 if ($2 == 4 ) { RACE="Hobbit";} }
+                   if (/^LOCATION:/)   { LOCATION = $2 }
+                   if (/^HEALTH:/)     { HEALTH = $2 }
+                   if (/^ITEMS:/)      { ITEMS = $2 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
+                 END {
+                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")"
+                 }' /home/sigg3/.biamin/giro.sheet
++ SHEETS[$i]='"Giro" the Dwarf (82 HP, 80 EXP, 0 items, sector F11)'
++ for loadSHEET in '$(find "$GAMEDIR/" -name '\''*.sheet'\'')'
++ (( ++i ))
++ FILES[$i]=/home/sigg3/.biamin/irc.sheet
+++ awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
+               		                 if ($2 == 2 ) { RACE="Elf"; }
+             		                 if ($2 == 3 ) { RACE="Dwarf"; }
+            		                 if ($2 == 4 ) { RACE="Hobbit";} }
+                   if (/^LOCATION:/)   { LOCATION = $2 }
+                   if (/^HEALTH:/)     { HEALTH = $2 }
+                   if (/^ITEMS:/)      { ITEMS = $2 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
+                 END {
+                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")"
+                 }' /home/sigg3/.biamin/irc.sheet
++ SHEETS[$i]='"irc" the Human (5 HP, 110 EXP, 1 items, sector E5)'
++ for loadSHEET in '$(find "$GAMEDIR/" -name '\''*.sheet'\'')'
++ (( ++i ))
++ FILES[$i]=/home/sigg3/.biamin/elvis.sheet
+++ awk '{ # Character can consist from two and more words, not only "Corum" but "Corum Jhaelen Irsei" for instance
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /); CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^RACE:/)       { if ($2 == 1 ) { RACE="Human"; }
+               		                 if ($2 == 2 ) { RACE="Elf"; }
+             		                 if ($2 == 3 ) { RACE="Dwarf"; }
+            		                 if ($2 == 4 ) { RACE="Hobbit";} }
+                   if (/^LOCATION:/)   { LOCATION = $2 }
+                   if (/^HEALTH:/)     { HEALTH = $2 }
+                   if (/^ITEMS:/)      { ITEMS = $2 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 } }
+                 END {
+                 print "\"" CHARACTER "\" the " RACE " (" HEALTH " HP, " EXPERIENCE " EXP, " ITEMS " items, sector " LOCATION ")"
+                 }' /home/sigg3/.biamin/elvis.sheet
++ SHEETS[$i]='"Elvis" the Human (45 HP, -20 EXP, 0 items, sector E5)'
++ GX_LoadGame
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ tput sc
++ [[ ! -n "Giro" the Dwarf (82 HP, 80 EXP, 0 items, sector F11) "irc" the Human (5 HP, 110 EXP, 1 items, sector E5) "Elvis" the Human (45 HP, -20 EXP, 0 items, sector E5) ]]
++ true
++ tput rc
++ tput ed
++ (( a=1 ))
++ (( a <= LIMIT  ))
++ [[ -n "Giro" the Dwarf (82 HP, 80 EXP, 0 items, sector F11) ]]
++ echo '1. "Giro" the Dwarf (82 HP, 80 EXP, 0 items, sector F11)'
++ (( a++ ))
++ (( a <= LIMIT  ))
++ [[ -n "irc" the Human (5 HP, 110 EXP, 1 items, sector E5) ]]
++ echo '2. "irc" the Human (5 HP, 110 EXP, 1 items, sector E5)'
++ (( a++ ))
++ (( a <= LIMIT  ))
++ [[ -n "Elvis" the Human (45 HP, -20 EXP, 0 items, sector E5) ]]
++ echo '3. "Elvis" the Human (45 HP, -20 EXP, 0 items, sector E5)'
++ (( a++ ))
++ (( a <= LIMIT  ))
++ [[ -n '' ]]
++ break
++ ((  i > LIMIT ))
++ echo -en '\n Enter NUMBER of character to load or any letter to return to (M)ain Menu: '
++ read -sn 1 NUM
++ case "$NUM" in
++ NUM=1
++ break
++ echo ''
++ [[ ! -n "Giro" the Dwarf (82 HP, 80 EXP, 0 items, sector F11) ]]
+++ awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' /home/sigg3/.biamin/giro.sheet
++ CHAR=Giro
++ [[ ! -n Giro ]]
++ BiaminSetup
++ BiaminSetup_MakeBaseChar
++ CHAR_BATTLES=0
++ CHAR_EXP=0
++ CHAR_GPS=C2
++ CHAR_HEALTH=100
++ CHAR_ITEMS=0
++ CHAR_KILLS=0
++ CHAR_HOME=C2
+++ bc
++++ RollDice2 11
++++ RollDice 11
++++ DICE_SIZE=11
++++ DICE=2
++++ echo 2
++ CHAR_FOOD=6
++ BBSMSG=0
++ VAL_GOLD=1
++ VAL_TOBACCO=1
++ VAL_CHANGE=0.15
++ STARVATION=0
+++ TurnFromDate
+++ local YEAR MONTH DAY
+++ read -r YEAR MONTH DAY
++++ date '+%-y %-m %-d'
+++ bc
++ TURN=5457
++ INV_ALMANAC=0
+++ echo Giro
+++ tr '[:upper:]' '[:lower:]'
+++ tr -d ' '
++ CHARSHEET=/home/sigg3/.biamin/giro.sheet
++ [[ -f /home/sigg3/.biamin/giro.sheet ]]
++ BiaminSetup_LoadCharsheet
++ echo -en ' Welcome back, Giro!\n Loading character sheet ...'
++ BiaminSetup_UpdateOldSaves /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^HOME:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^BBSMSG:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^STARVATION:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^TURN:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^INV_ALMANAC:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^GOLD:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^TOBACCO:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^FOOD:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^VAL_GOLD:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^VAL_TOBACCO:' /home/sigg3/.biamin/giro.sheet
++ grep -Eq '^VAL_CHANGE:' /home/sigg3/.biamin/giro.sheet
+++ awk '
+                  {
+                   if (/^CHARACTER:/)  { RLENGTH = match($0,/: /);
+                  	                 CHARACTER = substr($0, RLENGTH+2); }
+                   if (/^RACE:/)       { RACE= $2 }
+                   if (/^BATTLES:/)    { BATTLES = $2 }
+                   if (/^EXPERIENCE:/) { EXPERIENCE = $2 }
+                   if (/^LOCATION:/)   { LOCATION = $2 }
+                   if (/^HEALTH:/)     { HEALTH = $2 }
+                   if (/^ITEMS:/)      { ITEMS = $2 }
+                   if (/^KILLS:/)      { KILLS = $2 }
+                   if (/^HOME:/)       { HOME = $2 }
+                   if (/^GOLD:/)       { GOLD = $2 }
+                   if (/^TOBACCO:/)    { TOBACCO = $2 }
+                   if (/^FOOD:/)       { FOOD = $2 }
+                   if (/^BBSMSG:/)     { BBSMSG = $2 }
+                   if (/^VAL_GOLD:/)   { VAL_GOLD = $2 }
+                   if (/^VAL_TOBACCO:/){ VAL_TOBACCO = $2 }
+                   if (/^VAL_CHANGE:/) { VAL_CHANGE = $2 }
+                   if (/^STARVATION:/) { STARVATION = $2 }
+                   if (/^TURN:/)        { TURN= $2 }
+                   if (/^INV_ALMANAC:/) { INV_ALMANAC = $2 }
+                  }
+                 END {
+                 print CHARACTER ";" RACE ";" BATTLES ";" EXPERIENCE ";" LOCATION ";" HEALTH ";" ITEMS ";" KILLS ";" HOME ";" GOLD ";" TOBACCO ";" FOOD ";" BBSMSG ";" VAL_GOLD ";" VAL_TOBACCO ";" VAL_CHANGE ";" STARVATION ";" TURN ";" INV_ALMANAC ";"
+                 }' /home/sigg3/.biamin/giro.sheet
++ local 'CHAR_TMP=Giro;3;5;80;F11;82;0;4;C2;.32;.70;5.75;2;.25;1.60;0.15;0;5482;0;'
++ IFS=';'
++ read -r CHAR CHAR_RACE CHAR_BATTLES CHAR_EXP CHAR_GPS CHAR_HEALTH CHAR_ITEMS CHAR_KILLS CHAR_HOME CHAR_GOLD CHAR_TOBACCO CHAR_FOOD BBSMSG VAL_GOLD VAL_TOBACCO VAL_CHANGE STARVATION TURN INV_ALMANAC
++ ((  CHAR_HEALTH <= 0  ))
++ BiaminSetup_SetRaceAbilities 3
++ read -r CHAR_RACE_STR HEALING STRENGTH ACCURACY FLEE OFFSET_GOLD OFFSET_TOBACCO
++ BiaminSetup_SetItemsAbilities 0
++ HaveItem 1
++ ((  0 > 1  ))
++ return 1
++ HaveItem 3
++ ((  0 > 3  ))
++ return 1
++ HaveItem 6
++ ((  0 > 6  ))
++ return 1
++ HaveItem 7
++ ((  0 > 7  ))
++ return 1
++ Sleep 2
++ read -n 1 -t 2
++ (( DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150 ))
++ Intro
+++ Capitalize Giro
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ SHORTNAME=Giro
++ MapCreate
++ MAPS=($(find "$GAMEDIR"/ -name '*.map' | sort))
+++ find /home/sigg3/.biamin/ -name '*.map'
+++ sort
++ [[ -n /home/sigg3/.biamin/diffway.map /home/sigg3/.biamin/testing.map ]]
++ echo -en '\n Custom maps found in /home/sigg3/.biamin\n Would you like to play a (C)ustom map or the (D)efault? '
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo d
++ [[ d == [Cc] ]]
+++ cat
++ MAP='       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R
+   #=========================================================================#
+ 1 )   x   x   x   x   x   @   .   .   .   T   x   x   x   x   x   x   @   T (
+ 2 )   x   x   H   x   @   @   .   @   @   x   x   x   x   x   @   @   @   @ (
+ 3 )   @   @   .   @   @   @   .   x   x   x   x   x   @   x   @   x   @   @ (
+ 4 )   @   @   .   @   @   @   .   @   x   x   x   @   T   x   x   x   x   x (
+ 5 )   @   @   .   .   T   .   .   @   @   @   @   @   .   @   x   x   x   x (
+ 6 )   @   @   @   @   .   @   @   @   @   @   @   @   .   @   @   x   x   x (
+ 7 )   @   @   @   @   .   .   .   T   @   @   @   @   .   @   @   x   x   x (
+ 8 )   @   @   T   .   .   @   @   @   @   @   @   .   .   .   .   .   .   x (
+ 9 )   @   @   .   @   @   @   @   @   @   @   .   .   @   x   @   @   .   . (
+10 )   @   @   .   @   @   @   T   @   @   @   .   @   @   x   x   x   x   . (
+11 )   T   .   .   .   .   .   .   .   @   @   .   x   x   C   x   x   x   . (
+12 )   x   @   @   @   .   @   @   .   .   .   .   x   x   x   x   x   x   . (
+13 )   x   x   @   x   .   @   @   @   @   @   .   @   x   x   @   @   @   . (
+14 )   x   x   x   x   .   @   @   @   @   T   .   @   x   x   @   @   .   . (
+15 )   x   x   x   T   .   @   @   @   @   @   @   @   @   T   .   .   .   @ (
+   #=========================================================================#
+          LEGEND: x = Mountain, . = Road, T = Town, @ = Forest         N
+                  H = Home (Heal Your Wounds) C = Oldburg Castle     W + E
+                                                                       S'
++ HotzonesDistribute 0
++ local ITEMS_2_SCATTER=8
++ HOTZONE=()
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=5
++++ echo 5
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=2
++++ echo 2
+++ XYtoGPS 5 2
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=E2
++ [[ E2 == \F\1\1 ]]
++ CheckHotzones E2
+++ grep -E '(^| )E2( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=E2
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=18
++++ echo 18
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=9
++++ echo 9
+++ XYtoGPS 18 9
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=R9
++ [[ R9 == \F\1\1 ]]
++ CheckHotzones R9
+++ grep -E '(^| )R9( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=R9
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=12
++++ echo 12
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=9
++++ echo 9
+++ XYtoGPS 12 9
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=L9
++ [[ L9 == \F\1\1 ]]
++ CheckHotzones L9
+++ grep -E '(^| )L9( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=L9
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=6
++++ echo 6
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=12
++++ echo 12
+++ XYtoGPS 6 12
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=F12
++ [[ F12 == \F\1\1 ]]
++ CheckHotzones F12
+++ grep -E '(^| )F12( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=F12
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=7
++++ echo 7
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=12
++++ echo 12
+++ XYtoGPS 7 12
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=G12
++ [[ G12 == \F\1\1 ]]
++ CheckHotzones G12
+++ grep -E '(^| )G12( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=G12
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=15
++++ echo 15
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=1
++++ echo 1
+++ XYtoGPS 15 1
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=O1
++ [[ O1 == \F\1\1 ]]
++ CheckHotzones O1
+++ grep -E '(^| )O1( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=O1
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=4
++++ echo 4
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=12
++++ echo 12
+++ XYtoGPS 4 12
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=D12
++ [[ D12 == \F\1\1 ]]
++ CheckHotzones D12
+++ grep -E '(^| )D12( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=D12
++ (( ITEMS_2_SCATTER > 0  ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=16
++++ echo 16
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=13
++++ echo 13
+++ XYtoGPS 16 13
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM=P13
++ [[ P13 == \F\1\1 ]]
++ CheckHotzones P13
+++ grep -E '(^| )P13( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=P13
++ (( ITEMS_2_SCATTER > 0  ))
++ WORLDCHANGE_COUNTDOWN=0
++ WorldPriceFixing
++ local VAL_FOOD=1
+++ bc
++ PRICE_FxG=4.00
+++ bc
++ PRICE_FxT=.62
+++ bc
++ PRICE_GxT=.15
+++ bc
++ PRICE_GxF=.25
+++ bc
++ PRICE_TxG=6.40
+++ bc
++ PRICE_TxF=1.60
++ GX_Intro 60
++ clear
++ cat
++ local COUNTDOWN=60
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ echo -n '                         Press (A)ny key to continue..'
++ tput sc
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n .
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n ' '
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n .
++ read -sn 1 -t 1
++ break
++ NODICE=1
++ NewSector
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=83
+++ bc
++ MONTH=2
+++ bc
++ DAY=23
+++ bc
++ WEEKDAY=2
+++ bc
++ MOON=2
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 24
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 24th
+++ return 0
+++ MonthString 3
+++ echo Plough-Tide
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='24th of Plough-Tide in the 16th Cycle'
++ CheckForItem F11
++ ((  F11 < MAX_ITEMS  ))
++ CheckHotzones F11
+++ grep -E '(^| )F11( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario F11
+++ read -r MAP_X MAP_Y
++++ GPStoXY F11
++++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
+++ awk '{ if ( NR == 13) { print $8; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 1 ]]
++ unset NODICE
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=5.50
++ echo 'You eat .25 food from your stock: 5.50 remaining ..'
++ (( STARVATION ))
++ Sleep 1.5
++ read -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=89
+++ echo 89
++ ((  89 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ read -r MAP_X MAP_Y
+++ GPStoXY F11
+++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ ((  0 > 0  ))
++ return 1
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 13) {  # lazy fix for ASCII borders
+         if (6 == 18 ) { $7="o ("; }
+         else                 { $7="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 0 > 0 && 0 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 2) {
+            if ( 0 == 18 ) { $1="~ ("; }
+            else                     { $1="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Giro\033[0;39m is currently in F11 (Road)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ read -sn 1 -p ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  ' DEST
++ case "$DEST" in
++ echo -n 'You go East'
++ ((  MAP_X != 18  ))
++ ((  MAP_X++  ))
+++ XYtoGPS 7 11
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=G11
++ Sleep 1.5
++ read -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=84
+++ bc
++ MONTH=2
+++ bc
++ DAY=24
+++ bc
++ WEEKDAY=3
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 25
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 25th
+++ return 0
+++ MonthString 3
+++ echo Plough-Tide
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='25th of Plough-Tide in the 16th Cycle'
++ CheckForItem G11
++ ((  G11 < MAX_ITEMS  ))
++ CheckHotzones G11
+++ grep -E '(^| )G11( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario G11
+++ read -r MAP_X MAP_Y
++++ GPStoXY G11
++++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
+++ awk '{ if ( NR == 13) { print $9; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight .
++ RollDice 100
++ DICE_SIZE=100
++ DICE=37
++ [[ ! -n '' ]]
++ case "$1" in
++ RollForEvent 20 fight
++ echo -e 'Rolling for fight: D100 <= 20\nD100: 37'
++ Sleep 1.5
++ read -n 1 -t 1.5
++ ((  DICE <= 20  ))
++ return 1
++ return 0
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=5.25
++ echo 'You eat .25 food from your stock: 5.25 remaining ..'
++ (( STARVATION ))
++ Sleep 1.5
++ read -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=94
+++ echo 94
++ ((  94 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ read -r MAP_X MAP_Y
+++ GPStoXY G11
+++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ ((  0 > 0  ))
++ return 1
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 13) {  # lazy fix for ASCII borders
+         if (7 == 18 ) { $8="o ("; }
+         else                 { $8="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 0 > 0 && 0 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 2) {
+            if ( 0 == 18 ) { $1="~ ("; }
+            else                     { $1="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Giro\033[0;39m is currently in G11 (Road)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ read -sn 1 -p ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  ' DEST
++ case "$DEST" in
++ echo -n 'You go North'
++ ((  MAP_Y != 1   ))
++ ((  MAP_Y--  ))
+++ XYtoGPS 7 10
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=G10
++ Sleep 1.5
++ read -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=85
+++ bc
++ MONTH=2
+++ bc
++ DAY=25
+++ bc
++ WEEKDAY=4
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 26
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 26th
+++ return 0
+++ MonthString 3
+++ echo Plough-Tide
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='26th of Plough-Tide in the 16th Cycle'
++ CheckForItem G10
++ ((  G10 < MAX_ITEMS  ))
++ CheckHotzones G10
+++ grep -E '(^| )G10( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario G10
+++ read -r MAP_X MAP_Y
++++ GPStoXY G10
++++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
+++ awk '{ if ( NR == 12) { print $9; }}'
++ SCENARIO=T
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight T
++ RollDice 100
++ DICE_SIZE=100
++ DICE=54
++ [[ ! -n '' ]]
++ case "$1" in
++ RollForEvent 15 fight
++ echo -e 'Rolling for fight: D100 <= 15\nD100: 54'
++ Sleep 1.5
++ read -n 1 -t 1.5
++ ((  DICE <= 15  ))
++ return 1
++ return 0
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=5.00
++ echo 'You eat .25 food from your stock: 5.00 remaining ..'
++ (( STARVATION ))
++ Sleep 1.5
++ read -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=77
+++ echo 77
++ ((  77 > 15  ))
++ return 0
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo g
++ local ACTION=g
++ case "$ACTION" in
++ [[ T == \T ]]
++ GoIntoTown
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo b
++ GX_Bulletin 2
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_GOLD_STR=0.25
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_TOBACCO_STR=1.60
++ case $1 in
++ BULLETIN=("       TOBACCO TOO CHEAP!           " "Traders Beware! Since last Harvest  " "many Halflings of great Repute have " "returned to Other Produce than Leaf " "Villages report malcontent of low   " "Tobacco Prices, refusing to sell.   ")
++ local BULLETIN
++ case $1 in
++ BULLETIN[6]='TOBACCO RAISED TO: 1.60'
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ tput sc
++ local NUM=0
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 3 21 '       TOBACCO TOO CHEAP!           '
++ tput cup 3 21
++ printf %s '       TOBACCO TOO CHEAP!           '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 5 21 'Traders Beware! Since last Harvest  '
++ tput cup 5 21
++ printf %s 'Traders Beware! Since last Harvest  '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 6 21 'many Halflings of great Repute have '
++ tput cup 6 21
++ printf %s 'many Halflings of great Repute have '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 7 21 'returned to Other Produce than Leaf '
++ tput cup 7 21
++ printf %s 'returned to Other Produce than Leaf '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 8 21 'Villages report malcontent of low   '
++ tput cup 8 21
++ printf %s 'Villages report malcontent of low   '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 9 21 'Tobacco Prices, refusing to sell.   '
++ tput cup 9 21
++ printf %s 'Tobacco Prices, refusing to sell.   '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 10 21 'TOBACCO RAISED TO: 1.60'
++ tput cup 10 21
++ printf %s 'TOBACCO RAISED TO: 1.60'
++ tput rc
++ PressAnyKey
++ [[ -n '' ]]
++ MakePrompt 'Press (A)ny key to continue..'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -sn 1
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ Marketplace
++ '[' -z '' ']'
++ TOWN_GPS=G10
++ RollDice 10
++ DICE_SIZE=10
++ DICE=8
++ ((  DICE <= 4  ))
++ local BEGGAR=0
++ true
++ GX_Marketplace
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo g
++ Marketplace_Grocer
+++ bc
++ local GROCER_FxG=4.07
+++ bc
++ local GROCER_FxT=.69
++ true
++ GX_Marketplace_Grocer 4.07 .69
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 4.07 .69 ]]
++ tput sc
++ [[ -n 4.07 ]]
++ MvAddStr 10 4 '1 FOOD costs 4.07 Gold'
++ tput cup 10 4
++ printf %s '1 FOOD costs 4.07 Gold'
++ [[ -n .69 ]]
++ MvAddStr 11 4 'or .69 Tobacco."'
++ tput cup 11 4
++ printf %s 'or .69 Tobacco."'
++ tput rc
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo l
++ break
++ true
++ GX_Marketplace
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ Marketplace_Merchant
++ '[' -z '' ']'
++ MERCHANT=G10
++ MERCHANT_FxG=4.00
++ MERCHANT_FxT=.62
++ MERCHANT_GxT=.15
++ MERCHANT_GxF=.25
++ MERCHANT_TxG=6.40
++ MERCHANT_TxF=1.60
+++ bc
++ PRICE_IxG=8.00
++ MERCHANT_IxG=8.00
+++ bc
++ PRICE_GxI=.50
++ MERCHANT_GxI=.50
++ RollDice 3
++ DICE_SIZE=3
++ DICE=1
+++ bc
++ local MERCHANT_MARGIN=.15
++ RollDice 3
++ DICE_SIZE=3
++ DICE=3
++ case "$DICE" in
+++ bc
++ MERCHANT_GxF=.40
+++ bc
++ MERCHANT_FxG=3.85
+++ bc
++ MERCHANT_GxT=.30
+++ bc
++ MERCHANT_TxG=6.25
+++ bc
++ MERCHANT_GxI=.65
+++ bc
++ MERCHANT_IxG=7.85
+++ bc
++ MERCHANT_FxG=4.00
+++ bc
++ MERCHANT_FxG=.25
+++ bc
++ MERCHANT_FxG=.62
+++ bc
++ MERCHANT_FxG=1.60
+++ bc
++ MERCHANT_FxG=.50
+++ bc
++ MERCHANT_FxG=8.00
++ RollDice 8
++ DICE_SIZE=8
++ DICE=4
++ case "$DICE" in
++ MERCHANT_ITEM='Health Potion (20 HP)'
++ true
++ GX_Marketplace_Merchant
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ local M_Y=4
++ MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!")
++ local MERCHANT_MSG
++ tput sc
++ MvAddStr 4 4 'Oye there, fierce master Dwarf!'
++ tput cup 4 4
++ printf %s 'Oye there, fierce master Dwarf!'
++ ((  M_Y++  ))
++ MERCHANT_MSG=("" "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best" "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?")
++ local MERCHANT_MSG
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 6 4 'Me and my Caravan travel far and wide'
++ tput cup 6 4
++ printf %s 'Me and my Caravan travel far and wide'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 7 4 'to provide the Finest Merchandise'
++ tput cup 7 4
++ printf %s 'to provide the Finest Merchandise'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 8 4 'in the Realm, and at the best'
++ tput cup 8 4
++ printf %s 'in the Realm, and at the best'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 9 4 'possible prices! I buy everything'
++ tput cup 9 4
++ printf %s 'possible prices! I buy everything'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 10 4 'and sell only the best, '\''tis true!'
++ tput cup 10 4
++ printf %s 'and sell only the best, '\''tis true!'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 11 4 ''
++ tput cup 11 4
++ printf %s ''
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 12 4 'What are you looking for?'
++ tput cup 12 4
++ printf %s 'What are you looking for?'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ tput rc
+++ MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(L)eave'
+++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -sn 1 -p '        (F)ood       (T)obacco       (G)old       (I)tems       (L)eave        ' MERCHANTVAR
++ case "$MERCHANTVAR" in
++ Marketplace_Merchant_Bargaining f
++ GX_Marketplace_Merchant
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ tput sc
++ case "$1" in
++ MERCHANDISE=food
++ MvAddStr 7 4 '8.00 Gold or .62 Tobacco.'
++ tput cup 7 4
++ printf %s '8.00 Gold or .62 Tobacco.'
++ MvAddStr 10 4 'for .40 Gold or 1.60 Tobacco each!'
++ tput cup 10 4
++ printf %s 'for .40 Gold or 1.60 Tobacco each!'
++ MERCHANDISE=Food
++ [[ Food = \I\t\e\m ]]
++ [[ Food = \u\n\k\n\o\w\n ]]
++ MvAddStr 4 4 'But of course! Here are my prices:'
++ tput cup 4 4
++ printf %s 'But of course! Here are my prices:'
++ MvAddStr 6 4 'I sell 1 Food to you for'
++ tput cup 6 4
++ printf %s 'I sell 1 Food to you for'
++ MvAddStr 9 4 'Or I can buy 1 Food from you,'
++ tput cup 9 4
++ printf %s 'Or I can buy 1 Food from you,'
++ tput rc
++ tput sc
++ MvAddStr 12 4 'Are you buying or selling?'
++ tput cup 12 4
++ printf %s 'Are you buying or selling?'
++ tput rc
+++ MakePrompt '(B)uying;(S)elling;(J)ust Looking'
+++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -sn 1 -p '            (B)uying            (S)elling            (J)ust Looking            ' MERCHANTVAR
++ Marketplace_Merchant_Bargaining Food
++ GX_Marketplace_Merchant
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ tput sc
++ case "$1" in
++ MERCHANDISE=food
++ MvAddStr 7 4 '8.00 Gold or .62 Tobacco.'
++ tput cup 7 4
++ printf %s '8.00 Gold or .62 Tobacco.'
++ MvAddStr 10 4 'for .40 Gold or 1.60 Tobacco each!'
++ tput cup 10 4
++ printf %s 'for .40 Gold or 1.60 Tobacco each!'
++ MERCHANDISE=Food
++ [[ Food = \I\t\e\m ]]
++ [[ Food = \u\n\k\n\o\w\n ]]
++ MvAddStr 4 4 'But of course! Here are my prices:'
++ tput cup 4 4
++ printf %s 'But of course! Here are my prices:'
++ MvAddStr 6 4 'I sell 1 Food to you for'
++ tput cup 6 4
++ printf %s 'I sell 1 Food to you for'
++ MvAddStr 9 4 'Or I can buy 1 Food from you,'
++ tput cup 9 4
++ printf %s 'Or I can buy 1 Food from you,'
++ tput rc
++ local QUANTITY COST_GOLD COST_TOBACCO COST_FOOD COST_ITEM TRANSACTION_STATUS BARGAIN_TYPE
++ case "$MERCHANTVAR" in
++ BARGAIN_TYPE=3
++ ((  BARGAIN_TYPE != 3  ))
++ true
++ GX_Marketplace_Merchant
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ local M_Y=4
++ MERCHANT_MSG=("" "weather-beaten Traveller!" "galant Elf of the Forests!" "fierce master Dwarf!" "young master Hobbit!")
++ local MERCHANT_MSG
++ tput sc
++ MvAddStr 4 4 'Oye there, fierce master Dwarf!'
++ tput cup 4 4
++ printf %s 'Oye there, fierce master Dwarf!'
++ ((  M_Y++  ))
++ MERCHANT_MSG=("" "" "" "" "" "" "Me and my Caravan travel far and wide" "to provide the Finest Merchandise" "in the Realm, and at the best" "possible prices! I buy everything" "and sell only the best, 'tis true!" "" "What are you looking for?")
++ local MERCHANT_MSG
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 6 4 'Me and my Caravan travel far and wide'
++ tput cup 6 4
++ printf %s 'Me and my Caravan travel far and wide'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 7 4 'to provide the Finest Merchandise'
++ tput cup 7 4
++ printf %s 'to provide the Finest Merchandise'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 8 4 'in the Realm, and at the best'
++ tput cup 8 4
++ printf %s 'in the Realm, and at the best'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 9 4 'possible prices! I buy everything'
++ tput cup 9 4
++ printf %s 'possible prices! I buy everything'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 10 4 'and sell only the best, '\''tis true!'
++ tput cup 10 4
++ printf %s 'and sell only the best, '\''tis true!'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 11 4 ''
++ tput cup 11 4
++ printf %s ''
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ MvAddStr 12 4 'What are you looking for?'
++ tput cup 12 4
++ printf %s 'What are you looking for?'
++ ((  M_Y++  ))
++ ((  M_Y <= 12  ))
++ tput rc
+++ MakePrompt '(F)ood;(T)obacco;(G)old;(I)tems;(L)eave'
+++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -sn 1 -p '        (F)ood       (T)obacco       (G)old       (I)tems       (L)eave        ' MERCHANTVAR
++ case "$MERCHANTVAR" in
++ break
++ true
++ GX_Marketplace
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo g
++ Marketplace_Grocer
+++ bc
++ local GROCER_FxG=4.07
+++ bc
++ local GROCER_FxT=.69
++ true
++ GX_Marketplace_Grocer 4.07 .69
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 4.07 .69 ]]
++ tput sc
++ [[ -n 4.07 ]]
++ MvAddStr 10 4 '1 FOOD costs 4.07 Gold'
++ tput cup 10 4
++ printf %s '1 FOOD costs 4.07 Gold'
++ [[ -n .69 ]]
++ MvAddStr 11 4 'or .69 Tobacco."'
++ tput cup 11 4
++ printf %s 'or .69 Tobacco."'
++ tput rc
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo t
++ GX_Marketplace_Grocer 4.07 .69
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 4.07 .69 ]]
++ tput sc
++ [[ -n 4.07 ]]
++ MvAddStr 10 4 '1 FOOD costs 4.07 Gold'
++ tput cup 10 4
++ printf %s '1 FOOD costs 4.07 Gold'
++ [[ -n .69 ]]
++ MvAddStr 11 4 'or .69 Tobacco."'
++ tput cup 11 4
++ printf %s 'or .69 Tobacco."'
++ tput rc
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .70 Tobacco and 5.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ ReadLine ' How much food you want to buy? '
++ [[ -n  How much food you want to buy?  ]]
++ echo -en ' How much food you want to buy? '
++ read -s -t 0.01 -n 512
++ tput cnorm
++ read
++ tput civis
++ QUANTITY=1
+++ IsInt 1
+++ grep -Eq '^[0-9]+$'
+++ return 0
++ [[ '' -eq 1 ]]
+++ bc
++ local COST=.69
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_TOBACCO=.01
+++ bc
++ CHAR_FOOD=6.00
++ echo ' You traded .69 Tobacco for 1 food, and have 6.00 Food in your inventory'
++ read -n 1
++ true
++ GX_Marketplace_Grocer 4.07 .69
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 4.07 .69 ]]
++ tput sc
++ [[ -n 4.07 ]]
++ MvAddStr 10 4 '1 FOOD costs 4.07 Gold'
++ tput cup 10 4
++ printf %s '1 FOOD costs 4.07 Gold'
++ [[ -n .69 ]]
++ MvAddStr 11 4 'or .69 Tobacco."'
++ tput cup 11 4
++ printf %s 'or .69 Tobacco."'
++ tput rc
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .01 Tobacco and 6.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo l
++ break
++ true
++ GX_Marketplace
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo g
++ Marketplace_Grocer
+++ bc
++ local GROCER_FxG=4.07
+++ bc
++ local GROCER_FxT=.69
++ true
++ GX_Marketplace_Grocer 4.07 .69
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 4.07 .69 ]]
++ tput sc
++ [[ -n 4.07 ]]
++ MvAddStr 10 4 '1 FOOD costs 4.07 Gold'
++ tput cup 10 4
++ printf %s '1 FOOD costs 4.07 Gold'
++ [[ -n .69 ]]
++ MvAddStr 11 4 'or .69 Tobacco."'
++ tput cup 11 4
++ printf %s 'or .69 Tobacco."'
++ tput rc
++ Marketplace_Statusline
++ MakePrompt 'You currently have .32 Gold, .01 Tobacco and 6.00 Food in your inventory'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ echo ''
++ MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo l
++ break
++ true
++ GX_Marketplace
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo l
++ break
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo e
++ break
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo r
++ local ACTION=r
++ case "$ACTION" in
++ Rest T
++ PLAYER_RESTING=1
++ RollDice 100
++ DICE_SIZE=100
++ DICE=1
++ GX_Rest
++ clear
++ GX_Moon 3
++ case "$1" in
++ cat
++ tput sc
++ MvAddStr 5 9 'YOU TRY TO GET           *'
++ tput cup 5 9
++ printf %s 'YOU TRY TO GET           *'
++ MvAddStr 6 9 'SOME MUCH NEEDED REST       Z Z'
++ tput cup 6 9
++ printf %s 'SOME MUCH NEEDED REST       Z Z'
++ tput cup 8 9
++ case "$MOON" in
++ echo 'The Moon is Waxing'
++ MvAddStr 3 31 '*         Z Z Z   *'
++ tput cup 3 31
++ printf %s '*         Z Z Z   *'
++ MvAddStr 3 77 '*'
++ tput cup 3 77
++ printf %s '*'
++ MvAddStr 7 43 '*'
++ tput cup 7 43
++ printf %s '*'
++ '[' 3 '!=' 'Full Moon' ']'
++ MvAddStr 8 74 '*'
++ tput cup 8 74
++ printf %s '*'
++ MvAddStr 9 76 '*'
++ tput cup 9 76
++ printf %s '*'
++ tput rc
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ CheckForFight T
++ RollDice 100
++ DICE_SIZE=100
++ DICE=58
++ [[ ! -n 1 ]]
++ case "$1" in
++ RollForEvent 15 fight
++ echo -e 'Rolling for fight: D100 <= 15\nD100: 58'
++ Sleep 1.5
++ read -n 1 -t 1.5
++ ((  DICE <= 15  ))
++ return 1
++ return 0
++ (( 0 == 0 ))
++ case "$1" in
++ RollForHealing 15 'The vices of town life kept you up all night..'
++ RollDice 6
++ DICE_SIZE=6
++ DICE=5
++ echo -e 'Rolling for healing: D6 <= 2\nROLL D6: 5'
++ (( DICE > HEALING ))
++ echo 'The vices of town life kept you up all night..'
++ Sleep 2
++ read -n 1 -t 2
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=86
+++ bc
++ MONTH=2
+++ bc
++ DAY=26
+++ bc
++ WEEKDAY=5
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 27
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 27th
+++ return 0
+++ MonthString 3
+++ echo Plough-Tide
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='27th of Plough-Tide in the 16th Cycle'
++ unset PLAYER_RESTING
++ Sleep 2
++ read -n 1 -t 2
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ read -r MAP_X MAP_Y
+++ GPStoXY G10
+++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ ((  0 > 0  ))
++ return 1
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 12) {  # lazy fix for ASCII borders
+         if (7 == 18 ) { $8="o ("; }
+         else                 { $8="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 0 > 0 && 0 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 2) {
+            if ( 0 == 18 ) { $1="~ ("; }
+            else                     { $1="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Giro\033[0;39m is currently in G10 (Town)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ read -sn 1 -p ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  ' DEST
++ case "$DEST" in
++ echo -n 'You go South'
++ ((  MAP_Y != 15  ))
++ ((  MAP_Y++  ))
+++ XYtoGPS 7 11
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=G11
++ Sleep 1.5
++ read -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=87
+++ bc
++ MONTH=2
+++ bc
++ DAY=27
+++ bc
++ WEEKDAY=6
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 28
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 28th
+++ return 0
+++ MonthString 3
+++ echo Plough-Tide
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='28th of Plough-Tide in the 16th Cycle'
++ CheckForItem G11
++ ((  G11 < MAX_ITEMS  ))
++ CheckHotzones G11
+++ grep -E '(^| )G11( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario G11
+++ read -r MAP_X MAP_Y
++++ GPStoXY G11
++++ awk '{
+          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+          print substr($0, 2);
+         }'
+++ awk '{ if ( NR == 13) { print $9; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight .
++ RollDice 100
++ DICE_SIZE=100
++ DICE=2
++ [[ ! -n '' ]]
++ case "$1" in
++ RollForEvent 20 fight
++ echo -e 'Rolling for fight: D100 <= 20\nD100: 2'
++ Sleep 1.5
++ read -n 1 -t 1.5
++ ((  DICE <= 20  ))
++ return 0
++ FightMode
++ FightMode_ResetFlags
++ FIGHTMODE=1
++ NEXT_TURN=pl
++ LUCK=0
++ PICKPOCKET=0
++ FightMode_DefineEnemy
++ RollDice 100
++ DICE_SIZE=100
++ DICE=26
++ case "$SCENARIO" in
++ (( DICE <= 5  ))
++ (( DICE <= 10 ))
++ (( DICE <= 30 ))
++ ENEMY=goblin
++ ENEMY=bandit
++ case "$ENEMY" in
++ EN_STRENGTH=1
++ EN_ACCURACY=4
++ EN_FLEE=7
++ EN_HEALTH=30
++ EN_FLEE_THRESHOLD=18
++ EN_DEFEATED_EXP=20
++ PL_FLEE_EXP=5
++ EN_FLEE_EXP=10
++ case "$ENEMY" in
++ EN_GOLD=20
++ EN_TOBACCO=10
++ EN_FOOD=0
++ EN_PICKPOCKET_EXP=15
+++ bc
++++ RollDice2 100
++++ RollDice 100
++++ DICE_SIZE=100
++++ DICE=1
++++ echo 1
++++ RollDice2 10
++++ RollDice 10
++++ DICE_SIZE=10
++++ DICE=1
++++ echo 1
++ EN_GOLD=.20
+++ bc
++++ RollDice2 100
++++ RollDice 100
++++ DICE_SIZE=100
++++ DICE=14
++++ echo 14
++++ RollDice2 10
++++ RollDice 10
++++ DICE_SIZE=10
++++ DICE=6
++++ echo 6
++ EN_TOBACCO=0
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=26
+++ echo 26
++ ((  26 <= EN_FOOD  ))
++ FightMode_AddBonuses
++ HaveItem 4
++ ((  0 > 4  ))
++ return 1
++ HaveItem 5
++ ((  0 > 5  ))
++ return 1
++ FightMode_DefineInitiative
++ GX_Monster bandit
++ clear
++ case "$1" in
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ tput sc
++ Sleep 1
++ read -n 1 -t 1
++ ((  EN_ACCURACY > ACCURACY  ))
++ NEXT_TURN=en
++ ((  PLAYER_RESTING == 1  ))
++ echo 'The bandit has initiative'
++ Sleep 2
++ read -n 1 -t 2
++ FightMode_RemoveBonuses
++ HaveItem 4
++ ((  0 > 4  ))
++ return 1
++ (( FIGHTMODE ))
++ FightMode_FightTable
++ tput rc
++ tput ed
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n' Giro 82 5 3
+++ Capitalize bandit
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n' Bandit 30 1 4
++ [[ en == \p\l ]]
++ FightMode_EnemyTurn
++ echo -n 'It'\''s the bandit'\''s turn:'
++ Sleep 2
++ read -n 1 -t 2
++ ((  EN_HEALTH < EN_FLEE_THRESHOLD  ))
++ RollDice 6
++ DICE_SIZE=6
++ DICE=4
++ ((  DICE <= EN_ACCURACY  ))
++ Echo '\e[1K\e[80DThe bandit strikes you!' '[D6 4 <= EnemyAccuracy 4]'
++ echo -en '\e[1K\e[80DThe bandit strikes you!'
+++ Strlen '[D6 4 <= EnemyAccuracy 4]'
+++ awk '{ print length($0); }'
++ tput hpa 53
++ echo -en '[D6 4 <= EnemyAccuracy 4]'
++ Sleep 2
++ read -n 1 -t 2
++ RollDice 6
++ DICE_SIZE=6
++ DICE=6
++ DAMAGE=6
++ Echo '\nThe bandit'\''s blow hits you with 6 points!' '[-6 HEALTH]'
++ echo -en '\nThe bandit'\''s blow hits you with 6 points!'
+++ Strlen '[-6 HEALTH]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-6 HEALTH]'
++ (( CHAR_HEALTH -= DAMAGE ))
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Giro
+RACE: 3
+BATTLES: 5
+EXPERIENCE: 80
+LOCATION: G11
+HEALTH: 76
+ITEMS: 0
+KILLS: 4
+HOME: C2
+GOLD: .32
+TOBACCO: .01
+FOOD: 6.00
+BBSMSG: 2
+VAL_GOLD: .25
+VAL_TOBACCO: 1.60
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5487
+INV_ALMANAC: 0'
++ (( CHAR_HEALTH <= 0 || EN_HEALTH <= 0 ))
++ [[ en == \p\l ]]
++ NEXT_TURN=pl
++ Sleep 2
++ read -n 1 -t 2
++ (( FIGHTMODE ))
++ FightMode_FightTable
++ tput rc
++ tput ed
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n' Giro 76 5 3
+++ Capitalize bandit
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n' Bandit 30 1 4
++ [[ pl == \p\l ]]
++ FightMode_CharTurn
++ local FIGHT_PROMPT
++ echo -n 'It'\''s your turn, press any key to (R)oll or (F) to Flee'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo r
++ FIGHT_PROMPT=r
++ RollDice 6
++ DICE_SIZE=6
++ DICE=2
++ FightMode_FightTable
++ tput rc
++ tput ed
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n' Giro 76 5 3
+++ Capitalize bandit
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n' Bandit 30 1 4
++ case "$FIGHT_PROMPT" in
++ ((  DICE <= ACCURACY  ))
++ Echo 'Your weapon hits the target!' '[D6 2 <= Accuracy 3]'
++ echo -en 'Your weapon hits the target!'
+++ Strlen '[D6 2 <= Accuracy 3]'
+++ awk '{ print length($0); }'
++ tput hpa 58
++ echo -en '[D6 2 <= Accuracy 3]'
++ echo -en '\nPress the R key to (R)oll for damage'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo r
++ FIGHT_PROMPT=r
++ RollDice 6
++ DICE_SIZE=6
++ DICE=6
++ DAMAGE=30
++ Echo '\e[1K\e[80DYour blow dishes out 30 damage points!' '[-30 ENEMY_HEALTH]'
++ echo -en '\e[1K\e[80DYour blow dishes out 30 damage points!'
+++ Strlen '[-30 ENEMY_HEALTH]'
+++ awk '{ print length($0); }'
++ tput hpa 60
++ echo -en '[-30 ENEMY_HEALTH]'
++ (( EN_HEALTH -= DAMAGE ))
++ FightMode_EnemyTurn
++ echo -n 'It'\''s the bandit'\''s turn:'
++ Sleep 2
++ read -n 1 -t 2
++ ((  EN_HEALTH < EN_FLEE_THRESHOLD  ))
++ ((  EN_HEALTH < CHAR_HEALTH  ))
++ echo -e '\e[1K\e[80DRolling for enemy flee:'
++ Sleep 2
++ read -n 1 -t 2
++ RollDice 20
++ DICE_SIZE=20
++ DICE=9
++ ((  DICE < EN_FLEE  ))
++ Echo 'You block the bandit'\''s escape route!' '[D20 9 >= EnemyFlee 7]'
++ echo -en 'You block the bandit'\''s escape route!'
+++ Strlen '[D20 9 >= EnemyFlee 7]'
+++ awk '{ print length($0); }'
++ tput hpa 56
++ echo -en '[D20 9 >= EnemyFlee 7]'
++ Sleep 2.5
++ read -n 1 -t 2.5
++ FightMode_FightTable
++ tput rc
++ tput ed
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n' Giro 76 5 3
+++ Capitalize bandit
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n' Bandit 0 1 4
++ RollDice 6
++ DICE_SIZE=6
++ DICE=5
++ ((  DICE <= EN_ACCURACY  ))
++ Echo '\e[1K\e[80DThe bandit misses!' '[D6 5 > Accuracy 4]'
++ echo -en '\e[1K\e[80DThe bandit misses!'
+++ Strlen '[D6 5 > Accuracy 4]'
+++ awk '{ print length($0); }'
++ tput hpa 59
++ echo -en '[D6 5 > Accuracy 4]'
++ (( CHAR_HEALTH <= 0 || EN_HEALTH <= 0 ))
++ unset FIGHTMODE
++ [[ pl == \p\l ]]
++ NEXT_TURN=en
++ Sleep 2
++ read -n 1 -t 2
++ (( FIGHTMODE ))
++ FightMode_CheckForDeath
++ (( CHAR_HEALTH <= 0 ))
++ FightMode_FightTable
++ tput rc
++ tput ed
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n' Giro 76 5 3
+++ Capitalize bandit
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ printf '%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n' Bandit 0 1 4
++ FightMode_CheckForExp 0
++ case "$1" in
++ Echo 'You defeated the bandit!' '[+20 EXP]'
++ echo -en 'You defeated the bandit!'
+++ Strlen '[+20 EXP]'
+++ awk '{ print length($0); }'
++ tput hpa 69
++ echo -en '[+20 EXP]'
++ (( CHAR_EXP += EN_DEFEATED_EXP ))
++ (( CHAR_KILLS++ ))
++ (( CHAR_BATTLES++ ))
++ Sleep 1
++ read -n 1 -t 1
++ FightMode_CheckForPickpocket 0
++ case "$1" in
++ (( LUCK == 0 ))
++ echo -en '\nSearching the dead bandit'\''s corpse, you find '
+++ bc
++ ((  0  ))
+++ bc
++ ((  1     ))
+++ bc
++ CHAR_GOLD=.52
+++ bc
++ ((  0  ))
++ EN_TOBACCO=no
++ echo '.20 gold and no tobacco'
++ FightMode_CheckForLoot
++ (( LUCK == 0 ))
+++ bc
++ ((  0  ))
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Giro
+RACE: 3
+BATTLES: 6
+EXPERIENCE: 100
+LOCATION: G11
+HEALTH: 76
+ITEMS: 0
+KILLS: 5
+HOME: C2
+GOLD: .52
+TOBACCO: .01
+FOOD: 6.00
+BBSMSG: 2
+VAL_GOLD: .25
+VAL_TOBACCO: 1.60
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5487
+INV_ALMANAC: 0'
++ Sleep 6
++ read -n 1 -t 6
+++ CleanUp
+++ GX_BiaminTitle
+++ clear
+++ cat
+++ echo -e '\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
+++ (( FIGHTMODE ))
+++ [[ -n Giro ]]
+++ SaveCurrentSheet
+++ echo 'VERSION: 1.9
+CHARACTER: Giro
+RACE: 3
+BATTLES: 6
+EXPERIENCE: 100
+LOCATION: G11
+HEALTH: 76
+ITEMS: 0
+KILLS: 5
+HOME: C2
+GOLD: .52
+TOBACCO: .01
+FOOD: 6.00
+BBSMSG: 2
+VAL_GOLD: .25
+VAL_TOBACCO: 1.60
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5487
+INV_ALMANAC: 0'
+++ echo -e '\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <http://sigg3.net/biamin/>'
+++ Exit 0
+++ tput cnorm
+++ [[ -n 0 ]]
+++ exit 0

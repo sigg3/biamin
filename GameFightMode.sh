@@ -243,24 +243,24 @@ FightMode_CharTurn() {
     case "$FIGHT_PROMPT" in
 	f | F ) # Player tries to flee!
 	    if (( DICE <= FLEE )); then # first check for flee
-		Echo "You try to flee the battle .." "[Flee:D6 $DICE <= $FLEE]"
+		Echo "You try to flee the battle .." "[D6 $DICE <= Flee $FLEE]"
 		Sleep 2
 		RollDice 6
 		if (( DICE <= EN_ACCURACY )); then # second check for flee
-		    Echo "\nThe $ENEMY blocks your escape route!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"
+		    Echo "\nThe $ENEMY blocks your escape route!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY]"
 		else # Player managed to flee
-		    Echo "\nYou managed to flee!" "[EnemyAccuracy:D6 $EN_ACCURACY < $DICE]"
+		    Echo "\nYou managed to flee!" "[D6 $DICE > EnemyAccuracy $EN_ACCURACY]"
 		    unset FIGHTMODE
 		    LUCK=3
 		    return 0
 		fi
 	    else
-		Echo "Your escape was unsuccessful!" "[Flee:D6 $FLEE < $DICE]"
+		Echo "Your escape was unsuccessful!" "[D6 $DICE > Flee $FLEE]"
 	    fi
 	    ;;
 	*)  # Player fights
 	    if (( DICE <= ACCURACY )); then
-		Echo "Your weapon hits the target!" "[Accuracy:D6 $ACCURACY >= $DICE]"
+		Echo "Your weapon hits the target!" "[D6 $DICE <= Accuracy $ACCURACY]"
 		echo -en "\nPress the R key to (R)oll for damage"
 		FIGHT_PROMPT=$(Read)
 		RollDice 6
@@ -268,7 +268,7 @@ FightMode_CharTurn() {
 		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[-${DAMAGE} ENEMY_HEALTH]"
 		((EN_HEALTH -= DAMAGE))
 	    else
-		Echo "You missed!" "[Accuracy:D6 $ACCURACY < $DICE]"
+		Echo "You missed!" "[D6 $DICE > Accuracy $ACCURACY]"
 	    fi
     esac
 }
@@ -281,13 +281,13 @@ FightMode_EnemyTurn() {
 	Sleep 2
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
-	    Echo "The $ENEMY uses an opportunity to flee!" "[EnemyFlee:D20  EN_FLEE > $DICE]"
+	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
 	    LUCK=1
 	    unset FIGHTMODE
 	    Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
-	    Echo "You block the ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
+	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"
 	    Sleep 2.5 # TODO test
 	fi	
 
@@ -295,7 +295,7 @@ FightMode_EnemyTurn() {
     fi  # Enemy does not lose turn for trying for flee
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
-	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"	
+	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY"
 	Sleep 2 # TODO test
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
@@ -303,7 +303,7 @@ FightMode_EnemyTurn() {
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet
     else
-	Echo "${CLEAR_LINE}The $ENEMY misses!" "[Accuracy:D6 $EN_ACCURACY < $DICE]"
+	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > Accuracy $EN_ACCURACY]"
     fi
 #    read -sn 1 ### DEBUG
 }
@@ -385,7 +385,7 @@ FightMode_CheckForPickpocket() {
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
 	2)  # no loot but EXP
 	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find nothing of value.." ;
-	    Echo " But $CHAR gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
+	    Echo ".. but you gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
     esac
 }
@@ -396,7 +396,7 @@ FightMode_CheckForPickpocket() {
 # TODO: check for boar's tusks etc (3.0)
 #-----------------------------------------------------------------------
 FightMode_CheckForLoot() {
-    if ((LUCK == 0)); then                       # Only if $ENEMY was slain
+    if ((LUCK == 0)); then                   # Only if $ENEMY was slain
 	if (( $(bc <<< "$EN_FOOD > 0") )); then	 #  and have some FOOD
 	    Echo "\nYou scavenge $EN_FOOD food from the ${ENEMY}'s body" "[+${EN_FOOD} FOOD]"
 	    CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")

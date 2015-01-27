@@ -81,6 +81,7 @@ TODO 2.0 branch ("survival")
 		EchoRight() or equivalent. Output text on the far right of same Y axis.
 [s] Look at result in 'echo' branch.
 [ ] IF ^ successful, implement in FightMode & related functions, and buying/selling.
+[ ] Replace [ smth ] || [ smth ] with [[ smth || smth ]]
 
 TODO ideas for 3.0 branch ("rpg")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)

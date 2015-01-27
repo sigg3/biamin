@@ -735,47 +735,50 @@ declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 # Used: Tavern()
 #-----------------------------------------------------------------------
 MiniGame_Dice() {
-    DGAME_PLAYERS=$((RANDOM%6))                              # How many players currently at the table (0-5 players)
-    DGAME_STAKES=$( bc <<< "$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
-    GX_DiceGame_Table "$DGAME_PLAYERS"			     # Display game table depending of count players
-    case "$DGAME_PLAYERS" in                                 # Ask whether player wants to join
+    if [ -z "$GAMETABLE" ] || [ "$GAMETABLE" != "$CHAR_GPS" ] ; then # "Name" this table as GPS location (savescumming prevention)
+    GAMETABLE="$CHAR_GPS"
+    DGAME_PLAYERS=$((RANDOM%6))                                      # How many players currently at the table (0-5 players)
+    DGAME_STAKES=$( bc <<< "scale=2;$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
+    fi
+    GX_DiceGame_Table "$DGAME_PLAYERS"			                     # Display game table depending of count players
+    case "$DGAME_PLAYERS" in                                         # Ask whether player wants to join
 	0 ) PressAnyKey "There's no one at the table. May be you should come back later?";
-	    return 0 ;;                                      # Leave
+	    return 0 ;;   # Leave
 	1 ) echo -n "There's a gambler wanting to roll dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
 	* ) echo -n "There are $DGAME_PLAYERS players rolling dice for $DGAME_STAKES Gold a piece. Want to [J]oin?" ;;
     esac
     case $(Read) in
 	[^yYjJ] ) echo -en "${CLEAR_LINE}" ;
 		  PressAnyKey "Too high stakes for you, $CHAR_RACE_STR?" ;
-		  return 0 ;;                                # Leave
-    esac                                                     # Game on! Do nothing.
+		  return 0 ;; # Leave
+    esac # Game on!
 
-    if (( $(bc <<< "$CHAR_GOLD <= $DGAME_STAKES") )); then   # Check if player can afford it
+    if (( $(bc <<< "scale=2;$CHAR_GOLD <= $DGAME_STAKES") )); then   # Check if player can afford it
 	echo -en "${CLEAR_LINE}"
 	PressAnyKey "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.."
-	return 0                                             # Leave
+	return 0  # Leave
     fi
 
     GAME_ROUND=1
-    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
+    CHAR_GOLD=$(bc <<< "scale=2;$CHAR_GOLD - $DGAME_STAKES" )
     echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]"
     Sleep 3
 
-    DGAME_POT=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
+    DGAME_POT=$( bc <<< "scale=2;$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
 
     # DICE GAME LOOP
     while ( true ) ; do
 	GX_DiceGame_Table
 	ReadLine "Round $GAME_ROUND. The pot's $DGAME_POT Gold. Bet (2-12), (I)nstructions or (L)eave Table: "
 	DGAME_GUESS="$REPLY"
-	echo " " # Empty line for cosmetical purposes # TODO
+	#echo " " # Empty line for cosmetical purposes # TODO
 
 	# Dice Game Instructions (mostly re: payout)
 	case "$DGAME_GUESS" in
 	    i | I ) GX_DiceGame_Instructions ; continue ;;     # Start loop from the beginning
 	    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 ) # Stake!
 		if (( GAME_ROUND > 1 )) ; then                 # First round is already paid
-		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $DGAME_STAKES" )
+		    CHAR_GOLD=$(bc <<< "scale=2;$CHAR_GOLD - $DGAME_STAKES" )
 		    echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]"
 		    Sleep 3
 		fi ;;
@@ -809,14 +812,14 @@ MiniGame_Dice() {
 	GX_DiceGame "$DGAME_DICE_1" "$DGAME_DICE_2" # Display roll result graphically
 
 	# Calculate % of POT (initial DGAME_WINNINGS) to be paid out given DGAME_RESULT (odds)
-	DGAME_WINNINGS=$( bc <<< "$DGAME_POT * ${DICE_GAME_WINNINGS[$DGAME_RESULT]}" )
+	DGAME_WINNINGS=$( bc <<< "scale=2;$DGAME_POT * ${DICE_GAME_WINNINGS[$DGAME_RESULT]}" )
 	DGAME_WINNINGS=$( bc <<< "scale=2;$DGAME_WINNINGS/100" ) # Remember it's a % of the pot
 
 	if (( DGAME_GUESS == DGAME_RESULT )) ; then # You won
-   	    DGAME_POT=$( bc <<< "$DGAME_POT - $DGAME_WINNINGS" )  # Adjust winnings to odds
-	    DGAME_WINNINGS=$( bc <<< "$DGAME_WINNINGS / ( $DGAME_COMPETITION + 1 )" ) # no competition = winnings/1
+   	    DGAME_POT=$( bc <<< "scale=2;$DGAME_POT - $DGAME_WINNINGS" )  # Adjust winnings to odds
+	    DGAME_WINNINGS=$( bc <<< "scale=2;$DGAME_WINNINGS / ( $DGAME_COMPETITION + 1 )" ) # no competition = winnings/1
 	    echo "You rolled $DGAME_RESULT and won $DGAME_WINNINGS Gold! [ +$DGAME_WINNINGS Gold ]"
-	    CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $DGAME_WINNINGS" )
+	    CHAR_GOLD=$( bc <<< "scale=2;$CHAR_GOLD + $DGAME_WINNINGS" )
 	else # You didn't win
 	    echo -n "You rolled $DGAME_RESULT and lost.. "
 
@@ -836,13 +839,13 @@ MiniGame_Dice() {
 		1) echo "another player got $DGAME_RESULT and won $DGAME_WINNINGS Gold.";;
 		*) echo "but $DGAME_OTHER_WINNERS other players rolled $DGAME_RESULT and $DGAME_WINNINGS Gold." ;;
 	    esac
-	    (( DGAME_OTHER_WINNERS > 0 )) && DGAME_POT=$( bc <<< "$DGAME_POT - $DGAME_WINNINGS" ) # Adjust winnings to odds
+	    (( DGAME_OTHER_WINNERS > 0 )) && DGAME_POT=$( bc <<< "scale=2;$DGAME_POT - $DGAME_WINNINGS" ) # Adjust winnings to odds
 	fi
 	Sleep 3
 
 	# Update pot size
-	DGAME_STAKES_TOTAL=$( bc <<< "$DGAME_STAKES * ( $DGAME_PLAYERS + 1 ) " ) # Assumes player is with us next round too
-	DGAME_POT=$( bc <<< "$DGAME_POT + $DGAME_STAKES_TOTAL" )		 # If not, the other players won't complain:)
+	DGAME_STAKES_TOTAL=$( bc <<< "scale=2;$DGAME_STAKES * ( $DGAME_PLAYERS + 1 ) " ) # Assumes player is with us next round too
+	DGAME_POT=$( bc <<< "scale=2;$DGAME_POT + $DGAME_STAKES_TOTAL" )		         # If not, the other players won't complain:)
 
 	(( GAME_ROUND++ ))	# Increment round
 

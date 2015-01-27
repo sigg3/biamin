@@ -196,10 +196,11 @@ FightMode_DefineInitiative() {
 	    else
 		Echo "You lost your initiative.." "[Flee:D6 $DICE > $FLEE]"
 		NEXT_TURN="en"
+		Sleep 1
 	    fi
 	fi
     fi
-    Sleep 2
+    Sleep 1
 }
 
 #-----------------------------------------------------------------------
@@ -265,7 +266,7 @@ FightMode_CharTurn() {
 		FIGHT_PROMPT=$(Read)
 		RollDice 6
 		DAMAGE=$(( DICE * STRENGTH ))
-		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[-${DAMAGE} ENEMY_HEALTH]"
+		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]" #-${DAMAGE} ENEMY_HEALTH]"
 		((EN_HEALTH -= DAMAGE))
 	    else
 		Echo "You missed!" "[D6 $DICE > Accuracy $ACCURACY]"
@@ -284,7 +285,7 @@ FightMode_EnemyTurn() {
 	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
 	    LUCK=1
 	    unset FIGHTMODE
-	    PressAnyKey # TODO test instead of Sleep 2
+	    Sleep 2 # TODO test
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
 	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"

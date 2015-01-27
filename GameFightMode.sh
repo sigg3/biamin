@@ -287,7 +287,7 @@ FightMode_EnemyTurn() {
 	    Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
-	    Echo "You block ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
+	    Echo "You block the ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
 	    Sleep 2.5 # TODO test
 	fi	
 
@@ -296,7 +296,7 @@ FightMode_EnemyTurn() {
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
 	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"	
-	Sleep 1 # TODO test
+	Sleep 2 # TODO test
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
@@ -384,8 +384,8 @@ FightMode_CheckForPickpocket() {
 	    Echo " and gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
 	2)  # no loot but EXP
-	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find nothing but ..." ;
-	    Echo " gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
+	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find nothing of value.." ;
+	    Echo " But $CHAR gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
 	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
     esac
 }

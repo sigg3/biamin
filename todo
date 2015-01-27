@@ -76,6 +76,8 @@ TODO 2.0 branch ("survival")
 [x] Setup new branch model with master (biamin.sh), dev, text, as agreed upon
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 [s] Language on Town.sh, ...
+[ ] replace fight promt to 'Echo "You managed to run away!" "[Flee $FLEE >= D6 $DICE]"'
+
 
 TODO ideas for 3.0 branch ("rpg")
 [?] Internal sub-maps (random?) for locations - caves, etc

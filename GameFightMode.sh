@@ -302,6 +302,7 @@ FightMode_EnemyTurn() {
 	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet
+	Sleep 1 # TODO test
     else
 	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > Accuracy $EN_ACCURACY]"
     fi

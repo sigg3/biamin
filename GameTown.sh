@@ -735,9 +735,9 @@ declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 # Used: Tavern()
 #-----------------------------------------------------------------------
 MiniGame_Dice() {
-    if [ -z "$GAMETABLE" ] || [ "$GAMETABLE" != "$CHAR_GPS" ] ; then # "Name" this table as GPS location (savescumming prevention)
-    GAMETABLE="$CHAR_GPS"
-    DGAME_PLAYERS=$((RANDOM%6))                                      # How many players currently at the table (0-5 players)
+    DGAME_PLAYERS=$(( $(RollDice2 6) - 1 )) # How many players currently at the table (0-5 players)
+    if [ -z "$GAMETABLE" ] || [ "$GAMETABLE" != "$CHAR_GPS" ] ; then 
+    GAMETABLE="$CHAR_GPS" # "Name" this table as GPS location (savescumming prevention)
     DGAME_STAKES=$( bc <<< "scale=2;$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
     fi
     GX_DiceGame_Table "$DGAME_PLAYERS"			                     # Display game table depending of count players

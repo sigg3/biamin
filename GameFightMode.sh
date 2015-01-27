@@ -190,11 +190,11 @@ FightMode_DefineInitiative() {
 	    echo -e "\nTrying to slip away unseen.."
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
-		Echo "You managed to run away!" "[Flee:D6 $FLEE >= $DICE]"
+		Echo "You managed to run away!" "[Flee:D6 $DICE <= $FLEE ]"
 		LUCK=3
 		unset FIGHTMODE
 	    else
-		Echo "You lost your initiative.." "[Flee:D6 $FLEE < $DICE]"
+		Echo "You lost your initiative.." "[Flee:D6 $DICE > $FLEE]"
 		NEXT_TURN="en"
 	    fi
 	fi
@@ -287,8 +287,8 @@ FightMode_EnemyTurn() {
 	    Sleep 2
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
-	    Echo "You blocks ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
-	    Sleep 2
+	    Echo "You block ${ENEMY}'s escape route!" "[EnemyFlee:D20 EN_FLEE <= $DICE]"
+	    Sleep 2.5 # TODO test
 	fi	
 
 	FightMode_FightTable # If enemy didn't manage to run
@@ -296,6 +296,7 @@ FightMode_EnemyTurn() {
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
 	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[EnemyAccuracy:D6 $EN_ACCURACY >= $DICE]"	
+	Sleep 1 # TODO test
 	RollDice 6
 	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
@@ -354,6 +355,7 @@ FightMode_CheckForExp() {
 	    ((CHAR_KILLS++))
     esac
     ((CHAR_BATTLES++))		# At any case increase CHAR_BATTLES
+    Sleep 1 # TODO test
 }
 
 #-----------------------------------------------------------------------

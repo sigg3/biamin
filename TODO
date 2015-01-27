@@ -78,9 +78,10 @@ TODO 2.0 branch ("survival")
 [x] Move licenses to repo & makefile
 [x] Bug in (R)est sequence that allows Roll for healing after Fightmode as occured.
 [x] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
-		EchoRight() or equivalent. Output text on the far right of same Y axis.
-[s] Look at result in 'echo' branch.
-[ ] IF ^ successful, implement in FightMode & related functions, and buying/selling.
+[x] Look at result in 'echo' branch.
+[.] IF ^ successful, implement in FightMode & related functions, and buying/selling.
+
+
 
 TODO ideas for 3.0 branch ("rpg")
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
@@ -195,6 +196,15 @@ TODO general stuff
 		Hardcore is current mode. Each step is saved _because_ it makes the game harder. Everything matters.
 		We'll put this on the backburner, it's low priority atm. ~ sigg3
 [?] Uber-hardcore mode - player plays only one person (whoami), saves only on exit, and can't make another char while first is alive
+[ ] Various promtpts in FightMode eg not only:
+	Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]"
+    but depending from $DICE :
+    1 - "${CLEAR_LINE}Your blow just scraped $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]"
+    2 -
+    3 -
+    4 -
+    5 -
+    6 - "${CLEAR_LINE}Your blow crushes out $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]"
 
 BLOG/Misc.
 [ ] Update repo blurbs

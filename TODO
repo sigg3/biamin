@@ -80,7 +80,7 @@ TODO 2.0 branch ("survival")
 [x] Test whether a right-hand message of [MODIFIER UNIT] e.g. [- 50 HP] and [+1 FOOD] works.
 [x] Look at result in 'echo' branch.
 [.] IF ^ successful, implement in FightMode & related functions, and buying/selling.
-
+[ ] Replace [ smth ] || [ smth ] with [[ smth || smth ]]
 
 
 TODO ideas for 3.0 branch ("rpg")

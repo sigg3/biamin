@@ -549,7 +549,7 @@ Marketplace_Grocer() {
 		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 		ReadLine " How many Food items do you want to buy? "
 		QUANTITY="$REPLY"
-		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
+		if [[ "$(IsInt "$QUANTITY")" -eq 1 ]]; then
 		    echo " I can't sell you $QUANTITY Food.."
 		    read -n 1
 		    continue
@@ -568,7 +568,7 @@ Marketplace_Grocer() {
 		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 		ReadLine " How much food you want to buy? "
 		QUANTITY="$REPLY"
-		if [[ "$(IsInt "$QUANTITY")" -eq 0 ]]; then # Check for QUANTITY - if falls if QUANTITY != [0-9]+
+		if [[ "$(IsInt "$QUANTITY")" -eq 1 ]]; then
 		    echo " I can't sell you $QUANTITY Food.."
 		    read -n 1
 		    continue

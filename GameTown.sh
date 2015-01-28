@@ -527,7 +527,7 @@ Marketplace_Merchant() {
 #-----------------------------------------------------------------------
 Marketplace_Statusline() {
 	MakePrompt "You currently have ${CHAR_GOLD} Gold, ${CHAR_TOBACCO} Tobacco and ${CHAR_FOOD} Food in your inventory"
-	echo "" # Give us some space here, people
+	echo -e "\n" # Give us some space here, people
 }
 
 #-----------------------------------------------------------------------
@@ -541,17 +541,15 @@ Marketplace_Grocer() {
     local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-#	echo " Welcome to my shoppe, stranger! We have the right prices for you .." # Will be in GX_..
-#	echo " You currently have $CHAR_GOLD Gold, $CHAR_TOBACCO Tobacco and $CHAR_FOOD Food in your inventory"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
 	case $(Read) in
 	    g | G )
-		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-		ReadLine " How many Food items do you want to buy? "
+		ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
 		QUANTITY="$REPLY"
-		if [[ "$(IsInt "$QUANTITY")" -eq 1 ]]; then
+		[[ "$REPLY" ]] || continue # check for user input
+		if ! IsInt "$QUANTITY"; then
 		    echo " I can't sell you $QUANTITY Food.."
-		    read -n 1
+		    PressAnyKey
 		    continue
 		fi
 		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
@@ -565,12 +563,12 @@ Marketplace_Grocer() {
 		read -n 1
 		;;
 	    t | T )
-		GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-		ReadLine " How much food you want to buy? "
+		ReadLine "${CLEAR_LINE} How much food you want to buy? "
 		QUANTITY="$REPLY"
-		if [[ "$(IsInt "$QUANTITY")" -eq 1 ]]; then
+		[[ "$REPLY" ]] || continue # check for user input
+		if ! IsInt "$QUANTITY"; then
 		    echo " I can't sell you $QUANTITY Food.."
-		    read -n 1
+		    PressAnyKey
 		    continue
 		fi
 		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
@@ -581,7 +579,7 @@ Marketplace_Grocer() {
 		else
 		    echo " You don't have enough Tobacco to trade for $QUANTITY Food. Try a little less!"
 		fi
-		read -n 1
+		PressAnyKey
 		;;
 	    *) break;
 	esac

@@ -344,7 +344,8 @@ FightMode_CheckForDeath() {
 FightMode_CheckForExp() {
     case "$1" in
 	1)  # ENEMY managed to FLEE
-	    Echo "You defeated the $ENEMY!" "[+${EN_FLEE_EXP} EXP]"
+	    #	    Echo "You defeated the $ENEMY!" "[+${EN_FLEE_EXP} EXP]"
+	    Echo "The $ENEMY fleed from you!" "[+${EN_FLEE_EXP} EXP]"
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "When you come to, the $ENEMY has left the area ..." ;;

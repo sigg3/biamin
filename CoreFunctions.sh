@@ -10,6 +10,7 @@ Strlen()      { awk '{ print length($0); }' <<< "$*" ; }                        
 MvAddStr()    { tput cup "$1" "$2"; printf "%s" "$3"; }                             # Move cursor to $1 $2 and print $3.
 IsInt()       { grep -Eq '^[0-9]+$' <<< "$1" && return 0 || return 1; }             # Checks if $1 is int.
 IsInstalled() { [[ $(which "$1" 2>/dev/null) ]] && return 0 || return 1 ; }         # Checks if $1(string) installed
+Float()       {  bc <<< "scale=2; ${@}" ; }                                         # Float math. Usage var=$(Float "${CHAR_GOLD} * 2.25")
 
 #-----------------------------------------------------------------------
 # Exit()

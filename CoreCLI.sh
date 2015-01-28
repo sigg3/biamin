@@ -104,6 +104,7 @@ CLI_CheckUpdate() {
     (( STRANDED_REPO_FILES > 0 )) && rm -f "$GAMEDIR/repo.*"
     REPO_SRC="$REPO/raw/biamin.sh"
     GX_BiaminTitle
+    echo "$HR"
     echo "Retrieving $REPO_SRC .." | sed 's/https:\/\///g'
     REPO=$( mktemp $GAMEDIR/repo.XXXXXX )
     if [[ $(which wget 2>/dev/null) ]]; then # Try wget, automatic redirect
@@ -207,21 +208,30 @@ CLI_ParseArguments() {
 	    -i | --install  ) CLI_CreateBiaminLauncher ;;
 	    --map           ) CLI_CreateCustomMapTemplate ;;
 	    -h | --help     ) CLI_Help ;;
-	    -p | --play | p ) shift ; 		                         # remove $1 from $@ (array of biamin.sh arguments)
-			      if [[ ! $(grep -Eq '^-' <<< "$1") ]]; then # if next argument is not key
-				  CHAR="$1"                              # long names as "Corum Jhaelen Irsei" should be double or single quoted
-			      fi
+	    -p | --play | p ) if ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
+	    		      	  shift  		         # remove $1 from $@ (array of biamin.sh arguments)
+	    		      	  CHAR="$1"                      # long names as "Corum Jhaelen Irsei" should be double or single quoted
+	    		      fi
 			      echo "Launching Back in a Minute.." ;;
 	    -v | --version  ) CLI_Version ;;
 	    --update        ) CLI_CheckUpdate ;;
 	    --usage         ) CLI_Usage ;;
-	    -d | --debug    ) DEBUG=1;;                                  # set DEBUG mode 
+	    -d | --debug    ) DEBUG=1;;                          # set DEBUG mode 
+	    -l | --log      ) if ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
+	    			  shift
+	    			  exec 2>"$1"
+	    		      else
+ 				  exec 2>/tmp/log
+			      fi
+ 			      set -x
+			      ;;
 	    *               ) echo "$0: unrecognized option '$1'";
 			      echo "$0: use the --help or --usage options for more information";
 			      Exit 0;;
 	esac
 	shift
     done 
+
 }
 
 #                                                                      #

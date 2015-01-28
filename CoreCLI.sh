@@ -208,22 +208,22 @@ CLI_ParseArguments() {
 	    -i | --install  ) CLI_CreateBiaminLauncher ;;
 	    --map           ) CLI_CreateCustomMapTemplate ;;
 	    -h | --help     ) CLI_Help ;;
-	    -p | --play | p ) if ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
-	    		      	  shift  		         # remove $1 from $@ (array of biamin.sh arguments)
-	    		      	  CHAR="$1"                      # long names as "Corum Jhaelen Irsei" should be double or single quoted
+	    -p | --play | p ) if [[ "$2" ]] && ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
+	    		      	  shift  		                       # remove $1 from $@ (array of biamin.sh arguments)
+	    		      	  CHAR="$1"                                    # long names as "Corum Jhaelen Irsei" should be double or single quoted
 	    		      fi
 			      echo "Launching Back in a Minute.." ;;
 	    -v | --version  ) CLI_Version ;;
 	    --update        ) CLI_CheckUpdate ;;
 	    --usage         ) CLI_Usage ;;
-	    -d | --debug    ) DEBUG=1;;                          # set DEBUG mode 
-	    -l | --log      ) if ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
-	    			  shift
-	    			  exec 2>"$1"
+	    -d | --debug    ) DEBUG=1;;                                        # set DEBUG mode 
+	    -l | --log      ) if [[ "$2" ]] && ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
+	    			  shift                                        # remove $1 from $@ (array of biamin.sh arguments)
+	    			  exec 2<>"$1"                                 # redirect STDERR to $1
 	    		      else
- 				  exec 2>/tmp/log
+				  exec 2<>/tmp/log                             # or redirect STDERR to default log file
 			      fi
- 			      set -x
+ 			      set -x                                           # set BASH's debugger 
 			      ;;
 	    *               ) echo "$0: unrecognized option '$1'";
 			      echo "$0: use the --help or --usage options for more information";
@@ -231,7 +231,6 @@ CLI_ParseArguments() {
 	esac
 	shift
     done 
-
 }
 
 #                                                                      #

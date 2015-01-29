@@ -99,8 +99,7 @@ Almanac_Notes() {
 		   i=$(Read);					          # read note num
 		   grep -Eq '^[0-9]$' <<< "$i" || continue ;              # check if user input if int [0-9]
 		   # TODO??? check if ${NOTE[$i} is emty
-		   echo -en "${CLEAR_LINE} > ";                           # prompt
-		   ReadLine ;                                             # read note
+		   ReadLine "${CLEAR_LINE} > ";                           # read note
 		   grep -Eq '^.+$' <<< "$REPLY" || continue;              # check if user input is empty
 		   REPLY=$(sed -e 's/^\(.\{74\}\).*/\1/' <<< "$REPLY");   # restrict note length to 74
 		   NOTES[$i]="$REPLY";                                    # store note in array

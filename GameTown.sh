@@ -541,49 +541,33 @@ Marketplace_Grocer() {
     local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
-	case $(Read) in
-	    g | G )
-		ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
-		QUANTITY="$REPLY"
-		[[ "$REPLY" ]] || continue # check for user input
-		if ! IsInt "$QUANTITY"; then
-		    echo " I can't sell you $QUANTITY Food.."
-		    PressAnyKey
-		    continue
-		fi
-		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
-		if (( $(bc <<< "$CHAR_GOLD >= $COST") )); then
-		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
-		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
-		    echo " You bought $QUANTITY food for $COST Gold, and you have $CHAR_FOOD Food in your inventory"
-		else
-		    echo " You don't have enough Gold to buy $QUANTITY Food. Try a little less!"
-		fi
-		read -n 1
-		;;
-	    t | T )
-		ReadLine "${CLEAR_LINE} How much food you want to buy? "
-		QUANTITY="$REPLY"
-		[[ "$REPLY" ]] || continue # check for user input
-		if ! IsInt "$QUANTITY"; then
-		    echo " I can't sell you $QUANTITY Food.."
-		    PressAnyKey
-		    continue
-		fi
-		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
-		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
-		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
-		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
-		    echo " You traded $COST Tobacco for $QUANTITY food, and have $CHAR_FOOD Food in your inventory"
-		else
-		    echo " You don't have enough Tobacco to trade for $QUANTITY Food. Try a little less!"
-		fi
+	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'       
+	    case $(Read) in
+		[gG] ) local UNIT="Gold";                                    # Trade for Gold
+			declare -n PRICE=GROCER_FxG CURRENCY=CHAR_GOLD ;;    # Set indirect references
+		[tT] ) local UNIT="Tobacco";                                 # Trade for tobacco
+			declare -n PRICE=GROCER_FxT CURRENCY=CHAR_TOBACCO ;; # Set indirect references
+		*    ) break ;;
+	    esac
+	    ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
+	    QUANTITY="$REPLY"
+	    [[ "$REPLY" ]] || continue                                       # check for user input
+	    if ! IsInt "$QUANTITY"; then
+		echo " I can't sell you ${QUANTITY} Food.."
 		PressAnyKey
-		;;
-	    *) break;
-	esac
-    done
+		continue
+	    fi
+	    local COST=$( bc <<< "${PRICE} * ${QUANTITY}" )
+	    if (( $(bc <<< "${CURRENCY} >= ${COST}") )); then
+		CURRENCY=$(bc <<< "${CURRENCY} - ${COST}")
+		CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+		echo " You bought $QUANTITY food for ${COST} ${UNIT}, and you have ${CHAR_FOOD} Food in your inventory"
+	    else
+		echo " You don't have enough ${UNIT} to buy ${QUANTITY} Food. Try a little less!"
+	    fi
+	    PressAnyKey
+	    unset -n PRICE CURRENCY # !!! Indirect references should not be removed, but 'unset -n' !!!
+	done
 } # Return to GoIntoTown()
 
 #-----------------------------------------------------------------------

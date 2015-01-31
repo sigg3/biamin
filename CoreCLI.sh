@@ -221,7 +221,7 @@ CLI_ParseArguments() {
 	    			  shift                                        # remove $1 from $@ (array of biamin.sh arguments)
 	    			  exec 2<>"$1"                                 # redirect STDERR to $1
 	    		      else
-				  exec 2<>/tmp/log                             # or redirect STDERR to default log file
+				  exec 2<>"/tmp/biamin_log_$(date "+%s")"      # or redirect STDERR to default log file
 			      fi
  			      set -x                                           # set BASH's debugger 
 			      ;;

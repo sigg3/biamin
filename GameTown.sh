@@ -526,8 +526,8 @@ Marketplace_Merchant() {
 # Used: Marketplace_Grocer() Marketplace_Merchant()
 #-----------------------------------------------------------------------
 Marketplace_Statusline() {
-	MakePrompt "You currently have ${CHAR_GOLD} Gold, ${CHAR_TOBACCO} Tobacco and ${CHAR_FOOD} Food in your inventory"
-	echo -e "\n" # Give us some space here, people
+    MakePrompt "You currently have ${CHAR_GOLD} Gold, ${CHAR_TOBACCO} Tobacco and ${CHAR_FOOD} Food in your inventory"
+    echo -e "\n" # Give us some space here, people
 }
 
 #-----------------------------------------------------------------------
@@ -542,32 +542,32 @@ Marketplace_Grocer() {
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'       
-	    case $(Read) in
-		[gG] ) local UNIT="Gold";                                    # Trade for Gold
-			declare -n PRICE=GROCER_FxG CURRENCY=CHAR_GOLD ;;    # Set indirect references
-		[tT] ) local UNIT="Tobacco";                                 # Trade for tobacco
-			declare -n PRICE=GROCER_FxT CURRENCY=CHAR_TOBACCO ;; # Set indirect references
-		*    ) break ;;
-	    esac
-	    ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
-	    QUANTITY="$REPLY"
-	    [[ "$REPLY" ]] || continue                                       # check for user input
-	    if ! IsInt "$QUANTITY"; then
-		echo " I can't sell you ${QUANTITY} Food.."
-		PressAnyKey
-		continue
-	    fi
-	    local COST=$( bc <<< "${PRICE} * ${QUANTITY}" )
-	    if (( $(bc <<< "${CURRENCY} >= ${COST}") )); then
-		CURRENCY=$(bc <<< "${CURRENCY} - ${COST}")
-		CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
-		echo " You bought $QUANTITY food for ${COST} ${UNIT}, and you have ${CHAR_FOOD} Food in your inventory"
-	    else
-		echo " You don't have enough ${UNIT} to buy ${QUANTITY} Food. Try a little less!"
-	    fi
+	case $(Read) in
+	    [gG] ) local UNIT="Gold";                                    # Trade for Gold
+		   declare -n PRICE=GROCER_FxG CURRENCY=CHAR_GOLD ;;    # Set indirect references
+	    [tT] ) local UNIT="Tobacco";                                 # Trade for tobacco
+		   declare -n PRICE=GROCER_FxT CURRENCY=CHAR_TOBACCO ;; # Set indirect references
+	    *    ) break ;;
+	esac
+	ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
+	QUANTITY="$REPLY"
+	[[ "$REPLY" ]] || continue                                       # check for user input
+	if ! IsInt "$QUANTITY"; then
+	    echo " I can't sell you ${QUANTITY} Food.."
 	    PressAnyKey
-	    unset -n PRICE CURRENCY # !!! Indirect references should not be removed, but 'unset -n' !!!
-	done
+	    continue
+	fi
+	local COST=$( bc <<< "${PRICE} * ${QUANTITY}" )
+	if (( $(bc <<< "${CURRENCY} >= ${COST}") )); then
+	    CURRENCY=$(bc <<< "${CURRENCY} - ${COST}")
+	    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+	    echo " You bought $QUANTITY food for ${COST} ${UNIT}, and you have ${CHAR_FOOD} Food in your inventory"
+	else
+	    echo " You don't have enough ${UNIT} to buy ${QUANTITY} Food. Try a little less!"
+	fi
+	PressAnyKey
+	unset -n PRICE CURRENCY # !!! Indirect references should not be removed, but 'unset -n' !!!
+    done
 } # Return to GoIntoTown()
 
 #-----------------------------------------------------------------------
@@ -719,8 +719,8 @@ declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 MiniGame_Dice() {
     DGAME_PLAYERS=$(( $(RollDice2 6) - 1 )) # How many players currently at the table (0-5 players)
     if [ -z "$GAMETABLE" ] || [ "$GAMETABLE" != "$CHAR_GPS" ] ; then 
-    GAMETABLE="$CHAR_GPS" # "Name" this table as GPS location (savescumming prevention)
-    DGAME_STAKES=$( bc <<< "scale=2;$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
+	GAMETABLE="$CHAR_GPS" # "Name" this table as GPS location (savescumming prevention)
+	DGAME_STAKES=$( bc <<< "scale=2;$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
     fi
     GX_DiceGame_Table "$DGAME_PLAYERS"			                     # Display game table depending of count players
     case "$DGAME_PLAYERS" in                                         # Ask whether player wants to join

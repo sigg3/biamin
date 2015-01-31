@@ -36,10 +36,10 @@ ReseedRandom			   # Reseed random numbers generator
 trap CleanUp SIGHUP SIGINT SIGTERM # Direct termination signals to CleanUp
 tput civis			   # Make annoying cursor invisible
 ################################# Main game part ###############################
-[[ "$CHAR" ]] || MainMenu  # Run main menu (Define $CHAR) if game wasn't run as biamin -p <charname>
-BiaminSetup                # Load or make new char
-Intro	                   # Set world
-NewSector                  # And run main game loop
+[[ "$CHAR" ]] || MainMenu          # Run main menu (Define $CHAR) if game wasn't run as biamin -p <charname>
+BiaminSetup                        # Load or make new char
+Intro	                           # Set world
+NewSector                          # And run main game loop
 ############################## Main game part ends #############################
-Exit 0                     # This should never happen:
-                           # .. but why be 'tardy when you can be tidy?
+Exit 0                             # This should never happen:
+                                   # .. but why be 'tardy when you can be tidy?

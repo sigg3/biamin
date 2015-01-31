@@ -89,9 +89,7 @@ FightMode_RemoveBonuses() {
 # Determine generic enemy and set enemy's abilities
 # ENEMY ATTRIBUTES:
 # $EN_FLEE_THRESHOLD - At what Health will enemy flee? :)
-# $PL_FLEE_EXP       - Exp player get if he manage to flee from enemy
-# $EN_FLEE_EXP       - Exp player get if enemy manage to flee from him
-# $EN_DEFEATED_EXP   - Exp player get if he manage to kill the enemy
+# $EN_EXP            - Exp player get if he manage to kill the enemy
 #-----------------------------------------------------------------------
 FightMode_DefineEnemy() {
     # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
@@ -106,26 +104,18 @@ FightMode_DefineEnemy() {
 	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
     esac
 
-    ########################################################################
-    # TEST NEW EXP SYSTEM
-    # Main idea is that Enemy hasn't fixed $EN_FLEE_EXP and $PL_FLEE_EXP but they are counts from main $EN_DEFEATED_EXP #kstn # Good idea! Sigge
     case "$ENEMY" in
-	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_DEFEATED_EXP=20   ;;
-	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_DEFEATED_EXP=10   ;;
-	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_DEFEATED_EXP=30   ;;
-	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; EN_DEFEATED_EXP=40   ;;
-	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_DEFEATED_EXP=50   ;;
-	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; EN_DEFEATED_EXP=100  ;;
-	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; EN_DEFEATED_EXP=150  ;;
-	dragon )  EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=2 ; EN_HEALTH=150 ; EN_FLEE_THRESHOLD=50 ; EN_DEFEATED_EXP=180  ;;
-	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; EN_DEFEATED_EXP=1000 ;;
-	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_DEFEATED_EXP=60   ;;
+	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_EXP=20   ;;
+	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_EXP=10   ;;
+	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_EXP=30   ;;
+	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; EN_EXP=40   ;;
+	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_EXP=50   ;;
+	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; EN_EXP=100  ;;
+	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; EN_EXP=150  ;;
+	dragon )  EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=2 ; EN_HEALTH=150 ; EN_FLEE_THRESHOLD=50 ; EN_EXP=180  ;;
+	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; EN_EXP=1000 ;;
+	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_EXP=60   ;;
     esac
-    # Temporary - after it'll be count in function ChecForExp()
-    PL_FLEE_EXP=$((EN_DEFEATED_EXP / 4))       # - Exp player get if he manage to flee from enemy
-    EN_FLEE_EXP=$((EN_DEFEATED_EXP / 2))       # - Exp player get if enemy manage to flee from him
-    #
-    ########################################################################
 
     # Loot : Chances to get loot from enemy in %
     case "$ENEMY" in
@@ -343,18 +333,19 @@ FightMode_CheckForDeath() {
 #-----------------------------------------------------------------------
 FightMode_CheckForExp() {
     case "$1" in
-	1)  # ENEMY managed to FLEE
-	    #	    Echo "You defeated the $ENEMY!" "[+${EN_FLEE_EXP} EXP]"
-	    Echo "The $ENEMY fleed from you!" "[+${EN_FLEE_EXP} EXP]"
+	1)  # ENEMY managed to FLEE (1/2 $EN_EXP)
+	    EN_EXP=$((EN_EXP / 2))
+	    Echo "The $ENEMY fleed from you!" "[+${EN__EXP} EXP]"
 	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "When you come to, the $ENEMY has left the area ..." ;;
-	3)  # PLAYER managed to FLEE during fight!
-	    Echo "You got away while the $ENEMY wasn't looking!" "[+${PL_FLEE_EXP} EXP]"
+	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)
+	    EN_EXP=$((EN_EXP / 4)) 
+	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]"
 	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
 	*)  # ENEMY was slain!
-	    Echo "You defeated the $ENEMY!" "[+${EN_DEFEATED_EXP} EXP]"
-	    ((CHAR_EXP += EN_DEFEATED_EXP))
+	    Echo "You defeated the $ENEMY!" "[+${EN_EXP} EXP]"
+	    ((CHAR_EXP += EN_EXP))
 	    ((CHAR_KILLS++))
     esac
     ((CHAR_BATTLES++))		# At any case increase CHAR_BATTLES

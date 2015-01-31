@@ -335,13 +335,13 @@ FightMode_CheckForExp() {
 	1)  # ENEMY managed to FLEE (1/2 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 2))
 	    Echo "The $ENEMY fleed from you!" "[+${EN__EXP} EXP]"
-	    ((CHAR_EXP += EN_FLEE_EXP)) ;;
+	    ((CHAR_EXP += EN__EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 4)) 
 	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]"
-	    ((CHAR_EXP += PL_FLEE_EXP)) ;;
+	    ((CHAR_EXP += EN_EXP)) ;;
 	*)  # ENEMY was slain!
 	    Echo "You defeated the $ENEMY!" "[+${EN_EXP} EXP]"
 	    ((CHAR_EXP += EN_EXP))

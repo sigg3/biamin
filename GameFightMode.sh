@@ -402,11 +402,11 @@ FightMode_CheckForLoot() {
 # Main fight loop.
 #-----------------------------------------------------------------------
 FightMode() {	# Used in NewSector() and Rest()
-    FightMode_ResetFlags	# Reset all FightMode flags to default
-    FightMode_DefineEnemy       # Define enemy for this battle
-    FightMode_AddBonuses        # Set adjustments for items
-    FightMode_DefineInitiative  # DETERMINE INITIATIVE (will usually be enemy)
-    FightMode_RemoveBonuses     # Remove adjustments for items
+    FightMode_ResetFlags	                                                # Reset all FightMode flags to default
+    FightMode_DefineEnemy                                                       # Define enemy for this battle
+    FightMode_AddBonuses                                                        # Set adjustments for items
+    FightMode_DefineInitiative                                                  # DETERMINE INITIATIVE (will usually be enemy)
+    FightMode_RemoveBonuses                                                     # Remove adjustments for items
     ############################ Main fight loop ###########################
     while ((FIGHTMODE)); do                                                     # If player didn't manage to run
 	FightMode_FightTable                                                    # Display enemy GX, player and enemy abilities
@@ -416,11 +416,11 @@ FightMode() {	# Used in NewSector() and Rest()
 	Sleep 2			                                                #  after pause
     done
     ########################################################################
-    FightMode_CheckForDeath	               # Check if player is alive
-    FightMode_FightTable	               # Display enemy GX last time
-    FightMode_CheckForExp "$LUCK"	       #
-    FightMode_CheckForPickpocket "$PICKPOCKET" #
-    FightMode_CheckForLoot	               #
+    FightMode_CheckForDeath	                                                # Check if player is alive
+    FightMode_FightTable	                                                # Display enemy GX last time
+    FightMode_CheckForExp "$LUCK"	                                        #
+    FightMode_CheckForPickpocket "$PICKPOCKET"                                  #
+    FightMode_CheckForLoot	                                                #
     SaveCurrentSheet
     Sleep 6
     DisplayCharsheet

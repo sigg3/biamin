@@ -268,7 +268,7 @@ FightMode_EnemyTurn() {
     echo -n "It's the ${ENEMY}'s turn:"
     Sleep 2
     if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
-	echo -e "${CLEAR_LINE}Rolling for enemy flee:"
+	echo -e "${CLEAR_LINE}$(Capitalize "$ENEMY") tries to flee the battle:"
 	Sleep 2
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
@@ -281,7 +281,6 @@ FightMode_EnemyTurn() {
 	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"
 	    Sleep 2.5
 	fi	
-
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     RollDice 6
@@ -289,7 +288,7 @@ FightMode_EnemyTurn() {
 	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY]"
 	Sleep 2
 	RollDice 6
-	DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
+	local DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
 	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet

@@ -131,6 +131,11 @@ TODO ideas for 3.0 branch ("rpg")
 [?] Quests?
 [?] 	  Kill the dragon and get 500 gold (bullutin0)
 [?]	  Find some specific in dungeont (not 10 rat's tail's)
+[?]	  Rubbery : player come into grocery, bargain and bandit coming and try rob the grocer.
+		Player can:
+		       [lawful] fight the bandit, and get reward from grocer
+		       [] flee away
+		       [evil] steal smth, while grocer fight the bandit		       
 [?] Messenger?
 [x] Date - internal date not attached to real - one turn - one day
 	Isn't it already realised? O_o? #ksnt

@@ -88,7 +88,7 @@ Death() {
     	read -sn 1 -t 1 && break
     done
     unset COUNTDOWN
-    #    "400;Legolas;2;20;7;6;17th;Fore-Mystery;14th"
+    # Output example "400;Legolas;2;20;7;6;17th;Fore-Mystery;14th"
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$(Ordial $DAY);$(MonthString $MONTH);$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????

@@ -107,7 +107,6 @@ DateFromTurn() { # Some vars used in Almanac(
     BIAMIN_DATE_STR="$(Ordial $DAY) of $(MonthString $MONTH) in the $(Ordial $YEAR) Cycle"
 }
 
-
 # Global variable for calendar
 CALENDAR=()
 

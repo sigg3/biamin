@@ -65,7 +65,6 @@ INV_ALMANAC: $INV_ALMANAC" > "$CHARSHEET"
 # Used: runtime section.
 #-----------------------------------------------------------------------
 Intro() {
-    SHORTNAME=$(Capitalize "$CHAR")  # Create capitalized FIGHT CHAR name
     MapCreate                        # Create session map in $MAP
     HotzonesDistribute "$CHAR_ITEMS" # Place items randomly in map
     WORLDCHANGE_COUNTDOWN=0          # WorldChange Counter (0 or negative value allow changes)
@@ -75,7 +74,6 @@ Intro() {
 }
 
 ################### GAME SYSTEM #################
-
 
 #-----------------------------------------------------------------------
 # RollDice()

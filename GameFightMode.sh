@@ -54,8 +54,8 @@ CheckForFight() {
 # $PICKPOCKET: how many GOLD, TOBACCO and EXP for pickpocketing player
 #  will get for this battle
 #	0 - no pickpocketing was (only loot if any)
-#	1 - successful pickpocketing with loot ($EN_PICKPOCKET_EXP + loot)
-#	2 - successful pickpocketing without loot (only $EN_PICKPOCKET_EXP)
+#	1 - successful pickpocketing with loot (EXP + loot)
+#	2 - successful pickpocketing without loot (only EXP)
 #-----------------------------------------------------------------------
 FightMode_ResetFlags() {
     FIGHTMODE=1
@@ -200,7 +200,7 @@ FightMode_DefineInitiative() {
 #-----------------------------------------------------------------------
 FightMode_FightTable() {
     tput rc && tput ed # restore cursor position && clear to the end of display  (GX_Monster "$ENEMY" is already displayed)
-    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$SHORTNAME" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
+    printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n" "$(Capitalize "$CHAR")" "$CHAR_HEALTH" "$STRENGTH" "$ACCURACY"
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$(Capitalize "$ENEMY")" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
 
@@ -334,8 +334,8 @@ FightMode_CheckForExp() {
     case "$1" in
 	1)  # ENEMY managed to FLEE (1/2 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 2))
-	    Echo "The $ENEMY fleed from you!" "[+${EN__EXP} EXP]"
-	    ((CHAR_EXP += EN__EXP)) ;;
+	    Echo "The $ENEMY fleed from you!" "[+${EN_EXP} EXP]"
+	    ((CHAR_EXP += EN_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo -e "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)

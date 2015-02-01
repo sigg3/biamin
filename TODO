@@ -81,9 +81,13 @@ TODO 2.0 branch ("survival")
 [x] Look at result in 'echo' branch.
 [.] IF ^ successful, implement in FightMode & related functions, and buying/selling.
 [ ] Replace [ smth ] || [ smth ] with [[ smth || smth ]]
+[x] Date - internal date not attached to real - one turn - one day (real date takes only as seed for biamin date)
+[x] Almanac_Notes
+[s]	Check Notes (run with -debug eg ./biamin -d -p)
 
 
 TODO ideas for 3.0 branch ("rpg")
+[?] Ememies which are indifferent to player. Player decides to attack them or no
 [k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 	It is good idea but it is not critical for 2.0, so I've moved it here #kstn
 [?] Internal sub-maps (random?) for locations - caves, etc
@@ -105,7 +109,6 @@ TODO ideas for 3.0 branch ("rpg")
 [.] Almanac version 2 (full experience, including player notes)
 [.] Add 4 more Economy scenarios with different values (current: 12 + default)
 [.] Almanac_Moon
-[.] Almanac_Notes
 [?]	Dicegame Names for all combinations:
                  2 - Dragon Eyes
                  3 - 
@@ -137,9 +140,7 @@ TODO ideas for 3.0 branch ("rpg")
 		       [] flee away
 		       [evil] steal smth, while grocer fight the bandit		       
 [?] Messenger?
-[x] Date - internal date not attached to real - one turn - one day
-	Isn't it already realised? O_o? #ksnt
-	We realized it differently, but it is attached to real date now, yes:)
+
 [.] Weather - changes every turn.
 	The Biamin weather has two systems making a more dynamic experience:
 	a) General, seasonal weather (universal = for entire map)

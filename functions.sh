@@ -228,7 +228,6 @@ CheckBiaminDependencies() {
 	done
 
 	[[ "${CRITICAL[*]}" ]] && Die || read -sn 1
-
     fi
 
     # Check screen size (80x24 minimum)

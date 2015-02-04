@@ -2,7 +2,11 @@
 #                             BiaminSetup                              #
 #                    Load charsheet or make new char                   #
 
-# Set abilities according to race (each equal to 12) + string var used frequently
+#-----------------------------------------------------------------------
+# $RACES
+# All game races and their abilities table. Sum of all race abilities
+# equal 12
+#-----------------------------------------------------------------------
 declare -r -a RACES=(
     "Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" # Dummy - we haven't RACE == 0
     "human  3       3        3        3    12           8"
@@ -10,15 +14,19 @@ declare -r -a RACES=(
     "dwarf  2       5        3        2    14           6"
     "hobbit 4       1        4        3     6          14"
 )
-declare -r MAX_RACES=4 		     # Count of game races
+declare -r MAX_RACES=4 		                                       # Count of game races
+
+#-----------------------------------------------------------------------
+# $INITIAL_VALUE_*
 # Initial Value of Currencies - declared as constants, in one place
 # for easier changing afterwards
+# Default 0.15: 0.05 is very stable economy, 0.5 is very unstable.
+# IDEA If we add a (S)ettings page in (M)ain menu, this could be
+# user-configurable.
+#-----------------------------------------------------------------------
 declare -r INITIAL_VALUE_GOLD=1      # Initial Value of Gold
 declare -r INITIAL_VALUE_TOBACCO=1   # Initial Value of Tobacco
 declare -r INITIAL_VALUE_CHANGE=0.15 # Initial Market fluctuation key
-# Default 0.15: 0.05 is very stable economy, 0.5 is very unstable.
-# IDEA If we add a (S)ettings page in (M)ain menu, this could be user-configurable.
-
 
 #-----------------------------------------------------------------------
 # BiaminSetup_SetRaceAbilities()
@@ -153,7 +161,8 @@ BiaminSetup_MakeBaseChar() {
 BiaminSetup_MakeNewChar() {
     echo " $CHAR is a new character!"
     GX_Races
-    read -sn 1 -p " Select character race (1-4): " CHAR_RACE 2>&1
+    echo -n " Select character race (1-4): "
+    CHAR_RACE=$(Read)
     [[ "$CHAR_RACE" != [1-$MAX_RACES] ]] && CHAR_RACE=1 # fix user's input
     BiaminSetup_SetRaceAbilities "$CHAR_RACE"
     echo "You chose to be a $(Toupper $CHAR_RACE_STR)"
@@ -183,21 +192,20 @@ BiaminSetup_MakeNewChar() {
 # Used: CoreRuntime.sh
 # TODO: Argumens: $CHAR(string)
 #-----------------------------------------------------------------------
-BiaminSetup() {
-    # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
-    BiaminSetup_MakeBaseChar
-    CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet"
+BiaminSetup() {    
+    BiaminSetup_MakeBaseChar	                                                        # Make default char
+    CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet" # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     if [[ -f "$CHARSHEET" ]] ; then
 	BiaminSetup_LoadCharsheet
 	BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
-	BiaminSetup_SetItemsAbilities "$CHAR_ITEMS" # We need set item's abilities only for loaded chars
+	BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"                                     # We need set item's abilities only for loaded chars
     else
 	BiaminSetup_MakeNewChar
     fi
     Sleep 2
-    # If Cheating is disabled (in CONFIGURATION) restrict health to 150
-    ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150
+    ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150                    # If Cheating is disabled (in CONFIGURATION) restrict health to 150
 }
+
 #                                                                      #
 #                                                                      #
 ########################################################################

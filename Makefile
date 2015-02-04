@@ -12,7 +12,7 @@ SHARED   = GX_Menu-shared.sh 	# GX which used in GPL and GPL-CC version
 # We also can use Makefile this way
 
 # RUNTIME SHOULD BE LAST!!!
-GAME     = GameAlmanac.sh GameWorldChange.sh GameChar.sh GameDate.sh GameDeath.sh GameFightMode.sh \
+GAME     = GameAlmanac.sh GameWorldChange.sh GameDate.sh GameDeath.sh GameFightMode.sh \
 	GameItems.sh GameLoop.sh GameTown.sh
 CORE     = CoreCLI.sh CoreFunctions.sh CoreMenu.sh CoreSetup.sh 
 RUNTIME  = CoreRuntime.sh

@@ -70,11 +70,12 @@ Almanac_Moon() { # Used in Almanac()
 # DONE Notes must be superficially "cleaned" OR we can simply "list" them with cat <<"EOT".
 # 	Just deny user to input EOT :)
 #-----------------------------------------------------------------------
+#language
 Almanac_Notes() {    
     local CHAR_NOTES="${GAMEDIR}/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").notes"
-    local NOTES=()		# Array for notes
-    local i 			# Counter
-    GX_CharSheet 3              # Display GX banner with ALMANAC header and NOTES subheader
+    local NOTES=()		                                                # Array for notes
+    local i 			                                                # Counter
+    GX_CharSheet 3                                                              # Display GX banner with ALMANAC header and NOTES subheader
     echo "$HR"
     if [[ ! -f "$CHAR_NOTES" ]]; then                                           # There is no $CHAR_NOTES file, so let's make it
 	tput sc

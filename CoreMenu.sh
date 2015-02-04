@@ -152,22 +152,22 @@ MainMenu() {
 	GX_Banner
 	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
 	case $(Read) in
-	    p | P ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
- 		    CHAR="$REPLY" ;;
-	    l | L ) LoadGame ;;
-	    h | H ) GX_HighScore ; # HighScore
-		    echo "";
-		    # Show 10 highscore entries or die if Highscore list is empty
-		    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
-		    echo "" ; # empty line TODO fix it
-		    PressAnyKey 'Press the any key to go to (M)ain menu';;
-	    c | C ) GX_Credits ; # Credits
-		    MakePrompt '(H)owTo;(L)icense;(M)ain menu';
-		    case $(Read) in
-			L | l ) License ;;
-			H | h ) GX_HowTo ;;
-		    esac ;;
-	    q | Q ) CleanUp ;;
+	    [pP] ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
+ 		   CHAR="$REPLY" ;;
+	    [lL] ) LoadGame ;;
+	    [hH] ) GX_HighScore ; # HighScore
+		   echo "";
+		   # Show 10 highscore entries or die if Highscore list is empty
+		   [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
+		   echo "" ; # empty line TODO fix it
+		   PressAnyKey 'Press the any key to go to (M)ain menu';;
+	    [cC] ) GX_Credits ; # Credits
+		   MakePrompt '(H)owTo;(L)icense;(M)ain menu';
+		   case $(Read) in
+		       [Ll] ) License ;;
+		       [Hh] ) GX_HowTo ;;
+		   esac ;;
+	    [qQ] ) CleanUp ;;
 	esac
 done
 }

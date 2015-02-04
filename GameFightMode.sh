@@ -116,9 +116,8 @@ FightMode_DefineEnemy() {
 	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; EN_EXP=1000 ;;
 	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_EXP=60   ;;
     esac
-
-    # Loot : Chances to get loot from enemy in %
-    case "$ENEMY" in
+   
+    case "$ENEMY" in                                                                   # Loot : Chances to get loot from enemy in %
 	bandit )  EN_GOLD=20 ; EN_TOBACCO=10 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=15  ;; # 2.0 Gold, 1.0 tobacco  >  Min: 0.2 Gold, 0.1 Tobacco
 	goblin )  EN_GOLD=10 ; EN_TOBACCO=20 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=20  ;; # 1.0 Gold, 2.0 Tobacco  >  Min: 0.1 Gold, 0.2 Tobacco
 	boar )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=100  ; EN_PICKPOCKET_EXP=0   ;;
@@ -157,7 +156,8 @@ FightMode_DefineInitiative() {
     else
 	NEXT_TURN="pl"
 	echo -e "$CHAR has the initiative!\n"
-	read -sn 1 -p "          Press (F) to Flee (P) to Pickpocket or (A)ny key to fight" FLEE_OPT 2>&1
+	MakePrompt "Press (F) to Flee, (P) to Pickpocket or (A)ny key to fight"
+	FLEE_OPT=$(Read)
 	tput rc && tput ed # restore cursor position && clear to the end of display
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == [pP] ]]; then
@@ -166,18 +166,20 @@ FightMode_DefineInitiative() {
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
 	    else
-		echo -en "You successfully stole the ${ENEMY}'s pouch, "        # "steal success" take loot
+		echo -n "You successfully stole the ${ENEMY}'s pouch, "          # "steal success" take loot
 		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in                  # bc return 1 if true, 0 if false
 	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
 	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket
 		esac
 		# Fight or flee 2nd round (player doesn't lose initiative if he'll fight after pickpocketing)
-		read -sn 1 -p "                  Press (F) to Flee or (A)ny key to fight" FLEE_OPT 2>&1
+		MakePrompt "Press (F) to Flee or (A)ny key to fight"
+		FLEE_OPT=$(Read)
 	    fi
 	fi
 	# And secondly for flee
 	if [[ "$FLEE_OPT" == [fF] ]]; then
-	    echo -e "\nTrying to slip away unseen.."
+	    tput rc && tput ed # restore cursor position && clear to the end of display
+	    echo  "Trying to slip away unseen.."
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
 		Echo "You managed to run away!" "[Flee:D6 $DICE <= $FLEE ]"
@@ -232,7 +234,7 @@ FightMode_CharTurn() {
     RollDice 6
     FightMode_FightTable
     case "$FIGHT_PROMPT" in
-	f | F ) # Player tries to flee!
+	[fF] ) # Player tries to flee!
 	    if (( DICE <= FLEE )); then # first check for flee
 		Echo "You try to flee the battle .." "[D6 $DICE <= Flee $FLEE]"
 		Sleep 2
@@ -249,7 +251,7 @@ FightMode_CharTurn() {
 		Echo "Your escape was unsuccessful!" "[D6 $DICE > Flee $FLEE]"
 	    fi
 	    ;;
-	*)  # Player fights
+	* ) # Player fights
 	    if (( DICE <= ACCURACY )); then
 		Echo "Your weapon hits the target!" "[D6 $DICE <= Accuracy $ACCURACY]"
 		echo -en "\nPress the R key to (R)oll for damage"
@@ -276,7 +278,7 @@ FightMode_EnemyTurn() {
 	    if [[ "$DEBUG" ]] ; then 
 		if (( $(RollDice2 20) == 0 )) ; then
 		    Sleep 2
-		    echo"But stumbles and falls!!!"
+		    echo "But stumbles and falls!!!"  #language
 		    return 0 	# Change to player's turn without enemy's
 		fi		
 	    fi
@@ -303,7 +305,6 @@ FightMode_EnemyTurn() {
     else
 	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > Accuracy $EN_ACCURACY]"
     fi
-#    read -sn 1 ### DEBUG
 }
 
 FightMode_CheckForDeath() {
@@ -344,7 +345,7 @@ FightMode_CheckForExp() {
 	    Echo "The $ENEMY fleed from you!" "[+${EN_EXP} EXP]"
 	    ((CHAR_EXP += EN_EXP)) ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
-	    echo -e "When you come to, the $ENEMY has left the area ..." ;;
+	    echo "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 4)) 
 	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]"

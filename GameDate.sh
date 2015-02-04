@@ -71,7 +71,8 @@ WeekdayTriviaLong()  { echo ${WEEKDAY_STR[(( ($1 * 3) + 2 ))]} ;} # Return weekd
 
 #-----------------------------------------------------------------------
 # TurnFromDate()
-# Get $TURN from current (real) date
+# Get $TURN from current (real) date. Real date used only as seed for
+# internal date
 # IDEA: rename to Creation() ?
 #-----------------------------------------------------------------------
 TurnFromDate() {
@@ -82,6 +83,7 @@ TurnFromDate() {
 
 #-----------------------------------------------------------------------
 # DateFromTurn()
+# Get intenal (biamin) date from turn
 # Arguments: $TURN(int)
 #-----------------------------------------------------------------------
 DateFromTurn() { # Some vars used in Almanac(

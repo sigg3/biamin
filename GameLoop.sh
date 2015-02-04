@@ -76,30 +76,28 @@ GX_Map() {
 MapNav() {
     read -r MAP_X MAP_Y <<< $(GPStoXY "$CHAR_GPS") # Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
     case "$1" in
-	m | M ) # If player want to see the map
-	    GX_Map ;
-	    # If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
+	m | M ) GX_Map ;                           # If player want to see the map
+	                                           # If COLOR==0, YELLOW and RESET =="" so string'll be without any colors
 	    echo -e " ${YELLOW}o ${CHAR}${RESET} is currently in $CHAR_GPS ($PLACE)\n$HR" ; # PLACE var defined in GX_Place()
 	    read -sn 1 -p " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " DEST 2>&1 ;;
-	* ) # The player did NOT toggle map, just moved without looking from NewSector()..
-	    DEST="$1" ;
-	    GX_Place "$SCENARIO" ;    # Shows the _current_ scenario scene, not the destination's.
+	* ) DEST="$1" ;                            # The player did NOT toggle map, just moved without looking from NewSector()..
+	    GX_Place "$SCENARIO" ;                 # Shows the _current_ scenario scene, not the destination's.
     esac
 
-    case "$DEST" in # Fix for 80x24. Dirty but better than nothing #kstn
-	w | W | n | N ) echo -n "You go North"; # Going North (Reversed: Y-1)
+    case "$DEST" in                                # Fix for 80x24. Dirty but better than nothing #kstn
+	w | W | n | N ) echo -n "You go North";    # Going North (Reversed: Y-1)
 	    (( MAP_Y != 1  )) && (( MAP_Y-- )) || echo -en "${CLEAR_LINE}You wanted to visit Santa, but walked in a circle.." ;;
-	d | D | e | E ) echo -n "You go East" # Going East (X+1)
+	d | D | e | E ) echo -n "You go East"      # Going East (X+1)
 	    (( MAP_X != 18 )) && (( MAP_X++ )) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
-	s | S ) echo -n "You go South" # Going South (Reversed: Y+1)
+	s | S ) echo -n "You go South"             # Going South (Reversed: Y+1)
 	    (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;;
-	a | A ) echo -n "You go West" # Going West (X-1)
+	a | A ) echo -n "You go West"              # Going West (X-1)
 	    (( MAP_X != 1  )) && (( MAP_X-- )) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
-	q | Q ) CleanUp ;; # Save and exit
+	q | Q ) CleanUp ;;                         # Save and exit
 	* ) echo -n "Loitering.."
     esac
-    CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y") # Translate MAP_X numeric back to A-R
-    Sleep 1.5 # Merged with sleep from 'case "$DEST"' section
+    CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y")          # Translate MAP_X numeric back to A-R and store
+    Sleep 1.5
 }
 
 #-----------------------------------------------------------------------
@@ -114,7 +112,7 @@ NewSector_GetScenario() {
 
 #-----------------------------------------------------------------------
 # NewTurn()
-# Increase turn and get date
+# Increase turn and set new date
 # Used: NewSector(), TavernRest()
 #-----------------------------------------------------------------------
 NewTurn() {
@@ -128,36 +126,36 @@ NewTurn() {
 # Used in runtime section
 #-----------------------------------------------------------------------
 NewSector() {
-    while (true); do  # While (player-is-alive) :)
-	NewTurn
-	CheckForItem "$CHAR_GPS" # Look for treasure @ current GPS location  - Checks current section for treasure
+    while (true); do                                  # While (player-is-alive) :)
+	NewTurn                                       # Increase turn and set new date
+	CheckForItem "$CHAR_GPS"                      # Look for treasure @ current GPS location
 	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS") # Get scenario char at current GPS
-	GX_Place "$SCENARIO"
-	if [[ "$NODICE" ]] ; then # Do not attack player at the first turn of after finding item
-	    unset NODICE
+	GX_Place "$SCENARIO"                          # Display current $SCENARIO ASCII
+	if [[ "$NODICE" ]] ; then                     # Do not attack player at the first turn of after finding item
+	    unset NODICE                              # Reset flag
 	else
-	    CheckForFight "$SCENARIO" # Defined in FightMode.sh
+	    CheckForFight "$SCENARIO"                 # Defined in FightMode.sh
 	    GX_Place "$SCENARIO"
 	fi
 
-	CheckForStarvation         # Food check
-	CheckForWorldChangeEconomy # Change economy if success
+	CheckForStarvation                            # Food check
+	CheckForWorldChangeEconomy                    # Change economy if success
 
-	while (true); do # GAME ACTIONS MENU BAR
+	while (true); do                          
 	    GX_Place "$SCENARIO"
-	    case "$SCENARIO" in # Determine promt
+	    case "$SCENARIO" in                       # Determine promt
 		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
 		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;
 		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
-	    local ACTION=$(Read)	          # Read only one symbol
+	    local ACTION=$(Read)	              # Read only one symbol
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest "$SCENARIO"; break;; # Player may be attacked during the rest :)
-		q | Q ) CleanUp ;;                # Leaving the realm of magic behind ....
+		r | R ) Rest "$SCENARIO"; break;;     # Player may be attacked during the rest :)
+		q | Q ) CleanUp ;;                    # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;
-		* ) MapNav "$ACTION"; break ;;	  # Go to Map then move or move directly (if not WASD, then loitering :)
+		* ) MapNav "$ACTION"; break ;;	      # Go to Map then move or move directly (if not WASD, then loitering :)
 	    esac
 	done
     done

@@ -273,6 +273,13 @@ FightMode_EnemyTurn() {
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
 	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
+	    if [[ "$DEBUG" ]] ; then 
+		if (( $(RollDice2 20) == 0 )) ; then
+		    Sleep 2
+		    echo"But stumbles and falls!!!"
+		    return 0 	# Change to player's turn without enemy's
+		fi		
+	    fi
 	    LUCK=1
 	    unset FIGHTMODE
 	    Sleep 2 # TODO test

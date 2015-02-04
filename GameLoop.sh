@@ -150,14 +150,14 @@ NewSector() {
 		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;
 		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
-	    local ACTION=$(Read)	# Read only one symbol
+	    local ACTION=$(Read)	          # Read only one symbol
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest "$SCENARIO";;      # Player may be attacked during the rest :)
-		q | Q ) CleanUp ;;              # Leaving the realm of magic behind ....
+		r | R ) Rest "$SCENARIO"; break;; # Player may be attacked during the rest :)
+		q | Q ) CleanUp ;;                # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;
-		* ) MapNav "$ACTION"; break ;;	# Go to Map then move or move directly (if not WASD, then loitering :)
+		* ) MapNav "$ACTION"; break ;;	  # Go to Map then move or move directly (if not WASD, then loitering :)
 	    esac
 	done
     done

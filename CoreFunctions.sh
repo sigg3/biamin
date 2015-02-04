@@ -119,6 +119,7 @@ PressAnyKey() {
     else
 	MakePrompt 'Press (A)ny key to continue..'
     fi
+    read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
     read -sn 1
 }
 

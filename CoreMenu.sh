@@ -125,14 +125,18 @@ Press any key to go back to main menu!";
     [[ "$PAGER" ]] && "$PAGER" "$GAMEDIR/LICENSE" || { echo -e "\n License file available at $GAMEDIR/LICENSE" ; PressAnyKey ;} # ShowLicense()
 }   # Return to Credits()
 
-
-CleanUp() { # Used in MainMenu(), NewSector(),
+#-----------------------------------------------------------------------
+# CleanUp() {
+# Used : MainMenu(), NewSector(),
+#-----------------------------------------------------------------------
+CleanUp() {
     GX_BiaminTitle
     echo -e "\n$HR"
     if ((FIGHTMODE)); then #  -20 HP -20 EXP Penalty for exiting CTRL+C during battle!
 	((CHAR_HEALTH -= 20))
     	((CHAR_EXP -= 20))
-    	echo -e "PENALTY for CTRL+Chickening out during battle: -20 HP -20 EXP\nHEALTH: $CHAR_HEALTH\tEXPERIENCE: $CHAR_EXP"
+    	echo "PENALTY for CTRL+Chickening out during battle:"
+	Echo "HEALTH: $CHAR_HEALTH    EXPERIENCE: $CHAR_EXP" "[-20 HEALTH -20 EXP]"
     fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
     echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"

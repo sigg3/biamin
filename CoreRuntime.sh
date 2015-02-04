@@ -5,20 +5,20 @@
 #                   All running code goes here!                        #
 
 # Make place for game (BEFORE CLI opts! Mostly because of Higscore and CLI_CreateCustomMapTemplate())
-if [[ ! -d "$GAMEDIR" ]] ; then # Check whether gamedir exists...
+if [[ ! -d "$GAMEDIR" ]] ; then                                           # Check whether gamedir exists...
     echo -e "Game directory default is $GAMEDIR/\nYou can change this in $CONFIG. Creating directory ..."
     mkdir -p "$GAMEDIR/" || Die "ERROR! You do not have write permissions for $GAMEDIR ..."
 fi
 
-if [[ ! -f "$CONFIG" ]] ; then # Check whether $CONFIG exists...
+if [[ ! -f "$CONFIG" ]] ; then                                            # Check whether $CONFIG exists...
     echo "Creating ${CONFIG} ..."
     echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$CONFIG"
 fi
 
-[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE"; # Check whether $HIGHSCORE exists...
+[[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE";                              # Check whether $HIGHSCORE exists...
 grep -q 'd41d8cd98f00b204e9800998ecf8427e' "$HIGHSCORE" && > "$HIGHSCORE" # Backwards compatibility: replaces old-style empty HS...
 
-if [[ ! "$PAGER" ]] ; then # Define PAGER (for ShowLicense() )
+if [[ ! "$PAGER" ]] ; then                                                # Define PAGER (for ShowLicense() ) # Not defined by-default in some systems.
     for PAGER in less more ; do PAGER=$(which "$PAGER" 2>/dev/null); [[ "$PAGER" ]] && break; done
 fi
 

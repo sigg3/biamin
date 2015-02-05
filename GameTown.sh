@@ -3,73 +3,6 @@
 #                                                                      #
 
 #-----------------------------------------------------------------------
-# CheckForGold()
-# Check if char have $PRICE Gold and divide it from $CHAR_GOLD or
-#  return $FAILURE_VESSAGE
-# Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
-# Used: Tavern()
-#-----------------------------------------------------------------------
-# IDEA: If we're going to use these in grocer, merchant ++future
-# functions then perhaps it should ONLY be logical (return 1 or 0).  I
-# think it will make the code easier to read later on, see the
-# difference between:
-#
-# CheckForGold 3 "You don't have enough gold, silly dwarf"
-#
-# vs
-#
-# CheckForGold 3 && Continue_transaction || echo "You don't have enough gold, silly dwarf!"
-#
-# The first one looks as if the silly dwarf doesn't have enough gold
-# from the get go..?  On the other hand, a "purchasing function" might
-# be called for, so we don't duplicate so much work.
-#-----------------------------------------------------------------------
-CheckForGold()   {
-    if (( $(bc <<< "$CHAR_GOLD < $1") )); then
-	echo -e "${CLEAR_LINE}${2}"
-	return 1
-    else
-	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")
-	return 0
-    fi
-}
-
-#-----------------------------------------------------------------------
-# CheckForTobacco()
-# Check if char have $PRICE Tobacco and divide it from $CHAR_TOBACCO or
-#  return $FAILURE_VESSAGE
-# Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
-# Used: Tavern()
-#-----------------------------------------------------------------------
-CheckForTobacco() {
-    if (( $(bc <<< "$CHAR_TOBACCO < $1") )); then
-	echo -e "${CLEAR_LINE}${2}"
-	return 1
-    else
-	CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $1")
-	return 0
-    fi
-}
-
-#-----------------------------------------------------------------------
-# Tavern_Rest()
-# Successful rest in Tavern (Tavern gained +30 HEALTH - Town*2 )
-# Used: Tavern()
-#-----------------------------------------------------------------------
-TavernRest() {
-    GX_Rest
-    if (( CHAR_HEALTH < 150 )); then
-	(( CHAR_HEALTH += 30 ))			   # Add Town_Health * 2
-	(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
-	echo "You got some much needed rest and your HEALTH is $CHAR_HEALTH now"
-    else
-    echo "You got some much needed rest"	
-    fi
-    ((STARVATION)) && ResetStarvation              # Reset STARVATION and restore starvation' penalty if any
-    NewTurn			                   # Increase $TURN and get new date
-}
-
-#-----------------------------------------------------------------------
 # Tavern()
 # Sub-loop for Tavern
 # Used: GoIntoTown()
@@ -79,15 +12,33 @@ Tavern() {
 	GX_Tavern
 	MakePrompt "(R)ent a room and rest safely;(P)lay dice;(A)ny key to Exit"
 	case $(Read) in
-	    r | R)
-		echo -en "${CLEAR_LINE}      Rent for 1 (G)old      Rent for 1 (T)obacco      (A)ny key to Exit"
-		case $(Read) in
-		    g | G ) CheckForGold 1    "You don't have enough Gold to rent a room in the Tavern"    && TavernRest ;;
-		    t | T ) CheckForTobacco 1 "You don't have enough Tobacco to rent a room in the Tavern" && TavernRest ;;
-		esac
-		Sleep 1 ;;
- 	    p | P ) MiniGame_Dice ;;
-	    * ) break ;; # Leave tavern
+	    [rR] ) echo -en "${CLEAR_LINE}$(MakePrompt "Rent for 1 (G)old;Rent for 1 (T)obacco;(A)ny key to Exit")"
+		   case $(Read) in
+		       [gG] ) declare -n CURRENCY=CHAR_GOLD; UNIT="Gold";;
+		       [tT] ) declare -n CURRENCY=CHAR_TOBACCO; UNIT="Tobacco";;
+		       *    ) continue ;;
+		   esac
+		   if (( $(bc <<< "${CURRENCY} < 1") )); then
+		       echo -e "${CLEAR_LINE}$(MakePrompt "You don't have enough ${UNIT} to rent a room in the Tavern")"
+		   else                                               # ex-TavernRest()
+		       CURRENCY=$(bc <<< "${CURRENCY} - 1")		    
+		       GX_Rest
+		       if (( CHAR_HEALTH < 150 )); then
+			   (( CHAR_HEALTH += 30 ))		      # Add Town_Health * 2
+			   (( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
+			   echo "You got some much needed rest and your HEALTH is $CHAR_HEALTH now"
+		       else
+			   echo "You got some much needed rest"	
+		       fi
+		       ((STARVATION)) && ResetStarvation              # Reset STARVATION and restore starvation' penalty if any
+		       NewTurn			                      # Increase $TURN and get new date
+		   fi		
+		   unset -n CURRENCY
+		   unset UNIT
+		   Sleep 2
+		   ;;
+ 	    [pP] ) MiniGame_Dice ;;
+	    *    ) break ;;                                           # Leave tavern
 	esac
     done
 }

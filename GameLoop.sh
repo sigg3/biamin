@@ -151,7 +151,7 @@ NewSector() {
 	    local ACTION=$(Read)	                      # Read only one symbol
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest "$SCENARIO"; break;;             # Player may be attacked during the rest :)
+		r | R ) Rest "$SCENARIO"; NODICE=1; break;;   # Do not CheckForFight after rest, whether it was successful or not
 		q | Q ) CleanUp ;;                            # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;

@@ -255,34 +255,32 @@ WorldPriceFixing() {
 # Used: NewSector()
 #-----------------------------------------------------------------------
 CheckForWorldChangeEconomy() {
-    (( --WORLDCHANGE_COUNTDOWN > 0 )) && return 0 # Decrease $WORLDCHANGE_COUNTDOWN then check for change
-    (( $(RollDice2 100) > 15 )) && return 0       # Roll to 15% chance for economic event transpiring or leave immediately
-    BBSMSG=$(RollDice2 "$MAX_BBSMSG")             # = Number of possible scenarios (+ default 0) and Update BBSMSG
-
+    # Check for change economy
+    (( --WORLDCHANGE_COUNTDOWN > 0 )) && return 0                              # Decrease $WORLDCHANGE_COUNTDOWN then check for change
+    (( $(RollDice2 100) > 15 ))       && return 0                              # Roll to 15% chance for economic event transpiring or leave immediately
+    # Define scenario
+    BBSMSG=$(RollDice2 "$MAX_BBSMSG")                                          # Roll for random scenarion (exlude default scenario 0)
     case "$BBSMSG" in
-    	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
-    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
-    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
-    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
-    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
-    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
-    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
-    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
-    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
-    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
+    	# CHANGE : '+'=Inflation, '-'=deflation | Severity:  12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
+    	1 )  local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
+    	2 )  local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
+    	3 )  local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
+    	4 )  local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
+    	5 )  local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
+    	6 )  local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
+    	7 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
+    	8 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
+    	9 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
+    	10 ) local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
+    	11 ) local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
+    	12 ) local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
     esac
-
-    case "$UNIT" in # Which market is affected and restrict to 0.25 min
-	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
-	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
-	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${BBSMSG}<<<" ;;
-    esac
-    WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
-    SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
-    WorldPriceFixing         # Update all prices
+                                                                                # Change currency and restrict to 0.25 min
+    CURRENCY=$( bc <<< "var = ${CURRENCY} ${CHANGE} (${DICE} * ${VAL_CHANGE}); if (var <= 0) 0.25 else var" )
+    unset -n CURRENCY                                                           # Unset REFERENCE
+    WORLDCHANGE_COUNTDOWN=20                                                    # Give the player a 20 turn break TODO Test how this works..
+    SaveCurrentSheet                                                            # Save world changes to charsheet # LAST!!!
+    WorldPriceFixing                                                            # Update all prices
 }
 
 # Other WorldChangeFUNCTIONs go here:)

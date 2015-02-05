@@ -186,10 +186,22 @@ Rest() {
 # Used: Rest(), CheckForFight()
 #-----------------------------------------------------------------------
 RollForEvent() {
-    echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE"
-    Sleep 1.5
-    (( DICE <= $1 )) && return 0 || return 1
-}   # Return to NewSector() or Rest()
+#    echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE"
+    # Sleep 1.5
+    # (( DICE <= $1 )) && return 0 || return 1
+    if (( DICE <= $1 )); then
+	Echo "${CLEAR_LINE}Rolling for $2:" "[D${DICE_SIZE} $DICE <= $1]"
+	echo 			# empty line
+	Sleep 1.5
+	return 0
+    else
+	Echo "${CLEAR_LINE}Rolling for $2:" "[D${DICE_SIZE} $DICE > $1]"
+	echo 			# empty line
+	Sleep 1.5
+	return 1
+    fi
+    
+}
 
 #-----------------------------------------------------------------------
 # CheckBiaminDependencies()

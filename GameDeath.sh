@@ -19,13 +19,16 @@ ResetStarvation() {
     if (( STARVATION >= 8 )) ; then
 	case "$CHAR_RACE" in
 	    1 | 3 ) (( STRENGTH++ ));
-		    echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;;
+		    # echo "+1 STRENGTH: You restore your body to healthy condition (STRENGTH: $STRENGTH)" ;;
+		    Echo "You restore your body to healthy condition" "[+1 STRENGTH]" ;;
 	    2 | 4 ) (( ACCURACY++ ));
-		    echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
+		    # echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
+		    Echo "You restore your body to healthy condition" "[+1 ACCURACY]" ;;
 	    *     ) Die "BUG in ResetStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	esac
     fi
     STARVATION=0
+    read -sn 1
 }
 
 #-----------------------------------------------------------------------
@@ -38,28 +41,32 @@ ResetStarvation() {
 CheckForStarvation(){
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
-	echo "You eat .25 food from your stock: $CHAR_FOOD remaining .."
+	Echo "You eat from your stock: $CHAR_FOOD remaining .." "[-.25 FOOD]"
+	echo 			# empty line
 	((STARVATION)) && ResetStarvation
     else
-	((STARVATION++))
-	echo -n "You're starving on the "
-	case "$STARVATION" in
-	    1 )  echo "${STARVATION}st day and feeling hungry .."            ;;
-	    2 )  echo "${STARVATION}nd day and feeling weak .."              ;;
-	    3 )  echo "${STARVATION}rd day and feeling weaker and weaker .." ;;
-	    15 ) echo "${STARVATION}th day, slowly starving to death .."     ;;
-	    * )  echo "${STARVATION}th day, you're famished .."              ;;
-	esac
+	((STARVATION++))	
 	# Starvation penalty -5HP per turn
-	(( CHAR_HEALTH -= 5 ))
-	echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)"
-
+	local PROMPT="You're starving on the "
+	case "$STARVATION" in
+	    1 )  PROMPT+="${STARVATION}st day and feeling hungry .."            ;;
+	    2 )  PROMPT+="${STARVATION}nd day and feeling weak .."              ;;
+	    3 )  PROMPT+="${STARVATION}rd day and feeling weaker and weaker .." ;;
+	    15 ) PROMPT+="${STARVATION}th day, slowly starving to death .."     ;;
+	    * )  PROMPT+="${STARVATION}th day, you're famished .."              ;;
+	esac
+	# echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)"
+	# Echo "Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" "[-5 HEALTH]"
+	(( CHAR_HEALTH -= 5 )) 
+	Echo "${PROMPT}" "[-5 HEALTH]"
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in
 		1 | 3 ) (( STRENGTH-- ));
-			echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;;
+			# echo "-1 STRENGTH: You're slowly starving to death .. (STRENGTH: $STRENGTH)" ;;
+			Echo "\nYou're slowly starving to death... (STRENGTH: $STRENGTH)" "[-1 STRENGTH]" ;;
 		2 | 4 ) (( ACCURACY-- ));
-			echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
+			# echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
+			Echo "\nYou're slowly starving to death... (ACCURACY: $ACCURACY)" "[-1 ACCURACY]" ;;
 		*     ) Die "BUG in CheckForStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	    esac
 	fi

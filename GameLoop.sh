@@ -128,36 +128,34 @@ NewTurn() {
 # Used in runtime section
 #-----------------------------------------------------------------------
 NewSector() {
-    while (true); do                                  # While (player-is-alive) :)
-	NewTurn                                       # Increase turn and set new date
-	CheckForItem "$CHAR_GPS"                      # Look for treasure @ current GPS location
-	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS") # Get scenario char at current GPS
-	GX_Place "$SCENARIO"                          # Display current $SCENARIO ASCII
-	if [[ "$NODICE" ]] ; then                     # Do not attack player at the first turn of after finding item
-	    unset NODICE                              # Reset flag
+    while (true); do                                          # While (player-is-alive) :)
+	NewTurn                                               # Increase turn and set new date
+	CheckForItem "$CHAR_GPS"                              # Look for treasure @ current GPS location
+	SCENARIO=$(NewSector_GetScenario "$CHAR_GPS")         # Get scenario char at current GPS
+	GX_Place "$SCENARIO"                                  # Display current $SCENARIO ASCII
+	if [[ "$NODICE" ]] ; then                             # Do not attack player at the first turn of after finding item
+	    unset NODICE                                      # Reset flag
 	else
-	    CheckForFight "$SCENARIO"                 # Defined in FightMode.sh
-	    GX_Place "$SCENARIO"
+	    CheckForFight "$SCENARIO" || GX_Place "$SCENARIO" # Redraw $SCENARIO ASCII if there was fight
 	fi
-
-	CheckForStarvation                            # Food check
-	CheckForWorldChangeEconomy                    # Change economy if success
+	CheckForStarvation                                    # Food check
+	CheckForWorldChangeEconomy                            # Change economy if success
 
 	while (true); do                          
 	    GX_Place "$SCENARIO"
-	    case "$SCENARIO" in                       # Determine promt
+	    case "$SCENARIO" in                               # Determine promt
 		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
 		H )     echo -n "     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit" ;;
 		* )     echo -n "        (C)haracter        (R)est        (M)ap and Travel        (Q)uit"    ;;
 	    esac
-	    local ACTION=$(Read)	              # Read only one symbol
+	    local ACTION=$(Read)	                      # Read only one symbol
 	    case "$ACTION" in
 		c | C ) DisplayCharsheet ;;
-		r | R ) Rest "$SCENARIO"; break;;     # Player may be attacked during the rest :)
-		q | Q ) CleanUp ;;                    # Leaving the realm of magic behind ....
+		r | R ) Rest "$SCENARIO"; break;;             # Player may be attacked during the rest :)
+		q | Q ) CleanUp ;;                            # Leaving the realm of magic behind ....
 		b | B ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
 		g | G ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;
-		* ) MapNav "$ACTION"; break ;;	      # Go to Map then move or move directly (if not WASD, then loitering :)
+		* ) MapNav "$ACTION"; break ;;	              # Go to Map then move or move directly (if not WASD, then loitering :)
 	    esac
 	done
     done

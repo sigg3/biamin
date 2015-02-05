@@ -182,11 +182,11 @@ FightMode_DefineInitiative() {
 	    echo  "Trying to slip away unseen.."
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
-		Echo "You managed to run away!" "[Flee:D6 $DICE <= $FLEE ]"
+		Echo "You managed to run away!" "[D6 $DICE <= Flee $FLEE ]"
 		LUCK=3
 		unset FIGHTMODE
 	    else
-		Echo "You lost your initiative.." "[Flee:D6 $DICE > $FLEE]"
+		Echo "You lost your initiative.." "[D6 $DICE > Flee $FLEE]"
 		NEXT_TURN="en"
 		Sleep 1
 	    fi

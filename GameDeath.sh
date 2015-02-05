@@ -92,7 +92,12 @@ Death() {
     echo "$CHAR_EXP;$CHAR;$CHAR_RACE;$CHAR_BATTLES;$CHAR_KILLS;$CHAR_ITEMS;$(Ordial $DAY);$(MonthString $MONTH);$(Ordial $YEAR)" >> "$HIGHSCORE"
     rm -f "$CHARSHEET" # A sense of loss is important for gameplay:)
     unset CHARSHEET CHAR CHAR_RACE CHAR_HEALTH CHAR_EXP CHAR_GPS SCENARIO CHAR_BATTLES CHAR_KILLS CHAR_ITEMS # Zombie fix     # Do we need it ????
-    # TODO: add showing Highscore list here
+    # Showing Highscore list here
+    GX_HighScore  # HighScore()
+    echo "" # empty line TODO fix it
+    HighscoreRead 	# Show 10 highscore entries 
+    echo ""  # empty line TODO fix it
+    PressAnyKey 
     CleanUp
 }
 

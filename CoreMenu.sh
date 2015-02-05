@@ -53,7 +53,13 @@ LoadGame() {
     CHAR=$(awk '{if (/^CHARACTER:/) { RLENGTH = match($0,/: /); print substr($0, RLENGTH+2);}}' "${FILES[$NUM]}" );
 }   # return to MainMenu()
 
-HighscoreRead() { # Used in CLI_Announce() and HighScore()
+
+#-----------------------------------------------------------------------
+# HighscoreRead()
+# Read and show 10 highscore entries or from $HIGHSCORE file
+# Used in MainMenu(), CLI_Announce() and Death()
+#-----------------------------------------------------------------------
+HighscoreRead() { 
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
     local i=1 HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
     # Read values from highscore file (BashFAQ/001)
@@ -69,7 +75,6 @@ HighscoreRead() { # Used in CLI_Announce() and HighScore()
 	((i++))
     done < "$HIGHSCORE"
     echo -e "$HIGHSCORE_TMP" | column -t -s ";" # Nice tabbed output!
-    unset HIGHSCORE_TMP
 }
 
 #----------------------------------------------------------------------
@@ -155,7 +160,7 @@ MainMenu() {
 	    [pP] ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
  		   CHAR="$REPLY" ;;
 	    [lL] ) LoadGame ;;
-	    [hH] ) GX_HighScore ; # HighScore
+	    [hH] ) GX_HighScore ; # HighScore()
 		   echo "";
 		   # Show 10 highscore entries or die if Highscore list is empty
 		   [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";

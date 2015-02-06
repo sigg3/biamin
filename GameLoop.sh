@@ -141,7 +141,7 @@ NewSector() {
 	CheckForStarvation                                    # Food check
 	CheckForWorldChangeEconomy                            # Change economy if success
 
-	while (true); do                          
+	while (true); do                                      # Secondary loop, at current $SCENARIO 
 	    GX_Place "$SCENARIO"
 	    case "$SCENARIO" in                               # Determine promt
 		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
@@ -150,12 +150,12 @@ NewSector() {
 	    esac
 	    local ACTION=$(Read)	                      # Read only one symbol
 	    case "$ACTION" in
-		c | C ) DisplayCharsheet ;;
-		r | R ) Rest "$SCENARIO"; NODICE=1; break;;   # Do not CheckForFight after rest, whether it was successful or not
-		q | Q ) CleanUp ;;                            # Leaving the realm of magic behind ....
-		b | B ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
-		g | G ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;
-		* ) MapNav "$ACTION"; break ;;	              # Go to Map then move or move directly (if not WASD, then loitering :)
+		[cC] ) DisplayCharsheet ;;
+		[rR] ) Rest "$SCENARIO";;                     # # Player may be attacked during the rest :)
+		[qQ] ) CleanUp ;;                             # Leaving the realm of magic behind ....
+		[bB] ) [[ "$SCENARIO" == "H" ]] && GX_Bulletin "$BBSMSG" ;;
+		[gG] ) [[ "$SCENARIO" == "T" || "$SCENARIO" == "C" ]] && GoIntoTown ;;
+		*    ) MapNav "$ACTION"; break ;;             # Go to Map then move or move directly (if not WASD, then loitering :)
 	    esac
 	done
     done

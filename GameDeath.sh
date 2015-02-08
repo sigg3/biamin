@@ -47,13 +47,14 @@ CheckForStarvation(){
     else
 	((STARVATION++))	
 	# Starvation penalty -5HP per turn
-	local PROMPT="You're starving on the "
+	local PROMPT="You're starving on the $(Ordial "${STARVATION}") "
 	case "$STARVATION" in
-	    1 )  PROMPT+="${STARVATION}st day and feeling hungry .."            ;;
-	    2 )  PROMPT+="${STARVATION}nd day and feeling weak .."              ;;
-	    3 )  PROMPT+="${STARVATION}rd day and feeling weaker and weaker .." ;;
-	    15 ) PROMPT+="${STARVATION}th day, slowly starving to death .."     ;;
-	    * )  PROMPT+="${STARVATION}th day, you're famished .."              ;;
+	    1 )  PROMPT+="day and feeling hungry .."            ;;
+	    2 )  PROMPT+="day and feeling weak .."              ;;
+	    3 )  PROMPT+="day and feeling weaker .."            ;;
+	    4 )  PROMPT+="day and feeling weaker and weaker .." ;;
+	    15 ) PROMPT+="day, slowly starving to death .."     ;;
+	    * )  PROMPT+="day, you're famished .."              ;;
 	esac
 	# echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)"
 	# Echo "Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" "[-5 HEALTH]"

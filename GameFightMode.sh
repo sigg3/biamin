@@ -11,29 +11,37 @@
 # Used : NewSector(), Rest()
 #-----------------------------------------------------------------------
 CheckForFight() {
-    RollDice 100        # Find out if we're attacked
+    local CHANCE
+    # define chances
     if [[ ! "$PLAYER_RESTING" ]] ; then # usual fight
-	case "$1" in        # FightMode() if RollForEvent return 0
-	    H ) RollForEvent 1  "fight" && FightMode && return 1 ;;
-	    x ) RollForEvent 50 "fight" && FightMode && return 1 ;;
-	    . ) RollForEvent 20 "fight" && FightMode && return 1 ;;
-	    T ) RollForEvent 15 "fight" && FightMode && return 1 ;;
-	    @ ) RollForEvent 35 "fight" && FightMode && return 1 ;;
-	    C ) RollForEvent 10 "fight" && FightMode && return 1 ;;
+	case "$1" in        
+	    H ) CHANCE=1  ;;
+	    x ) CHANCE=50 ;;
+	    . ) CHANCE=20 ;;
+	    T ) CHANCE=15 ;;
+	    @ ) CHANCE=35 ;;
+	    C ) CHANCE=10 ;;
 	    * ) CustomMapError ;;
 	esac
-    else 			# player was attacked at rest
+    else 		     # player was attacked at rest
 	case "$1" in
-	    H ) ;;			#  do nothing
-	    x ) RollForEvent 60 "fight" && FightMode && return 1 ;;
-	    . ) RollForEvent 30 "fight" && FightMode && return 1 ;;
-	    T ) RollForEvent 15 "fight" && FightMode && return 1 ;;
-	    @ ) RollForEvent 35 "fight" && FightMode && return 1 ;;
-	    C ) RollForEvent 5  "fight" && FightMode && return 1 ;;
+	    H ) return 0  ;; #  do nothing
+	    x ) CHANCE=60 ;;
+	    . ) CHANCE=30 ;;
+	    T ) CHANCE=15 ;;
+	    @ ) CHANCE=35 ;;
+	    C ) CHANCE=5  ;;
 	    * ) CustomMapError ;;
 	esac
     fi
-    return 0 			# check falls
+    # Find out if we're attacked
+    RollDice 100                
+    if RollForEvent "${CHANCE}" "fight" ; then
+	FightMode
+	return 1	     # check fails, fight
+    else
+	return 0 	     # check success, no fight was
+    fi
 }
 
 #-----------------------------------------------------------------------

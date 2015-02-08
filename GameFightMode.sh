@@ -85,50 +85,64 @@ FightMode_RemoveBonuses() {
 }
 
 #-----------------------------------------------------------------------
+# Named constants for enemies. Should be in accordance with ${ENEMIES[@]}
+#-----------------------------------------------------------------------
+declare -r  BANDIT=0
+declare -r     IMP=1
+declare -r  GOBLIN=2
+declare -r    BOAR=3
+declare -r     ORC=4
+declare -r    VARG=5
+declare -r    MAGE=6
+declare -r  DRAGON=7
+declare -r CHTHULU=8
+declare -r    BEAR=9
+
+#-----------------------------------------------------------------------
+# ${ENEMIES[@]}
+# Enemies ablilities table. Folders marked '%' is chances to have
+# current loot.
+# FleeTreshhold ($EN_FLEE_THRESHOLD) - At what Health will enemy flee? 
+# Exp($EN_EXP)                       - Exp player get if he manage to
+#                                      kill the enemy
+# PickpocketExp($EN_PICKPOCKET_EXP)  - How many EXP player'll get for
+#                                      successful pickpocketing
+#-----------------------------------------------------------------------
+declare -ra ENEMIES=(
+    #                                                        %    %       %
+    #Name    Strength Accuracy Flee Health FleeTreshhold Exp Gold Tobacco Food PickpocketExp"
+    "bandit  1        4        7     30    18             20 20   10        0   15"
+    "imp     2        3        3     20    10             10  5    0        0   10"
+    "goblin  3        3        5     30    15             30 10   20        0   20"
+    "boar    4        2        3     60    35             40  0    0      100    0"
+    "orc     4        4        4     80    40             50 15   25        0   35"
+    "varg    4        3        3     80    60            100  0    0       70    0"
+    "mage    5        3        4     90    45            150 50   60        0  100"
+    "dragon  5        3        2    150    50            180 30    0       30  100"
+    "chthulu 6        5        1    500    35           1000  0    0       90   40"
+    "bear    6        2        4    160    25             60  0    0      100    0"
+)
+
+#-----------------------------------------------------------------------
 # FightMode_DefineEnemy()
 # Determine generic enemy and set enemy's abilities
 # ENEMY ATTRIBUTES:
-# $EN_FLEE_THRESHOLD - At what Health will enemy flee? :)
-# $EN_EXP            - Exp player get if he manage to kill the enemy
 #-----------------------------------------------------------------------
 FightMode_DefineEnemy() {
     # Determine generic enemy type from chthulu, orc, varg, mage, goblin, bandit, boar, dragon, bear, imp (10)
     # Every enemy should have 3 appearances, not counting HOME.
     RollDice 100
     case "$SCENARIO" in # Lowest to Greatest % of encounter ENEMY in areas from civilized, to nature, to wilderness
-	H ) ((DICE <= 10)) && ENEMY="chthulu" || ((DICE <= 30)) && ENEMY="imp"    || ENEMY="dragon" ;; # 10, 20, 70
-	T ) ((DICE <= 10)) && ENEMY="dragon"  || ((DICE <= 45)) && ENEMY="mage"   || ENEMY="bandit" ;; # 10, 35, 55
-	C ) ((DICE <= 5 )) && ENEMY="chthulu" || ((DICE <= 10)) && ENEMY="imp"    || ((DICE <= 50)) && ENEMY="dragon" || ENEMY="mage" ;;  #  5,  5, 40, 50
-	. ) ((DICE <= 5 )) && ENEMY="orc"     || ((DICE <= 10)) && ENEMY="boar"   || ((DICE <= 30)) && ENEMY="goblin" || ((DICE <= 60)) && ENEMY="bandit" || ENEMY="imp"  ;;  #  5,  5, 20, 30, 40
-	@ ) ((DICE <= 5 )) && ENEMY="bear"    || ((DICE <= 15)) && ENEMY="orc"    || ((DICE <= 30)) && ENEMY="boar"   || ((DICE <= 50)) && ENEMY="goblin" || ((DICE <= 70)) && ENEMY="imp" || ENEMY="bandit" ;; #  5, 10, 15, 20, 20, 30
-	x ) ((DICE <= 5 )) && ENEMY="boar"    || ((DICE <= 10)) && ENEMY="goblin" || ((DICE <= 30)) && ENEMY="bear"   || ((DICE <= 50)) && ENEMY="varg"   || ((DICE <= 75)) && ENEMY="orc" || ENEMY="dragon" ;; #  5,  5, 20, 20, 25, 25
+	H ) ((DICE <= 10)) && ENEMY="${CHTHULU}" || ((DICE <= 30)) && ENEMY="${IMP}"    || ENEMY="${DRAGON}" ;; # 10, 20, 70
+	T ) ((DICE <= 10)) && ENEMY="${DRAGON}"  || ((DICE <= 45)) && ENEMY="${MAGE}"   || ENEMY="${BANDIT}" ;; # 10, 35, 55
+	C ) ((DICE <= 5 )) && ENEMY="${CHTHULU}" || ((DICE <= 10)) && ENEMY="${IMP}"    || ((DICE <= 50)) && ENEMY="${DRAGON}" || ENEMY="${MAGE}" ;;  #  5,  5, 40, 50
+	. ) ((DICE <= 5 )) && ENEMY="${ORC}"     || ((DICE <= 10)) && ENEMY="${BOAR}"   || ((DICE <= 30)) && ENEMY="${GOBLIN}" || ((DICE <= 60)) && ENEMY="${BANDIT}" || ENEMY="${IMP}"  ;;  #  5,  5, 20, 30, 40
+	@ ) ((DICE <= 5 )) && ENEMY="${BEAR}"    || ((DICE <= 15)) && ENEMY="${ORC}"    || ((DICE <= 30)) && ENEMY="${BOAR}"   || ((DICE <= 50)) && ENEMY="${GOBLIN}" || ((DICE <= 70)) && ENEMY="${IMP}" || ENEMY="${BANDIT}" ;; #  5, 10, 15, 20, 20, 30
+	x ) ((DICE <= 5 )) && ENEMY="${BOAR}"    || ((DICE <= 10)) && ENEMY="${GOBLIN}" || ((DICE <= 30)) && ENEMY="${BEAR}"   || ((DICE <= 50)) && ENEMY="${VARG}"   || ((DICE <= 75)) && ENEMY="${ORC}" || ENEMY="${DRAGON}" ;; #  5,  5, 20, 20, 25, 25
     esac
 
-    case "$ENEMY" in
-	bandit )  EN_STRENGTH=1 ; EN_ACCURACY=4 ; EN_FLEE=7 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=18 ; EN_EXP=20   ;;
-	imp )     EN_STRENGTH=2 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=20  ; EN_FLEE_THRESHOLD=10 ; EN_EXP=10   ;;
-	goblin )  EN_STRENGTH=3 ; EN_ACCURACY=3 ; EN_FLEE=5 ; EN_HEALTH=30  ; EN_FLEE_THRESHOLD=15 ; EN_EXP=30   ;;
-	boar )    EN_STRENGTH=4 ; EN_ACCURACY=2 ; EN_FLEE=3 ; EN_HEALTH=60  ; EN_FLEE_THRESHOLD=35 ; EN_EXP=40   ;;
-	orc )     EN_STRENGTH=4 ; EN_ACCURACY=4 ; EN_FLEE=4 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=40 ; EN_EXP=50   ;;
-	varg )    EN_STRENGTH=4 ; EN_ACCURACY=3 ; EN_FLEE=3 ; EN_HEALTH=80  ; EN_FLEE_THRESHOLD=60 ; EN_EXP=100  ;;
-	mage )    EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=4 ; EN_HEALTH=90  ; EN_FLEE_THRESHOLD=45 ; EN_EXP=150  ;;
-	dragon )  EN_STRENGTH=5 ; EN_ACCURACY=3 ; EN_FLEE=2 ; EN_HEALTH=150 ; EN_FLEE_THRESHOLD=50 ; EN_EXP=180  ;;
-	chthulu ) EN_STRENGTH=6 ; EN_ACCURACY=5 ; EN_FLEE=1 ; EN_HEALTH=500 ; EN_FLEE_THRESHOLD=35 ; EN_EXP=1000 ;;
-	bear )    EN_STRENGTH=6 ; EN_ACCURACY=2 ; EN_FLEE=4 ; EN_HEALTH=160 ; EN_FLEE_THRESHOLD=25 ; EN_EXP=60   ;;
-    esac
-   
-    case "$ENEMY" in                                                                   # Loot : Chances to get loot from enemy in %
-	bandit )  EN_GOLD=20 ; EN_TOBACCO=10 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=15  ;; # 2.0 Gold, 1.0 tobacco  >  Min: 0.2 Gold, 0.1 Tobacco
-	goblin )  EN_GOLD=10 ; EN_TOBACCO=20 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=20  ;; # 1.0 Gold, 2.0 Tobacco  >  Min: 0.1 Gold, 0.2 Tobacco
-	boar )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=100  ; EN_PICKPOCKET_EXP=0   ;;
-	orc )     EN_GOLD=15 ; EN_TOBACCO=25 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=35  ;; # 1.5 Gold, 2.5 Tobacco  >  Min: 1.5 Gold, 2.5 Tobacco
-	varg )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=70   ; EN_PICKPOCKET_EXP=0   ;;
-	mage )    EN_GOLD=50 ; EN_TOBACCO=60 ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=100 ;; # 5.0 gold, 6.0 tobacco  >  Min: 0.5 Gold, 0.6 Tobacco
-	dragon )  EN_GOLD=30 ; EN_TOBACCO=0  ; EN_FOOD=30   ; EN_PICKPOCKET_EXP=100 ;;
-	chthulu ) EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=90   ; EN_PICKPOCKET_EXP=400 ;;
-	bear )    EN_GOLD=0  ; EN_TOBACCO=0  ; EN_FOOD=100  ; EN_PICKPOCKET_EXP=0   ;;
-	imp )     EN_GOLD=5  ; EN_TOBACCO=0  ; EN_FOOD=0    ; EN_PICKPOCKET_EXP=10  ;;
-    esac
+    # Set enemy abilities
+    read ENEMY EN_STRENGTH EN_ACCURACY EN_FLEE EN_HEALTH EN_FLEE_THRESHOLD EN_EXP EN_GOLD EN_TOBACCO EN_FOOD EN_PICKPOCKET_EXP <<< "${ENEMIES[$ENEMY]}"
 
     # Loot: Determine loot type and size
     EN_GOLD=$(    bc <<< "scale=2; if ($(RollDice2 100) > $EN_GOLD   ) 0 else $(RollDice2 10) * ($EN_GOLD / 100)" )
@@ -166,7 +180,7 @@ FightMode_DefineInitiative() {
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
 	    else
-		echo -n "You successfully stole the ${ENEMY}'s pouch, "          # "steal success" take loot
+		echo -n "You successfully stole the ${ENEMY}'s pouch, "           # "steal success" take loot
 		case $(bc <<< "($EN_GOLD + $EN_TOBACCO) > 0") in                  # bc return 1 if true, 0 if false
 	    	    0 ) echo -e "but it feels rather light..\n" ; PICKPOCKET=2 ;; # Player will get no loot but EXP for pickpocket
 	    	    1 ) echo -e "and it feels heavy!\n";          PICKPOCKET=1 ;; # Player will get loot and EXP for pickpocket

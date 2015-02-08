@@ -163,7 +163,7 @@ FightMode_DefineInitiative() {
     GX_Monster "$ENEMY"		# Display $ENEMY GX - only one time!
     tput sc 			# Store cursor position for FightMode_FightTable()
     Sleep 1 # Pause to admire monster :) # TODO playtest, not sure if this is helping..
-    if (( EN_ACCURACY > ACCURACY )) || ((PLAYER_RESTING)) ; then
+    if (( EN_ACCURACY > ACCURACY || PLAYER_RESTING)) ; then
 	NEXT_TURN="en"
 	# IDEA: different promts for different enemies ???
 	(( PLAYER_RESTING == 1 )) && echo -e "You're awoken by an intruder, the $ENEMY attacks!" || echo "The $ENEMY has initiative"
@@ -176,7 +176,7 @@ FightMode_DefineInitiative() {
 	# Firstly check for pickpocketing
 	if [[ "$FLEE_OPT" == [pP] ]]; then
 	    # TODO check this test
-	    if (( $(RollDice2 6) > ACCURACY )) && (( $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket
+	    if (( $(RollDice2 6) > ACCURACY && $(RollDice2 6) < EN_ACCURACY )) ; then # 1st and 2nd check for pickpocket
 		echo "You were unable to pickpocket from the ${ENEMY}!"           # Pickpocket falls
 		NEXT_TURN="en"
 	    else
@@ -242,7 +242,7 @@ FightMode_FightFormula() {
 }
 
 FightMode_CharTurn() {
-    local FIGHT_PROMPT
+    local FIGHT_PROMPT DAMAGE
     echo -n "It's your turn, press any key to (R)oll or (F) to Flee"
     FIGHT_PROMPT=$(Read)
     RollDice 6
@@ -283,7 +283,7 @@ FightMode_CharTurn() {
 FightMode_EnemyTurn() {
     echo -n "It's the ${ENEMY}'s turn:"
     Sleep 2
-    if (( EN_HEALTH < EN_FLEE_THRESHOLD )) && (( EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
+    if (( EN_HEALTH < EN_FLEE_THRESHOLD && EN_HEALTH < CHAR_HEALTH )); then # Enemy tries to flee
 	echo -e "${CLEAR_LINE}$(Capitalize "$ENEMY") tries to flee the battle:"
 	Sleep 2
 	RollDice 20
@@ -292,7 +292,7 @@ FightMode_EnemyTurn() {
 	    if [[ "$DEBUG" ]] ; then 
 		if (( $(RollDice2 20) == 0 )) ; then
 		    Sleep 2
-		    echo "But stumbles and falls!!!"  #language
+		    echo -e "\nBut stumbles and falls!!!"  #language
 		    return 0 	# Change to player's turn without enemy's
 		fi		
 	    fi
@@ -328,7 +328,7 @@ FightMode_CheckForDeath() {
 	Sleep 2
 	echo "You WERE KILLED by the $ENEMY, and now you are dead..."
 	Sleep 2
-	if ((CHAR_EXP >= 1000)) && ((CHAR_HEALTH > -15)); then
+	if ((CHAR_EXP >= 1000 && CHAR_HEALTH > -15)); then
 	    ((CHAR_HEALTH += 20))
 	    echo "However, your $CHAR_EXP Experience Points relates that you have"
 	    echo "learned many wondrous and magical things in your travels..!"
@@ -356,20 +356,18 @@ FightMode_CheckForExp() {
     case "$1" in
 	1)  # ENEMY managed to FLEE (1/2 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 2))
-	    Echo "The $ENEMY fleed from you!" "[+${EN_EXP} EXP]"
-	    ((CHAR_EXP += EN_EXP)) ;;
+	    Echo "The $ENEMY fleed from you!" "[+${EN_EXP} EXP]" ;;
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)
 	    EN_EXP=$((EN_EXP / 4)) 
-	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]"
-	    ((CHAR_EXP += EN_EXP)) ;;
+	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]" ;;
 	*)  # ENEMY was slain!
 	    Echo "You defeated the $ENEMY!" "[+${EN_EXP} EXP]"
-	    ((CHAR_EXP += EN_EXP))
 	    ((CHAR_KILLS++))
     esac
-    ((CHAR_BATTLES++))		# At any case increase CHAR_BATTLES
+    (($1 != 2 )) && ((CHAR_EXP += EN_EXP)) # Add EXP if player didn't fleed
+    ((CHAR_BATTLES++))		           # At any case increase CHAR_BATTLES
     Sleep 1 # TODO test
 }
 
@@ -396,13 +394,12 @@ FightMode_CheckForPickpocket() {
 	    (( $(bc <<< "$EN_GOLD > 0")    )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )          || EN_GOLD="no"
 	    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"	    
 	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
-	    Echo " and gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
-	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
+	    Echo " and gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";;
 	2)  # no loot but EXP
 	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find nothing of value.." ;
-	    Echo ".. but you gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";
-	    ((CHAR_EXP += EN_PICKPOCKET_EXP)) ;;
+	    Echo ".. but you gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";;
     esac
+    (($1 != 0 )) && ((CHAR_EXP += EN_PICKPOCKET_EXP)) # Add EXP if there was pickpocketing
 }
 
 #-----------------------------------------------------------------------
@@ -411,9 +408,9 @@ FightMode_CheckForPickpocket() {
 # TODO: check for boar's tusks etc (3.0)
 #-----------------------------------------------------------------------
 FightMode_CheckForLoot() {
-    if ((LUCK == 0)); then                   # Only if $ENEMY was slain
+    if ((LUCK == 0)); then                       # Only if $ENEMY was slain
 	if (( $(bc <<< "$EN_FOOD > 0") )); then	 #  and have some FOOD
-	    Echo "\nYou scavenge $EN_FOOD food from the ${ENEMY}'s body" "[+${EN_FOOD} FOOD]"
+	    Echo "\nYou scavenge ${EN_FOOD} food from the ${ENEMY}'s body" "[+${EN_FOOD} FOOD]"
 	    CHAR_FOOD=$(bc <<< "$CHAR_FOOD + $EN_FOOD")
 	fi
     fi

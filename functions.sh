@@ -133,12 +133,13 @@ EOF
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
     RollDice 6
-    echo -e "Rolling for healing: D6 <= $HEALING\nROLL D6: $DICE"
     if ((DICE > HEALING)) ; then
-	echo "$2"
+	Echo "Rolling for healing:" "[D6 $DICE > Healing $HEALING]"
+	echo -e "\n$2"
     else
 	(( CHAR_HEALTH += $1 ))
-	echo "You slept well and gained $1 Health."
+	Echo "Rolling for healing:" "[D6 $DICE <= Healing $HEALING]"
+	Echo "\nYou slept well and gained $1 Health." "[+${1} HEALTH]"
 	# TODO add restriction to 150 HEALTH
     fi
     Sleep 2

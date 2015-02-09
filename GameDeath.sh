@@ -92,7 +92,7 @@ Death() {
     echo " In such a short life, this sorry $CHAR_RACE_STR gained $CHAR_EXP Experience Points."
     local COUNTDOWN=20
     while ((COUNTDOWN--)); do
-	echo -en "${CLEAR_LINE} We honor $CHAR with $COUNTDOWN secs silence."
+	echo -en "${CLEAR_LINE}$(MakePrompt "We honor $CHAR with $COUNTDOWN secs silence.")"
     	read -sn 1 -t 1 && break
     done
     unset COUNTDOWN

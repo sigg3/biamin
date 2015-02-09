@@ -57,7 +57,7 @@ LoadGame() {
 #-----------------------------------------------------------------------
 # HighscoreRead()
 # Read and show 10 highscore entries or from $HIGHSCORE file
-# Used in MainMenu(), CLI_Announce() and Death()
+# Used: HighScore(), MainMenu(), CLI_Announce() and Death()
 #-----------------------------------------------------------------------
 HighscoreRead() { 
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
@@ -149,6 +149,20 @@ CleanUp() {
 }
 
 #-----------------------------------------------------------------------
+# HighScore()
+# Show 10 highscore entries or empty prompt if Highscore list is empty
+# Used: MainMenu(), Death();
+#-----------------------------------------------------------------------
+HighScore() {
+    GX_HighScore  
+    echo ""
+    # Show 10 highscore entries or die if Highscore list is empty
+    [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
+    echo ""  # empty line TODO fix it
+    PressAnyKey 'Press the any key to go to (M)ain menu'
+}
+
+#-----------------------------------------------------------------------
 # MainMenu()
 # Defines $CHAR or show misc options
 #-----------------------------------------------------------------------
@@ -160,12 +174,7 @@ MainMenu() {
 	    [pP] ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
  		   CHAR="$REPLY" ;;
 	    [lL] ) LoadGame ;;
-	    [hH] ) GX_HighScore ; # HighScore()
-		   echo "";
-		   # Show 10 highscore entries or die if Highscore list is empty
-		   [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!";
-		   echo "" ; # empty line TODO fix it
-		   PressAnyKey 'Press the any key to go to (M)ain menu';;
+	    [hH] ) HighScore;;
 	    [cC] ) GX_Credits ; # Credits
 		   MakePrompt '(H)owTo;(L)icense;(M)ain menu';
 		   case $(Read) in

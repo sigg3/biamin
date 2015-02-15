@@ -16,14 +16,28 @@ GX_Marketplace() {
 #-----------------------------------------------------------------------
 GX_Marketplace_Grocer() {
     clear
-    echo "                                  THE GROCER"
-    echo ""
-    echo "        \"Welcome to my humble store, traveller, tell me what you need!"
-    echo "           If we don't have it, I suspect nobody else will neither.\""
+    cat <<"EOT"
+                                                                  
+                                                                           
+           THE GROCER                                                         
+                                           ,~-~-~-~-~-~-~-~-~-~-~-~.   
+    "Welcome to my humble store,           | In the flickering     |
+    traveller, tell me what you need!      | light of oil lamps,   |
+                                           | you see rows and rows | 
+    If we don't have it, I suspect         | of assorted goods.    |
+    nobody else will neither.              l_______________________;  
+                                                                      
+                                                                       
+
+EOT
     echo "$HR"
-    if [[ "$@" ]]; then
-	echo "                   1 FOOD costs $1 Gold or $2 Tobacco."
+    if [[ "$@" ]] ; then # if args
+	tput sc                                            # save cursor position
+	[[ "$1" ]] && MvAddStr 10 4 "1 FOOD costs $1 Gold" # move to y=10, x=4 ( upper left corner is 0 0 )
+	[[ "$2" ]] && MvAddStr 11 4  "or $2 Tobacco.\""    # move to y=11, x=4 ( upper left corner is 0 0 )
+	tput rc                                            # restore cursor position
     fi
+    Marketplace_Statusline
 }
 
 
@@ -63,7 +77,23 @@ EOT
 #-----------------------------------------------------------------------
 GX_Marketplace_Beggar() {
     clear
-    echo "                                THE OLD BEGGAR"
+    cat <<"EOT"
+
+                                                                            
+            THE OLD BEGGAR                                                  
+                                                                            
+                                                                            
+                                           ,~-~-~-~-~-~-~-~-~-~-~-~-~.
+                                           |                         |    
+                                           | Barely moving his tired |    
+                                           | eyes to acknowledge     |
+                                           | your presence, the ol'  |    
+                                           | beggar raises his cup.  |    
+                                           l_________________________;   
+                                                                            
+                                                                            
+                                                                            
+EOT
     echo "$HR"
 }
 

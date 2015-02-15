@@ -136,7 +136,13 @@ WorldWeatherSystem() {
 	    WorldWeatherSystemHumidity $WS_CHILD_SEVERITY $WS_CHILD_HUMIDITY # Function saves humidity
 	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
-
+	
+	# TODO simplify the one above to use WEATHER+=( "$NEW_VAL_1" "$NEW_VAL_2" "$NEW_VAL_3")
+	# REWRITE to allow HUMIDITY. This is interpreted relative to seasons. Strength is necessarily connected to seasons.
+	# HUMIDITY INT (1-4) : dry, humid, rainy, downpour or dry, humid, snowy, snow storm etc.
+	# Belongs in WEATHER array.
+	# Re: season-related: Months with high pressure, less aggressive weather and vice versa.
+	
 	# TODO possible simplification:
 	# This could make all the number stuff irrelevant:) just add to array WEATHER=("${WEATHER[@]}" "$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y")" ...
 	#

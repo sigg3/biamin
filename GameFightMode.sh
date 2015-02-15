@@ -149,6 +149,9 @@ FightMode_DefineEnemy() {
 	x ) ((DICE <= 5 )) && ENEMY="${BOAR}"    || ((DICE <= 10)) && ENEMY="${GOBLIN}" || ((DICE <= 30)) && ENEMY="${BEAR}"   || ((DICE <= 50)) && ENEMY="${VARG}"   || ((DICE <= 75)) && ENEMY="${ORC}" || ENEMY="${DRAGON}" ;; #  5,  5, 20, 20, 25, 25
     esac
 
+	# DEBUG TEST ENEMY HERE
+	ENEMY="${MAGE}" # COMMENT WHEN DONE
+
     # Set enemy abilities
     read ENEMY EN_STRENGTH EN_ACCURACY EN_FLEE EN_HEALTH EN_FLEE_THRESHOLD EN_EXP EN_GOLD EN_TOBACCO EN_FOOD EN_PICKPOCKET_EXP <<< "${ENEMIES[$ENEMY]}"
 

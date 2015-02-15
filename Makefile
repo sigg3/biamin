@@ -7,7 +7,7 @@ SHABANG  = `which bash`
 HEADER   = header.sh
 
 CC       = gfx.sh GX_Item.sh GX_Monster.sh GX_Places.sh GX_Menu.sh GX_Marketplace.sh GX_DiceGame.sh
-GPL      = GX_Item-gpl.sh GX_Monster-gpl.sh GX_Places-gpl.sh GX_Menu-gpl.sh GX_Marketplace-gpl.sh
+GPL      = GX_Item-gpl.sh GX_Monster-gpl.sh GX_Places-gpl.sh GX_Menu-gpl.sh GX_Marketplace-gpl.sh GX_DiceGame-gpl.sh
 SHARED   = GX_Menu-shared.sh 	# GX which used in GPL and GPL-CC version
 # We also can use Makefile this way
 

@@ -201,14 +201,13 @@ Marketplace_Merchant() {
 		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
 	esac
 
-	# Set any value equal or below 0 to defaults
-	# TODO this part isn't logical, prices must be updated in pairs, not absolutely.
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxG < 0) 0 else $PRICE_FxG" )
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxF < 0) 0 else $PRICE_GxF" )
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxT < 0) 0 else $PRICE_FxT" )
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_TxF < 0) 0 else $PRICE_TxF" )
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxI < 0) 0 else $PRICE_GxI" )
-	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_IxG < 0) 0 else $PRICE_IxG" )
+	# Set any value equal or below 0 to defaults (must be done in pairs)
+	(( $( bc <<< "if (${MERCHANT_FxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF
+	(( $( bc <<< "if (${MERCHANT_GxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxF=$PRICE_GxF && MERCHANT_FxG=$PRICE_FxG
+	(( $( bc <<< "if (${MERCHANT_FxT} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF
+	(( $( bc <<< "if (${MERCHANT_TxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_TxF=$PRICE_TxF && MERCHANT_FxT=$PRICE_FxT
+	(( $( bc <<< "if (${MERCHANT_GxI} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxI=$PRICE_GxI && MERCHANT_IxG=$PRICE_IxG
+	(( $( bc <<< "if (${MERCHANT_IxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_IxG=$PRICE_IxG && MERCHANT_GxI=$PRICE_GxI	
 
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8

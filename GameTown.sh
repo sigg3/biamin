@@ -141,7 +141,7 @@ Marketplace_Merchant_Bargaining() {
     if [[ "$MERCHANDISE" = "Item" ]] ; then
 	MvAddStr 4 4 "You are in for a treat! I managed to"
 	MvAddStr 5 4 "acquire a very rare and valuable"
-	MvAddStr 6 4 "$MERCHANT_ITEM, it can be yours"
+	MvAddStr 6 4 "$MERCHANT_ITEM, it can be"
 	MvAddStr 9 4 "I also buy any items you sell"
 	MvAddStr 10 4 "for $MERCHANT_GxI Gold a piece."
     elif [[ "$MERCHANDISE" = "unknown" ]] ; then
@@ -181,24 +181,28 @@ Marketplace_Merchant() {
 
 	# Add positive and negative margins to what the merchant wants to keep for himself
 	RollDice 3
-	case "$DICE" in                                                              # Merchant WANTS to buy and only reluctantly sells:
-	    1 ) MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's cost in gold purchasing food)
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )        # Food (player's discount in food purchasing gold)
+	case "$DICE" in                                                          # Merchant WANTS to buy and only reluctantly sells:
+	    1 ) # Merchant wants to keep food for himself
+		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's increased cost in gold purchasing food)
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold)
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" )
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ) ;;
-	    2 ) MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's cost in gold purchasing tobacco)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )        # Tobacco (player's discount in tobacco purchasing gold)
+	    2 ) # Merchant wants to keep tobacco for himself
+		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's increased cost in gold purchasing tobacco)
+		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold)
 		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" )
 		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ) ;;
-	    3 ) MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's cost in food purchasing gold)
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )        # Gold (player's discount in gold purchasing food)
+	    3 ) # Merchant wants to keep gold for himself
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's increased cost in food purchasing gold)
+		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
 		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )
 		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )
-		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )        # You can only buy/sell items with gold
+		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )     # You can only buy/sell items with gold
 		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
 	esac
 
 	# Set any value equal or below 0 to defaults
+	# TODO this part isn't logical, prices must be updated in pairs, not absolutely.
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxG < 0) 0 else $PRICE_FxG" )
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_GxF < 0) 0 else $PRICE_GxF" )
 	MERCHANT_FxG=$(bc <<< "if ($MERCHANT_FxT < 0) 0 else $PRICE_FxT" )

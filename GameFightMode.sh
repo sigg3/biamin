@@ -36,7 +36,7 @@ CheckForFight() {
     fi
     # Find out if we're attacked
     RollDice 100                
-    if RollForEvent "${CHANCE}" "fight" ; then
+    if RollForEvent "${CHANCE}" "event" ; then # "Rolling for fight" is inaccurate:P
 	FightMode
 	return 1	     # check fails, fight
     else

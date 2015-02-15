@@ -209,7 +209,7 @@ Marketplace_Merchant() {
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8
 	case "$DICE" in
-	    1 ) MERCHANT_ITEM="Health Potion (5 HP)"  ;; # TODO
+	    1 ) MERCHANT_ITEM="Health Potion (5 HP)"  ;; # TODO for release after 2.0 (TODO 3.0)
 	    2 ) MERCHANT_ITEM="Health Potion (10 HP)" ;; # Construct numbered list in ARRAY instead..?
 	    3 ) MERCHANT_ITEM="Health Potion (15 HP)" ;; # This way we can add more seamlessly..
 	    4 ) MERCHANT_ITEM="Health Potion (20 HP)" ;;

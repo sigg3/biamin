@@ -490,23 +490,21 @@ Marketplace_Statusline() {
 # Used: GoIntoTown()
 #-----------------------------------------------------------------------
 Marketplace_Grocer() {
-    # Default PRICE of units are set in WorldPriceFixing()
-    # Determine GROCER's price (profit margin = 0.5 $VAL_CHANGE)
-    local GROCER_FxG=$( bc <<< "scale=2;$PRICE_FxG+($VAL_CHANGE/2)" )
-    local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )
+    local GROCER_FxG=$( bc <<< "scale=2;$PRICE_FxG+($VAL_CHANGE/2)" )   # Determine GROCER's price (profit margin = 0.5 $VAL_CHANGE)
+    local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )   # Default PRICE of units are set in WorldPriceFixing()
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
 	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'       
 	case $(Read) in
-	    [gG] ) local UNIT="Gold";                                    # Trade for Gold
+	    [gG] ) local UNIT="Gold";                                   # Trade for Gold
 		   declare -n PRICE=GROCER_FxG CURRENCY=CHAR_GOLD ;;    # Set indirect references
-	    [tT] ) local UNIT="Tobacco";                                 # Trade for tobacco
+	    [tT] ) local UNIT="Tobacco";                                # Trade for tobacco
 		   declare -n PRICE=GROCER_FxT CURRENCY=CHAR_TOBACCO ;; # Set indirect references
 	    *    ) break ;;
 	esac
 	ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
-	QUANTITY="$REPLY"
-	[[ "$REPLY" ]] || continue                                       # check for user input
+	local QUANTITY="$REPLY"
+	[[ "$REPLY" ]] || continue                                      # check for user input
 	if ! IsInt "$QUANTITY"; then
 	    echo " I can't sell you ${QUANTITY} Food.."
 	    PressAnyKey
@@ -628,7 +626,7 @@ GX_DiceGame() {
  	             if (NR == 5) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; }
 		     if (NR == 7) { $49 = "'$GDICE_SYM'"; $57= "'$GDICE_SYM'"; } }
     # Display numbers too for great justice (or readability)
-    if (NR == 10) { $26 = '$1'; $53 = '$2'; }
+    if (NR == 10)  { $26 = '$1'; $53 = '$2'; }
     print; } ' <<"EOF"
                   _______________            _______________
                  [               ].         [               ].

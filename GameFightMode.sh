@@ -253,7 +253,7 @@ FightMode_FightFormula() {
 }
 
 FightMode_CharTurn() {
-    local FIGHT_PROMPT DAMAGE
+    local FIGHT_PROMPT
     echo -n "It's your turn, press any key to (R)oll or (F) to Flee"
     FIGHT_PROMPT=$(Read)
     RollDice 6
@@ -282,7 +282,7 @@ FightMode_CharTurn() {
 		echo -en "\nPress the R key to (R)oll for damage"
 		FIGHT_PROMPT=$(Read)
 		RollDice 6
-		DAMAGE=$(( DICE * STRENGTH ))
+		local DAMAGE=$(( DICE * STRENGTH ))
 		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]" #-${DAMAGE} ENEMY_HEALTH]"
 		((EN_HEALTH -= DAMAGE))
 	    else
@@ -430,8 +430,9 @@ FightMode_CheckForLoot() {
 #-----------------------------------------------------------------------
 # FightMode()
 # Main fight loop.
+# Used: CheckForFight().
 #-----------------------------------------------------------------------
-FightMode() {	# Used in NewSector() and Rest()
+FightMode() {
     FightMode_ResetFlags	                                                # Reset all FightMode flags to default
     FightMode_DefineEnemy                                                       # Define enemy for this battle
     FightMode_AddBonuses                                                        # Set adjustments for items

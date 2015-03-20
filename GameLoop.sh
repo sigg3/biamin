@@ -9,10 +9,8 @@
 # Used: NewSector(), HotzonesDistribute()
 #-----------------------------------------------------------------------
 GPStoXY() {
-    awk '{
-          print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
-          print substr($0, 2);
-         }' <<< "$1"
+    awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }' <<< "$1"
 }
 
 #-----------------------------------------------------------------------
@@ -88,14 +86,14 @@ MapNav() {
 
     case "$DEST" in                                # Fix for 80x24. Dirty but better than nothing #kstn
 	[wWnN] ) echo -n "You go North";           # Going North (Reversed: Y-1)
-		 (( MAP_Y != 1  )) && (( MAP_Y-- )) || echo -en "${CLEAR_LINE}You wanted to visit Santa, but walked in a circle.." ;;
+		 ((MAP_Y != 1 )) && ((MAP_Y--)) || echo -en "${CLEAR_LINE}You wanted to visit Santa, but walked in a circle.." ;;
 	[dDeE] ) echo -n "You go East"             # Going East (X+1)
-		 ((MAP_X != 18 )) && (( MAP_X++ )) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
+		 ((MAP_X != 18)) && ((MAP_X++)) || echo -en "${CLEAR_LINE}You tried to go East of the map, but walked in a circle.." ;;
 	[sS]   ) echo -n "You go South"            # Going South (Reversed: Y+1)
-		 (( MAP_Y != 15 )) && (( MAP_Y++ )) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;;
+		 ((MAP_Y != 15)) && ((MAP_Y++)) || echo -en "${CLEAR_LINE}You tried to go someplace warm, but walked in a circle.." ;;
 	[aA]   ) echo -n "You go West"             # Going West (X-1)
-		 (( MAP_X != 1  )) && (( MAP_X-- )) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
-	[qQ] ) CleanUp ;;                          # Save and exit
+		 ((MAP_X != 1 )) && ((MAP_X--)) || echo -en "${CLEAR_LINE}You tried to go West of the map, but walked in a circle.." ;;
+	[qQ]   ) CleanUp ;;                        # Save and exit
 	*      ) echo -n "Loitering.."
     esac
     CHAR_GPS=$(XYtoGPS "$MAP_X" "$MAP_Y")          # Translate MAP_X numeric back to A-R and store

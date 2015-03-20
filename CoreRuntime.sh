@@ -4,7 +4,9 @@
 #                        2. RUNTIME BLOCK                              #
 #                   All running code goes here!                        #
 
-# Make place for game (BEFORE CLI opts! Mostly because of Higscore and CLI_CreateCustomMapTemplate())
+# Make place for game (BEFORE CLI opts! Mostly because of Higscore and
+# CLI_CreateCustomMapTemplate())
+
 if [[ ! -d "$GAMEDIR" ]] ; then                                           # Check whether gamedir exists...
     echo -e "Game directory default is $GAMEDIR/\nYou can change this in $CONFIG. Creating directory ..."
     mkdir -p "$GAMEDIR/" || Die "ERROR! You do not have write permissions for $GAMEDIR ..."
@@ -25,7 +27,9 @@ fi
 CLI_ParseArguments "$@"			  # Parse CLI args if any
 echo "Putting on the traveller's boots.." # OK lets play!
 
-# Load variables from $GAMEDIR/config. Need if player wants to keep his saves not in ~/.biamin . NB variables should not be empty !
+# Load variables from $GAMEDIR/config. Need if player wants to keep
+# his saves not in ~/.biamin . NB variables should not be empty !
+
 read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
                                    if (/^COLOR:/)    { COLOR = $2  } }
                             END { print GAMEDIR, COLOR ;}' "$CONFIG" )

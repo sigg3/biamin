@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 . CoreFunctions.sh
 
 CLEAR_LINE="\e[1K\e[80D" # \e[1K - erase to the start of line \e[80D - move cursor 80 columns backward

@@ -28,9 +28,9 @@ EOT
     case "$1" in
 	3 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;
 	    MvAddStr 5 11 "                 N O T E S                " ;;
-	2 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;;  
+	2 ) MvAddStr 3 11 "         A   L   M   A   N   A   C        " ;;
 	* ) MvAddStr 3 11 "C  H  A  R  A  C  T  E  R     S  H E  E  T" ;
-	    MvAddStr 5 11 "            s t a t i s t i c s           " ;;	
+	    MvAddStr 5 11 "            s t a t i s t i c s           " ;;
     esac
     tput rc
 }
@@ -353,7 +353,7 @@ LoadCustomMap() { # Used in MapCreate()
 	(( i > LIMIT)) && echo -en "\n You have more than $LIMIT maps. Use (P)revious or (N)ext to list," # Don't show it if there are maps < LIMIT
 	echo "" # Empty line
 	# TODO change to "Enter NUMBER of map to load, load (D)efault map or go to (M)ain menu: "
-	echo -n "Enter NUMBER of map to load, load (D)efault map or (Q)uit: " 
+	echo -n "Enter NUMBER of map to load, load (D)efault map or (Q)uit: "
 	read -sn 1 NUM
 	case "$NUM" in
 	    [nN]  ) ((OFFSET + LIMIT < i)) && ((OFFSET += LIMIT)) ;; # Next part of list
@@ -395,7 +395,7 @@ MapCreate() {
     # # xargs ls -t - sort by date, last played char'll be the first in array
     MAPS=( $(find "$GAMEDIR"/ -name '*.map' | sort) )     # CHECK for custom maps
     if [[ "${MAPS[@]}" ]] ; then # If there is/are custom map/s
-    echo -en "\n Custom maps found in $GAMEDIR\n Would you like to play a (C)ustom map or the (D)efault? " #&& read -sn 1 CUSTOM_MAP_PROMPT
+	echo -en "\n Custom maps found in $GAMEDIR\n Would you like to play a (C)ustom map or the (D)efault? " #&& read -sn 1 CUSTOM_MAP_PROMPT
 	[[ $(Read) == [Cc] ]] && LoadCustomMap && return 0  # leave
     fi
     MAP=$(cat <<EOT
@@ -428,4 +428,3 @@ EOT
 #                                                                      #
 #                                                                      #
 ########################################################################
-

@@ -71,7 +71,7 @@ Almanac_Moon() { # Used in Almanac()
 # 	Just deny user to input EOT :)
 #-----------------------------------------------------------------------
 #language
-Almanac_Notes() {    
+Almanac_Notes() {
     local CHAR_NOTES="${GAMEDIR}/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").notes"
     local NOTES=()		                                                # Array for notes
     local i 			                                                # Counter
@@ -81,19 +81,19 @@ Almanac_Notes() {
 	tput sc
 	echo " In the back of your almanac, there is a page reserved for Your Notes."
 	echo " There is only room for 10 lines, but you may erase obsolete information."
-	echo	
+	echo
 	echo -e "\n\n\n\n\n\n\n\n\n\n" > "$CHAR_NOTES"                          # making empty notes file
 	PressAnyKey
 	tput rc
 	tput ed
-    fi    
+    fi
     for i in {0..9}; do NOTES[$i]=$(sed -n "$((i + 1))p" "${CHAR_NOTES}"); done # load notes
-    for i in {0..9}; do echo " $i - ${NOTES[$i]}"; done                         # display notes    
+    for i in {0..9}; do echo " $i - ${NOTES[$i]}"; done                         # display notes
     echo "$HR"
     tput sc			                                                # store cursor position
     while (true); do                                                      ### main loop
 	tput rc 		                                          # restore cursor position at case if it is not first time loop
-	echo -en "${CLEAR_LINE}$(MakePrompt '(A)dd;(E)rase;(Q)uit')"      # prompt 
+	echo -en "${CLEAR_LINE}$(MakePrompt '(A)dd;(E)rase;(Q)uit')"      # prompt
 	tput ed			                                          # clear to the end of display at case if previous note was longer than 74
 	case "$(Read)" in
 	    [aA] ) echo -en "${CLEAR_LINE} Which one? [0-9]: ";           # prompt
@@ -105,7 +105,7 @@ Almanac_Notes() {
 		   REPLY=$(sed -e 's/^\(.\{74\}\).*/\1/' <<< "$REPLY");   # restrict note length to 74
 		   NOTES[$i]="$REPLY";                                    # store note in array
 		   sed -i "$(($i + 1))s/^.*$/$REPLY/" "${CHAR_NOTES}";    # store note in file
-		   MvAddStr $((9 + i)) 0 "$(tput el) $i - ${NOTES[$i]}";; # redraw note       
+		   MvAddStr $((9 + i)) 0 "$(tput el) $i - ${NOTES[$i]}";; # redraw note
 	    [eE] ) echo -en "${CLEAR_LINE} Which one? [0-9]: ";           # prompt
 		   i=$(Read);				                  # read note num
 		   grep -Eq '^[0-9]$' <<< "$i" || continue                # check if user input if int [0-9]
@@ -113,11 +113,10 @@ Almanac_Notes() {
 		   sed -i "$(($i + 1))s/^.*$//" "${CHAR_NOTES}";          # erase note in file
 		   MvAddStr $((9 + i)) 0 "$(tput el) $i - ${NOTES[$i]}";; # redraw note
 	    [qQ] ) break;;
-	    *    ) ;;		
+	    *    ) ;;
 	esac
-    done    
+    done
 } # Return to Almanac()
-
 
 #-----------------------------------------------------------------------
 # Almanac()
@@ -133,7 +132,7 @@ Almanac() {
     tput sc
     MvAddStr 5 $((32 - ( $(Strlen "$ALMANAC_SUB") / 2) )) "$ALMANAC_SUB" # centered sub
     tput rc
-    
+
     # Draw graphics
     cat <<"EOT"
                                                      ringday
@@ -170,12 +169,12 @@ EOT
     tput sc
     case "$WEEKDAY" in
 	0 ) tput cup 8 53  ;; # "Ringday (Holiday)"
-	1 ) tput cup 9 61  ;; # "Moonday"   
-	2 ) tput cup 11 63 ;; # "Brenday"   
-	3 ) tput cup 13 60 ;; # "Midweek"   
-	4 ) tput cup 13 45 ;; # "Braigday"  
-	5 ) tput cup 11 41 ;; # "Melethday" 
-	6 ) tput cup 9 45  ;; # "Washday"   
+	1 ) tput cup 9 61  ;; # "Moonday"
+	2 ) tput cup 11 63 ;; # "Brenday"
+	3 ) tput cup 13 60 ;; # "Midweek"
+	4 ) tput cup 13 45 ;; # "Braigday"
+	5 ) tput cup 11 41 ;; # "Melethday"
+	6 ) tput cup 9 45  ;; # "Washday"
     esac
     ((WEEKDAY == 0))  && echo "RINGDAY" || echo "$(Toupper $(WeekdayString "$WEEKDAY"))"
     tput rc
@@ -225,7 +224,7 @@ EOT
     echo -e " $TRIVIA_HEADER\n $TRIVIA1\n\n $TRIVIA2"
     echo "$HR"
 
-    if [[ "$DEBUG" ]] ; then 
+    if [[ "$DEBUG" ]] ; then
 	MakePrompt '(M)oon phase;(N)otes;(R)eturn'
 	case "$(Read)" in
 	    [mM] ) Almanac_Moon  ;;
@@ -240,4 +239,3 @@ EOT
 #                                                                      #
 #                                                                      #
 ########################################################################
-

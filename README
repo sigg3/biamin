@@ -1,10 +1,10 @@
-               ____  _____    _    ____  __  __ _____ 
+               ____  _____    _    ____  __  __ _____
               |  _ \| ____|  / \  |  _ \|  \/  | ____|
-              | |_) |  _|   / _ \ | | | | |\/| |  _|  
-              |  _ <| |___ / ___ \| |_| | |  | | |___ 
+              | |_) |  _|   / _ \ | | | | |\/| |  _|
+              |  _ <| |___ / ___ \| |_| | |  | | |___
               |_| \_\_____/_/   \_\____/|_|  |_|_____|
 
-   blog @ sigg3.net/biamin || repo @ gitorious.org/back-in-a-minute
+   blog @ sigg3.net/biamin || repo @ github.com/sigg3/biamin
 ------------------------------------------------------------------------
 How to make the biamin.sh executable:
 
@@ -37,7 +37,7 @@ master:
 development:
     individual .sh code chunks
     MakeFile
-    
+
 experimental:
     new experimental features get their own branch under dev
     there is no single 'experimental' named branch however
@@ -64,7 +64,7 @@ o COMMENT       for code comments
 o FORMATTING    for code formatting changes
 o MINOR         for minor edits, cosmetics
 o RELEASE       for public relases (entails version change)
-o REMOVED/MOVED/MERGED etc. for various file manipulations      
+o REMOVED/MOVED/MERGED etc. for various file manipulations
 0 TODO          flagging things TODO, now or in future (e.g. TODO v. 4)
 
 + short informative description, preferably including .sh or function!
@@ -73,7 +73,7 @@ o REMOVED/MOVED/MERGED etc. for various file manipulations
 If you want to hunt down evil bugs and become a debug warrior:
 
 The fastest way is to leave a comment on our git repo at
-https://gitorious.org/back-in-a-minute
+https://github.com/sigg3/biamin
 But you may also leave a comment on http://sigg3.net/biamin/bugs
 
 To debug biamin and help us make it better, run biamin like this:

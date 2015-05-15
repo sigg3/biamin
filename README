@@ -73,7 +73,7 @@ o REMOVED/MOVED/MERGED etc. for various file manipulations
 If you want to hunt down evil bugs and become a debug warrior:
 
 The fastest way is to leave a comment on our git repo at
-https://github.com/sigg3/biamin
+https://github.com/sigg3/biamin/issues
 But you may also leave a comment on http://sigg3.net/biamin/bugs
 
 To debug biamin and help us make it better, run biamin like this:

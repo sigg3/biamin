@@ -9,11 +9,12 @@
 # Moon month has 32 days
 
 # Declare global calendar variables (used in DateFromTurn(),Almanac() and MakeCalendar())
-declare -r YEAR_LENGHT=360                       # How many days are in year?
-declare -r YEAR_MONTHES=12                       # How many monthes are in year?
-declare -r MONTH_LENGTH=30                       # How many days are in month?
-declare -r MOON_PHASE_LENGTH=4                   # How many days one Moon Phase lenghts
-declare -r MOON_CYCLE=$((MOON_PHASE_LENGTH * 8)) # How many days are in moon month? (8 phases * $MOON_PHASE_LENGTH) ATM == 32.
+
+declare -r MONTH_LENGTH=30                              # How many days are in month?
+declare -r YEAR_MONTHES=12                              # How many monthes are in year?
+declare -r YEAR_LENGHT=$((MONTH_LENGTH * YEAR_MONTHES)) # How many days are in year?
+declare -r MOON_PHASE_LENGTH=4                          # How many days one Moon Phase lenghts
+declare -r MOON_CYCLE=$((MOON_PHASE_LENGTH * 8))        # How many days are in moon month? (8 phases * $MOON_PHASE_LENGTH) ATM == 32.
 
 # Moon Phases names
 declare -r MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
@@ -155,4 +156,3 @@ MakeCalendar() {
 #                                                                      #
 #                                                                      #
 ########################################################################
-

@@ -192,21 +192,21 @@ BiaminSetup_MakeNewChar() {
 # Used: CoreRuntime.sh
 # TODO: Argumens: $CHAR(string)
 #-----------------------------------------------------------------------
-BiaminSetup() {    
+BiaminSetup() {
     BiaminSetup_MakeBaseChar	                                                        # Make default char
     CHARSHEET="$GAMEDIR/$(echo "$CHAR" | tr '[:upper:]' '[:lower:]' | tr -d " ").sheet" # Set CHARSHEET variable to gamedir/char.sheet (lowercase)
     if [[ -f "$CHARSHEET" ]] ; then
 	BiaminSetup_LoadCharsheet
 	BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
 	BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"                                     # We need set item's abilities only for loaded chars
+	((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150                # If Cheating is disabled (in CONFIGURATION) restrict health to 150
     else
 	BiaminSetup_MakeNewChar
     fi
     Sleep 2
-    ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150                    # If Cheating is disabled (in CONFIGURATION) restrict health to 150
+
 }
 
 #                                                                      #
 #                                                                      #
 ########################################################################
-

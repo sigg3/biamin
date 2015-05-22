@@ -81,7 +81,8 @@ MapNav() {
 	    echo -n " I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  " ;
 	    DEST=$(Read);;
 	* ) DEST="$1" ;                            # The player did NOT toggle map, just moved without looking from NewSector()..
-	    GX_Place "$SCENARIO" ;                 # Shows the _current_ scenario scene, not the destination's.
+	    # GX_Place "$SCENARIO" ;                 # Shows the _current_ scenario scene, not the destination's.
+	    echo -en "${CLEAR_LINE}";              # Current scenario ASCII is already on the screen, so just clear prompt from NewSector()
     esac
 
     case "$DEST" in                                # Fix for 80x24. Dirty but better than nothing #kstn
@@ -139,7 +140,7 @@ NewSector() {
 	CheckForStarvation                                    # Food check
 	CheckForWorldChangeEconomy                            # Change economy if success
 
-	while (true); do                                      # Secondary loop, at current $SCENARIO 
+	while (true); do                                      # Secondary loop, at current $SCENARIO
 	    GX_Place "$SCENARIO"
 	    case "$SCENARIO" in                               # Determine promt
 		T | C ) echo -n "     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit" ;;
@@ -162,4 +163,3 @@ NewSector() {
 #                                                                      #
 #                                                                      #
 ########################################################################
-

@@ -2,7 +2,7 @@
 #          Small functions which are used throughout the game          #
 #                                                                      #
 
-Die()         { echo -e "$1" && Exit 1 ; }                                          # Display $1 and exit script.
+Die()         { echo -e "$1" >&2 && Exit 1 ; }                                      # Display $1 (to STDERR) and exit script.
 Sleep()       { read -s -n 1 -t "$1" ; }                                            # Works like usual sleep but can be abortet by hitting key
 Capitalize()  { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1.
 Toupper()     { awk '{ print toupper($0); }' <<< "$*" ; }                           # Convert $* to uppercase.
@@ -153,11 +153,10 @@ ReseedRandom() {
 Echo() {
     # TODO check for total lenght < 79 !!!
     echo -en "$1"
-    tput hpa $(( 78 - $(Strlen "$2") )) # Move cursor to column #1 
+    tput hpa $(( 78 - $(Strlen "$2") )) # Move cursor to column #1
     echo -en "$2"
 }
 
 #                                                                      #
 #                                                                      #
 ########################################################################
-

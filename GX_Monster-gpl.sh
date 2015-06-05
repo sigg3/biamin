@@ -82,7 +82,7 @@ EOT
                       Luckily, they are easily defeated.
 EOT
 	    ;;
-	*)  Die "Bug in GX_Monster() with enemy >>>$1<<<" ;;
+	*)  Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
     esac
     echo "$HR"
 }
@@ -90,4 +90,3 @@ EOT
 #                                                                      #
 #                                                                      #
 ########################################################################
-

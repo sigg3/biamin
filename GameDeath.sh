@@ -24,7 +24,7 @@ ResetStarvation() {
 	    2 | 4 ) (( ACCURACY++ ));
 		    # echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
 		    Echo "You restore your body to healthy condition" "[+1 ACCURACY]" ;;
-	    *     ) Die "BUG in ResetStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
+	    *     ) Die "${FUNCNAME}: Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	esac
     fi
     STARVATION=0
@@ -45,7 +45,7 @@ CheckForStarvation(){
 	echo 			# empty line
 	((STARVATION)) && ResetStarvation
     else
-	((STARVATION++))	
+	((STARVATION++))
 	# Starvation penalty -5HP per turn
 	local PROMPT="You're starving on the $(Ordial "${STARVATION}") "
 	case "$STARVATION" in
@@ -58,7 +58,7 @@ CheckForStarvation(){
 	esac
 	# echo "-5 HEALTH: Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)"
 	# Echo "Your body is suffering from starvation .. (HEALTH: $CHAR_HEALTH)" "[-5 HEALTH]"
-	(( CHAR_HEALTH -= 5 )) 
+	(( CHAR_HEALTH -= 5 ))
 	Echo "${PROMPT}" "[-5 HEALTH]"
 	if (( STARVATION == 8 )); then # Extreme Starvation penalty
 	    case "$CHAR_RACE" in
@@ -68,7 +68,7 @@ CheckForStarvation(){
 		2 | 4 ) (( ACCURACY-- ));
 			# echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
 			Echo "\nYou're slowly starving to death... (ACCURACY: $ACCURACY)" "[-1 ACCURACY]" ;;
-		*     ) Die "BUG in CheckForStarvation() with \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
+		*     ) Die "${FUNCNAME}: Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then
@@ -103,13 +103,12 @@ Death() {
     # Showing Highscore list here
     GX_HighScore  # HighScore()
     echo "" # empty line TODO fix it
-    HighscoreRead 	# Show 10 highscore entries 
+    HighscoreRead 	# Show 10 highscore entries
     echo ""  # empty line TODO fix it
-    PressAnyKey 
+    PressAnyKey
     CleanUp
 }
 
 #                                                                      #
 #                                                                      #
 ########################################################################
-

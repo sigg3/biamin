@@ -1,5 +1,20 @@
-# Back In A Minute created by Sigg3.net (C) 2014
-# Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
+#   Back In A Minute created by Sigg3.net
+#   Copyright (C) 2014, 2015 Sigbjørn S. Åmdal & Kastian 
+#
+#   This file is part of Back In A Minute.
+#
+#   Back In A Minute is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, version 3 of the License.
+#
+#   Back In A Minute is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with Back In A Minute.  If not, see <http://www.gnu.org/licenses/>.
+
 VERSION="1.9" # 12 items on TODO. Change to 2.0 when list is x'd out
 WEBURL="http://sigg3.net/biamin/"
 REPO="https://gitorious.org/back-in-a-minute/code"
@@ -46,5 +61,4 @@ DISABLE_CHEATS=0                                                       #
 #                                           - Sigg3                    #
 #                                                                      #
 ########################################################################
-
 

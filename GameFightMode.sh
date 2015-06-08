@@ -14,7 +14,7 @@ CheckForFight() {
     local CHANCE
     # define chances
     if [[ ! "$PLAYER_RESTING" ]] ; then # usual fight
-	case "$1" in        
+	case "$1" in
 	    H ) CHANCE=1  ;;
 	    x ) CHANCE=50 ;;
 	    . ) CHANCE=20 ;;
@@ -35,7 +35,7 @@ CheckForFight() {
 	esac
     fi
     # Find out if we're attacked
-    RollDice 100                
+    RollDice 100
     if RollForEvent "${CHANCE}" "event" ; then # "Rolling for fight" is inaccurate:P
 	FightMode
 	return 1	     # check fails, fight
@@ -110,7 +110,7 @@ declare -r    BEAR=9
 # ${ENEMIES[@]}
 # Enemies ablilities table. Folders marked '%' is chances to have
 # current loot.
-# FleeTreshhold ($EN_FLEE_THRESHOLD) - At what Health will enemy flee? 
+# FleeTreshhold ($EN_FLEE_THRESHOLD) - At what Health will enemy flee?
 # Exp($EN_EXP)                       - Exp player get if he manage to
 #                                      kill the enemy
 # PickpocketExp($EN_PICKPOCKET_EXP)  - How many EXP player'll get for
@@ -231,26 +231,26 @@ FightMode_FightTable() {
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$(Capitalize "$ENEMY")" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
 
-#-----------------------------------------------------------------------
-# FightMode_FightFormula()
-# Display Formula in Fighting
-# Arguments: $DICE_SIZE(int), $FORMULA(string), $SKILLABBREV(string)
-#-----------------------------------------------------------------------
-FightMode_FightFormula() {
-    local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
-    (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
-    case "$FORMULA" in
-	eq )    FORMULA="= " ;;
-	gt )    FORMULA="> " ;;
-	lt )    FORMULA="< " ;;
-	ge )    FORMULA=">=" ;;
-	le )    FORMULA="<=" ;;
-	times ) FORMULA="x " ;;
-    esac
-    echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( " # skill & roll
-    # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
-    # determined in the if and cases of the Fight Loop, so don't repeat here.
-}
+# #-----------------------------------------------------------------------
+# # FightMode_FightFormula()
+# # Display Formula in Fighting
+# # Arguments: $DICE_SIZE(int), $FORMULA(string), $SKILLABBREV(string)
+# #-----------------------------------------------------------------------
+# FightMode_FightFormula() {
+#     local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
+#     (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
+#     case "$FORMULA" in
+# 	eq )    FORMULA="= " ;;
+# 	gt )    FORMULA="> " ;;
+# 	lt )    FORMULA="< " ;;
+# 	ge )    FORMULA=">=" ;;
+# 	le )    FORMULA="<=" ;;
+# 	times ) FORMULA="x " ;;
+#     esac
+#     echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( " # skill & roll
+#     # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
+#     # determined in the if and cases of the Fight Loop, so don't repeat here.
+# }
 
 FightMode_CharTurn() {
     local FIGHT_PROMPT
@@ -300,12 +300,12 @@ FightMode_EnemyTurn() {
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
 	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
-	    if [[ "$DEBUG" ]] ; then 
+	    if [[ "$DEBUG" ]] ; then
 		if (( $(RollDice2 20) == 0 )) ; then
 		    Sleep 2
 		    echo -e "\nBut stumbles and falls!!!"  #language
 		    return 0 	# Change to player's turn without enemy's
-		fi		
+		fi
 	    fi
 	    LUCK=1
 	    unset FIGHTMODE
@@ -314,7 +314,7 @@ FightMode_EnemyTurn() {
 	else
 	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"
 	    Sleep 2.5
-	fi	
+	fi
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     RollDice 6
@@ -323,7 +323,7 @@ FightMode_EnemyTurn() {
 	Sleep 2
 	RollDice 6
 	local DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
-	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]" 
+	Echo "\nThe $ENEMY's blow hits you with $DAMAGE points!" "[-${DAMAGE} HEALTH]"
 	((CHAR_HEALTH -= DAMAGE))
 	SaveCurrentSheet
 	Sleep 1 # TODO test
@@ -371,7 +371,7 @@ FightMode_CheckForExp() {
 	2)  # PLAYER died but saved by guardian angel or 1000 EXP
 	    echo "When you come to, the $ENEMY has left the area ..." ;;
 	3)  # PLAYER managed to FLEE during fight! (1/4 $EN_EXP)
-	    EN_EXP=$((EN_EXP / 4)) 
+	    EN_EXP=$((EN_EXP / 4))
 	    Echo "You got away while the $ENEMY wasn't looking!" "[+${EN_EXP} EXP]" ;;
 	*)  # ENEMY was slain!
 	    Echo "You defeated the $ENEMY!" "[+${EN_EXP} EXP]"
@@ -403,7 +403,7 @@ FightMode_CheckForPickpocket() {
 	    fi ;;
 	1 ) # loot and EXP
 	    (( $(bc <<< "$EN_GOLD > 0")    )) && CHAR_GOLD=$( bc <<< "$CHAR_GOLD + $EN_GOLD" )          || EN_GOLD="no"
-	    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"	    
+	    (( $(bc <<< "$EN_TOBACCO > 0") )) && CHAR_TOBACCO=$( bc <<< "$CHAR_TOBACCO + $EN_TOBACCO" ) || EN_TOBACCO="no"
 	    echo -e "\nIn the pouch lifted from the ${ENEMY}, you find $EN_GOLD gold and $EN_TOBACCO tobacco" ;
 	    Echo " and gained experience for successfully pickpocketing!" "[+${EN_PICKPOCKET_EXP} EXP]";;
 	2)  # no loot but EXP
@@ -459,4 +459,3 @@ FightMode() {
 #                                                                      #
 #                                                                      #
 ########################################################################
-

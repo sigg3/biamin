@@ -164,6 +164,9 @@ CLI_Help() {
     echo "For usage: run biamin --usage"
     echo "Current dir for game files: $GAMEDIR/"
     echo "Change at runtime or on line 10 in the CONFIGURATION of the script."
+    echo -e "\nReport bugs to: <http://sigg3.net/biamin/bugs>"
+	echo "Home page: <http://sigg3.net/biamin/>"
+  # echo "General help using GNU software: <http://www.gnu.org/gethelp/>" # TODO create a youtube + pic tutorial
     Exit 0
 }
 

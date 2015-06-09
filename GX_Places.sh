@@ -12,6 +12,7 @@ GX_Place() {
     clear
     case "$1" in
 	H ) PLACE="Home" ;
+	# Homestead CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                                                      ___________(  )_
                                                     /   \      (  )  \
@@ -28,6 +29,7 @@ GX_Place() {
 EOT
 	    ;;
 	x ) PLACE="Mountain" ;
+	# Mountains CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
 
@@ -44,6 +46,7 @@ EOT
 EOT
 	    ;;
 	. ) PLACE="Road" ;
+	# On the Road Again CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                              /V/V7/V/\V\V\V\
                             /V/V/V/V/V/V/V\V\                ,      ^^
@@ -60,6 +63,7 @@ EOT
 EOT
 	    ;;
 	T ) PLACE="Town" ;
+	# RPG Village CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                                                            ___
                                                           / \_\   town house
@@ -76,6 +80,7 @@ EOT
 EOT
 	    ;;
 	@ ) PLACE="Forest" ;
+	# Walking the woods CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                                                                     /\
                                                                    //\\
@@ -92,6 +97,7 @@ EOT
 EOT
 	    ;;
 	C ) PLACE="Oldburg Castle" ;
+	# Oldburg Castle CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                              __   __   __                         __   __   __
                             |- |_|- |_| -|   ^^                  |- |_|- |_|- |

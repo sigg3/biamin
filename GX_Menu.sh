@@ -19,6 +19,7 @@ EOT
 
 #-----------------------------------------------------------------------
 # GX_Banner()
+# My Home Is My Castle CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_Banner() {
     GX_BiaminTitle
@@ -38,7 +39,7 @@ GX_Banner() {
 
           /a/ |s|i|m|p|l|e| /b/a/s/h/ |a|d|v|e|n|t|u|r|e| /g/a/m/e/
 
-              Sigg3.net (C) 2014 CC BY-NC-SA 4.0 and GNU GPL v.3
+            Sigg3.net (C) 2013-2015 CC BY-SA 4.0 and GNU GPL v.3
 EOT
     echo "$HR"
 }
@@ -46,6 +47,7 @@ EOT
 #-----------------------------------------------------------------------
 # GX_HighScore()
 # Used: HighScore()
+# Chalise CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_HighScore() {
     clear
@@ -63,6 +65,7 @@ EOT
 
 #-----------------------------------------------------------------------
 # GX_LoadGame()
+# Load Scroll CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_LoadGame() {
     clear

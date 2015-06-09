@@ -10,7 +10,7 @@
 GX_DiceGame_Table() {
     clear
     case "$1" in
-	0 ) # Empty table, come back later
+	0 ) # Empty Table CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
 
@@ -24,7 +24,7 @@ GX_DiceGame_Table() {
                   ||'L.______________________________________]
 EOT
         ;;
-	* )
+	* ) # Dice Player's Table CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
                              __,"#`._
                            <' ;_   _; `>

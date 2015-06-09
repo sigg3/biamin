@@ -10,7 +10,7 @@
 GX_Monster() {
     clear
     case "$1" in
-	"chthulu" ) # Created 2013, release 2014 (a684a35)
+	"chthulu" )	# Chthulu CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	cat <<"EOT"
                         \ \_|\/\      ,.---.      ,/'/            \`\
                          \ _    \   ;'      `\   ,/ /              \ \
@@ -28,7 +28,7 @@ GX_Monster() {
                                         )                     `.   (
 EOT
 	    ;;
-	"orc" ) # Created 2013, release 2014 (a684a35)
+	"orc" ) # Orc CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	 cat <<"EOT"
                                                   |\            /|
                                                   | \_.::::::._/ |
@@ -48,7 +48,7 @@ EOT
                                                  (______)  (______)
 EOT
 	    ;;
-	"varg" ) # Created 2013, release 2014 (a684a35)
+	"varg" ) # Varg CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	cat <<"EOT"
 
                                                      ______
@@ -66,7 +66,7 @@ EOT
 
 EOT
 	    ;;
-	"mage" ) # Created 2013, release 2014 (a684a35)
+	"mage" ) # Fierce Mage CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	cat <<"EOT"
                                              ---.         _/""""""\
                                             (( ) )       /_____  |'
@@ -87,7 +87,7 @@ EOT
                                                    |        \        \
 EOT
 	    ;;
-	"goblin" ) # Created 2013, release 2014 (a684a35)
+	"goblin" ) # Goblin in the sky with diamonds CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	cat <<"EOT"
                                                     _______                   _
                                                    (       )/|    ===[]]]====(_)
@@ -105,7 +105,7 @@ EOT
                                             (_____/      (______)
 EOT
 	    ;;
-	"bandit" ) # Created 2013, release 2014 (a684a35)
+	"bandit" ) # Stoneage Thug CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net> (a684a35)
 	cat <<"EOT"
                                                        /""""""';   ____
                                                       d = / =  |3 /1--\\
@@ -123,7 +123,7 @@ EOT
                                                (________)    (________)
 EOT
 	    ;;
-	"boar" ) # Created June 2014 (2a62c4f)
+	"boar" ) # Hog CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net> June 2014 (2a62c4f)
 	cat <<"EOT"
                                 ;".  ,--~-./L-'"'"'"'"~,
                                 |\ \/     /, | ~  ` ~   `"`~,-~~._.
@@ -141,7 +141,7 @@ EOT
                                       /,__\   /,___\   /___%       /__7
 EOT
 	    ;;
-	"dragon" ) # Created June 2014 (?)
+	"dragon" ) # Dragon CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 	cat <<"EOT"
                                                          ,,_____.
                                                      ,~-'.------.`'~-._
@@ -160,7 +160,7 @@ EOT
                                                    (  C`~-\  `_ `~_/ e`n';m*7
 EOT
 	    ;;
-	"bear" ) # Created September 2014 (860b051)
+	"bear" ) # Papa Bear CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net> (860b051)
 	cat <<"EOT"
                                                ,--~~.._
                                           _.,;'        `-.....__
@@ -180,7 +180,7 @@ EOT
                                     ,;'_..__,' .;_._}          ,,::.:-'"--~'
 EOT
 	    ;;
-	"imp" ) # (wh)imp Simplified anime edition, December 2014 (0c682c5)
+	"imp" ) # (Wh)imp CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net> (0c682c5)
 	cat <<"EOT"
 
 
@@ -204,7 +204,7 @@ EOT
 
 # BACKUPS or SKETCHES
 #
-#	"imp" ) # Original imp October 2014 (f8292a2)
+#	"imp" ) # Monkey Wimp CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net> (f8292a2)
 #    cat <<"EOT"
 #
 #

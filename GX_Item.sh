@@ -12,6 +12,7 @@ GX_Item() {
     clear
     case "$1" in
 	"$GIFT_OF_SIGHT")
+	# Gift of Sight CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                           G I F T   O F   S I G H T
@@ -38,6 +39,7 @@ GX_Item() {
 EOT
 	    ;;
 	"$EMERALD_OF_NARCOLEPSY")
+	# Emerald CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                   E M E R A L D   O F   N A R C O L E P S Y
@@ -62,6 +64,7 @@ EOT
 EOT
 	    ;;
 	"$GUARDIAN_ANGEL")
+	# Guardian Angel CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                           G U A R D I A N   A N G E L
@@ -88,6 +91,7 @@ EOT
 EOT
 	    ;;
 	"$FAST_MAGIC_BOOTS")
+	# Pussy Boots CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                         F A S T   M A G I C   B O O T S
@@ -113,6 +117,7 @@ EOT
 EOT
 	    ;;
 	"$QUICK_RABBIT_REACTION")
+	# Japanese Rabbit CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                     Q U I C K   R A B B I T   R E A C T I O N
@@ -137,6 +142,7 @@ EOT
 EOT
 	    ;;
 	"$FLASK_OF_TERRIBLE_ODOUR")
+	# Weird Puppy Dragon CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                   F L A S K   O F   T E R R I B L E   O D O U R
@@ -161,6 +167,7 @@ EOT
 EOT
 	    ;;
 	"$TWO_HANDED_BROADSWORD")
+	# And My Two-Handed Broadsword CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                    T W O - H A N D E D    B R O A D S W O R D
@@ -185,6 +192,7 @@ EOT
 EOT
 	    ;;
 	"$STEADY_HAND_BREW")
+	# That Ale CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
 	    cat <<"EOT"
 
                       S T E A D Y   H A N D   B R E W

@@ -2,7 +2,12 @@
 #                       Marketplace-related ASCII                      #
 #                             (cc-version)                             #
 
-GX_Marketplace() { # Several Town shoppes view'd from end o' the street
+#-----------------------------------------------------------------------
+# GX_Marketplace()
+# Displays several Town shoppes view'd from end o' the street
+# Market CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
+#-----------------------------------------------------------------------
+GX_Marketplace() {
     clear
     cat <<"EOT"
                                                             ,;;7 `l\\ \\\ \\\\
@@ -29,6 +34,7 @@ EOT
 # Display Grocer ASCII. If $1 and $2 also display prices for FOOD and
 # TOBACCO.
 # Arguments: (optional) $PRICE_FxG(float), $PRICE_FxT(float).
+# Grocer CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_Marketplace_Grocer() {
     clear
@@ -61,6 +67,7 @@ EOT
 # GX_Marketplace_Merchant()
 # (Goatee == dashing, not hipster)
 # Used: Marketplace_Merchant()
+# The Dashing Merchant CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_Marketplace_Merchant() {
     clear
@@ -91,6 +98,7 @@ EOT
 #-----------------------------------------------------------------------
 # GX_Marketplace_Beggar()
 # Used: Marketplace_Beggar()
+# Market Beggar CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
 #-----------------------------------------------------------------------
 GX_Marketplace_Beggar() {
     clear
@@ -118,6 +126,12 @@ EOT
 #-----------------------------------------------------------------------
 # GX_Marketplace_Recruiter()
 # Used: Marketplace_Recruiter()
+# PLACEHOLDER
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+# GX_Marketplace_Monk()
+# Used: Marketplace_Monk()
 # PLACEHOLDER
 #-----------------------------------------------------------------------
 

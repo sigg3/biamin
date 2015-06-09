@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------
 GX_CharSheet() {
     clear
+    #  Headshot CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
                                /T\                           /""""""""\
       o-+----------------------------------------------+-o  /  _ ++ _  \
@@ -43,6 +44,7 @@ EOT
 #-----------------------------------------------------------------------
 GX_Death() {
     clear
+    #  Player Death CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
 
 
@@ -71,6 +73,7 @@ EOT
     tput rc
     PressAnyKey
     clear
+    #  Norwegian Blue CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
 
 
@@ -99,6 +102,7 @@ EOT
 #-----------------------------------------------------------------------
 GX_Intro() {
     clear
+    #  Soria Moria CC BY-SA (C) 2013 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
 
        YOU WAKE UP TO A VAST AND UNFAMILIAR LANDSCAPE !
@@ -148,6 +152,7 @@ GX_Calendar() {
 # Used: GX_Rest(), Almanac_Moon()
 #-----------------------------------------------------------------------
 GX_Moon() {
+	#  Moon Phases CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
     case "$1" in
 	0 ) cat <<"EOT"
 
@@ -310,6 +315,7 @@ GX_Rest() {
 
 GX_Tavern() {
     clear
+    #  Tavern CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
      __________
     |  ______  |       ___________________________________

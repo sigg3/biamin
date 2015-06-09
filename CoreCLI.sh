@@ -162,8 +162,8 @@ CLI_CreateBiaminLauncher() {
 CLI_Help() {
     echo "Run BACK IN A MINUTE with '-p', '--play' or 'p' argument to play!"
     echo "For usage: run biamin --usage"
-    echo "Default dir for game files: $GAMEDIR/"
-    echo "Current dir for game files: $GAMEDIR/"
+    echo -en "Current dir for game files: $GAMEDIR/ "
+    [ "$GAMEDIR" = "$HOME/.biamin" ] && echo "(Default)" || echo "(Custom)"    
     echo -e "\nReport bugs to: <http://sigg3.net/biamin/bugs>"
 	echo "Home page: <http://sigg3.net/biamin/>"
   # echo "General help using GNU software: <http://www.gnu.org/gethelp/>" # TODO create a youtube + pic tutorial

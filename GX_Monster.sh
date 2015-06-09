@@ -123,7 +123,7 @@ EOT
                                                (________)    (________)
 EOT
 	    ;;
-	"boar" ) # Hog CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net> June 2014 (2a62c4f)
+	"boar" ) # Hog CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net> (2a62c4f)
 	cat <<"EOT"
                                 ;".  ,--~-./L-'"'"'"'"~,
                                 |\ \/     /, | ~  ` ~   `"`~,-~~._.
@@ -160,7 +160,7 @@ EOT
                                                    (  C`~-\  `_ `~_/ e`n';m*7
 EOT
 	    ;;
-	"bear" ) # Papa Bear CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net> (860b051)
+	"bear" ) # Papa Bear CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net> (860b051)
 	cat <<"EOT"
                                                ,--~~.._
                                           _.,;'        `-.....__

@@ -163,15 +163,15 @@ CLI_Help() {
     echo "Run BACK IN A MINUTE with '-p', '--play' or 'p' argument to play!"
     echo "For usage: run biamin --usage"
     echo -en "Current dir for game files: $GAMEDIR/ "
-    [ "$GAMEDIR" = "$HOME/.biamin" ] && echo "(Default)" || echo "(Custom)"    
+    [[ "$GAMEDIR" = "$HOME/.biamin" ]] && echo "(Default)" || echo "(Custom)"
     echo -e "\nReport bugs to: <http://sigg3.net/biamin/bugs>"
-	echo "Home page: <http://sigg3.net/biamin/>"
+    echo "Home page: <http://sigg3.net/biamin/>"
   # echo "General help using GNU software: <http://www.gnu.org/gethelp/>" # TODO create a youtube + pic tutorial
     Exit 0
 }
 
 CLI_Version() {
-    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net"
+    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net" # Shouldn't be here CURRENT release year? #kstn
     echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
     echo "This is free software: you are free to change and redistribute it."
     echo "There is NO WARRANTY, to the extent permitted by law."
@@ -219,21 +219,21 @@ CLI_ParseArguments() {
 	    -v | --version  ) CLI_Version ;;
 	    --update        ) CLI_CheckUpdate ;;
 	    --usage         ) CLI_Usage ;;
-	    -d | --debug    ) DEBUG=1;;                                        # set DEBUG mode 
+	    -d | --debug    ) DEBUG=1;;                                        # set DEBUG mode
 	    -l | --log      ) if [[ "$2" ]] && ! grep -Eq '^-' <<< "$2" ; then # if next argument is not key
 	    			  shift                                        # remove $1 from $@ (array of biamin.sh arguments)
 	    			  exec 2<>"$1"                                 # redirect STDERR to $1
 	    		      else
 				  exec 2<>"/tmp/biamin_log_$(date "+%s")"      # or redirect STDERR to default log file
 			      fi
- 			      set -x                                           # set BASH's debugger 
+ 			      set -x                                           # set BASH's debugger
 			      ;;
 	    *               ) echo "$0: unrecognized option '$1'";
 			      echo "$0: use the --help or --usage options for more information";
 			      Exit 0;;
 	esac
 	shift
-    done 
+    done
 }
 
 #                                                                      #

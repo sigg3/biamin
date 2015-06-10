@@ -23,7 +23,7 @@ GX_Credits() {
    BASH code (C) Sigg3.net GNU GPL Version 3 2014
    ASCII art (C) Sigg3.net CC BY-NC-SA 4.0 2014 (except figlet banners)
 
-   Visit the Back in a minute website at <$WEBURL>
+   Visit the Back in a minute website at <$WEBURL/>
    for updates, feedback and to report bugs. Thank you.
 $HR
 EOF
@@ -48,7 +48,7 @@ GX_HowTo() {
 
    Travelling and resting involves the risk of being attacked by the creatures
    inhabiting the different scenarios. Some places are safer than others.
-   For more information please visit <$WEBURL>
+   For more information please visit <$WEBURL/>
 $HR
                     Press any key to return to (M)ain Menu
 EOF

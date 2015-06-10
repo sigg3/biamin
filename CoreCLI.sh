@@ -164,22 +164,22 @@ CLI_Help() {
     echo "For usage: run biamin --usage"
     echo -en "Current dir for game files: $GAMEDIR/ "
     [[ "$GAMEDIR" = "$HOME/.biamin" ]] && echo "(Default)" || echo "(Custom)"
-    echo -e "\nReport bugs to: <http://sigg3.net/biamin/bugs>"
-    echo "Home page: <http://sigg3.net/biamin/>"
+    echo -e "\nReport bugs to: <$WEBURL/bugs>"
+    echo "Home page: <$WEBURL/>"
   # echo "General help using GNU software: <http://www.gnu.org/gethelp/>" # TODO create a youtube + pic tutorial
     Exit 0
 }
 
 CLI_Version() {
-    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2014 Sigg3.net" # Shouldn't be here CURRENT release year? #kstn
+    echo "BACK IN A MINUTE VERSION $VERSION Copyright (C) 2013-2015 Sigg3.net"
     echo "Game SHELL CODE released under GNU GPL version 3 (GPLv3)."
     echo "This is free software: you are free to change and redistribute it."
     echo "There is NO WARRANTY, to the extent permitted by law."
     echo "For details see: <http://www.gnu.org/licenses/gpl-3.0>"
-    echo "Game ARTWORK released under Creative Commons CC BY-NC-SA 4.0."
+    echo "Game ARTWORK released under Creative Commons CC BY-SA 4.0."
     echo "You are free to copy, distribute, transmit and adapt the work."
-    echo "For details see: <http://creativecommons.org/licenses/by-nc-sa/4.0/>"
-    echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL>"
+    echo "For details see: <http://creativecommons.org/licenses/by-sa/4.0/>"
+    echo "Game created by Sigg3. Submit bugs & feedback at <$WEBURL/>"
     Exit 0
 }
 
@@ -205,6 +205,7 @@ CLI_Usage() {
 CLI_ParseArguments() {
     [[ ! "$@" ]] && CLI_Usage 	# emulation '(NO ARGUMENTS)      display this usage text and exit'
                                 # Sigge, do we need it? It's not typical for unix-way. #kstn
+                                # It's either that or an error message which is unix, though. Try 'tar' and 'unzip' without args. # sigg3
     while [[ "$@" ]]; do
 	case "$1" in
 	    -a | --announce ) CLI_Announce ;;

@@ -1,8 +1,8 @@
 # Back In A Minute created by Sigg3.net (C) 2014
 # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
 VERSION="1.9" # 12 items on TODO. Change to 2.0 when list is x'd out
-WEBURL="http://sigg3.net/biamin/"
-REPO="https://gitorious.org/back-in-a-minute/code"
+WEBURL="http://sigg3.net/biamin"
+REPO="$WEBURL/dir/to/latest/biamin.sh" # TODO 2.0. (I will find a way.)
 
 ########################  CONFIGURATION  ###############################
 # Default dir for config, saves, etc, change at runtime                #

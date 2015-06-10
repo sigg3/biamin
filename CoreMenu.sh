@@ -120,8 +120,8 @@ License() {
 	    YES ) PrepareLicense ;;
 	    *    )   echo -e "
 Code License:\t<http://www.gnu.org/licenses/gpl-3.0.txt>
-Art License:\t<http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.txt>
-More info:\t<${WEBURL}about#license>
+Art License:\t<http://creativecommons.org/licenses/by-sa/4.0/legalcode.txt>
+More info:\t<${WEBURL}/about#license>
 Press any key to go back to main menu!";
 		     read -sn 1;
 		     return 0;;
@@ -144,7 +144,7 @@ CleanUp() {
 	Echo "HEALTH: $CHAR_HEALTH    EXPERIENCE: $CHAR_EXP" "[-20 HEALTH -20 EXP]"
     fi
     [[ "$CHAR" ]] && SaveCurrentSheet # Don't try to save if we've nobody to save :)
-    echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL>"
+    echo -e "\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <$WEBURL/>"
     Exit 0
 }
 

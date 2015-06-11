@@ -169,10 +169,15 @@ Marketplace_Merchant() {
 	MERCHANT="$CHAR_GPS"
 
 	# Set BUY & SELL prices at defaults (Food, Tobacco, Gold)
+	# Remember $PRICE_FxT is Price of 1 Food in Tobacco
+	# Thus,
+	# MERCHANT_FxG is Price of 1 Food in Gold (to be paid by player).
+	# But Merchant can also sell Gold for Food.
+	# MERCHANT_GxF is the 
 	MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT && MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
 
 	# Set prices for items (1 item is worth 2x Food)
-	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG
+	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG  # TODO v.2.n+ PRICE_IxG and _GxI will have to be set in GameWorldChange.sh
 	PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
 
 	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
@@ -334,18 +339,18 @@ Marketplace_Merchant() {
 	    esac
 
 	    # DEBUG DATA
-	    #echo "        DEBUG       Summary BEFORE transaction" >2
-	    #echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	    #echo "        DEBUG       QUANTITY:    $QUANTITY" >2
-	    #echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    #echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
-	    #echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
-	    #echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
-	    #echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
-	    #echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
-	    #echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
-	    #echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
-	    #echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+	    echo "        DEBUG       Summary BEFORE transaction" >2
+	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
 	    # // DEBUG
 
 
@@ -381,7 +386,18 @@ Marketplace_Merchant() {
 	    fi
 
 	    # DEBUG DATA
-	    #echo "        DEBUG       Summary AFTER transaction" >2
+	    echo "        DEBUG       Summary BEFORE transaction" >2
+	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
 	    ## COPY/PASTE the above debug lines here whenever needed.
 	    # // DEBUG
 

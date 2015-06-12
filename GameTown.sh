@@ -180,6 +180,19 @@ Marketplace_Merchant() {
 	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG  # TODO v.2.n+ PRICE_IxG and _GxI will have to be set in GameWorldChange.sh
 	PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
 
+	    # DEBUG DATA
+	    echo "        DEBUG       Summary BEFORE price calculations" >2
+	    echo "        DEBUG       MERCHANT_FxG: $MERCHANT_FxG" >2
+	    echo "        DEBUG       MERCHANT_GxF: $MERCHANT_GxF" >2
+	    echo "        DEBUG       MERCHANT_FxT: $MERCHANT_FxT" >2
+	    echo "        DEBUG       MERCHANT_TxF: $MERCHANT_TxF" >2
+	    echo "        DEBUG       MERCHANT_TxG: $MERCHANT_TxG" >2
+	    echo "        DEBUG       MERCHANT_GxT: $MERCHANT_GxT" >2
+	    echo "        DEBUG       MERCHANT_GxI: $MERCHANT_GxI" >2
+	    echo "        DEBUG       MERCHANT_IxG: $MERCHANT_IxG" >2
+	    # // DEBUG
+
+
 	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
 	RollDice 3
 	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
@@ -188,32 +201,48 @@ Marketplace_Merchant() {
 	RollDice 3
 	case "$DICE" in                                                          # Merchant WANTS to buy and only reluctantly sells:
 	    1 ) # Merchant wants to keep food for himself
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Food (player's increased cost in gold purchasing food)
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold)
-		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" )
-		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" ) ;;
+		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Food (player's increased cost in gold purchasing food)
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold)
+		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" )
+		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" ) 
+		;;
 	    2 ) # Merchant wants to keep tobacco for himself
-		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )    # Tobacco (player's increased cost in gold purchasing tobacco)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold)
-		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" )
-		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" ) ;;
+		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )    # Tobacco (player's increased cost in gold purchasing tobacco)
+		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold)
+		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" )
+		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" ) 
+		;;
 	    3 ) # Merchant wants to keep gold for himself
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Gold (player's increased cost in food purchasing gold)
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )
-		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )
-		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI+$MERCHANT_MARGIN" )     # You can only buy/sell items with gold
-		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG-$MERCHANT_MARGIN" ) ;;
+		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Gold (player's increased cost in food purchasing gold)
+		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
+		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )
+		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )
+		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI-$MERCHANT_MARGIN" )     # You can only buy/sell items with gold
+		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG+$MERCHANT_MARGIN" )
+		;;
 	esac
 
-	# Set any value equal or below 0 to defaults (must be done in pairs)
-	(( $( bc <<< "if (${MERCHANT_FxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF
-	(( $( bc <<< "if (${MERCHANT_GxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxF=$PRICE_GxF && MERCHANT_FxG=$PRICE_FxG
-	(( $( bc <<< "if (${MERCHANT_FxT} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF
-	(( $( bc <<< "if (${MERCHANT_TxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_TxF=$PRICE_TxF && MERCHANT_FxT=$PRICE_FxT
-	(( $( bc <<< "if (${MERCHANT_GxI} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxI=$PRICE_GxI && MERCHANT_IxG=$PRICE_IxG
-	(( $( bc <<< "if (${MERCHANT_IxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_IxG=$PRICE_IxG && MERCHANT_GxI=$PRICE_GxI	
+	    # DEBUG DATA
+	    echo "        DEBUG       Summary AFTER price calculations: MERCHANT_WANTS=\"$DICE\" (1 = Food, 2 = Tobacco, 3 = Gold)" >2
+	    echo "        DEBUG       MERCHANT_FxG: $MERCHANT_FxG" >2
+	    echo "        DEBUG       MERCHANT_GxF: $MERCHANT_GxF" >2
+	    echo "        DEBUG       MERCHANT_FxT: $MERCHANT_FxT" >2
+	    echo "        DEBUG       MERCHANT_TxF: $MERCHANT_TxF" >2
+	    echo "        DEBUG       MERCHANT_TxG: $MERCHANT_TxG" >2
+	    echo "        DEBUG       MERCHANT_GxT: $MERCHANT_GxT" >2
+	    echo "        DEBUG       MERCHANT_GxI: $MERCHANT_GxI" >2
+	    echo "        DEBUG       MERCHANT_IxG: $MERCHANT_IxG" >2
+	    # // DEBUG
 
+	# Set any negative or zero value to defaults (must be done in pairs)											  # DEBUG DATA
+	(( $( bc <<< "if (${MERCHANT_FxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF && echo "Adjusted MERCHANT_FxG=\"$MERCHANT_FxG\" and MERCHANT_GxF=\"$MERCHANT_GxF\"" >2
+	(( $( bc <<< "if (${MERCHANT_GxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxF=$PRICE_GxF && MERCHANT_FxG=$PRICE_FxG && echo "Adjusted MERCHANT_GxF=\"$MERCHANT_GxF\" and MERCHANT_FxG=\"$MERCHANT_FxG\"" >2
+	(( $( bc <<< "if (${MERCHANT_FxT} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF && echo "Adjusted MERCHANT_FxT=\"$MERCHANT_FxT\" and MERCHANT_TxF=\"$MERCHANT_TxF\"" >2
+	(( $( bc <<< "if (${MERCHANT_TxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_TxF=$PRICE_TxF && MERCHANT_FxT=$PRICE_FxT && echo "Adjusted MERCHANT_TxF=\"$MERCHANT_TxF\" and MERCHANT_FxT=\"$MERCHANT_FxT\"" >2
+	(( $( bc <<< "if (${MERCHANT_GxI} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxI=$PRICE_GxI && MERCHANT_IxG=$PRICE_IxG && echo "Adjusted MERCHANT_GxI=\"$MERCHANT_GxI\" and MERCHANT_IxG=\"$MERCHANT_IxG\"" >2
+	(( $( bc <<< "if (${MERCHANT_IxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_IxG=$PRICE_IxG && MERCHANT_GxI=$PRICE_GxI && echo "Adjusted MERCHANT_IxG=\"$MERCHANT_IxG\" and MERCHANT_GxI=\"$MERCHANT_GxI\"" >2
+
+	
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8
 	case "$DICE" in

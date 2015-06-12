@@ -117,22 +117,22 @@ Marketplace_Merchant_Bargaining() {
     tput sc
     case "$1" in
 	"Food" | F | f ) 	MERCHANDISE="food"
-				MvAddStr 7 4 "$MERCHANT_FxG Gold or $MERCHANT_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
-				MvAddStr 10 4 "for $MERCHANT_GxF Gold or $MERCHANT_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
+				MvAddStr 7 4 "$PLAYER_BUYS_FxG Gold or $PLAYER_BUYS_FxT Tobacco."           # FxG, FxT (sell for gold/tobacco)
+				MvAddStr 10 4 "for $PLAYER_SELL_GxF Gold or $PLAYER_SELL_TxF Tobacco each!" # GxF, TxF (buy  for food/tobacco)
 				MERCHANDISE="Food"
 				;;
 	"Tobacco" | T | t )	MERCHANDISE="tobacco"
-				MvAddStr 7 4 "$MERCHANT_TxG Gold or $MERCHANT_TxF Food."              # TxG, TxF
-				MvAddStr 10 4 "for $MERCHANT_GxT Gold or $MERCHANT_FxT Food each!"    # GxT, FxT
+				MvAddStr 7 4 "$PLAYER_BUYS_TxG Gold or $PLAYER_BUYS_TxF Food."              # TxG, TxF
+				MvAddStr 10 4 "for $PLAYER_SELL_GxT Gold or $PLAYER_SELL_FxT Food each!"    # GxT, FxT
 				MERCHANDISE="Tobacco"
 				;;
 	"Gold" | G | g )	MERCHANDISE="gold"
-				MvAddStr 7 4 "$MERCHANT_GxT Tobacco or $MERCHANT_GxF Food."           # GxT, GxF
-				MvAddStr 10 4 "for $MERCHANT_TxG Tobacco or $MERCHANT_FxG Food each!" # TxG, FxG
+				MvAddStr 7 4 "$PLAYER_BUYS_GxT Tobacco or $PLAYER_BUYS_GxF Food."           # GxT, GxF
+				MvAddStr 10 4 "for $PLAYER_SELL_TxG Tobacco or $PLAYER_SELL_FxG Food each!" # TxG, FxG
 				MERCHANDISE="Gold"
 				;;
 	"Item" | I | i )	MERCHANDISE="item"
-				MvAddStr 7 4 "yours for $MERCHANT_IxG Gold!"
+				MvAddStr 7 4 "yours for $PLAYER_BUYS_IxG Gold!" # TODO will have to be re-done for items in v2.n+
 				MERCHANDISE="Item"
 				;;
 	* ) MERCHANDISE="unknown"
@@ -141,9 +141,9 @@ Marketplace_Merchant_Bargaining() {
     if [[ "$MERCHANDISE" = "Item" ]] ; then
 	MvAddStr 4 4 "You are in for a treat! I managed to"
 	MvAddStr 5 4 "acquire a very rare and valuable"
-	MvAddStr 6 4 "$MERCHANT_ITEM, it can be"
+	MvAddStr 6 4 "${MERCHANT_ITEM^^}, it can be"
 	MvAddStr 9 4 "I also buy any items you sell"
-	MvAddStr 10 4 "for $MERCHANT_GxI Gold a piece."
+	MvAddStr 10 4 "for $PLAYER_SELL_GxI Gold a piece."
     elif [[ "$MERCHANDISE" = "unknown" ]] ; then
 	MvAddStr 4 4 "You surely jest!"
 	MvAddStr 6 4 "I have never heard about $1,"
@@ -167,80 +167,124 @@ Marketplace_Merchant() {
     if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
-
-	# Set BUY & SELL prices at defaults (Food, Tobacco, Gold)
-	# Remember $PRICE_FxT is Price of 1 Food in Tobacco
-	# Thus,
-	# MERCHANT_FxG is Price of 1 Food in Gold (to be paid by player).
-	# But Merchant can also sell Gold for Food.
-	# MERCHANT_GxF is the 
-	MERCHANT_FxG=$PRICE_FxG && MERCHANT_FxT=$PRICE_FxT && MERCHANT_GxT=$PRICE_GxT && MERCHANT_GxF=$PRICE_GxF && MERCHANT_TxG=$PRICE_TxG && MERCHANT_TxF=$PRICE_TxF
-
-	# Set prices for items (1 item is worth 2x Food)
-	PRICE_IxG=$( bc <<< "scale=2;$MERCHANT_FxG*2" ) && MERCHANT_IxG=$PRICE_IxG  # TODO v.2.n+ PRICE_IxG and _GxI will have to be set in GameWorldChange.sh
-	PRICE_GxI=$( bc <<< "scale=2;$MERCHANT_GxF*2" ) && MERCHANT_GxI=$PRICE_GxI
-
-	    # DEBUG DATA
-	    echo "        DEBUG       Summary BEFORE price calculations" >2
-	    echo "        DEBUG       MERCHANT_FxG: $MERCHANT_FxG" >2
-	    echo "        DEBUG       MERCHANT_GxF: $MERCHANT_GxF" >2
-	    echo "        DEBUG       MERCHANT_FxT: $MERCHANT_FxT" >2
-	    echo "        DEBUG       MERCHANT_TxF: $MERCHANT_TxF" >2
-	    echo "        DEBUG       MERCHANT_TxG: $MERCHANT_TxG" >2
-	    echo "        DEBUG       MERCHANT_GxT: $MERCHANT_GxT" >2
-	    echo "        DEBUG       MERCHANT_GxI: $MERCHANT_GxI" >2
-	    echo "        DEBUG       MERCHANT_IxG: $MERCHANT_IxG" >2
-	    # // DEBUG
-
-
+	
+	# TEMP WORKAROUND Set prices for items (1 item is worth 2x Food)
+	PRICE_IxG=$( bc <<< "scale=2;$PRICE_FxG*2" ) # TODO v.2.n+
+	PRICE_GxI=$( bc <<< "scale=2;$PRICE_GxF*2" ) # TODO Items are not priced in GameWorldChange but arbitrarily.
+	
 	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
 	RollDice 3
 	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
-
+	
 	# Add positive and negative margins to what the merchant wants to keep for himself
 	RollDice 3
-	case "$DICE" in                                                          # Merchant WANTS to buy and only reluctantly sells:
-	    1 ) # Merchant wants to keep food for himself
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG-$MERCHANT_MARGIN" )    # Food (player's increased cost in gold purchasing food)
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF+$MERCHANT_MARGIN" )    # Food (player's discount in food purchasing gold)
-		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT-$MERCHANT_MARGIN" )
-		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF+$MERCHANT_MARGIN" ) 
-		;;
-	    2 ) # Merchant wants to keep tobacco for himself
-		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG-$MERCHANT_MARGIN" )    # Tobacco (player's increased cost in gold purchasing tobacco)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT+$MERCHANT_MARGIN" )    # Tobacco (player's discount in tobacco purchasing gold)
-		MERCHANT_TxF=$( bc <<< "scale=2;$MERCHANT_TxF-$MERCHANT_MARGIN" )
-		MERCHANT_FxT=$( bc <<< "scale=2;$MERCHANT_FxT+$MERCHANT_MARGIN" ) 
-		;;
-	    3 ) # Merchant wants to keep gold for himself
-		MERCHANT_GxF=$( bc <<< "scale=2;$MERCHANT_GxF-$MERCHANT_MARGIN" )    # Gold (player's increased cost in food purchasing gold)
-		MERCHANT_FxG=$( bc <<< "scale=2;$MERCHANT_FxG+$MERCHANT_MARGIN" )    # Gold (player's discount in gold purchasing food)
-		MERCHANT_GxT=$( bc <<< "scale=2;$MERCHANT_GxT-$MERCHANT_MARGIN" )
-		MERCHANT_TxG=$( bc <<< "scale=2;$MERCHANT_TxG+$MERCHANT_MARGIN" )
-		MERCHANT_GxI=$( bc <<< "scale=2;$MERCHANT_GxI-$MERCHANT_MARGIN" )     # You can only buy/sell items with gold
-		MERCHANT_IxG=$( bc <<< "scale=2;$MERCHANT_IxG+$MERCHANT_MARGIN" )
-		;;
-	esac
 
-	    # DEBUG DATA
+	local MERCHANT_PRICE_TEST=0
+	while (( MERCHANT_PRICE_TEST != 12 )) ; do
+		# Set default prices
+		PLAYER_BUYS_FxG=$PRICE_FxG && PLAYER_SELL_FxG=$PRICE_FxG # Food  for gold
+		PLAYER_BUYS_GxF=$PRICE_GxF && PLAYER_SELL_GxF=$PRICE_GxF # Gold  for food
+		PLAYER_BUYS_FxT=$PRICE_FxT && PLAYER_SELL_FxT=$PRICE_FxT # Food  for tobacco
+		PLAYER_BUYS_TxF=$PRICE_TxF && PLAYER_SELL_TxF=$PRICE_TxF # Tobac for food
+		PLAYER_BUYS_GxT=$PRICE_GxT && PLAYER_SELL_GxT=$PRICE_GxT # Gold  for tobacco
+		PLAYER_BUYS_TxG=$PRICE_TxG && PLAYER_SELL_TxG=$PRICE_TxG # Tobac for gold
+		PLAYER_BUYS_GxI=$PRICE_GxI && PLAYER_SELL_GxI=$PRICE_GxI # Gold  for items
+		PLAYER_BUYS_IxG=$PRICE_IxG && PLAYER_SELL_IxG=$PRICE_IxG # Items for gold
+	
+	# DEBUG DATA
+	    echo "        DEBUG       Default buy and sell prices:" >2
+	    echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
+	    echo "        DEBUG       PLAYER_SELL_FxG: $PLAYER_SELL_FxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxF: $PLAYER_BUYS_GxF" >2
+	    echo "        DEBUG       PLAYER_SELL_GxF: $PLAYER_SELL_GxF" >2
+	    echo "        DEBUG       PLAYER_BUYS_FxT: $PLAYER_BUYS_FxT" >2
+	    echo "        DEBUG       PLAYER_SELL_FxT: $PLAYER_SELL_FxT" >2
+	    echo "        DEBUG       PLAYER_BUYS_TxF: $PLAYER_BUYS_TxF" >2
+	    echo "        DEBUG       PLAYER_SELL_TxF: $PLAYER_SELL_TxF" >2
+	    echo "        DEBUG       PLAYER_BUYS_TxG: $PLAYER_BUYS_TxG" >2
+	    echo "        DEBUG       PLAYER_SELL_TxG: $PLAYER_SELL_TxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxT: $PLAYER_BUYS_GxT" >2
+	    echo "        DEBUG       PLAYER_SELL_GxT: $PLAYER_SELL_GxT" >2
+	    echo "        DEBUG       PLAYER_BUYS_IxG: $PLAYER_BUYS_IxG" >2
+	    echo "        DEBUG       PLAYER_SELL_IxG: $PLAYER_SELL_IxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
+	    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
+	# // DEBUG
+	
+		case "$DICE" in
+			1 ) # Merchant wants to keep food for himself
+			PLAYER_BUYS_FxG=$( bc <<< "scale=2;$PRICE_FxG+$MERCHANT_MARGIN" )
+			PLAYER_SELL_FxG=$( bc <<< "scale=2;$PRICE_FxG-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_GxF=$( bc <<< "scale=2;$PRICE_GxF+$MERCHANT_MARGIN" )
+			PLAYER_SELL_GxF=$( bc <<< "scale=2;$PRICE_GxF-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_FxT=$( bc <<< "scale=2;$PRICE_FxT+$MERCHANT_MARGIN" )
+			PLAYER_SELL_FxT=$( bc <<< "scale=2;$PRICE_FxT-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_TxF=$( bc <<< "scale=2;$PRICE_TxF+$MERCHANT_MARGIN" )
+			PLAYER_SELL_TxF=$( bc <<< "scale=2;$PRICE_TxF-$MERCHANT_MARGIN" )
+			;;
+			2 ) # Merchant wants to keep tobacco for himself
+			PLAYER_BUYS_TxG=$( bc <<< "scale=2;$PRICE_TxG+$MERCHANT_MARGIN" )
+			PLAYER_SELL_TxG=$( bc <<< "scale=2;$PRICE_TxG-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_GxT=$( bc <<< "scale=2;$PRICE_GxT+$MERCHANT_MARGIN" )
+			PLAYER_SELL_GxT=$( bc <<< "scale=2;$PRICE_GxT-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_TxF=$( bc <<< "scale=2;$PRICE_TxF+$MERCHANT_MARGIN" )
+			PLAYER_SELL_TxF=$( bc <<< "scale=2;$PRICE_TxF-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_FxT=$( bc <<< "scale=2;$PRICE_FxT+$MERCHANT_MARGIN" ) 
+			PLAYER_SELL_FxT=$( bc <<< "scale=2;$PRICE_FxT-$MERCHANT_MARGIN" )
+			;;
+			3 ) # Merchant wants to keep gold for himself
+			PLAYER_BUYS_GxF=$( bc <<< "scale=2;$PRICE_GxF+$MERCHANT_MARGIN" )
+			PLAYER_SELL_GxF=$( bc <<< "scale=2;$PRICE_GxF-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_FxG=$( bc <<< "scale=2;$PRICE_FxG+$MERCHANT_MARGIN" )
+			PLAYER_SELL_FxG=$( bc <<< "scale=2;$PRICE_FxG-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_GxT=$( bc <<< "scale=2;$PRICE_GxT+$MERCHANT_MARGIN" )
+			PLAYER_SELL_GxT=$( bc <<< "scale=2;$PRICE_GxT-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_TxG=$( bc <<< "scale=2;$PRICE_TxG+$MERCHANT_MARGIN" )
+			PLAYER_SELL_TxG=$( bc <<< "scale=2;$PRICE_TxG-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_GxI=$( bc <<< "scale=2;$PRICE_GxI+$MERCHANT_MARGIN" ) # You can only buy/sell items with gold
+			PLAYER_SELL_GxI=$( bc <<< "scale=2;$PRICE_GxI-$MERCHANT_MARGIN" )
+			PLAYER_BUYS_IxG=$( bc <<< "scale=2;$PRICE_IxG+$MERCHANT_MARGIN" )
+			PLAYER_SELL_IxG=$( bc <<< "scale=2;$PRICE_IxG-$MERCHANT_MARGIN" )
+			;;
+		esac
+		
+		# Verify prices are above 0, else redo them all
+		(( $( bc <<< "if (${PLAYER_BUYS_GxF} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_GxF} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_BUYS_FxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_FxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_BUYS_GxT} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_GxT} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_BUYS_TxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_TxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_BUYS_GxI} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_GxI} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_BUYS_IxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		(( $( bc <<< "if (${PLAYER_SELL_IxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
+		
+		echo "        DEBUG       MERCHANT_WANTS: $DICE (1 = Food, 2 = Tobacco, 3 = Gold) " >2
+		(( MERCHANT_PRICE_TEST == 12 )) && echo "        DEBUG       PRICES OK" >2 # DEBUG
+	done
+
+	# DEBUG DATA
 	    echo "        DEBUG       Summary AFTER price calculations: MERCHANT_WANTS=\"$DICE\" (1 = Food, 2 = Tobacco, 3 = Gold)" >2
-	    echo "        DEBUG       MERCHANT_FxG: $MERCHANT_FxG" >2
-	    echo "        DEBUG       MERCHANT_GxF: $MERCHANT_GxF" >2
-	    echo "        DEBUG       MERCHANT_FxT: $MERCHANT_FxT" >2
-	    echo "        DEBUG       MERCHANT_TxF: $MERCHANT_TxF" >2
-	    echo "        DEBUG       MERCHANT_TxG: $MERCHANT_TxG" >2
-	    echo "        DEBUG       MERCHANT_GxT: $MERCHANT_GxT" >2
-	    echo "        DEBUG       MERCHANT_GxI: $MERCHANT_GxI" >2
-	    echo "        DEBUG       MERCHANT_IxG: $MERCHANT_IxG" >2
-	    # // DEBUG
-
-	# Set any negative or zero value to defaults (must be done in pairs)											  # DEBUG DATA
-	(( $( bc <<< "if (${MERCHANT_FxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxG=$PRICE_FxG && MERCHANT_GxF=$PRICE_GxF && echo "Adjusted MERCHANT_FxG=\"$MERCHANT_FxG\" and MERCHANT_GxF=\"$MERCHANT_GxF\"" >2
-	(( $( bc <<< "if (${MERCHANT_GxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxF=$PRICE_GxF && MERCHANT_FxG=$PRICE_FxG && echo "Adjusted MERCHANT_GxF=\"$MERCHANT_GxF\" and MERCHANT_FxG=\"$MERCHANT_FxG\"" >2
-	(( $( bc <<< "if (${MERCHANT_FxT} <= 0) 0 else 1" ) == 0 )) && MERCHANT_FxT=$PRICE_FxT && MERCHANT_TxF=$PRICE_TxF && echo "Adjusted MERCHANT_FxT=\"$MERCHANT_FxT\" and MERCHANT_TxF=\"$MERCHANT_TxF\"" >2
-	(( $( bc <<< "if (${MERCHANT_TxF} <= 0) 0 else 1" ) == 0 )) && MERCHANT_TxF=$PRICE_TxF && MERCHANT_FxT=$PRICE_FxT && echo "Adjusted MERCHANT_TxF=\"$MERCHANT_TxF\" and MERCHANT_FxT=\"$MERCHANT_FxT\"" >2
-	(( $( bc <<< "if (${MERCHANT_GxI} <= 0) 0 else 1" ) == 0 )) && MERCHANT_GxI=$PRICE_GxI && MERCHANT_IxG=$PRICE_IxG && echo "Adjusted MERCHANT_GxI=\"$MERCHANT_GxI\" and MERCHANT_IxG=\"$MERCHANT_IxG\"" >2
-	(( $( bc <<< "if (${MERCHANT_IxG} <= 0) 0 else 1" ) == 0 )) && MERCHANT_IxG=$PRICE_IxG && MERCHANT_GxI=$PRICE_GxI && echo "Adjusted MERCHANT_IxG=\"$MERCHANT_IxG\" and MERCHANT_GxI=\"$MERCHANT_GxI\"" >2
+	    echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
+	    echo "        DEBUG       PLAYER_SELL_FxG: $PLAYER_SELL_FxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxF: $PLAYER_BUYS_GxF" >2
+	    echo "        DEBUG       PLAYER_SELL_GxF: $PLAYER_SELL_GxF" >2
+	    echo "        DEBUG       PLAYER_BUYS_FxT: $PLAYER_BUYS_FxT" >2
+	    echo "        DEBUG       PLAYER_SELL_FxT: $PLAYER_SELL_FxT" >2
+	    echo "        DEBUG       PLAYER_BUYS_TxF: $PLAYER_BUYS_TxF" >2
+	    echo "        DEBUG       PLAYER_SELL_TxF: $PLAYER_SELL_TxF" >2
+	    echo "        DEBUG       PLAYER_BUYS_TxG: $PLAYER_BUYS_TxG" >2
+	    echo "        DEBUG       PLAYER_SELL_TxG: $PLAYER_SELL_TxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxT: $PLAYER_BUYS_GxT" >2
+	    echo "        DEBUG       PLAYER_SELL_GxT: $PLAYER_SELL_GxT" >2
+	    echo "        DEBUG       PLAYER_BUYS_IxG: $PLAYER_BUYS_IxG" >2
+	    echo "        DEBUG       PLAYER_SELL_IxG: $PLAYER_SELL_IxG" >2
+	    echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
+	    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
+	# // DEBUG
 
 	
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
@@ -280,7 +324,7 @@ Marketplace_Merchant() {
 	Marketplace_Merchant_Bargaining "$MERCHANDISE"
 	local QUANTITY COST_GOLD COST_TOBACCO COST_FOOD COST_ITEM TRANSACTION_STATUS BARGAIN_TYPE
 	case "$MERCHANTVAR" in
-	    b | B ) BARGAIN_TYPE=1  ;; # Buying  MERCHANDISE ($MERCHANDISE) from Merchant using MERCHANT_GxF (G
+	    b | B ) BARGAIN_TYPE=1  ;; # Buying  MERCHANDISE ($MERCHANDISE) from Merchant
 	    s | S ) BARGAIN_TYPE=2  ;; # Selling STOCK ($MERCHANDISE) to Merchant
 	    * )     BARGAIN_TYPE=3  ;; # Invalid input
 	esac
@@ -318,28 +362,28 @@ Marketplace_Merchant() {
 	    (( BARGAIN_TYPE == 2 )) && MERCHANT_ORDER_1="For $QUANTITY $MERCHANDISE$MERCHANT_ORDER_CONJUG_1" && MERCHANT_ORDER_1+="I'll give you "
 
 	    case "$MERCHANDISE" in
-		"Food" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
-			    ;;
-		"Tobacco" ) (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_TxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxT * $QUANTITY" )
-			    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_TxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxT * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
-			    ;;
-		"Gold" )    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$MERCHANT_GxF * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$MERCHANT_FxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_TxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$(bc <<< "$MERCHANT_GxT * $QUANTITY" )
-			    MERCHANT_ORDER_2+="$COST_FOOD Food or $COST_TOBACCO Tobacco."
-			    ;;
-		"Item" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$MERCHANT_IxG * $QUANTITY" )
-			    (( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$MERCHANT_GxI * $QUANTITY" )
-			    MERCHANT_ORDER_1+="$COST_GOLD Gold."
-			    ;;
+		"Food" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$PLAYER_BUYS_FxG * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$PLAYER_SELL_FxG * $QUANTITY" )
+					(( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$( bc <<< "$PLAYER_BUYS_FxT * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$( bc <<< "$PLAYER_SELL_TxF * $QUANTITY" )
+					MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_TOBACCO Tobacco."
+					;;
+		"Tobacco" ) (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$PLAYER_BUYS_TxG * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$PLAYER_SELL_TxG * $QUANTITY" )
+					(( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$PLAYER_BUYS_FxT * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$PLAYER_SELL_FxT * $QUANTITY" )
+					MERCHANT_ORDER_2+="$COST_GOLD Gold or $COST_FOOD Food."
+					;;
+		"Gold" )    (( BARGAIN_TYPE == 1 )) && COST_FOOD=$( bc <<< "$PLAYER_BUYS_GxF * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_FOOD=$( bc <<< "$PLAYER_SELL_GxF * $QUANTITY" )
+					(( BARGAIN_TYPE == 1 )) && COST_TOBACCO=$(bc <<< "$PLAYER_BUYS_GxT * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_TOBACCO=$(bc <<< "$PLAYER_SELL_GxT * $QUANTITY" )
+					MERCHANT_ORDER_2+="$COST_FOOD Food or $COST_TOBACCO Tobacco."
+					;;
+		"Item" )    (( BARGAIN_TYPE == 1 )) && COST_GOLD=$( bc <<< "$PLAYER_BUYS_IxG * $QUANTITY" )
+					(( BARGAIN_TYPE == 2 )) && COST_GOLD=$( bc <<< "$PLAYER_SELL_IxG * $QUANTITY" )
+					MERCHANT_ORDER_1+="$COST_GOLD Gold."
+					;;
 	    esac
 
 	    Marketplace_Merchant_Bargaining "$MERCHANDISE"
@@ -354,7 +398,7 @@ Marketplace_Merchant() {
 		"Tobacco" ) read -sn 1 -p "$(MakePrompt 'Trade for (G)old;Trade for (F)ood;(N)ot Interested')" MERCHANTVAR 2>&1           ;;
 		"Gold" )    read -sn 1 -p "$(MakePrompt 'Trade for (F)ood;Trade for (T)obacco;(N)ot Interested')" MERCHANTVAR 2>&1        ;;
 		"Item" )    (( BARGAIN_TYPE == 1 )) && read -sn 1 -p "$(MakePrompt 'Trade for (G)old;(N)ot Interested')" MERCHANTVAR 2>&1
-			    (( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (have no items to sell)
+					(( BARGAIN_TYPE == 2 )) && MERCHANTVAR="N"                                                                    ;; # TODO Temp workaround (player has no items to sell in 2.0)
 	    esac
 
 	    # Determine that player has CURRENCY to cover COST or STOCK to cover SALE

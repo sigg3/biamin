@@ -141,7 +141,7 @@ Marketplace_Merchant_Bargaining() {
     if [[ "$MERCHANDISE" = "Item" ]] ; then
 	MvAddStr 4 4 "You are in for a treat! I managed to"
 	MvAddStr 5 4 "acquire a very rare and valuable"
-	MvAddStr 6 4 "${MERCHANT_ITEM^^}, it can be"
+	MvAddStr 6 4 "${MERCHANT_ITEM^^}, it can be"         # TODO create a "centered" text based on length of MERCHANT_ITEM
 	MvAddStr 9 4 "I also buy any items you sell"
 	MvAddStr 10 4 "for $PLAYER_SELL_GxI Gold a piece."
     elif [[ "$MERCHANDISE" = "unknown" ]] ; then

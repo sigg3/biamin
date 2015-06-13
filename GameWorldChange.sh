@@ -419,8 +419,8 @@ GX_Bulletin() {
 	7 | 8 | 9  ) BULLETIN[6]="GOLD LOWERED TO: $VAL_GOLD_STR" ;;
 	*          ) BULLETIN[6]="REWARD SET TO: 500 GOLD" ;;
     esac
-    # Ok, let's draw !!!
     clear
+	# BBS CC BY-SA (C) 2014 by Sigbjørn Smelror <biamin@sigg3.net>
     cat <<"EOT"
                  ___                                     ____
                 (___) _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (____)

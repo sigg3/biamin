@@ -82,37 +82,38 @@ Almanac_Notes() {
 	echo " In the back of your almanac, there is a page reserved for Your Notes."
 	echo " There is only room for 10 lines, but you may erase obsolete information."
 	echo
-	echo -e "\n\n\n\n\n\n\n\n\n\n" > "$CHAR_NOTES"                          # making empty notes file
+	echo -e "\n\n\n\n\n\n\n\n\n\n" > "$CHAR_NOTES"                          # making empty notes file TODO use e.g. "EMPTY" for empty line, so we can identify empty lines..
 	PressAnyKey
 	tput rc
 	tput ed
     fi
+    local -a NOTES_ENUMERATION=("    I" "   II" "  III" "   IV" "    V" "   VI" "  VII" " VIII" "   IX" "    X" )
     for i in {0..9}; do NOTES[$i]=$(sed -n "$((i + 1))p" "${CHAR_NOTES}"); done # load notes
-    for i in {0..9}; do echo " $i - ${NOTES[$i]}"; done                         # display notes
-    echo "$HR"
+    for i in {0..9}; do echo -e " ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}"; done                         # display notes
+    echo -e "\n$HR"
     tput sc			                                                # store cursor position
     while (true); do                                                      ### main loop
 	tput rc 		                                          # restore cursor position at case if it is not first time loop
-	echo -en "${CLEAR_LINE}$(MakePrompt '(A)dd;(E)rase;(Q)uit')"      # prompt
+	echo -en "${CLEAR_LINE}$(MakePrompt '(A)dd;(E)rase;(B)ack')"      # prompt
 	tput ed			                                          # clear to the end of display at case if previous note was longer than 74
 	case "$(Read)" in
-	    [aA] ) echo -en "${CLEAR_LINE} Which one? [0-9]: ";           # prompt
-		   i=$(Read);					          # read note num
+	    [aA] ) # TODO grab first available line, else ask.
+		   echo -en "${CLEAR_LINE} Which one? [1-10]: ";          # prompt
+		   i=$(Read) && ((i--)) ;	            		          # read note num
 		   grep -Eq '^[0-9]$' <<< "$i" || continue ;              # check if user input if int [0-9]
-		   # TODO??? check if ${NOTE[$i} is emty
 		   ReadLine "${CLEAR_LINE} > ";                           # read note
 		   grep -Eq '^.+$' <<< "$REPLY" || continue;              # check if user input is empty
-		   REPLY=$(sed -e 's/^\(.\{74\}\).*/\1/' <<< "$REPLY");   # restrict note length to 74
+		   REPLY=$(sed -e 's/^\(.\{72\}\).*/\1/' <<< "$REPLY");   # restrict note length to 72
 		   NOTES[$i]="$REPLY";                                    # store note in array
 		   sed -i "$(($i + 1))s/^.*$/$REPLY/" "${CHAR_NOTES}";    # store note in file
-		   MvAddStr $((9 + i)) 0 "$(tput el) $i - ${NOTES[$i]}";; # redraw note
-	    [eE] ) echo -en "${CLEAR_LINE} Which one? [0-9]: ";           # prompt
-		   i=$(Read);				                  # read note num
+		   MvAddStr $((9 + i)) 0 "$(tput el) ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}";; # redraw note
+	    [eE] ) echo -en "${CLEAR_LINE} Which one? [1-10]: ";       # prompt
+		   i=$(Read) && ((i--))                                   # read note num
 		   grep -Eq '^[0-9]$' <<< "$i" || continue                # check if user input if int [0-9]
 		   NOTES[$i]="";                                          # erase note in array
 		   sed -i "$(($i + 1))s/^.*$//" "${CHAR_NOTES}";          # erase note in file
-		   MvAddStr $((9 + i)) 0 "$(tput el) $i - ${NOTES[$i]}";; # redraw note
-	    [qQ] ) break;;
+		   MvAddStr $((9 + i)) 0 "$(tput el) ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}";; # redraw note
+	    [bB] ) break;;
 	    *    ) ;;
 	esac
     done

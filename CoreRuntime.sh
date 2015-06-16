@@ -42,6 +42,7 @@ tput civis			   # Make annoying cursor invisible
 ################################# Main game part ###############################
 [[ "$CHAR" ]] || MainMenu          # Run main menu (Define $CHAR) if game wasn't run as biamin -p <charname>
 BiaminSetup                        # Load or make new char
+GiveUsDebugInfo                    # Output wanted DEBUG info to 2, if any
 Intro	                           # Set world
 NewSector                          # And run main game loop
 ############################## Main game part ends #############################

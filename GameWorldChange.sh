@@ -287,6 +287,16 @@ CheckForWorldChangeEconomy() {
     WORLDCHANGE_COUNTDOWN=20                                                    # Give the player a 20 turn break TODO Test how this works..
     SaveCurrentSheet                                                            # Save world changes to charsheet # LAST!!!
     WorldPriceFixing                                                            # Update all prices
+	echo "        DEBUG       Changes in World Economy" >2
+	echo "        DEBUG       " >2
+	echo "        DEBUG       BBSMSG:		$BBSMSG" >2
+	echo "        DEBUG       " >2	
+	echo "        DEBUG       PRICE_FxG:	$PRICE_FxG" >2
+	echo "        DEBUG       PRICE_FxT:	$PRICE_FxT" >2
+	echo "        DEBUG       PRICE_GxT:	$PRICE_GxT" >2
+	echo "        DEBUG       PRICE_GxF:	$PRICE_GxF" >2
+	echo "        DEBUG       PRICE_TxG:	$PRICE_TxG" >2
+	echo "        DEBUG       PRICE_TxF:	$PRICE_TxF" >2
 }
 
 # Other WorldChangeFUNCTIONs go here:)

@@ -162,16 +162,16 @@ Echo() {
 # Outputs whatever DEBUG info you're looking for atm to >2
 #-----------------------------------------------------------------------
 GiveUsDebugInfo() { 
-	echo "        DEBUG       World Economy Defaults" >2
+	echo "        DEBUG       $1" >2
 	echo "        DEBUG       " >2
-	echo "        DEBUG       BBSMSG:		N/A" >2
+	echo "        DEBUG       BBSMSG:		$2" >2
 	echo "        DEBUG       " >2	
-	echo "        DEBUG       PRICE_FxG:	$PRICE_FxG" >2
-	echo "        DEBUG       PRICE_FxT:	$PRICE_FxT" >2
-	echo "        DEBUG       PRICE_GxT:	$PRICE_GxT" >2
-	echo "        DEBUG       PRICE_GxF:	$PRICE_GxF" >2
-	echo "        DEBUG       PRICE_TxG:	$PRICE_TxG" >2
-	echo "        DEBUG       PRICE_TxF:	$PRICE_TxF" >2
+	echo "        DEBUG       \$PRICE_FxG:	$PRICE_FxG" >2
+	echo "        DEBUG       \$PRICE_FxT:	$PRICE_FxT" >2
+	echo "        DEBUG       \$PRICE_GxT:	$PRICE_GxT" >2
+	echo "        DEBUG       \$PRICE_GxF:	$PRICE_GxF" >2
+	echo "        DEBUG       \$PRICE_TxG:	$PRICE_TxG" >2
+	echo "        DEBUG       \$PRICE_TxF:	$PRICE_TxF" >2
 }
 
 #                                                                      #

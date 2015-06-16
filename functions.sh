@@ -71,6 +71,7 @@ Intro() {
     WorldPriceFixing                 # Set all prices
     GX_Intro 60                      # With countdown 60 seconds
     NODICE=1                         # Do not roll on first section after loading/starting a game in NewSector()
+    GiveUsDebugInfo "Default Pricing Scheme" "$BBSMSG" # Output wanted DEBUG info to 2, if any
 }
 
 ################### GAME SYSTEM #################

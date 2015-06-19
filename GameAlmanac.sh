@@ -99,17 +99,17 @@ Almanac_Notes() {
 	case "$(Read)" in
 	    [aA] ) # TODO grab first available line, else ask.
 		   echo -en "${CLEAR_LINE} Which one? [1-10]: ";          # prompt
-		   i=$(Read) && ((i--)) ;	            		          # read note num
-		   grep -Eq '^[0-9]$' <<< "$i" || continue ;              # check if user input if int [0-9]
+		   i=$(Read) && ((i--)) ;	            		  # read note num
+		   IsInt "$i" || continue ;                               # check if user input if int [0-9]
 		   ReadLine "${CLEAR_LINE} > ";                           # read note
 		   grep -Eq '^.+$' <<< "$REPLY" || continue;              # check if user input is empty
 		   REPLY=$(sed -e 's/^\(.\{72\}\).*/\1/' <<< "$REPLY");   # restrict note length to 72
 		   NOTES[$i]="$REPLY";                                    # store note in array
 		   sed -i "$(($i + 1))s/^.*$/$REPLY/" "${CHAR_NOTES}";    # store note in file
 		   MvAddStr $((9 + i)) 0 "$(tput el) ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}";; # redraw note
-	    [eE] ) echo -en "${CLEAR_LINE} Which one? [1-10]: ";       # prompt
+	    [eE] ) echo -en "${CLEAR_LINE} Which one? [1-10]: ";          # prompt
 		   i=$(Read) && ((i--))                                   # read note num
-		   grep -Eq '^[0-9]$' <<< "$i" || continue                # check if user input if int [0-9]
+		   IsInt "$i" || continue                                 # check if user input if int [0-9]
 		   NOTES[$i]="";                                          # erase note in array
 		   sed -i "$(($i + 1))s/^.*$//" "${CHAR_NOTES}";          # erase note in file
 		   MvAddStr $((9 + i)) 0 "$(tput el) ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}";; # redraw note

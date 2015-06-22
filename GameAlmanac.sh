@@ -31,7 +31,7 @@ Almanac_Moon() { # Used in Almanac()
 	MvAddStr $framey 73 "$VERTI_FRAME"
     done
     tput cup 19 49 && echo -n "l" && echo -n "$HORIZ_FRAME" && echo "j"
-    if [ "$MOON" = "Full Moon" ] ; then # Remove "shiny" dots ..
+    if [[ "${MOON_STR[$MOON]}" == "Full Moon" ]] ; then # Remove "shiny" dots ..
 	MvAddStr 20 57 "        "
 	MvAddStr 11 52 " "
 	MvAddStr 11 71 " "
@@ -82,14 +82,17 @@ Almanac_Notes() {
 	echo " In the back of your almanac, there is a page reserved for Your Notes."
 	echo " There is only room for 10 lines, but you may erase obsolete information."
 	echo
-	echo -e "\n\n\n\n\n\n\n\n\n\n" > "$CHAR_NOTES"                          # making empty notes file TODO use e.g. "EMPTY" for empty line, so we can identify empty lines..
+	echo -e "\n\n\n\n\n\n\n\n\n\n" > "$CHAR_NOTES"                          # making empty notes file
+	# TODO use e.g. "EMPTY" for empty line, so we can identify empty lines..
+	# IMHO '# empty line' in comments is easier to understand. And EMPTY var has too many meanings.
+	#  It can be as EMPTY="" as EMPY="\n" #kstn
 	PressAnyKey
 	tput rc
 	tput ed
     fi
     local -a NOTES_ENUMERATION=("    I" "   II" "  III" "   IV" "    V" "   VI" "  VII" " VIII" "   IX" "    X" )
     for i in {0..9}; do NOTES[$i]=$(sed -n "$((i + 1))p" "${CHAR_NOTES}"); done # load notes
-    for i in {0..9}; do echo -e " ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}"; done                         # display notes
+    for i in {0..9}; do echo -e " ${NOTES_ENUMERATION[$i]}. ${NOTES[$i]}"; done # display notes
     echo -e "\n$HR"
     tput sc			                                                # store cursor position
     while (true); do                                                      ### main loop

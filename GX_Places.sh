@@ -128,9 +128,7 @@ EOT
 GX_CaveEntrance() {
 	clear
 	# Cave Entrance CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
-GX_CaveEntrance() {
-clear
-cat <<"EOT" 
+	cat <<"EOT" 
           
                                       ______,-.__               ___
  /\  , ^  ,  /\                 _____/           `-.____   ,-.,'   `---.
@@ -146,10 +144,11 @@ cat <<"EOT"
         YOU HAVE STUMBLED UPON                               ,'    \
         THE ENTRANCE OF A CAVE                             "'"  " '" ' "
                                                              
-        The Underworld is home to as many
-        dangerous Creatures & Thieves as Treasures.                                                   
+        The Underworld is Home to many 
+        Dangerous Creatures & Thieves .. as well as treasures.
+        
 EOT
-echo "$HR"
+	echo "$HR"
 } 
 
 

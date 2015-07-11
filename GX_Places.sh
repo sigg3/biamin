@@ -120,6 +120,39 @@ EOT
     esac
     echo "$HR"
 }
+#-----------------------------------------------------------------------
+# GX_CaveEntrance()
+# Display cave entrance graphic, along with prompt to enter or avoid.
+# Used: NewSector()
+#-----------------------------------------------------------------------
+GX_CaveEntrance() {
+	clear
+	# Cave Entrance CC BY-SA (C) 2015 by Sigbjørn Smelror <biamin@sigg3.net>
+GX_CaveEntrance() {
+clear
+cat <<"EOT" 
+          
+                                      ______,-.__               ___
+ /\  , ^  ,  /\                 _____/           `-.____   ,-.,'   `---.
+/\\\^/\ /\^/\ \/\ /\          _/                     ,  \,'             `~._
+ || /\\\ \\ /\/\\\\\\ _______/_        \\     \/       ,'                   `-
+     || || /\\\|| '__/          \  \\              / ,'            ,~         l
+  `         ||    /    // ,.-.    \ ,-`-.   //   ,~-';     .    \  \//^,..     |
+   . `           /  /  , :    | \ _// ^  \      / /  |   `\ `~-.7  (_./ ,..   ;
+    .  `       ,'________`.  ;   // ^     |_  //_____`.    `~._ ;   ___/     ;
+   ,     `      ""         ||  `"                      \       )   /        ,
+ ,                                                      `~^~~~ |  7 ~^~~..~'
+                                                               ;  l 
+        YOU HAVE STUMBLED UPON                               ,'    \
+        THE ENTRANCE OF A CAVE                             "'"  " '" ' "
+                                                             
+        The Underworld is home to as many
+        dangerous Creatures & Thieves as Treasures.                                                   
+EOT
+echo "$HR"
+} 
+
+
 #                                                                      #
 #                                                                      #
 ########################################################################

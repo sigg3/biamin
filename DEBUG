@@ -1,0 +1,2124 @@
++ VERSION=1.9
++ WEBURL=http://sigg3.net/biamin
++ REPO=http://sigg3.net/biamin/dir/to/latest/biamin.sh
++ GAMEDIR=/home/sigg3/.biamin
++ CONFIG=/home/sigg3/.biamin/config
++ HIGHSCORE=/home/sigg3/.biamin/highscore
++ unset HISTFILE
++ START_LOCATION=C2
++ DISABLE_CHEATS=0
++ HR='- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MAX_BBSMSG=12
++ declare -r MONTH_LENGTH=30
++ declare -r YEAR_MONTHES=12
++ declare -r YEAR_LENGHT=360
++ declare -r MOON_PHASE_LENGTH=4
++ declare -r MOON_CYCLE=32
++ MOON_STR=("New Moon" "Growing Crescent" "First Quarter" "Growing Gibbous" "Full Moon" "Waning Gibbous" "Third Quarter" "Waning Crescent")
++ declare -r MOON_STR
++ MONTH_STR=("Biamin Festival" "Rarely happens, if ever :(" "After-Frost" "1st Month of the Year\n This is the coldest and darkest month of the year. Stay in, stay warm." "Marrsuckur" "2nd Month of the Year\n \"Marrow-sucker\" is a lean month. Some nobles have a custom of fasting." "Plough-Tide" "3rd Month of the Year\n Farmers return to their ploughs. Hobbit villages celebrate Springtide." "Anorlukis" "4th Month of the Year\n The winter darkness is overwon by Anor's arrows. Holy month for Elves." "Summer-Tide" "5th Month of the Year\n Middle of year. While the heat is welcoming, watch out for orcs and goblins!" "Summer-Turn" "6th Month of the Year\n A celebration of the Turn of Anor, in which one gives thanks for any good." "Merentimes" "7th Month of the Year\n From 'Meren' (happiness). This warm month is oft celebrated by travellers." "Harvest Month" "8th Month of the Year\n Autumn is the busiest time of year. And evil grows in the wilderness." "Ringorin" "9th Month of the Year\n From 'Ringorn' (circle, life, produce). Holy month for farmers." "Brew-Tasting Tide" "10th Month of the Year\n Traditional tasting of ales begin this month. Don't venture about alone." "Winter Month" "11th Month of the Year\n By now the stocks are full of produce. Livestock & people shelter in." "Midwinter Offering" "12th Month of the Year\n The Offering is a significant and holy event for priests and people alike.")
++ declare -r -a MONTH_STR
++ declare -r WEEK_LENGTH=7
++ WEEKDAY_STR=("Ringday (Holiday)" "Day of Festivities and Rest" "Men and Halflings celebrate Ringday as the end and beginning of the week." "Moonday" "Mor's Day (Day of the Moon)" "Elves and Dwarves once celebrated Moon Day as the holiest. Some still do." "Brenday" "Brenia's Day (God of Courage)" "Visit the Temple on Brenia's Day to honor those who perished in warfare." "Midweek" "Middle of the Week (Day of Balance)" "In some places, Midweek Eve is celebrated with village dances and ale." "Braigday" "Braig's Day (God of Wilderness)" "Historically, a day of hunting. Nobility still hunt every Braig's Day." "Melethday" "Melethril's Day (God of Love)" "Commonly considered Lovers' Day, it is also a day of mischief and trickery." "Washday" "Final Workday of the Week" "Folk name for Lanthir's Day, the God of Water, Springs and Waterfalls.")
++ declare -r -a WEEKDAY_STR
++ CALENDAR=()
++ declare -r DEATH_FIGHT=0
++ declare -r DEATH_STARVATION=1
++ declare -r BANDIT=0
++ declare -r IMP=1
++ declare -r GOBLIN=2
++ declare -r BOAR=3
++ declare -r ORC=4
++ declare -r VARG=5
++ declare -r MAGE=6
++ declare -r DRAGON=7
++ declare -r CHTHULU=8
++ declare -r BEAR=9
++ ENEMIES=("bandit  1        4        7     30    18             20 20   10        0   15" "imp     2        3        3     20    10             10  5    0        0   10" "goblin  3        3        5     30    15             30 10   20        0   20" "boar    4        2        3     60    35             40  0    0      100    0" "orc     4        4        4     80    40             50 15   25        0   35" "varg    4        3        3     80    60            100  0    0       70    0" "mage    5        3        4     90    45            150 50   60        0  100" "dragon  5        3        2    150    50            180 30    0       30  100" "chthulu 6        5        1    500    35           1000  0    0       90   40" "bear    6        2        4    160    25             60  0    0      100    0")
++ declare -ra ENEMIES
++ declare -r GIFT_OF_SIGHT=0
++ declare -r EMERALD_OF_NARCOLEPSY=1
++ declare -r GUARDIAN_ANGEL=2
++ declare -r FAST_MAGIC_BOOTS=3
++ declare -r QUICK_RABBIT_REACTION=4
++ declare -r FLASK_OF_TERRIBLE_ODOUR=5
++ declare -r TWO_HANDED_BROADSWORD=6
++ declare -r STEADY_HAND_BREW=7
++ declare -r MAX_ITEMS=8
++ DICE_GAME_CHANCES=(0 1 3 6 9 12 14 17 14 12 9 6 3)
++ declare -r -a DICE_GAME_CHANCES
++ DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
++ declare -r -a DICE_GAME_WINNINGS
++ RACES=("Race   Healing Strength Accuracy Flee Offset_Gold Offset_Tobacco" "human  3       3        3        3    12           8" "elf    4       3        4        1     8          12" "dwarf  2       5        3        2    14           6" "hobbit 4       1        4        3     6          14")
++ declare -r -a RACES
++ declare -r MAX_RACES=4
++ declare -r INITIAL_VALUE_GOLD=1
++ declare -r INITIAL_VALUE_TOBACCO=1
++ declare -r INITIAL_VALUE_CHANGE=0.15
++ [[ ! -d /home/sigg3/.biamin ]]
++ [[ ! -f /home/sigg3/.biamin/config ]]
++ [[ -f /home/sigg3/.biamin/highscore ]]
++ grep -q d41d8cd98f00b204e9800998ecf8427e /home/sigg3/.biamin/highscore
++ [[ ! -n '' ]]
++ for PAGER in less more
+++ which less
++ PAGER=/usr/bin/less
++ [[ -n /usr/bin/less ]]
++ break
++ CLI_ParseArguments p
++ [[ ! -n p ]]
++ [[ -n p ]]
++ case "$1" in
++ [[ -n '' ]]
++ echo 'Launching Back in a Minute..'
++ shift
++ [[ -n '' ]]
++ echo 'Putting on the traveller'\''s boots..'
++ read -r GAMEDIR COLOR
+++ awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
+                                   if (/^COLOR:/)    { COLOR = $2  } }
+                            END { print GAMEDIR, COLOR ;}' /home/sigg3/.biamin/config
++ CheckBiaminDependencies
++ declare -a CRITICAL NONCRITICAL
++ local PROGRAM
++ echo 'Checking dependencies...'
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled tput
+++ which tput
++ [[ -n /usr/bin/tput ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled awk
+++ which awk
++ [[ -n /usr/bin/awk ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled bc
+++ which bc
++ [[ -n /usr/bin/bc ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled sed
+++ which sed
++ [[ -n /usr/bin/sed ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled printf
+++ which printf
++ [[ -n /usr/bin/printf ]]
++ return 0
++ for PROGRAM in '"tput"' '"awk"' '"bc"' '"sed"' '"printf"' '"date"'
++ IsInstalled date
+++ which date
++ [[ -n /usr/bin/date ]]
++ return 0
++ for PROGRAM in '"curl"' '"wget"'
++ IsInstalled curl
+++ which curl
++ [[ -n /usr/bin/curl ]]
++ return 0
++ for PROGRAM in '"curl"' '"wget"'
++ IsInstalled wget
+++ which wget
++ [[ -n /usr/bin/wget ]]
++ return 0
++ [[ -n '' ]]
++ [[ -n '' ]]
+++ tput cols
+++ tput lines
++ ((  80 > 79 && 24 > 23 ))
++ unset CRITICAL NONCRITICAL PROGRAM
++ ColorConfig 1
++ case "$1" in
++ echo 'Enabling color for maps!'
++ (( COLOR == 1 ))
++ declare -gr 'YELLOW=\033[1;33m'
++ declare -gr 'RESET=\033[0;39m'
++ declare -gr 'CLEAR_LINE=\e[1K\e[80D'
++ ReseedRandom
++ [[ -n '' ]]
++ case "$OSTYPE" in
+++ date +%N
++ RANDOM=571831617
++ trap CleanUp SIGHUP SIGINT SIGTERM
++ tput civis
++ [[ -n '' ]]
++ MainMenu
++ [[ ! -n '' ]]
++ GX_Banner
++ GX_BiaminTitle
++ clear
++ cat
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo p
++ ReadLine '\e[1K\e[80D Enter character name (case sensitive): '
++ [[ -n \e[1K\e[80D Enter character name (case sensitive):  ]]
++ echo -en '\e[1K\e[80D Enter character name (case sensitive): '
++ read -s -t 0.01 -n 512
++ tput cnorm
++ read
++ tput civis
++ CHAR=Elvis
++ [[ ! -n Elvis ]]
++ BiaminSetup
++ BiaminSetup_MakeBaseChar
++ CHAR_BATTLES=0
++ CHAR_EXP=0
++ CHAR_GPS=C2
++ CHAR_HEALTH=100
++ CHAR_ITEMS=0
++ CHAR_KILLS=0
++ CHAR_HOME=C2
+++ bc
++++ RollDice2 11
++++ RollDice 11
++++ DICE_SIZE=11
++++ DICE=6
++++ echo 6
++ CHAR_FOOD=10
++ BBSMSG=0
++ VAL_GOLD=1
++ VAL_TOBACCO=1
++ VAL_CHANGE=0.15
++ STARVATION=0
+++ TurnFromDate
+++ local YEAR MONTH DAY
+++ read -r YEAR MONTH DAY
++++ date '+%-y %-m %-d'
+++ bc
++ TURN=5607
++ INV_ALMANAC=0
+++ tr '[:upper:]' '[:lower:]'
+++ tr -d ' '
+++ echo Elvis
++ CHARSHEET=/home/sigg3/.biamin/elvis.sheet
++ [[ -f /home/sigg3/.biamin/elvis.sheet ]]
++ BiaminSetup_MakeNewChar
++ echo ' Elvis is a new character!'
++ GX_Races
++ clear
++ cat
++ echo -n ' Select character race (1-4): '
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo 1
++ CHAR_RACE=1
++ [[ 1 != [1-4] ]]
++ BiaminSetup_SetRaceAbilities 1
++ read -r CHAR_RACE_STR HEALING STRENGTH ACCURACY FLEE OFFSET_GOLD OFFSET_TOBACCO
+++ Toupper human
+++ awk '{ print toupper($0); }'
++ echo 'You chose to be a HUMAN'
+++ RollDice2 12
+++ RollDice 12
+++ DICE_SIZE=12
+++ DICE=2
+++ echo 2
++ CHAR_GOLD=2
+++ RollDice2 8
+++ RollDice 8
+++ DICE_SIZE=8
+++ DICE=2
+++ echo 2
++ CHAR_TOBACCO=2
++ [[ -n '' ]]
++ echo ' Creating fresh character sheet for Elvis ...'
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Elvis
+RACE: 1
+BATTLES: 0
+EXPERIENCE: 0
+LOCATION: C2
+HEALTH: 100
+ITEMS: 0
+KILLS: 0
+HOME: C2
+GOLD: 2
+TOBACCO: 2
+FOOD: 10
+BBSMSG: 0
+VAL_GOLD: 1
+VAL_TOBACCO: 1
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5607
+INV_ALMANAC: 0'
++ Sleep 2
++ read -s -n 1 -t 2
++ Intro
++ MapCreate
++ MAPS=($(find "$GAMEDIR"/ -name '*.map' | sort))
+++ find /home/sigg3/.biamin/ -name '*.map'
+++ sort
++ [[ -n '' ]]
+++ cat
++ MAP='       A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R
+   #=========================================================================#
+ 1 )   x   x   x   x   x   @   .   .   .   T   x   x   x   x   x   x   @   T (
+ 2 )   x   x   H   x   @   @   .   @   @   x   x   x   x   x   @   @   @   @ (
+ 3 )   @   @   .   @   @   @   .   x   x   x   x   x   @   x   @   x   @   @ (
+ 4 )   @   @   .   @   @   @   .   @   x   x   x   @   T   x   x   x   x   x (
+ 5 )   @   @   .   .   T   .   .   @   @   @   @   @   .   @   x   x   x   x (
+ 6 )   @   @   @   @   .   @   @   @   @   @   @   @   .   @   @   x   x   x (
+ 7 )   @   @   @   @   .   .   .   T   @   @   @   @   .   @   @   x   x   x (
+ 8 )   @   @   T   .   .   @   @   @   @   @   @   .   .   .   .   .   .   x (
+ 9 )   @   @   .   @   @   @   @   @   @   @   .   .   @   x   @   @   .   . (
+10 )   @   @   .   @   @   @   T   @   @   @   .   @   @   x   x   x   x   . (
+11 )   T   .   .   .   .   .   .   .   @   @   .   x   x   C   x   x   x   . (
+12 )   x   @   @   @   .   @   @   .   .   .   .   x   x   x   x   x   x   . (
+13 )   x   x   @   x   .   @   @   @   @   @   .   @   x   x   @   @   @   . (
+14 )   x   x   x   x   .   @   @   @   @   T   .   @   x   x   @   @   .   . (
+15 )   x   x   x   T   .   @   @   @   @   @   @   @   @   T   .   .   .   @ (
+   #=========================================================================#
+          LEGEND: x = Mountain, . = Road, T = Town, @ = Forest         N
+                  H = Home (Heal Your Wounds) C = Oldburg Castle     W + E
+                                                                       S'
++ HotzonesDistribute 0
++ local ITEMS_2_SCATTER=8
++ HOTZONE=()
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=18
++++ echo 18
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=14
++++ echo 14
+++ XYtoGPS 18 14
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=R14
++ [[ R14 == \C\2 ]]
++ CheckHotzones R14
+++ grep -E '(^| )R14( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=R14
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=13
++++ echo 13
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=10
++++ echo 10
+++ XYtoGPS 13 10
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=M10
++ [[ M10 == \C\2 ]]
++ CheckHotzones M10
+++ grep -E '(^| )M10( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=M10
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=3
++++ echo 3
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=8
++++ echo 8
+++ XYtoGPS 3 8
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=C8
++ [[ C8 == \C\2 ]]
++ CheckHotzones C8
+++ grep -E '(^| )C8( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=C8
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=3
++++ echo 3
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=7
++++ echo 7
+++ XYtoGPS 3 7
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=C7
++ [[ C7 == \C\2 ]]
++ CheckHotzones C7
+++ grep -E '(^| )C7( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=C7
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=9
++++ echo 9
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=11
++++ echo 11
+++ XYtoGPS 9 11
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=I11
++ [[ I11 == \C\2 ]]
++ CheckHotzones I11
+++ grep -E '(^| )I11( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=I11
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=10
++++ echo 10
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=9
++++ echo 9
+++ XYtoGPS 10 9
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=J9
++ [[ J9 == \C\2 ]]
++ CheckHotzones J9
+++ grep -E '(^| )J9( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=J9
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=6
++++ echo 6
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=14
++++ echo 14
+++ XYtoGPS 6 14
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=F14
++ [[ F14 == \C\2 ]]
++ CheckHotzones F14
+++ grep -E '(^| )F14( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=F14
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=3
++++ echo 3
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=3
++++ echo 3
+++ XYtoGPS 3 3
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=C3
++ [[ C3 == \C\2 ]]
++ CheckHotzones C3
+++ grep -E '(^| )C3( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=C3
++ (( ITEMS_2_SCATTER > 0 ))
++ WORLDCHANGE_COUNTDOWN=0
++ WorldPriceFixing
++ local VAL_FOOD=1
+++ bc
++ PRICE_FxG=1.00
+++ bc
++ PRICE_FxT=1.00
+++ bc
++ PRICE_GxT=1.00
+++ bc
++ PRICE_GxF=1.00
+++ bc
++ PRICE_TxG=1.00
+++ bc
++ PRICE_TxF=1.00
++ GX_Intro 60
++ clear
++ cat
++ local COUNTDOWN=60
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ echo -n '                         Press (A)ny key to continue..'
++ tput sc
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n .
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n ' '
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n .
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ tput rc
++ (( COUNTDOWN % 2 ))
++ echo -n ' '
++ read -sn 1 -t 1
++ break
++ NODICE=1
++ GiveUsDebugInfo 'Default Pricing Scheme' 0
++ echo '        DEBUG       Default Pricing Scheme'
+        DEBUG       Default Pricing Scheme
++ echo '        DEBUG       '
+        DEBUG       
++ echo '        DEBUG       BBSMSG:		0'
+        DEBUG       BBSMSG:		0
++ echo '        DEBUG       '
+        DEBUG       
++ echo '        DEBUG       $PRICE_FxG:	1.00'
+        DEBUG       $PRICE_FxG:	1.00
++ echo '        DEBUG       $PRICE_FxT:	1.00'
+        DEBUG       $PRICE_FxT:	1.00
++ echo '        DEBUG       $PRICE_GxT:	1.00'
+        DEBUG       $PRICE_GxT:	1.00
++ echo '        DEBUG       $PRICE_GxF:	1.00'
+        DEBUG       $PRICE_GxF:	1.00
++ echo '        DEBUG       $PRICE_TxG:	1.00'
+        DEBUG       $PRICE_TxG:	1.00
++ echo '        DEBUG       $PRICE_TxF:	1.00'
+        DEBUG       $PRICE_TxF:	1.00
++ NewSector
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=208
+++ bc
++ MONTH=6
+++ bc
++ DAY=28
+++ bc
++ WEEKDAY=1
+++ bc
++ MOON=2
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 29
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 29th
+++ return 0
+++ MonthString 7
+++ echo Merentimes
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='29th of Merentimes in the 16th Cycle'
++ CheckForItem C2
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones C2
+++ grep -E '(^| )C2( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario C2
+++ read -r MAP_X MAP_Y
++++ GPStoXY C2
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 4) { print $5; }}'
++ SCENARIO=H
++ GX_Place H
++ clear
++ case "$1" in
++ PLACE=Home
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 1 ]]
++ unset NODICE
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=9.75
++ Echo 'You eat from your stock: 9.75 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 9.75 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=89
+++ echo 89
++ ((  89 > 15  ))
++ return 0
++ true
++ GX_Place H
++ clear
++ case "$1" in
++ PLACE=Home
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo c
++ local ACTION=c
++ case "$ACTION" in
++ DisplayCharsheet
+++ bc
++ local MURDERSCORE=0
+++ Capitalize human
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ local RACE=Human
++ local 'CHARSHEET_INV_STR=2 Gold, 2 Tobacco, 9.75 Food'
++ ((  INV_ALMANAC == 1  ))
++ GX_CharSheet
++ clear
++ cat
++ tput sc
++ case "$1" in
++ MvAddStr 3 11 'C  H  A  R  A  C  T  E  R     S  H E  E  T'
++ tput cup 3 11
++ printf %s 'C  H  A  R  A  C  T  E  R     S  H E  E  T'
++ MvAddStr 5 11 '            s t a t i s t i c s           '
++ tput cup 5 11
++ printf %s '            s t a t i s t i c s           '
++ tput rc
++ cat
++ case "$INV_ALMANAC" in
++ MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo d
++ GX_Races
++ clear
++ cat
++ PressAnyKey
++ [[ -n '' ]]
++ MakePrompt 'Press (A)ny key to continue..'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -s -t 0.01 -n 512
++ read -sn 1
++ true
++ GX_Place H
++ clear
++ case "$1" in
++ PLACE=Home
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo b
++ local ACTION=b
++ case "$ACTION" in
++ [[ H == \H ]]
++ GX_Bulletin 0
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_GOLD_STR=1.00
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_TOBACCO_STR=1.00
++ case $1 in
++ BULLETIN=("     WIZARD CRAVE DRAGON (DEAD)     " "An Honorable Wizard in Royal School " "of Magic and Astronomy, promises a  " "Rewarde to be pay'd in Golde for ye " "Delivery of a Dragon to ye Schoole, " "preferably deceased, for study.     ")
++ local BULLETIN
++ case $1 in
++ BULLETIN[6]='REWARD SET TO: 500 GOLD'
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ tput sc
++ local NUM=0
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 3 21 '     WIZARD CRAVE DRAGON (DEAD)     '
++ tput cup 3 21
++ printf %s '     WIZARD CRAVE DRAGON (DEAD)     '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 5 21 'An Honorable Wizard in Royal School '
++ tput cup 5 21
++ printf %s 'An Honorable Wizard in Royal School '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 6 21 'of Magic and Astronomy, promises a  '
++ tput cup 6 21
++ printf %s 'of Magic and Astronomy, promises a  '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 7 21 'Rewarde to be pay'\''d in Golde for ye '
++ tput cup 7 21
++ printf %s 'Rewarde to be pay'\''d in Golde for ye '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 8 21 'Delivery of a Dragon to ye Schoole, '
++ tput cup 8 21
++ printf %s 'Delivery of a Dragon to ye Schoole, '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 9 21 'preferably deceased, for study.     '
++ tput cup 9 21
++ printf %s 'preferably deceased, for study.     '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 10 21 'REWARD SET TO: 500 GOLD'
++ tput cup 10 21
++ printf %s 'REWARD SET TO: 500 GOLD'
++ tput rc
++ PressAnyKey
++ [[ -n '' ]]
++ MakePrompt 'Press (A)ny key to continue..'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -s -t 0.01 -n 512
++ read -sn 1
++ true
++ GX_Place H
++ clear
++ case "$1" in
++ PLACE=Home
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter     (B)ulletin     (R)est     (M)ap and Travel     (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ local DEST
++ read -r MAP_X MAP_Y
+++ GPStoXY C2
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ (( CHAR_ITEMS > 0 ))
++ return 1
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 4) {  # lazy fix for ASCII borders
+         if (3 == 18 ) { $4="o ("; }
+         else                 { $4="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 0 > 0 && 0 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 2) {
+            if ( 0 == 18 ) { $1="~ ("; }
+            else                     { $1="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Elvis\033[0;39m is currently in C2 (Home)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ echo -n ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  '
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo s
++ DEST=s
++ case "$DEST" in
++ echo -n 'You go South'
++ (( MAP_Y != 15 ))
++ (( MAP_Y++ ))
+++ XYtoGPS 3 3
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=C3
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=209
+++ bc
++ MONTH=6
+++ bc
++ DAY=29
+++ bc
++ WEEKDAY=2
+++ bc
++ MOON=2
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 30
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 30th
+++ return 0
+++ MonthString 7
+++ echo Merentimes
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='30th of Merentimes in the 16th Cycle'
++ CheckForItem C3
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones C3
+++ grep -E '(^| )C3( |$)'
++ [[ -n C3 F14 J9 I11 C7 C8 M10 R14 ]]
++ return 0
++ ItemWasFound
++ GX_Item 0
++ clear
++ case "$1" in
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$CHAR_ITEMS" in
++ local COUNTDOWN=180
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (180)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (179)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (178)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (177)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (176)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (175)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (174)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (173)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (172)'
++ read -sn 1 -t 1
++ (( COUNTDOWN-- ))
++ ((  COUNTDOWN > 0  ))
++ echo -en '\e[1K\e[80D                      Press any letter to continue  (171)'
++ read -sn 1 -t 1
++ break
++ (( ++CHAR_ITEMS ))
++ HotzonesDistribute 1
++ local ITEMS_2_SCATTER=7
++ HOTZONE=()
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=3
++++ echo 3
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=13
++++ echo 13
+++ XYtoGPS 3 13
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=C13
++ [[ C13 == \C\3 ]]
++ CheckHotzones C13
+++ grep -E '(^| )C13( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=C13
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=6
++++ echo 6
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=7
++++ echo 7
+++ XYtoGPS 6 7
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=F7
++ [[ F7 == \C\3 ]]
++ CheckHotzones F7
+++ grep -E '(^| )F7( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=F7
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=9
++++ echo 9
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=5
++++ echo 5
+++ XYtoGPS 9 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=I5
++ [[ I5 == \C\3 ]]
++ CheckHotzones I5
+++ grep -E '(^| )I5( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=I5
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=6
++++ echo 6
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=5
++++ echo 5
+++ XYtoGPS 6 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=F5
++ [[ F5 == \C\3 ]]
++ CheckHotzones F5
+++ grep -E '(^| )F5( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=F5
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=9
++++ echo 9
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=9
++++ echo 9
+++ XYtoGPS 9 9
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=I9
++ [[ I9 == \C\3 ]]
++ CheckHotzones I9
+++ grep -E '(^| )I9( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=I9
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=14
++++ echo 14
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=5
++++ echo 5
+++ XYtoGPS 14 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=N5
++ [[ N5 == \C\3 ]]
++ CheckHotzones N5
+++ grep -E '(^| )N5( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=N5
++ (( ITEMS_2_SCATTER > 0 ))
++++ RollDice2 18
++++ RollDice 18
++++ DICE_SIZE=18
++++ DICE=14
++++ echo 14
++++ RollDice2 15
++++ RollDice 15
++++ DICE_SIZE=15
++++ DICE=11
++++ echo 11
+++ XYtoGPS 14 11
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ local ITEM_GPS=N11
++ [[ N11 == \C\3 ]]
++ CheckHotzones N11
+++ grep -E '(^| )N11( |$)'
++ [[ -n '' ]]
++ return 1
++ (( ITEMS_2_SCATTER-- ))
++ HOTZONE["$ITEMS_2_SCATTER"]=N11
++ (( ITEMS_2_SCATTER > 0 ))
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Elvis
+RACE: 1
+BATTLES: 0
+EXPERIENCE: 0
+LOCATION: C3
+HEALTH: 100
+ITEMS: 1
+KILLS: 0
+HOME: C2
+GOLD: 2
+TOBACCO: 2
+FOOD: 9.75
+BBSMSG: 0
+VAL_GOLD: 1
+VAL_TOBACCO: 1
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5609
+INV_ALMANAC: 0'
++ NODICE=1
+++ NewSector_GetScenario C3
+++ read -r MAP_X MAP_Y
++++ GPStoXY C3
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 5) { print $5; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n 1 ]]
++ unset NODICE
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=9.50
++ Echo 'You eat from your stock: 9.50 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 9.50 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=75
+++ echo 75
++ ((  75 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ local DEST
++ read -r MAP_X MAP_Y
+++ GPStoXY C3
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ (( CHAR_ITEMS > 0 ))
++ return 0
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ read -r ITEM2C_X ITEM2C_Y
+++ GPStoXY N11
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 5) {  # lazy fix for ASCII borders
+         if (3 == 18 ) { $4="o ("; }
+         else                 { $4="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 1 > 0 && 1 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 13) {
+            if ( 14 == 18 ) { $15="~ ("; }
+            else                     { $15="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Elvis\033[0;39m is currently in C3 (Road)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ echo -n ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  '
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo s
++ DEST=s
++ case "$DEST" in
++ echo -n 'You go South'
++ (( MAP_Y != 15 ))
++ (( MAP_Y++ ))
+++ XYtoGPS 3 4
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=C4
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=210
+++ bc
++ MONTH=7
+++ bc
++ DAY=0
+++ bc
++ WEEKDAY=3
+++ bc
++ MOON=2
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 1
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ echo 1st
+++ return 0
+++ MonthString 8
+++ echo Harvest Month
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='1st of Harvest Month in the 16th Cycle'
++ CheckForItem C4
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones C4
+++ grep -E '(^| )C4( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario C4
+++ read -r MAP_X MAP_Y
++++ GPStoXY C4
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 6) { print $5; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight .
++ local CHANCE
++ [[ ! -n '' ]]
++ case "$1" in
++ CHANCE=20
++ RollDice 100
++ DICE_SIZE=100
++ DICE=69
++ RollForEvent 20 event
++ ((  DICE <= 20  ))
++ Echo '\e[1K\e[80DRolling for event:' '[D100 69 > 20]'
++ echo -en '\e[1K\e[80DRolling for event:'
+++ Strlen '[D100 69 > 20]'
+++ awk '{ print length($0); }'
++ tput hpa 64
++ echo -en '[D100 69 > 20]'
++ echo
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ return 1
++ return 0
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=9.25
++ Echo 'You eat from your stock: 9.25 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 9.25 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=16
+++ echo 16
++ ((  16 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo c
++ local ACTION=c
++ case "$ACTION" in
++ DisplayCharsheet
+++ bc
++ local MURDERSCORE=0
+++ Capitalize human
+++ awk '{ print substr(toupper($0), 1,1) substr($0, 2); }'
++ local RACE=Human
++ local 'CHARSHEET_INV_STR=2 Gold, 2 Tobacco, 9.25 Food'
++ ((  INV_ALMANAC == 1  ))
++ GX_CharSheet
++ clear
++ cat
++ tput sc
++ case "$1" in
++ MvAddStr 3 11 'C  H  A  R  A  C  T  E  R     S  H E  E  T'
++ tput cup 3 11
++ printf %s 'C  H  A  R  A  C  T  E  R     S  H E  E  T'
++ MvAddStr 5 11 '            s t a t i s t i c s           '
++ tput cup 5 11
++ printf %s '            s t a t i s t i c s           '
++ tput rc
++ cat
++ case "$INV_ALMANAC" in
++ MakePrompt '(D)isplay Race Info;(A)ny key to continue;(Q)uit'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo m
++ local ACTION=m
++ case "$ACTION" in
++ MapNav m
++ local DEST
++ read -r MAP_X MAP_Y
+++ GPStoXY C4
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ case "$1" in
++ GX_Map
++ local ITEM2C_Y=0 ITEM2C_X=0
++ HaveItem 0
++ (( CHAR_ITEMS > 0 ))
++ return 0
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ read -r ITEM2C_X ITEM2C_Y
+++ GPStoXY N11
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ clear
+++ printf %s '\033[0;39m'
+++ printf %s '\033[1;33m~\033[0;39m'
+++ printf %s '\033[1;33mo\033[0;39m'
++ awk 'BEGIN { FS = "   " ; OFS = "   "; }
+    { # place "o" (player) on map
+      if (NR == 6) {  # lazy fix for ASCII borders
+         if (3 == 18 ) { $4="o ("; }
+         else                 { $4="o";   }
+         }
+      # if player has Gift-Of-Sight and not all items are found
+      if ( 1 > 0 && 1 < 8) {
+         # place ITEM2C on map
+         # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
+ 	 if (NR == 13) {
+            if ( 14 == 18 ) { $15="~ ("; }
+            else                     { $15="~";   }
+            }
+         }
+      # All color on map sets here
+      if (1 == 1 ) {
+         # Terminal color scheme bugfix
+         if ( NR == 1 ) { gsub(/^/, "\033[0;39m"); }
+         # colorise "o" (player) and "~" (ITEM2C)
+	 if ( NR > 2 && NR < 19 ) {
+ 	    gsub(/~/, "\033[1;33m~\033[0;39m")
+	    gsub(/o/, "\033[1;33mo\033[0;39m")
+	    }
+         }
+      print; }'
++ echo -e ' \033[1;33mo Elvis\033[0;39m is currently in C4 (Road)\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ echo -n ' I want to go  (W) North  (A) West  (S)outh  (D) East  (Q)uit :  '
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo s
++ DEST=s
++ case "$DEST" in
++ echo -n 'You go South'
++ (( MAP_Y != 15 ))
++ (( MAP_Y++ ))
+++ XYtoGPS 3 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=C5
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=211
+++ bc
++ MONTH=7
+++ bc
++ DAY=1
+++ bc
++ WEEKDAY=4
+++ bc
++ MOON=2
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 2
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ echo 2nd
+++ return 0
+++ MonthString 8
+++ echo Harvest Month
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='2nd of Harvest Month in the 16th Cycle'
++ CheckForItem C5
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones C5
+++ grep -E '(^| )C5( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario C5
+++ read -r MAP_X MAP_Y
++++ GPStoXY C5
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 7) { print $5; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight .
++ local CHANCE
++ [[ ! -n '' ]]
++ case "$1" in
++ CHANCE=20
++ RollDice 100
++ DICE_SIZE=100
++ DICE=75
++ RollForEvent 20 event
++ ((  DICE <= 20  ))
++ Echo '\e[1K\e[80DRolling for event:' '[D100 75 > 20]'
++ echo -en '\e[1K\e[80DRolling for event:'
+++ Strlen '[D100 75 > 20]'
+++ awk '{ print length($0); }'
++ tput hpa 64
++ echo -en '[D100 75 > 20]'
++ echo
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ return 1
++ return 0
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=9.00
++ Echo 'You eat from your stock: 9.00 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 9.00 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=90
+++ echo 90
++ ((  90 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo d
++ local ACTION=d
++ case "$ACTION" in
++ MapNav d
++ local DEST
++ read -r MAP_X MAP_Y
+++ GPStoXY C5
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ case "$1" in
++ DEST=d
++ echo -en '\e[1K\e[80D'
++ case "$DEST" in
++ echo -n 'You go East'
++ (( MAP_X != 18 ))
++ (( MAP_X++ ))
+++ XYtoGPS 4 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=D5
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=212
+++ bc
++ MONTH=7
+++ bc
++ DAY=2
+++ bc
++ WEEKDAY=5
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 3
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ echo 3rd
+++ return 0
+++ MonthString 8
+++ echo Harvest Month
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='3rd of Harvest Month in the 16th Cycle'
++ CheckForItem D5
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones D5
+++ grep -E '(^| )D5( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario D5
+++ read -r MAP_X MAP_Y
++++ GPStoXY D5
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 7) { print $6; }}'
++ SCENARIO=.
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight .
++ local CHANCE
++ [[ ! -n '' ]]
++ case "$1" in
++ CHANCE=20
++ RollDice 100
++ DICE_SIZE=100
++ DICE=76
++ RollForEvent 20 event
++ ((  DICE <= 20  ))
++ Echo '\e[1K\e[80DRolling for event:' '[D100 76 > 20]'
++ echo -en '\e[1K\e[80DRolling for event:'
+++ Strlen '[D100 76 > 20]'
+++ awk '{ print length($0); }'
++ tput hpa 64
++ echo -en '[D100 76 > 20]'
++ echo
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ return 1
++ return 0
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=8.75
++ Echo 'You eat from your stock: 8.75 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 8.75 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=70
+++ echo 70
++ ((  70 > 15  ))
++ return 0
++ true
++ GX_Place .
++ clear
++ case "$1" in
++ PLACE=Road
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '        (C)haracter        (R)est        (M)ap and Travel        (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo d
++ local ACTION=d
++ case "$ACTION" in
++ MapNav d
++ local DEST
++ read -r MAP_X MAP_Y
+++ GPStoXY D5
+++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
++ case "$1" in
++ DEST=d
++ echo -en '\e[1K\e[80D'
++ case "$DEST" in
++ echo -n 'You go East'
++ (( MAP_X != 18 ))
++ (( MAP_X++ ))
+++ XYtoGPS 5 5
+++ awk '{ print substr("ABCDEFGHIJKLMNOPQR", $1, 1) $2; }'
++ CHAR_GPS=E5
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ break
++ true
++ NewTurn
++ (( TURN++ ))
++ DateFromTurn
+++ bc
++ YEAR=15
+++ bc
++ CENTURY=200
++ (( YEAR >= 100 ))
+++ bc
++ local REMAINDER=213
+++ bc
++ MONTH=7
+++ bc
++ DAY=3
+++ bc
++ WEEKDAY=6
+++ bc
++ MOON=3
++ (( DAY++ ))
++ (( MONTH++ ))
++ (( YEAR++ ))
+++ Ordial 4
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 4th
+++ return 0
+++ MonthString 8
+++ echo Harvest Month
+++ Ordial 16
+++ grep -Eq '^([0-9]*[^1])?1$'
+++ grep -Eq '^([0-9]*[^1])?2$'
+++ grep -Eq '^([0-9]*[^1])?3$'
+++ grep -Eq '^[0-9]+$'
+++ echo 16th
+++ return 0
++ BIAMIN_DATE_STR='4th of Harvest Month in the 16th Cycle'
++ CheckForItem E5
++ (( CHAR_ITEMS < MAX_ITEMS ))
++ CheckHotzones E5
+++ grep -E '(^| )E5( |$)'
++ [[ -n '' ]]
++ return 1
+++ NewSector_GetScenario E5
+++ read -r MAP_X MAP_Y
++++ GPStoXY E5
++++ awk '{ print index("ABCDEFGHIJKLMNOPQR", substr($0, 1 ,1));
+           print substr($0, 2); }'
+++ awk '{ if ( NR == 7) { print $7; }}'
++ SCENARIO=T
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ [[ -n '' ]]
++ CheckForFight T
++ local CHANCE
++ [[ ! -n '' ]]
++ case "$1" in
++ CHANCE=15
++ RollDice 100
++ DICE_SIZE=100
++ DICE=53
++ RollForEvent 15 event
++ ((  DICE <= 15  ))
++ Echo '\e[1K\e[80DRolling for event:' '[D100 53 > 15]'
++ echo -en '\e[1K\e[80DRolling for event:'
+++ Strlen '[D100 53 > 15]'
+++ awk '{ print length($0); }'
++ tput hpa 64
++ echo -en '[D100 53 > 15]'
++ echo
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ return 1
++ return 0
++ CheckForStarvation
+++ bc
++ ((  1  ))
+++ bc
++ CHAR_FOOD=8.50
++ Echo 'You eat from your stock: 8.50 remaining ..' '[-.25 FOOD]'
++ echo -en 'You eat from your stock: 8.50 remaining ..'
+++ Strlen '[-.25 FOOD]'
+++ awk '{ print length($0); }'
++ tput hpa 67
++ echo -en '[-.25 FOOD]'
++ echo
++ (( STARVATION ))
++ Sleep 1.5
++ read -s -n 1 -t 1.5
++ CheckForWorldChangeEconomy
++ ((  --WORLDCHANGE_COUNTDOWN > 0  ))
+++ RollDice2 100
+++ RollDice 100
+++ DICE_SIZE=100
+++ DICE=15
+++ echo 15
++ ((  15 > 15  ))
+++ RollDice2 12
+++ RollDice 12
+++ DICE_SIZE=12
+++ DICE=7
+++ echo 7
++ BBSMSG=7
++ case "$BBSMSG" in
++ local CHANGE=-
++ declare -n CURRENCY=VAL_GOLD
+./biamin.sh: line 1963: declare: -n: invalid option
+declare: usage: declare [-aAfFgilrtux] [-p] [name[=value] ...]
++ RollDice 12
++ DICE_SIZE=12
++ DICE=10
+++ bc
++ CURRENCY=.25
++ unset -n CURRENCY
+./biamin.sh: line 1972: unset: -n: invalid option
+unset: usage: unset [-f] [-v] [name ...]
++ WORLDCHANGE_COUNTDOWN=20
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Elvis
+RACE: 1
+BATTLES: 0
+EXPERIENCE: 0
+LOCATION: E5
+HEALTH: 100
+ITEMS: 1
+KILLS: 0
+HOME: C2
+GOLD: 2
+TOBACCO: 2
+FOOD: 8.50
+BBSMSG: 7
+VAL_GOLD: 1
+VAL_TOBACCO: 1
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5613
+INV_ALMANAC: 0'
++ WorldPriceFixing
++ local VAL_FOOD=1
+++ bc
++ PRICE_FxG=1.00
+++ bc
++ PRICE_FxT=1.00
+++ bc
++ PRICE_GxT=1.00
+++ bc
++ PRICE_GxF=1.00
+++ bc
++ PRICE_TxG=1.00
+++ bc
++ PRICE_TxF=1.00
++ GiveUsDebugInfo 'Changes in WorldChangeEconomy()' 7
++ echo '        DEBUG       Changes in WorldChangeEconomy()'
+        DEBUG       Changes in WorldChangeEconomy()
++ echo '        DEBUG       '
+        DEBUG       
++ echo '        DEBUG       BBSMSG:		7'
+        DEBUG       BBSMSG:		7
++ echo '        DEBUG       '
+        DEBUG       
++ echo '        DEBUG       $PRICE_FxG:	1.00'
+        DEBUG       $PRICE_FxG:	1.00
++ echo '        DEBUG       $PRICE_FxT:	1.00'
+        DEBUG       $PRICE_FxT:	1.00
++ echo '        DEBUG       $PRICE_GxT:	1.00'
+        DEBUG       $PRICE_GxT:	1.00
++ echo '        DEBUG       $PRICE_GxF:	1.00'
+        DEBUG       $PRICE_GxF:	1.00
++ echo '        DEBUG       $PRICE_TxG:	1.00'
+        DEBUG       $PRICE_TxG:	1.00
++ echo '        DEBUG       $PRICE_TxF:	1.00'
+        DEBUG       $PRICE_TxF:	1.00
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo g
++ local ACTION=g
++ case "$ACTION" in
++ [[ T == \T ]]
++ GoIntoTown
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo b
++ GX_Bulletin 7
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_GOLD_STR=1.00
+++ awk '{ printf "%4.2f", $0 }'
++ local VAL_TOBACCO_STR=1.00
++ case $1 in
++ BULLETIN=("         GOLDE VEIN PROMISING       " "A new Vein of Gold discovered in ye " "Royal Gold Mines promises a Flood   " "of Golde to the Kingdom's Markets.  " "Dwarven Advisors to ye King Himself " "assure future Finds to be Great!    ")
++ local BULLETIN
++ case $1 in
++ BULLETIN[6]='GOLD LOWERED TO: 1.00'
++ clear
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ tput sc
++ local NUM=0
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 3 21 '         GOLDE VEIN PROMISING       '
++ tput cup 3 21
++ printf %s '         GOLDE VEIN PROMISING       '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 5 21 'A new Vein of Gold discovered in ye '
++ tput cup 5 21
++ printf %s 'A new Vein of Gold discovered in ye '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 6 21 'Royal Gold Mines promises a Flood   '
++ tput cup 6 21
++ printf %s 'Royal Gold Mines promises a Flood   '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 7 21 'of Golde to the Kingdom'\''s Markets.  '
++ tput cup 7 21
++ printf %s 'of Golde to the Kingdom'\''s Markets.  '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 8 21 'Dwarven Advisors to ye King Himself '
++ tput cup 8 21
++ printf %s 'Dwarven Advisors to ye King Himself '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 9 21 'assure future Finds to be Great!    '
++ tput cup 9 21
++ printf %s 'assure future Finds to be Great!    '
++ for i in 3 5 6 7 8 9 10
++ MvAddStr 10 21 'GOLD LOWERED TO: 1.00'
++ tput cup 10 21
++ printf %s 'GOLD LOWERED TO: 1.00'
++ tput rc
++ PressAnyKey
++ [[ -n '' ]]
++ MakePrompt 'Press (A)ny key to continue..'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ read -s -t 0.01 -n 512
++ read -sn 1
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ MakePrompt '(T)avern;(B)ulletin Board;(M)arketplace;(E)xit Town'
++ awk '   BEGIN { FS =";" }
+        {   MAXLEN = 79;
+            COUNT = NF;
+            for ( i=1; i<= NF; i++ ) { STRLEN += length($i); }
+            if ( STRLEN > MAXLEN ) { exit 1 ; }
+            SPACES = MAXLEN - STRLEN;
+            REMAINDER = SPACES % (NF + 1 ) ;
+            SPACER = (SPACES - REMAINDER ) / (NF + 1) ;
+            if ( REMAINDER % 2  == 1 ) { REMAINDER -= 1 ; }
+            SPACES_IN = REMAINDER / 2 ;
+            while (SPACES_IN-- > 0 ) { INTRO = INTRO " "; }
+            while (SPACER-- > 0 ) { SEPARATOR = SEPARATOR " " }
+            STR = INTRO;
+            for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
+            STR = STR SEPARATOR INTRO }
+            END { printf STR; }'
++ case $(Read) in
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo e
++ break
++ true
++ GX_Place T
++ clear
++ case "$1" in
++ PLACE=Town
++ cat
++ echo '- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ case "$SCENARIO" in
++ echo -n '     (C)haracter    (R)est    (G)o into Town    (M)ap and Travel    (Q)uit'
+++ Read
+++ read -s -t 0.01 -n 512
+++ read -s -n 1
+++ echo q
++ local ACTION=q
++ case "$ACTION" in
++ CleanUp
++ GX_BiaminTitle
++ clear
++ cat
++ echo -e '\n- ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ '
++ (( FIGHTMODE ))
++ [[ -n Elvis ]]
++ SaveCurrentSheet
++ echo 'VERSION: 1.9
+CHARACTER: Elvis
+RACE: 1
+BATTLES: 0
+EXPERIENCE: 0
+LOCATION: E5
+HEALTH: 100
+ITEMS: 1
+KILLS: 0
+HOME: C2
+GOLD: 2
+TOBACCO: 2
+FOOD: 8.50
+BBSMSG: 7
+VAL_GOLD: 1
+VAL_TOBACCO: 1
+VAL_CHANGE: 0.15
+STARVATION: 0
+TURN: 5613
+INV_ALMANAC: 0'
++ echo -e '\nLeaving the realm of magic behind ....\nPlease submit bugs and feedback at <http://sigg3.net/biamin/>'
++ Exit 0
++ tput cnorm
++ [[ -n 0 ]]
++ exit 0

@@ -162,6 +162,7 @@ Echo() {
 # Outputs whatever DEBUG info you're looking for atm to >&2 (STDERR)
 #-----------------------------------------------------------------------
 GiveUsDebugInfo() {
+    if [[ "${DEBUG}" ]]; then
 	echo "        DEBUG       $1" >&2
 	echo "        DEBUG       " >&2
 	echo "        DEBUG       BBSMSG:		$2" >&2
@@ -172,6 +173,7 @@ GiveUsDebugInfo() {
 	echo "        DEBUG       \$PRICE_GxF:	$PRICE_GxF" >&2
 	echo "        DEBUG       \$PRICE_TxG:	$PRICE_TxG" >&2
 	echo "        DEBUG       \$PRICE_TxF:	$PRICE_TxF" >&2
+    fi
 }
 
 #                                                                      #

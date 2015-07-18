@@ -46,7 +46,7 @@ WorldWeatherSystem() {
 	    WEATHER[1]=$[[ ${WEATHER[1]} - 1 ]] # Storm decreases
 	fi
     fi
-    
+
     # Global adjust weather strength according to calendar (and pressure mean)
     case "$MONTH" in
     0 | 1 | 1[1-2] ) CORE_SEVERITY_MODIFIER=-2 ;; # Winter = high pressure, less storms (but cold)
@@ -136,13 +136,13 @@ WorldWeatherSystem() {
 	    WorldWeatherSystemHumidity $WS_CHILD_SEVERITY $WS_CHILD_HUMIDITY # Function saves humidity
 	    (( WS_CHILD_COUNTER_INDEX++ )) && (( WS_CHILD_COUNTER-- ))
 	done
-	
+
 	# TODO simplify the one above to use WEATHER+=( "$NEW_VAL_1" "$NEW_VAL_2" "$NEW_VAL_3")
 	# REWRITE to allow HUMIDITY. This is interpreted relative to seasons. Strength is necessarily connected to seasons.
 	# HUMIDITY INT (1-4) : dry, humid, rainy, downpour or dry, humid, snowy, snow storm etc.
 	# Belongs in WEATHER array.
 	# Re: season-related: Months with high pressure, less aggressive weather and vice versa.
-	
+
 	# TODO possible simplification:
 	# This could make all the number stuff irrelevant:) just add to array WEATHER=("${WEATHER[@]}" "$(XYtoGPS "$WS_CHILD_X" "$WS_CHILD_Y")" ...
 	#
@@ -163,7 +163,7 @@ WorldWeatherSystem() {
 	local WEATHER_SYSTEMS=0
 	while (( WEATHER_SYSTEMS <= 60 )) ; do
 		WEATHER_AFFECTED[$WEATHER_SYSTEMS]="${WEATHER[$WEATHER_SYSTEMS]}"
-		WEATHER_SYSTEMS=$[[ $WEATHER_SYSTEMS + 3 ]]	
+		WEATHER_SYSTEMS=$[[ $WEATHER_SYSTEMS + 3 ]]
 	done
     fi
 }
@@ -261,33 +261,34 @@ WorldPriceFixing() {
 # Used: NewSector()
 #-----------------------------------------------------------------------
 CheckForWorldChangeEconomy() {
-    # Check for change economy
-    (( --WORLDCHANGE_COUNTDOWN > 0 )) && return 0                              # Decrease $WORLDCHANGE_COUNTDOWN then check for change
-    (( $(RollDice2 100) > 15 ))       && return 0                              # Roll to 15% chance for economic event transpiring or leave immediately
-    # Define scenario
-    BBSMSG=$(RollDice2 "$MAX_BBSMSG")                                          # Roll for random scenarion (exlude default scenario 0)
+    (( --WORLDCHANGE_COUNTDOWN > 0 )) && return 0 # Decrease $WORLDCHANGE_COUNTDOWN then check for change
+    (( $(RollDice2 100) > 15 )) && return 0       # Roll to 15% chance for economic event transpiring or leave immediately
+    BBSMSG=$(RollDice2 "$MAX_BBSMSG")             # = Number of possible scenarios (+ default 0) and Update BBSMSG
+
     case "$BBSMSG" in
-    	# CHANGE : '+'=Inflation, '-'=deflation | Severity:  12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
-    	1 )  local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
-    	2 )  local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
-    	3 )  local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
-    	4 )  local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
-    	5 )  local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
-    	6 )  local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
-    	7 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
-    	8 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
-    	9 )  local CHANGE="-"; declare -n CURRENCY=VAL_GOLD    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
-    	10 ) local CHANGE="+"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
-    	11 ) local CHANGE="+"; declare -n CURRENCY=VAL_GOLD    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
-    	12 ) local CHANGE="-"; declare -n CURRENCY=VAL_TOBACCO ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
+    	# Econ '+'=Inflation, '-'=deflation | 1=Tobacco, 2=Gold | Severity 12=worst (0.25-3.00 change), 5=lesser (0.25-1.25 change)
+    	1 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 12 ;; # Wild Fire Threatens Tobacco (serious inflation)
+    	2 )  local CHANGE="+"; local UNIT="Tobacco" ; RollDice 5  ;; # Hobbits on Strike (lesser inflation)
+    	3 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 12 ;; # Tobacco Overproduction (serious deflation)
+    	4 )  local CHANGE="-"; local UNIT="Tobacco" ; RollDice 5  ;; # Tobacco Import Increase (lesser deflation)
+    	5 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 12 ;; # Gold Demand Increases due to War (serious inflation)
+    	6 )  local CHANGE="+"; local UNIT="Gold"    ; RollDice 5  ;; # Gold Required for New Fashion (lesser inflation)
+    	7 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 12 ;; # New Promising Gold Vein (serious deflation)
+    	8 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 5  ;; # Discovery of Artificial Gold Prices (lesser deflation)
+    	9 )  local CHANGE="-"; local UNIT="Gold"    ; RollDice 4  ;; # Alchemists promise gold (lesser deflation)
+    	10 ) local CHANGE="+"; local UNIT="Tobacco" ; RollDice 4  ;; # Water pipe fashion (lesser inflation)
+    	11 ) local CHANGE="+"; local UNIT="Gold"    ; RollDice 10 ;; # King Bought Tracts of Land (serious inflation)
+    	12 ) local CHANGE="-"; local UNIT="Tobacco" ; RollDice 10 ;; # Rumor of Tobacco Pestilence false (serious deflation)
     esac
-                                                                                # Change currency and restrict to 0.25 min
-    CURRENCY=$( bc <<< "var = ${CURRENCY} ${CHANGE} (${DICE} * ${VAL_CHANGE}); if (var <= 0) 0.25 else var" )
-    unset -n CURRENCY                                                           # Unset REFERENCE
-    WORLDCHANGE_COUNTDOWN=20                                                    # Give the player a 20 turn break TODO Test how this works..
-    SaveCurrentSheet                                                            # Save world changes to charsheet # LAST!!!
-    WorldPriceFixing                                                            # Update all prices
-	GiveUsDebugInfo "Changes in WorldChangeEconomy()" "$BBSMSG" # Output wanted DEBUG info to 2, if any
+
+    case "$UNIT" in # Which market is affected and restrict to 0.25 min
+	"Tobacco" ) VAL_TOBACCO=$( bc <<< "var = $VAL_TOBACCO $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
+	"Gold"    ) VAL_GOLD=$( bc <<< "var = $VAL_GOLD $CHANGE ($DICE * $VAL_CHANGE); if (var <= 0) 0.25 else var" ) ;;
+	* ) Die "BUG in WorldChangeEconomy() with unit >>>${UNIT}<<< and scenario >>>${BBSMSG}<<<" ;;
+    esac
+    WORLDCHANGE_COUNTDOWN=20 # Give the player a 20 turn break TODO Test how this works..
+    SaveCurrentSheet         # Save world changes to charsheet # LAST!!!
+    WorldPriceFixing         # Update all prices
 }
 
 # Other WorldChangeFUNCTIONs go here:)
@@ -455,4 +456,3 @@ EOT
 #                                                                      #
 #                                                                      #
 ########################################################################
-

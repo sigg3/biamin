@@ -221,6 +221,33 @@ EOT
 #EOT
 #	    ;;
 
+#-----------------------------------------------------------------------
+# GX_NonPlayerCharacter() ##### TODO VERSION 3
+# Display NPC GX. These GX have corresponding ENEMY versions above ^^.
+# Every person you meet _can_ be a monster. We can only hope it isn't us that is.
+# Arguments: ${enemy[name]} (string)
+#-----------------------------------------------------------------------
+GX_NonPlayerCharacter() {
+	clear	
+	case "$1" in
+	"hobbit" ) cat <<<"EOT"
+EOT
+	;;	
+	"human" ) cat <<<"EOT"
+EOT
+	;;
+	"elf" ) cat <<<"EOT"
+EOT
+	;;
+	"dwarf" ) cat <<<"EOT"
+EOT
+	;;
+	* ) Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
+	esac
+	echo "$HR"
+}
+
+
 #                                                                      #
 #                                                                      #
 ########################################################################

@@ -3,6 +3,73 @@
 #                                                                      #
 
 #-----------------------------------------------------------------------
+# CheckForGold()
+# Check if char have $PRICE Gold and divide it from $CHAR_GOLD or
+#  return $FAILURE_VESSAGE
+# Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
+# Used: Tavern()
+#-----------------------------------------------------------------------
+# IDEA: If we're going to use these in grocer, merchant ++future
+# functions then perhaps it should ONLY be logical (return 1 or 0).  I
+# think it will make the code easier to read later on, see the
+# difference between:
+#
+# CheckForGold 3 "You don't have enough gold, silly dwarf"
+#
+# vs
+#
+# CheckForGold 3 && Continue_transaction || echo "You don't have enough gold, silly dwarf!"
+#
+# The first one looks as if the silly dwarf doesn't have enough gold
+# from the get go..?  On the other hand, a "purchasing function" might
+# be called for, so we don't duplicate so much work.
+#-----------------------------------------------------------------------
+CheckForGold()   {
+    if (( $(bc <<< "$CHAR_GOLD < $1") )); then
+	echo -e "${CLEAR_LINE}${2}"
+	return 1
+    else
+	CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $1")
+	return 0
+    fi
+}
+
+#-----------------------------------------------------------------------
+# CheckForTobacco()
+# Check if char have $PRICE Tobacco and divide it from $CHAR_TOBACCO or
+#  return $FAILURE_VESSAGE
+# Arguments: $PRICE(int), $FAILURE_VESSAGE(string)
+# Used: Tavern()
+#-----------------------------------------------------------------------
+CheckForTobacco() {
+    if (( $(bc <<< "$CHAR_TOBACCO < $1") )); then
+	echo -e "${CLEAR_LINE}${2}"
+	return 1
+    else
+	CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $1")
+	return 0
+    fi
+}
+
+#-----------------------------------------------------------------------
+# Tavern_Rest()
+# Successful rest in Tavern (Tavern gained +30 HEALTH - Town*2 )
+# Used: Tavern()
+#-----------------------------------------------------------------------
+TavernRest() {
+    GX_Rest
+    if (( CHAR_HEALTH < 150 )); then
+	(( CHAR_HEALTH += 30 ))			   # Add Town_Health * 2
+	(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
+	echo "You got some much needed rest and your HEALTH is $CHAR_HEALTH now"
+    else
+    echo "You got some much needed rest"
+    fi
+    ((STARVATION)) && ResetStarvation              # Reset STARVATION and restore starvation' penalty if any
+    NewTurn			                   # Increase $TURN and get new date
+}
+
+#-----------------------------------------------------------------------
 # Tavern()
 # Sub-loop for Tavern
 # Used: GoIntoTown()
@@ -12,33 +79,15 @@ Tavern() {
 	GX_Tavern
 	MakePrompt "(R)ent a room and rest safely;(P)lay dice;(A)ny key to Exit"
 	case $(Read) in
-	    [rR] ) echo -en "${CLEAR_LINE}$(MakePrompt "Rent for 1 (G)old;Rent for 1 (T)obacco;(A)ny key to Exit")"
-		   case $(Read) in
-		       [gG] ) declare -n CURRENCY=CHAR_GOLD; UNIT="Gold";;
-		       [tT] ) declare -n CURRENCY=CHAR_TOBACCO; UNIT="Tobacco";;
-		       *    ) continue ;;
-		   esac
-		   if (( $(bc <<< "${CURRENCY} < 1") )); then
-		       echo -e "${CLEAR_LINE}$(MakePrompt "You don't have enough ${UNIT} to rent a room in the Tavern")"
-		   else                                               # ex-TavernRest()
-		       CURRENCY=$(bc <<< "${CURRENCY} - 1")		    
-		       GX_Rest
-		       if (( CHAR_HEALTH < 150 )); then
-			   (( CHAR_HEALTH += 30 ))		      # Add Town_Health * 2
-			   (( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
-			   echo "You got some much needed rest and your HEALTH is $CHAR_HEALTH now"
-		       else
-			   echo "You got some much needed rest"	
-		       fi
-		       ((STARVATION)) && ResetStarvation              # Reset STARVATION and restore starvation' penalty if any
-		       NewTurn			                      # Increase $TURN and get new date
-		   fi		
-		   unset -n CURRENCY
-		   unset UNIT
-		   Sleep 2
-		   ;;
- 	    [pP] ) MiniGame_Dice ;;
-	    *    ) break ;;                                           # Leave tavern
+	    r | R)
+		echo -en "${CLEAR_LINE}      Rent for 1 (G)old      Rent for 1 (T)obacco      (A)ny key to Exit"
+		case $(Read) in
+		    g | G ) CheckForGold 1    "You don't have enough Gold to rent a room in the Tavern"    && TavernRest ;;
+		    t | T ) CheckForTobacco 1 "You don't have enough Tobacco to rent a room in the Tavern" && TavernRest ;;
+		esac
+		Sleep 1 ;;
+ 	    p | P ) MiniGame_Dice ;;
+	    * ) break ;; # Leave tavern
 	esac
     done
 }
@@ -167,15 +216,15 @@ Marketplace_Merchant() {
     if [ -z "$MERCHANT" ] || [ "$MERCHANT" != "$CHAR_GPS" ] ; then
 	# "Name" the current merchant as char GPS location
 	MERCHANT="$CHAR_GPS"
-	
+
 	# TEMP WORKAROUND Set prices for items (1 item is worth 2x Food)
 	PRICE_IxG=$( bc <<< "scale=2;$PRICE_FxG*2" ) # TODO v.2.n+
 	PRICE_GxI=$( bc <<< "scale=2;$PRICE_GxF*2" ) # TODO Items are not priced in GameWorldChange but arbitrarily.
-	
+
 	# Create semi-random profit/discount margin in a function of VAL_CHANGE (econ. stability)
 	RollDice 3
 	local MERCHANT_MARGIN=$( bc <<< "scale=2;$DICE*$VAL_CHANGE" )
-	
+
 	# Add positive and negative margins to what the merchant wants to keep for himself
 	RollDice 3
 
@@ -190,7 +239,7 @@ Marketplace_Merchant() {
 		PLAYER_BUYS_TxG=$PRICE_TxG && PLAYER_SELL_TxG=$PRICE_TxG # Tobac for gold
 		PLAYER_BUYS_GxI=$PRICE_GxI && PLAYER_SELL_GxI=$PRICE_GxI # Gold  for items
 		PLAYER_BUYS_IxG=$PRICE_IxG && PLAYER_SELL_IxG=$PRICE_IxG # Items for gold
-	
+
 	# DEBUG DATA
 	    echo "        DEBUG       Default buy and sell prices:" >2
 	    echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
@@ -210,7 +259,7 @@ Marketplace_Merchant() {
 	    echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
 	    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
 	# // DEBUG
-	
+
 		case "$DICE" in
 			1 ) # Merchant wants to keep food for himself
 			PLAYER_BUYS_FxG=$( bc <<< "scale=2;$PRICE_FxG+$MERCHANT_MARGIN" )
@@ -229,7 +278,7 @@ Marketplace_Merchant() {
 			PLAYER_SELL_GxT=$( bc <<< "scale=2;$PRICE_GxT-$MERCHANT_MARGIN" )
 			PLAYER_BUYS_TxF=$( bc <<< "scale=2;$PRICE_TxF+$MERCHANT_MARGIN" )
 			PLAYER_SELL_TxF=$( bc <<< "scale=2;$PRICE_TxF-$MERCHANT_MARGIN" )
-			PLAYER_BUYS_FxT=$( bc <<< "scale=2;$PRICE_FxT+$MERCHANT_MARGIN" ) 
+			PLAYER_BUYS_FxT=$( bc <<< "scale=2;$PRICE_FxT+$MERCHANT_MARGIN" )
 			PLAYER_SELL_FxT=$( bc <<< "scale=2;$PRICE_FxT-$MERCHANT_MARGIN" )
 			;;
 			3 ) # Merchant wants to keep gold for himself
@@ -247,7 +296,7 @@ Marketplace_Merchant() {
 			PLAYER_SELL_IxG=$( bc <<< "scale=2;$PRICE_IxG-$MERCHANT_MARGIN" )
 			;;
 		esac
-		
+
 		# Verify prices are above 0, else redo them all
 		(( $( bc <<< "if (${PLAYER_BUYS_GxF} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
 		(( $( bc <<< "if (${PLAYER_SELL_GxF} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
@@ -261,7 +310,7 @@ Marketplace_Merchant() {
 		(( $( bc <<< "if (${PLAYER_SELL_GxI} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
 		(( $( bc <<< "if (${PLAYER_BUYS_IxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
 		(( $( bc <<< "if (${PLAYER_SELL_IxG} <= 0) 0 else 1" ) == 1 )) && (( MERCHANT_PRICE_TEST++ ))
-		
+
 		echo "        DEBUG       MERCHANT_WANTS: $DICE (1 = Food, 2 = Tobacco, 3 = Gold) " >2
 		(( MERCHANT_PRICE_TEST == 12 )) && echo "        DEBUG       PRICES OK" >2 # DEBUG
 	done
@@ -286,7 +335,7 @@ Marketplace_Merchant() {
 	    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
 	# // DEBUG
 
-	
+
 	# Merchant sells this item (but will buy e.g. fur, tusks etc.)
 	RollDice 8
 	case "$DICE" in
@@ -583,32 +632,48 @@ Marketplace_Grocer() {
     local GROCER_FxT=$( bc <<< "scale=2;$PRICE_FxT+($VAL_CHANGE/2)" )   # Default PRICE of units are set in WorldPriceFixing()
     while (true); do
 	GX_Marketplace_Grocer "$GROCER_FxG" "$GROCER_FxT"
-	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'       
+	MakePrompt 'Trade for (G)old;Trade for (T)obacco;(L)eave'
 	case $(Read) in
-	    [gG] ) local UNIT="Gold";                                   # Trade for Gold
-		   declare -n PRICE=GROCER_FxG CURRENCY=CHAR_GOLD ;;    # Set indirect references
-	    [tT] ) local UNIT="Tobacco";                                # Trade for tobacco
-		   declare -n PRICE=GROCER_FxT CURRENCY=CHAR_TOBACCO ;; # Set indirect references
-	    *    ) break ;;
+	    g | G )
+		ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
+		QUANTITY="$REPLY"
+		[[ "$REPLY" ]] || continue # check for user input
+		if ! IsInt "$QUANTITY"; then
+		    echo " I can't sell you $QUANTITY Food.."
+		    PressAnyKey
+		    continue
+		fi
+		local COST=$( bc <<< "$GROCER_FxG * $QUANTITY" )
+		if (( $(bc <<< "$CHAR_GOLD >= $COST") )); then
+		    CHAR_GOLD=$(bc <<< "$CHAR_GOLD - $COST")
+		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+		    echo " You bought $QUANTITY food for $COST Gold, and you have $CHAR_FOOD Food in your inventory"
+		else
+		    echo " You don't have enough Gold to buy $QUANTITY Food. Try a little less!"
+		fi
+		read -n 1
+		;;
+	    t | T )
+		ReadLine "${CLEAR_LINE} How much food you want to buy? "
+		QUANTITY="$REPLY"
+		[[ "$REPLY" ]] || continue # check for user input
+		if ! IsInt "$QUANTITY"; then
+		    echo " I can't sell you $QUANTITY Food.."
+		    PressAnyKey
+		    continue
+		fi
+		local COST=$( bc <<< "${GROCER_FxT} * $QUANTITY" )
+		if (( $(bc <<< "$CHAR_TOBACCO >= $COST") )); then
+		    CHAR_TOBACCO=$(bc <<< "$CHAR_TOBACCO - $COST")
+		    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
+		    echo " You traded $COST Tobacco for $QUANTITY food, and have $CHAR_FOOD Food in your inventory"
+		else
+		    echo " You don't have enough Tobacco to trade for $QUANTITY Food. Try a little less!"
+		fi
+		PressAnyKey
+		;;
+	    *) break;
 	esac
-	ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
-	local QUANTITY="$REPLY"
-	[[ "$REPLY" ]] || continue                                      # check for user input
-	if ! IsInt "$QUANTITY"; then
-	    echo " I can't sell you ${QUANTITY} Food.."
-	    PressAnyKey
-	    continue
-	fi
-	local COST=$( bc <<< "${PRICE} * ${QUANTITY}" )
-	if (( $(bc <<< "${CURRENCY} >= ${COST}") )); then
-	    CURRENCY=$(bc <<< "${CURRENCY} - ${COST}")
-	    CHAR_FOOD=$(bc <<< "${CHAR_FOOD} + ${QUANTITY}")
-	    echo " You bought $QUANTITY food for ${COST} ${UNIT}, and you have ${CHAR_FOOD} Food in your inventory"
-	else
-	    echo " You don't have enough ${UNIT} to buy ${QUANTITY} Food. Try a little less!"
-	fi
-	PressAnyKey
-	unset -n PRICE CURRENCY # !!! Indirect references should not be removed, but 'unset -n' !!!
     done
 } # Return to GoIntoTown()
 
@@ -726,7 +791,7 @@ GX_DiceGame() {
                  |               |:         |               |:
                  [_______________];         [_______________];
                   `~------------~`           `~------------~`
-                                                             
+
 EOF
     echo "$HR"
 }
@@ -760,7 +825,7 @@ declare -r -a DICE_GAME_WINNINGS=(0 1 100 85 70 55 40 25 40 55 70 85 100)
 #-----------------------------------------------------------------------
 MiniGame_Dice() {
     DGAME_PLAYERS=$(( $(RollDice2 6) - 1 )) # How many players currently at the table (0-5 players)
-    if [ -z "$GAMETABLE" ] || [ "$GAMETABLE" != "$CHAR_GPS" ] ; then 
+    if [[ "$GAMETABLE" != "$CHAR_GPS" ]] ; then
 	GAMETABLE="$CHAR_GPS" # "Name" this table as GPS location (savescumming prevention)
 	DGAME_STAKES=$( bc <<< "scale=2;$(RollDice2 10) * $VAL_CHANGE" ) # Stake size in 1-10 * VAL_CHANGE
     fi
@@ -785,7 +850,7 @@ MiniGame_Dice() {
 
     GAME_ROUND=1
     CHAR_GOLD=$(bc <<< "scale=2;$CHAR_GOLD - $DGAME_STAKES" )
-    echo -e "\nYou put down $DGAME_STAKES Gold and pull out a chair .. [ -$DGAME_STAKES Gold ]"
+    Echo "\nYou put down $DGAME_STAKES Gold and pull out a chair .." "[ -$DGAME_STAKES Gold ]"
     Sleep 3
 
     DGAME_POT=$( bc <<< "scale=2;$DGAME_STAKES * ( $DGAME_PLAYERS + 1 )" ) # Determine starting pot size
@@ -886,4 +951,3 @@ MiniGame_Dice() {
 #                                                                      #
 #                                                                      #
 ########################################################################
-

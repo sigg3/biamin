@@ -83,7 +83,7 @@ CheckForStarvation(){
 
 #-----------------------------------------------------------------------
 # Death()
-# Used: FightMode()
+# Used: FightMode_CheckForDeath(), CheckForStarvation()
 # Arguments: $TYPE_OF_DEATH(int)
 #-----------------------------------------------------------------------
 Death() {

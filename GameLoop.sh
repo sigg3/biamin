@@ -44,7 +44,7 @@ GX_Map() {
          else                 { $'$(( MAP_X + 1 ))'="o";   }
          }
       # if player has Gift-Of-Sight and not all items are found
-      if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < 8) {
+      if ( '${CHAR_ITEMS}' > 0 && '${CHAR_ITEMS}' < '${MAX_ITEMS}') {
          # place ITEM2C on map
          # ITEM2C_Y+2 and ITEM2C_X+1 - fix for boards
  	 if (NR == '$(( ITEM2C_Y + 2 ))') {

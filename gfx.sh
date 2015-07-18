@@ -308,7 +308,7 @@ GX_Rest() {
     MvAddStr 3 31 "*         Z Z Z   *"
     MvAddStr 3 77 "*"
     MvAddStr 7 43 "*"
-    [ "$MOON" != "Full Moon" ] && MvAddStr 8 74 "*"
+    [[ "${MOON_STR[$MOON]}" != "Full Moon" ]]  && MvAddStr 8 74 "*"
     MvAddStr 9 76 "*"
     tput rc
 }

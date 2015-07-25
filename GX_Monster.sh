@@ -226,13 +226,17 @@ EOT
 # Display NPC GX. These GX have corresponding ENEMY versions above ^^.
 # Every person you meet _can_ be a monster. We can only hope it isn't us that is.
 # Arguments: ${enemy[name]} (string)
+
+# TODO May be there will be a reason to merge it with GX_Monster() in
+# GX_NPC() or smth like # kstn
+
 #-----------------------------------------------------------------------
 GX_NonPlayerCharacter() {
-	clear	
+	clear
 	case "$1" in
 	"hobbit" ) cat <<<"EOT"
 EOT
-	;;	
+	;;
 	"human" ) cat <<<"EOT"
 EOT
 	;;

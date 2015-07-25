@@ -52,25 +52,25 @@ BiaminSetup_SetItemsAbilities() {
 #-----------------------------------------------------------------------
 # BiaminSetup_UpdateOldSaves()
 # Sequence for updating older charsheets to later additions (compatibility)
-# Arguments: $CHARSHEET(string)
 # Used: BiaminSetup_LoadCharsheet()
 #-----------------------------------------------------------------------
 BiaminSetup_UpdateOldSaves() {
-    grep -Eq '^HOME:' "$1"        || echo "HOME: $START_LOCATION" >> $1
-    grep -Eq '^BBSMSG:' "$1"      || echo "BBSMSG: 0" >> $1
-    grep -Eq '^STARVATION:' "$1"  || echo "STARVATION: 0" >> $1
+    [[ "$CHAR_HOME" ]]    || CHAR_HOME="$START_LOCATION"
+    [[ "$BBSMSG:"]]       || BBSMSG=0
+    [[ "$STARVATION" ]]   || STARVATION=0
     # Time
-    grep -Eq '^TURN:' "$1"        || echo "TURN: $(TurnFromDate)" >> $1
+    [[ "$TURN" ]]         || TURN=$(TurnFromDate)
     # Almanac
-    grep -Eq '^INV_ALMANAC:' "$1" || echo "INV_ALMANAC: 0" >> $1
+    [[ "$INV_ALMANAC" ]]  || INV_ALMANAC=0
     # TODO use  OFFSET_{GOLD,TOBACCO}
-    grep -Eq '^GOLD:' "$1"        || echo "GOLD: 10" >> $1
-    grep -Eq '^TOBACCO:' "$1"     || echo "TOBACCO: 10" >> $1
-    grep -Eq '^FOOD:' "$1"        || echo "FOOD: 10" >> $1
-    grep -Eq '^VAL_GOLD:' "$1"    || echo "VAL_GOLD: $INITIAL_VALUE_GOLD" >> $1
-    grep -Eq '^VAL_TOBACCO:' "$1" || echo "VAL_TOBACCO: $INITIAL_VALUE_TOBACCO" >> $1
-    grep -Eq '^VAL_CHANGE:' "$1"  || echo "VAL_CHANGE: $INITIAL_VALUE_CHANGE" >> $1
+    [[ "$CHAR_GOLD" ]]    || CHAR_GOLD=10
+    [[ "$CHAR_TOBACCO" ]] || CHAR_TOBACCO=10
+    [[ "$CHAR_FOOD" ]]    || CHAR_FOOD=10
+    [[ "$VAL_GOLD" ]]     || VAL_GOLD="$INITIAL_VALUE_GOLD"
+    [[ "$VAL_TOBACCO" ]]  || VAL_TOBACCO="$INITIAL_VALUE_TOBACCO"
+    [[ "$VAL_CHANGE" ]]   || VAL_CHANGE="$INITIAL_VALUE_CHANGE"
 }
+
 
 #-----------------------------------------------------------------------
 # BiaminSetup_SanityCheck()
@@ -96,11 +96,10 @@ BiaminSetup_SanityCheck() {
 
 BiaminSetup_LoadCharsheet() {
     echo -en " Welcome back, $CHAR!\n Loading character sheet ..." # -n for 80x24, DO NOT REMOVE IT #kstn
-    BiaminSetup_UpdateOldSaves "$CHARSHEET"
+    local VAR VAL
     while IFS=": " read VAR VAL; do
         case "$VAR" in
-            "VERSION") # TODO
-            ;;
+            "VERSION"     ) ;; # TODO???
             "CHARACTER"   ) CHAR="${VAL}" ;;
             "RACE"        ) CHAR_RACE="${VAL}" ;;
             "BATTLES"     ) CHAR_BATTLES="${VAL}" ;;
@@ -123,7 +122,10 @@ BiaminSetup_LoadCharsheet() {
         esac
     done < "$CHARSHEET"
     # If character is dead, don't fool around..
-    (( CHAR_HEALTH <= 0 )) && Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
+    if (( CHAR_HEALTH <= 0 )); then
+        Die "\nWhoops!\n $CHAR's health is $CHAR_HEALTH!\nThis game does not support necromancy, sorry!"
+    fi
+    BiaminSetup_UpdateOldSaves
 }
 
 #-----------------------------------------------------------------------

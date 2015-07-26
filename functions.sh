@@ -130,7 +130,6 @@ EOF
     esac
 }
 
-
 # GAME ACTION: REST
 RollForHealing() { # Used in Rest()
     RollDice 6
@@ -188,21 +187,16 @@ Rest() {
 # Used: Rest(), CheckForFight()
 #-----------------------------------------------------------------------
 RollForEvent() {
-#    echo -e "Rolling for $2: D${DICE_SIZE} <= $1\nD${DICE_SIZE}: $DICE"
-    # Sleep 1.5
-    # (( DICE <= $1 )) && return 0 || return 1
     if (( DICE <= $1 )); then
+        RETVAL=0
 	Echo "${CLEAR_LINE}Rolling for $2:" "[D${DICE_SIZE} $DICE <= $1]"
-	echo 			# empty line
-	Sleep 1.5
-	return 0
     else
+        RETVAL=1
 	Echo "${CLEAR_LINE}Rolling for $2:" "[D${DICE_SIZE} $DICE > $1]"
-	echo 			# empty line
-	Sleep 1.5
-	return 1
     fi
-    
+    echo 			# empty line
+    Sleep 1.5
+    return "$RETVAL"
 }
 
 #-----------------------------------------------------------------------
@@ -215,16 +209,16 @@ CheckBiaminDependencies() {
     local PROGRAM
     echo "Checking dependencies..."
 
-    # Check BASH version (we don't need it now, but will need after 2.0 #kstn) 
+    # Check BASH version (we don't need it now, but will need after 2.0 #kstn)
     # (( "${BASH_VERSINFO[0]}" < 4)) && Die "Biamin requires BASH version >= 4 to run (atm $BASH_VERSION)"
-    
+
     # CRITICAL
-    for PROGRAM in "tput" "awk" "bc" "sed" "printf" "date" # "critical program 1" "critical program 2"
+    for PROGRAM in "tput" "awk" "bc" "sed" "printf" "date"
     do
 	IsInstalled "$PROGRAM" || CRITICAL+=("$PROGRAM")
     done
     # NONCRITICAL
-    for PROGRAM in "curl" "wget" # "non-critical program 1" "non-critical program 2"
+    for PROGRAM in "curl" "wget"
     do
 	IsInstalled "$PROGRAM" || NONCRITICAL+=("$PROGRAM")
     done
@@ -285,4 +279,3 @@ Do you want color? [Y/N]: "
 #                                                                      #
 #                                                                      #
 ########################################################################
-

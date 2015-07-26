@@ -53,24 +53,13 @@ BiaminSetup_SetItemsAbilities() {
 # BiaminSetup_UpdateOldSaves()
 # Sequence for updating older charsheets to later additions (compatibility)
 # Used: BiaminSetup_LoadCharsheet()
+# Other variables are defined in BiaminSetup_MakeBaseChar()
 #-----------------------------------------------------------------------
 BiaminSetup_UpdateOldSaves() {
-    [[ "$CHAR_HOME" ]]    || CHAR_HOME="$START_LOCATION"
-    [[ "$BBSMSG:"]]       || BBSMSG=0
-    [[ "$STARVATION" ]]   || STARVATION=0
-    # Time
-    [[ "$TURN" ]]         || TURN=$(TurnFromDate)
-    # Almanac
-    [[ "$INV_ALMANAC" ]]  || INV_ALMANAC=0
     # TODO use  OFFSET_{GOLD,TOBACCO}
     [[ "$CHAR_GOLD" ]]    || CHAR_GOLD=10
     [[ "$CHAR_TOBACCO" ]] || CHAR_TOBACCO=10
-    [[ "$CHAR_FOOD" ]]    || CHAR_FOOD=10
-    [[ "$VAL_GOLD" ]]     || VAL_GOLD="$INITIAL_VALUE_GOLD"
-    [[ "$VAL_TOBACCO" ]]  || VAL_TOBACCO="$INITIAL_VALUE_TOBACCO"
-    [[ "$VAL_CHANGE" ]]   || VAL_CHANGE="$INITIAL_VALUE_CHANGE"
 }
-
 
 #-----------------------------------------------------------------------
 # BiaminSetup_SanityCheck()
@@ -80,7 +69,7 @@ BiaminSetup_UpdateOldSaves() {
 #-----------------------------------------------------------------------
 BiaminSetup_SanityCheck() {
     local CHAR_LOC_LEN CHAR_LOC_X CHAR_LOC_Y
-    read CHAR_LOC_LEN CHAR_LOC_X CHAR_LOC_Y <<< $(awk '{print length($0) " " substr($0,0,1) " " substr($0,2)}' <<< "$1")
+    read CHAR_LOC_LEN CHAR_LOC_X CHAR_LOC_Y <<< $(awk '{print length($0), substr($0,0,1), substr($0,2)}' <<< "$1")
     echo -n "Sanity check.."
     (( CHAR_LOC_LEN < 1 )) && Die "\n Error! Too less characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
     (( CHAR_LOC_LEN > 3 )) && Die "\n Error! Too many characters in $CHAR_LOC\n Start location is 2-3 alphanumeric chars [A-R][1-15], e.g. C2 or P13"
@@ -204,7 +193,6 @@ BiaminSetup() {
 	BiaminSetup_MakeNewChar
     fi
     Sleep 2
-
 }
 
 #                                                                      #

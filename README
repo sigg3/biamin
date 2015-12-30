@@ -8,7 +8,7 @@
 ------------------------------------------------------------------------
 How to make the biamin.sh executable:
 
-1. Clone git repository or download and extact tarball.
+1. Clone git repository or download and extract tarball.
 2. Run
 $ make
 3. And play
@@ -87,11 +87,11 @@ Explanation:
     p         -> play (run ./biamin --help)
     2>log     -> redirect STDERR to file 'log'
 
-Also to have
+So you can send a debug log if you discover bugs. You may also run
 
 $ tail -f log
 
-in another terminal is very usable.
+in a seperate terminal to see the log while you play-test.
 
 When you've found a bug, you can either send the log to us or use any
 pastebin service and provide us with a link. This improves the chances

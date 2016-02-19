@@ -92,7 +92,6 @@ Tavern() {
     done
 }
 
-
 #-----------------------------------------------------------------------
 # Marketplace()                                                  Town.sh
 # Used: GoIntoTown()
@@ -143,8 +142,6 @@ Marketplace() {
 	#     q | Q ) CleanUp ;;
 	#     *) break ;; # Leave marketplace
 	# esac
-
-
 
 	MakePrompt '(G)rocer;(M)erchant;(L)eave;(Q)uit'
 	case $(Read) in
@@ -205,7 +202,6 @@ Marketplace_Merchant_Bargaining() {
     fi
     tput rc
 }
-
 
 #-----------------------------------------------------------------------
 # Marketplace_Merchant()                                         Town.sh
@@ -612,8 +608,6 @@ Marketplace_Merchant() {
     done
 } # Return to Marketplace
 
-
-
 #-----------------------------------------------------------------------
 # Marketplace_Statusline()
 # Used: Marketplace_Grocer() Marketplace_Merchant()
@@ -651,10 +645,10 @@ Marketplace_Grocer() {
 		else
 		    echo " You don't have enough Gold to buy $QUANTITY Food. Try a little less!"
 		fi
-		read -n 1
+                PressAnyKey
 		;;
 	    t | T )
-		ReadLine "${CLEAR_LINE} How much food you want to buy? "
+                ReadLine "${CLEAR_LINE} How many Food items do you want to buy? "
 		QUANTITY="$REPLY"
 		[[ "$REPLY" ]] || continue # check for user input
 		if ! IsInt "$QUANTITY"; then

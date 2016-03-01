@@ -201,7 +201,7 @@ Rest() {
 #-----------------------------------------------------------------------
 # RollForEvent()
 # Arguments: $DICE_SIZE(int), $EVENT(string)
-# Used: Rest(), CheckForFight()
+# Used: CheckForFight()
 #-----------------------------------------------------------------------
 RollForEvent() {
     if (( DICE <= $1 )); then

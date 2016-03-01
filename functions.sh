@@ -131,16 +131,33 @@ EOF
 }
 
 # GAME ACTION: REST
+#-----------------------------------------------------------------------
+# RollForHealing()
+# Arguments: $HP(int), $FAILURE_MESSAGE(string)
+# Used: Rest();
+#-----------------------------------------------------------------------
 RollForHealing() { # Used in Rest()
+    local HP=$1
+    
     RollDice 6
     if ((DICE > HEALING)) ; then
 	Echo "Rolling for healing:" "[D6 $DICE > Healing $HEALING]"
 	echo -e "\n$2"
     else
-	(( CHAR_HEALTH += $1 ))
+	# TODO move 150 to named var MAX_HEALTH in conf section (like
+	# DISABLE_CHEATS)
+
+	if ((CHAR_HEALTH + HP > 150)); then # restrict HEALTH to 150
+	    HP=$((150 - CHAR_HEALTH))
+	fi
+	
 	Echo "Rolling for healing:" "[D6 $DICE <= Healing $HEALING]"
-	Echo "\nYou slept well and gained $1 Health." "[+${1} HEALTH]"
-	# TODO add restriction to 150 HEALTH
+	if ((HP > 0)); then
+	    (( CHAR_HEALTH += $HP ))
+	    Echo "\nYou slept well and gained $1 Health." "[+${1} HEALTH]"
+	else
+	    echo -e "\nYou slept well, and woke up to a beautiful day."
+	fi
     fi
     Sleep 2
 }   # Return to Rest()

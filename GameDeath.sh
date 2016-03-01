@@ -24,7 +24,7 @@ ResetStarvation() {
 	    2 | 4 ) (( ACCURACY++ ));
 		    # echo "+1 ACCURACY: You restore your body to healthy condition (ACCURACY: $ACCURACY)" ;;
 		    Echo "You restore your body to healthy condition" "[+1 ACCURACY]" ;;
-	    *     ) Die "${FUNCNAME}: Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
+	    *     ) Die "${FUNCNAME}(): Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	esac
     fi
     STARVATION=0
@@ -68,7 +68,7 @@ CheckForStarvation(){
 		2 | 4 ) (( ACCURACY-- ));
 			# echo "-1 ACCURACY: You're slowly starving to death .. (ACCURACY: $ACCURACY)" ;;
 			Echo "\nYou're slowly starving to death... (ACCURACY: $ACCURACY)" "[-1 ACCURACY]" ;;
-		*     ) Die "${FUNCNAME}: Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
+		*     ) Die "${FUNCNAME}(): Bad \$CHAR_RACE >>>${CHAR_RACE}<<<" ;;
 	    esac
 	fi
 	if (( CHAR_HEALTH <= 0 )) ; then

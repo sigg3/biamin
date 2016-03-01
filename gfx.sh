@@ -68,7 +68,7 @@ EOT
 	"$DEATH_STARVATION") MvAddStr 3 9 " YOU STARVED TO DEATH " ;
 			     MvAddStr 5 9 " Only death triumphs  " ;
 			     MvAddStr 6 9 "     over hunger.     " ;;
-	*)                   Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
+	*)                   Die "${FUNCNAME}(): Bad ARG >>>$1<<<" ;;
     esac
     tput rc
     PressAnyKey
@@ -274,7 +274,7 @@ EOT
 
 EOT
 	    ;;
-	* ) Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
+	* ) Die "${FUNCNAME}(): Bad ARG >>>$1<<<" ;;
     esac
 }
 

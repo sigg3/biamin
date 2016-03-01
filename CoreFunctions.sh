@@ -57,7 +57,7 @@ Ordial() {
     grep -Eq '^([0-9]*[^1])?2$'  <<< "$1" && echo "${1}nd" && return 0
     grep -Eq '^([0-9]*[^1])?3$'  <<< "$1" && echo "${1}rd" && return 0
     grep -Eq '^[0-9]+$' <<< "$1" && echo "${1}th" && return 0
-    Die "${FUNCNAME}: Bad ARG >>>$1<<<"
+    Die "${FUNCNAME}(): Bad ARG >>>$1<<<"
 }
 
 #-----------------------------------------------------------------------
@@ -82,7 +82,7 @@ MakePrompt() {
             STR = INTRO;
             for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
             STR = STR SEPARATOR INTRO }
-            END { printf STR; }' <<< "$@" || Die "${FUNCNAME}: Too long promt >>>$*<<<"
+            END { printf STR; }' <<< "$@" || Die "${FUNCNAME}(): Too long promt >>>$*<<<"
 }
 
 #-----------------------------------------------------------------------

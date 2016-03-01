@@ -252,7 +252,7 @@ CheckBiaminDependencies() {
 	    echo -e "\tOptional:\t${NONCRITICAL[i]}";
 	done
 
-	[[ "${CRITICAL[*]}" ]] && Die "${FUNCNAME}: Failed" || PressAnyKey
+	[[ "${CRITICAL[*]}" ]] && Die "${FUNCNAME}(): Failed" || PressAnyKey
     fi
 
     # Check screen size (80x24 minimum)

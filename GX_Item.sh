@@ -217,7 +217,7 @@ EOT
 
 EOT
 	    ;;
-	*)  Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
+	*)  Die "${FUNCNAME}(): Bad ARG >>>$1<<<" ;;
     esac
     echo "$HR"
 }

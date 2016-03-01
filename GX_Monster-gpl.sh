@@ -82,7 +82,7 @@ EOT
                       Luckily, they are easily defeated.
 EOT
 	    ;;
-	*)  Die "${FUNCNAME}: Bad ARG >>>$1<<<" ;;
+	*)  Die "${FUNCNAME}(): Bad ARG >>>$1<<<" ;;
     esac
     echo "$HR"
 }

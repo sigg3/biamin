@@ -6,17 +6,31 @@
 
    blog @ sigg3.net/biamin || repo @ github.com/sigg3/biamin
 ------------------------------------------------------------------------
-How to make the biamin.sh executable:
+How to make the stable version biamin.sh executable:
 
 1. Clone git repository or download and extract tarball.
 2. Run
-$ make
+$ chmod +x biamin.sh
 3. And play
+$ ./biamin.sh p
+or just
+$ bash biamin.sh p
+
+See also http://sigg3.net/biamin/download
+
+------------------------------------------------------------------------
+How to make the dev-version biamin.sh executable:
+
+1. Clone git repository or download and extract tarball.
+2. Checkout to 'dev' branch
+$ git checkout dev
+3 run
+$ make
+4. And play
 $ ./biamin.sh p
 or
 $ bash biamin.sh p
 
-See also http://sigg3.net/biamin/download
 ------------------------------------------------------------------------
 Biamin repo structure:
 

@@ -119,8 +119,7 @@ PressAnyKey() {
     else
 	MakePrompt 'Press (A)ny key to continue..'
     fi
-    read -s -t 0.01 -n 512 	# Flush 512 symbols in in buffer
-    read -sn 1
+    Read
 }
 
 #-----------------------------------------------------------------------
@@ -151,7 +150,9 @@ ReseedRandom() {
 # Echo() - test, EchoRight etc
 #-----------------------------------------------------------------------
 Echo() {
-    # TODO check for total lenght < 79 !!!
+    if (( $(Strlen "$1") + $(Strlen "$2") > 79 )); then
+	Die "${FUNCNAME}(): Too long promt >>>$*<<<"
+    fi   
     echo -en "$1"
     tput hpa $(( 78 - $(Strlen "$2") )) # Move cursor to column #1
     echo -en "$2"

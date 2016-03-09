@@ -14,7 +14,7 @@ fi
 
 if [[ ! -f "$CONFIG" ]] ; then                                            # Check whether $CONFIG exists...
     echo "Creating ${CONFIG} ..."
-    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA" > "$CONFIG"
+    echo -e "GAMEDIR: ${GAMEDIR}\nCOLOR: NA\nBASIC_SLEEP: 1" > "$CONFIG"
 fi
 
 [[ -f "$HIGHSCORE" ]] || touch "$HIGHSCORE";                              # Check whether $HIGHSCORE exists...
@@ -32,8 +32,9 @@ echo "Putting on the traveller's boots.." # OK lets play!
 
 while IFS=": " read VAR VAL; do
     case "$VAR" in
-	"GAMEDIR" ) GAMEDIR="${VAL}";;
-	"COLOR"   ) COLOR="${VAL}";;
+	"GAMEDIR"     ) GAMEDIR="${VAL}";;
+	"COLOR"       ) COLOR="${VAL}";;
+	"BASIC_SLEEP" ) BASIC_SLEEP="${VAL}";;
     esac
 done < "${CONFIG}"
 unset VAR VAL

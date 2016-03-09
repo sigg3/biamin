@@ -11,7 +11,8 @@ GAMEDIR="$HOME/.biamin" # (no trailing slash!)                         #
 CONFIG="$GAMEDIR/config"                                               #
 # Default file for highscore, change at runtime                        #
 HIGHSCORE="$GAMEDIR/highscore"                                         #
-#                                                                      #
+# Default sleep length, change at runtime                              #
+BASIC_SLEEP=1                                                          #
 # Disable BASH history for this session                                #
 unset HISTFILE                                                         #
 #                                                                      #

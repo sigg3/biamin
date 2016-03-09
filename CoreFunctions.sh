@@ -3,7 +3,7 @@
 #                                                                      #
 
 Die()         { echo -e "$0: $1" >&2 && Exit 1 ; }                                  # Display $1 (to STDERR) and exit script.
-Sleep()       { read -s -n 1 -t "$1" ; }                                            # Works like usual sleep but can be abortet by hitting key
+Sleep()       { read -s -n 1 -t $(bc <<< "$BASIC_SLEEP * $1") ; }                   # Works like usual sleep but can be abortet by hitting key
 Capitalize()  { awk '{ print substr(toupper($0), 1,1) substr($0, 2); }' <<< "$*" ;} # Capitalize $1.
 Toupper()     { awk '{ print toupper($0); }' <<< "$*" ; }                           # Convert $* to uppercase.
 Strlen()      { awk '{ print length($0); }' <<< "$*" ; }                            # Return lenght of string $*.

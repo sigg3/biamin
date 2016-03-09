@@ -30,9 +30,13 @@ echo "Putting on the traveller's boots.." # OK lets play!
 # Load variables from $GAMEDIR/config. Need if player wants to keep
 # his saves not in ~/.biamin . NB variables should not be empty !
 
-read -r GAMEDIR COLOR <<< $(awk '{ if (/^GAMEDIR:/)  { GAMEDIR= $2 }
-                                   if (/^COLOR:/)    { COLOR = $2  } }
-                            END { print GAMEDIR, COLOR ;}' "$CONFIG" )
+while IFS=": " read VAR VAL; do
+    case "$VAR" in
+	"GAMEDIR" ) GAMEDIR="${VAL}";;
+	"COLOR"   ) COLOR="${VAL}";;
+    esac
+done < "${CONFIG}"
+unset VAR VAL
 
 CheckBiaminDependencies		   # Check all needed programs and screen size
 ColorConfig "$COLOR"               # Color configuration

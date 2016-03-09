@@ -84,14 +84,13 @@ TODO 2.0 branch ("survival")
 [x] Date - internal date not attached to real - one turn - one day (real date takes only as seed for biamin date)
 [x] Almanac_Notes
 [s]	Check Notes (run with -debug eg ./biamin -d -p)
+[x] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
 
 
 TODO ideas for 3.0 branch ("rpg")
 [ ] add GX_placeholders/ASCII for cave discovery
 [ ] add inventory such as torch
 [?] Ememies which are indifferent to player. Player decides to attack them or no
-[k] Implement $BASIC_SLEEP (primarily used in moving: health, weather, starvation will put additional penalty on player)
-	It is good idea but it is not critical for 2.0, so I've moved it here #kstn
 [?] Internal sub-maps (random?) for locations - caves, etc
 [?] Z-LEVEL -1 a.k.a Caves (great work, Kastian!)
 [ ] INV_TORCH (INT) 1 torch lasts 1 cave. Allows pl to see beneath ?'s.

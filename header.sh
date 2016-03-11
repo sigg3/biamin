@@ -18,8 +18,9 @@ unset HISTFILE                                                         #
 #                                                                      #
 # Hero start location e.g. Home (custom maps only):                    #
 START_LOCATION="C2"                                                    #
-#                                                                      #
-# Disable Cheats 1 or 0 (chars with >150 health set to 100 health )    #
+# Maximum health for char                                              #
+MAX_HEALTH=150                                                         #
+# Disable Cheats 1 or 0 (restrict char's health to $MAX_HEALTH)        #
 DISABLE_CHEATS=0                                                       #
 #                                                                      #
 # Editing beyond this line is considered unsportsmanlike by some..!    #

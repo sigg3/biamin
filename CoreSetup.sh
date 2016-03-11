@@ -188,7 +188,9 @@ BiaminSetup() {
 	BiaminSetup_LoadCharsheet
 	BiaminSetup_SetRaceAbilities  "$CHAR_RACE"
 	BiaminSetup_SetItemsAbilities "$CHAR_ITEMS"                                     # We need set item's abilities only for loaded chars
-	((DISABLE_CHEATS == 1 && CHAR_HEALTH >= 150)) && CHAR_HEALTH=150                # If Cheating is disabled (in CONFIGURATION) restrict health to 150
+	if ((DISABLE_CHEATS == 1 && CHAR_HEALTH >= MAX_HEALTH)); then                   # If Cheating is disabled (in CONFIGURATION)
+	    CHAR_HEALTH=${MAX_HEALTH}                                                   # restrict health to $MAX_HEALTH
+	fi
     else
 	BiaminSetup_MakeNewChar
     fi

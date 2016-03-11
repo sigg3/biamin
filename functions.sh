@@ -144,11 +144,9 @@ RollForHealing() { # Used in Rest()
 	Echo "Rolling for healing:" "[D6 $DICE > Healing $HEALING]"
 	echo -e "\n$2"
     else
-	# TODO move 150 to named var MAX_HEALTH in conf section (like
-	# DISABLE_CHEATS)
-
-	if ((CHAR_HEALTH + HP > 150)); then # restrict HEALTH to 150
-	    HP=$((150 - CHAR_HEALTH))
+	
+	if ((CHAR_HEALTH + HP > MAX_HEALTH)); then # restrict HEALTH to 150
+	    HP=$((MAX_HEALTH - CHAR_HEALTH))
 	fi
 	
 	Echo "Rolling for healing:" "[D6 $DICE <= Healing $HEALING]"

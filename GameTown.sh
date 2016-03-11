@@ -58,9 +58,11 @@ CheckForTobacco() {
 #-----------------------------------------------------------------------
 TavernRest() {
     GX_Rest
-    if (( CHAR_HEALTH < 150 )); then
+    if (( CHAR_HEALTH < MAX_HEALTH )); then
 	(( CHAR_HEALTH += 30 ))			   # Add Town_Health * 2
-	(( CHAR_HEALTH > 150 )) && CHAR_HEALTH=150 # And restrict if to 150
+	if (( CHAR_HEALTH > MAX_HEALTH )); then
+	    CHAR_HEALTH=${MAX_HEALTH}              # And restrict if to MAX_HEALTH
+	fi
 	echo "You got some much needed rest and your HEALTH is $CHAR_HEALTH now"
     else
         echo "You got some much needed rest"

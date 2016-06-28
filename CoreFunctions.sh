@@ -82,7 +82,7 @@ MakePrompt() {
             STR = INTRO;
             for ( i=1; i<=NF; i++ ) { STR = STR SEPARATOR $i; }
             STR = STR SEPARATOR INTRO }
-            END { printf STR; }' <<< "$@" || Die "${FUNCNAME}(): Too long promt >>>$*<<<"
+            END { printf STR; }' <<< "$@" || Die "${FUNCNAME}(): Too long prompt >>>$*<<<"
 }
 
 #-----------------------------------------------------------------------
@@ -152,7 +152,7 @@ ReseedRandom() {
 Echo() {
     if (( $(Strlen "$1") + $(Strlen "$2") > 79 )); then
 	Die "${FUNCNAME}(): Too long promt >>>$*<<<"
-    fi   
+    fi
     echo -en "$1"
     tput hpa $(( 78 - $(Strlen "$2") )) # Move cursor to column #1
     echo -en "$2"

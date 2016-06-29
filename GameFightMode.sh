@@ -207,11 +207,11 @@ FightMode_DefineInitiative() {
 	    echo  "Trying to slip away unseen.."
 	    RollDice 6
 	    if (( DICE <= FLEE )) ; then
-		Echo "You managed to run away!" "[D6 $DICE <= Flee $FLEE ]"
+		Echo "You managed to run away!" "[D${DICE_SIZE} $DICE <= Flee $FLEE ]"
 		LUCK=3
 		unset FIGHTMODE
 	    else
-		Echo "You lost your initiative.." "[D6 $DICE > Flee $FLEE]"
+		Echo "You lost your initiative.." "[D${DICE_SIZE} $DICE > Flee $FLEE]"
 		NEXT_TURN="en"
 		Sleep 1
 	    fi
@@ -261,32 +261,32 @@ FightMode_CharTurn() {
     case "$FIGHT_PROMPT" in
 	[fF] ) # Player tries to flee!
 	    if (( DICE <= FLEE )); then # first check for flee
-		Echo "You try to flee the battle .." "[D6 $DICE <= Flee $FLEE]"
+		Echo "You try to flee the battle .." "[D${DICE_SIZE} $DICE <= Flee $FLEE]"
 		Sleep 2
 		RollDice 6
 		if (( DICE <= EN_ACCURACY )); then # second check for flee
-		    Echo "\nThe $ENEMY blocks your escape route!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY]"
+		    Echo "\nThe $ENEMY blocks your escape route!" "[D${DICE_SIZE} $DICE <= EnemyAccuracy $EN_ACCURACY]"
 		else # Player managed to flee
-		    Echo "\nYou managed to flee!" "[D6 $DICE > EnemyAccuracy $EN_ACCURACY]"
+		    Echo "\nYou managed to flee!" "[D${DICE_SIZE} $DICE > EnemyAccuracy $EN_ACCURACY]"
 		    unset FIGHTMODE
 		    LUCK=3
 		    return 0
 		fi
 	    else
-		Echo "Your escape was unsuccessful!" "[D6 $DICE > Flee $FLEE]"
+		Echo "Your escape was unsuccessful!" "[D${DICE_SIZE} $DICE > Flee $FLEE]"
 	    fi
 	    ;;
 	* ) # Player fights
 	    if (( DICE <= ACCURACY )); then
-		Echo "Your weapon hits the target!" "[D6 $DICE <= Accuracy $ACCURACY]"
+		Echo "Your weapon hits the target!" "[D${DICE_SIZE} $DICE <= Accuracy $ACCURACY]"
 		echo -en "\nPress the R key to (R)oll for damage"
 		FIGHT_PROMPT=$(Read)
 		RollDice 6
 		local DAMAGE=$(( DICE * STRENGTH ))
-		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[D6 $DICE * STRENGTH $STRENGTH]" #-${DAMAGE} ENEMY_HEALTH]"
+		Echo "${CLEAR_LINE}Your blow dishes out $DAMAGE damage points!" "[D${DICE_SIZE} $DICE * STRENGTH $STRENGTH]"
 		((EN_HEALTH -= DAMAGE))
 	    else
-		Echo "You missed!" "[D6 $DICE > Accuracy $ACCURACY]"
+		Echo "You missed!" "[D${DICE_SIZE} $DICE > Accuracy $ACCURACY]"
 	    fi
     esac
 }
@@ -299,7 +299,7 @@ FightMode_EnemyTurn() {
 	Sleep 2
 	RollDice 20
 	if (( DICE < EN_FLEE )); then
-	    Echo "The $ENEMY uses an opportunity to flee!" "[D20 $DICE < EnemyFlee $EN_FLEE]"
+	    Echo "The $ENEMY uses an opportunity to flee!" "[D${DICE_SIZE} $DICE < EnemyFlee $EN_FLEE]"
 	    if [[ "$DEBUG" ]] ; then
 		if (( $(RollDice2 20) == 20 )) ; then
 		    Sleep 2
@@ -312,14 +312,14 @@ FightMode_EnemyTurn() {
 	    Sleep 2 # TODO test
 	    return 0 # bugfix: Fled enemy continue fighting..
 	else
-	    Echo "You block the ${ENEMY}'s escape route!" "[D20 $DICE >= EnemyFlee $EN_FLEE]"
+	    Echo "You block the ${ENEMY}'s escape route!" "[D${DICE_SIZE} $DICE >= EnemyFlee $EN_FLEE]"
 	    Sleep 2.5
 	fi
 	FightMode_FightTable # If enemy didn't manage to run
     fi  # Enemy does not lose turn for trying for flee
     RollDice 6
     if (( DICE <= EN_ACCURACY )); then
-	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D6 $DICE <= EnemyAccuracy $EN_ACCURACY]"
+	Echo "${CLEAR_LINE}The $ENEMY strikes you!" "[D${DICE_SIZE} $DICE <= EnemyAccuracy $EN_ACCURACY]"
 	Sleep 2
 	RollDice 6
 	local DAMAGE=$(( DICE * EN_STRENGTH )) # Bugfix (damage was not calculated but == DICE)
@@ -328,7 +328,7 @@ FightMode_EnemyTurn() {
 	SaveCurrentSheet
 	Sleep 1 # TODO test
     else
-	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > EnemyAccuracy $EN_ACCURACY]"
+	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D${DICE_SIZE} $DICE > EnemyAccuracy $EN_ACCURACY]"
     fi
 }
 

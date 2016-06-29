@@ -138,18 +138,18 @@ EOF
 #-----------------------------------------------------------------------
 RollForHealing() { # Used in Rest()
     local HP=$1
-    
+
     RollDice 6
     if ((DICE > HEALING)) ; then
-	Echo "Rolling for healing:" "[D6 $DICE > Healing $HEALING]"
+	Echo "Rolling for healing:" "[D${DICE_SIZE} $DICE > Healing $HEALING]"
 	echo -e "\n$2"
     else
-	
+
 	if ((CHAR_HEALTH + HP > MAX_HEALTH)); then # restrict HEALTH to 150
 	    HP=$((MAX_HEALTH - CHAR_HEALTH))
 	fi
-	
-	Echo "Rolling for healing:" "[D6 $DICE <= Healing $HEALING]"
+
+	Echo "Rolling for healing:" "[D${DICE_SIZE} $DICE <= Healing $HEALING]"
 	if ((HP > 0)); then
 	    (( CHAR_HEALTH += $HP ))
 	    Echo "\nYou slept well and gained $1 Health." "[+${1} HEALTH]"

@@ -328,7 +328,7 @@ FightMode_EnemyTurn() {
 	SaveCurrentSheet
 	Sleep 1 # TODO test
     else
-	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > Accuracy $EN_ACCURACY]"
+	Echo "${CLEAR_LINE}The $ENEMY misses!" "[D6 $DICE > EnemyAccuracy $EN_ACCURACY]"
     fi
 }
 

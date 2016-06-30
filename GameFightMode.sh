@@ -231,27 +231,6 @@ FightMode_FightTable() {
     printf "%-12.12s\t\tHEALTH: %s\tStrength: %s\tAccuracy: %s\n\n" "$(Capitalize "$ENEMY")" "$EN_HEALTH" "$EN_STRENGTH" "$EN_ACCURACY"
 }
 
-# #-----------------------------------------------------------------------
-# # FightMode_FightFormula()
-# # Display Formula in Fighting
-# # Arguments: $DICE_SIZE(int), $FORMULA(string), $SKILLABBREV(string)
-# #-----------------------------------------------------------------------
-# FightMode_FightFormula() {
-#     local DICE_SIZE="$1" FORMULA="$2" SKILLABBREV="$3"
-#     (( DICE_SIZE <= 9 )) && DICE_SIZE+=" "
-#     case "$FORMULA" in
-# 	eq )    FORMULA="= " ;;
-# 	gt )    FORMULA="> " ;;
-# 	lt )    FORMULA="< " ;;
-# 	ge )    FORMULA=">=" ;;
-# 	le )    FORMULA="<=" ;;
-# 	times ) FORMULA="x " ;;
-#     esac
-#     echo -n "Roll D${DICE_SIZE} $FORMULA $SKILLABBREV ( " # skill & roll
-#     # The actual symbol in $DICE vs eg $CHAR_ACCURACY is already
-#     # determined in the if and cases of the Fight Loop, so don't repeat here.
-# }
-
 FightMode_CharTurn() {
     local FIGHT_PROMPT
     echo -n "It's your turn, press any key to (R)oll or (F) to Flee"

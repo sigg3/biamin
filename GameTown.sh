@@ -840,7 +840,7 @@ MiniGame_Dice() {
 
     if (( $(bc <<< "scale=2;$CHAR_GOLD <= $DGAME_STAKES") )); then   # Check if player can afford it
 	echo -en "${CLEAR_LINE}"
-	PressAnyKey "No one plays with a poor, Goldless $CHAR_RACE_STR! Come back when you've got it.."
+	PressAnyKey "No one plays with a poor, goldless $CHAR_RACE_STR! Come back when you've got it.."
 	return 0  # Leave
     fi
 

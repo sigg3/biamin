@@ -861,7 +861,7 @@ MiniGame_Dice() {
 	# Dice Game Instructions (mostly re: payout)
 	case "$DGAME_GUESS" in
 	    i | I ) GX_DiceGame_Instructions ; continue ;;     # Start loop from the beginning
-	    1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 ) # Stake!
+	    2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 )     # Stake!
 		if (( GAME_ROUND > 1 )) ; then                 # First round is already paid
 		    CHAR_GOLD=$(bc <<< "scale=2;$CHAR_GOLD - $DGAME_STAKES" )
 		    echo "Putting down your stake in the pile.. [ -$DGAME_STAKES Gold ]"

@@ -205,6 +205,52 @@ Marketplace_Merchant_Bargaining() {
     tput rc
 }
 
+
+#-----------------------------------------------------------------------
+# Marketplace_Merchant_Debug_Prices()
+# Used: Marketplace_Merchant()
+# Arguments: $MESSAGE(string)
+#-----------------------------------------------------------------------
+Marketplace_Merchant_Debug_Prices() {
+    echo "        DEBUG       $1" >2
+    echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
+    echo "        DEBUG       PLAYER_SELL_FxG: $PLAYER_SELL_FxG" >2
+    echo "        DEBUG       PLAYER_BUYS_GxF: $PLAYER_BUYS_GxF" >2
+    echo "        DEBUG       PLAYER_SELL_GxF: $PLAYER_SELL_GxF" >2
+    echo "        DEBUG       PLAYER_BUYS_FxT: $PLAYER_BUYS_FxT" >2
+    echo "        DEBUG       PLAYER_SELL_FxT: $PLAYER_SELL_FxT" >2
+    echo "        DEBUG       PLAYER_BUYS_TxF: $PLAYER_BUYS_TxF" >2
+    echo "        DEBUG       PLAYER_SELL_TxF: $PLAYER_SELL_TxF" >2
+    echo "        DEBUG       PLAYER_BUYS_TxG: $PLAYER_BUYS_TxG" >2
+    echo "        DEBUG       PLAYER_SELL_TxG: $PLAYER_SELL_TxG" >2
+    echo "        DEBUG       PLAYER_BUYS_GxT: $PLAYER_BUYS_GxT" >2
+    echo "        DEBUG       PLAYER_SELL_GxT: $PLAYER_SELL_GxT" >2
+    echo "        DEBUG       PLAYER_BUYS_IxG: $PLAYER_BUYS_IxG" >2
+    echo "        DEBUG       PLAYER_SELL_IxG: $PLAYER_SELL_IxG" >2
+    echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
+    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
+}
+
+#-----------------------------------------------------------------------
+# Marketplace_Merchant_Debug_Transaction()
+# Used: Marketplace_Merchant()
+# Arguments: $MESSAGE(string)
+#-----------------------------------------------------------------------
+Marketplace_Merchant_Debug_Transaction() {
+    echo "        DEBUG       $1" >2
+    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
+    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
+    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
+    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
+    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
+    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
+    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
+    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
+    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
+    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
+    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+}
+
 #-----------------------------------------------------------------------
 # Marketplace_Merchant()                                         Town.sh
 # Used: GoIntoTown()
@@ -239,23 +285,7 @@ Marketplace_Merchant() {
 	    PLAYER_BUYS_IxG=$PRICE_IxG && PLAYER_SELL_IxG=$PRICE_IxG # Items for gold
 
 	    # DEBUG DATA
-	    echo "        DEBUG       Default buy and sell prices:" >2
-	    echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
-	    echo "        DEBUG       PLAYER_SELL_FxG: $PLAYER_SELL_FxG" >2
-	    echo "        DEBUG       PLAYER_BUYS_GxF: $PLAYER_BUYS_GxF" >2
-	    echo "        DEBUG       PLAYER_SELL_GxF: $PLAYER_SELL_GxF" >2
-	    echo "        DEBUG       PLAYER_BUYS_FxT: $PLAYER_BUYS_FxT" >2
-	    echo "        DEBUG       PLAYER_SELL_FxT: $PLAYER_SELL_FxT" >2
-	    echo "        DEBUG       PLAYER_BUYS_TxF: $PLAYER_BUYS_TxF" >2
-	    echo "        DEBUG       PLAYER_SELL_TxF: $PLAYER_SELL_TxF" >2
-	    echo "        DEBUG       PLAYER_BUYS_TxG: $PLAYER_BUYS_TxG" >2
-	    echo "        DEBUG       PLAYER_SELL_TxG: $PLAYER_SELL_TxG" >2
-	    echo "        DEBUG       PLAYER_BUYS_GxT: $PLAYER_BUYS_GxT" >2
-	    echo "        DEBUG       PLAYER_SELL_GxT: $PLAYER_SELL_GxT" >2
-	    echo "        DEBUG       PLAYER_BUYS_IxG: $PLAYER_BUYS_IxG" >2
-	    echo "        DEBUG       PLAYER_SELL_IxG: $PLAYER_SELL_IxG" >2
-	    echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
-	    echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
+	    Marketplace_Merchant_Debug_Prices "Default buy and sell prices:"
 	    # // DEBUG
 
 	    case "$DICE" in
@@ -314,23 +344,7 @@ Marketplace_Merchant() {
 	done
 
 	# DEBUG DATA
-	echo "        DEBUG       Summary AFTER price calculations: MERCHANT_WANTS=\"$DICE\" (1 = Food, 2 = Tobacco, 3 = Gold)" >2
-	echo "        DEBUG       PLAYER_BUYS_FxG: $PLAYER_BUYS_FxG" >2
-	echo "        DEBUG       PLAYER_SELL_FxG: $PLAYER_SELL_FxG" >2
-	echo "        DEBUG       PLAYER_BUYS_GxF: $PLAYER_BUYS_GxF" >2
-	echo "        DEBUG       PLAYER_SELL_GxF: $PLAYER_SELL_GxF" >2
-	echo "        DEBUG       PLAYER_BUYS_FxT: $PLAYER_BUYS_FxT" >2
-	echo "        DEBUG       PLAYER_SELL_FxT: $PLAYER_SELL_FxT" >2
-	echo "        DEBUG       PLAYER_BUYS_TxF: $PLAYER_BUYS_TxF" >2
-	echo "        DEBUG       PLAYER_SELL_TxF: $PLAYER_SELL_TxF" >2
-	echo "        DEBUG       PLAYER_BUYS_TxG: $PLAYER_BUYS_TxG" >2
-	echo "        DEBUG       PLAYER_SELL_TxG: $PLAYER_SELL_TxG" >2
-	echo "        DEBUG       PLAYER_BUYS_GxT: $PLAYER_BUYS_GxT" >2
-	echo "        DEBUG       PLAYER_SELL_GxT: $PLAYER_SELL_GxT" >2
-	echo "        DEBUG       PLAYER_BUYS_IxG: $PLAYER_BUYS_IxG" >2
-	echo "        DEBUG       PLAYER_SELL_IxG: $PLAYER_SELL_IxG" >2
-	echo "        DEBUG       PLAYER_BUYS_GxI: $PLAYER_BUYS_GxI" >2
-	echo "        DEBUG       PLAYER_SELL_GxI: $PLAYER_SELL_GxI" >2
+	Marketplace_Merchant_Debug_Prices "Summary AFTER price calculations: MERCHANT_WANTS=\"$DICE\" (1 = Food, 2 = Tobacco, 3 = Gold)"
 	# // DEBUG
 
 
@@ -459,20 +473,8 @@ Marketplace_Merchant() {
 	    esac
 
 	    # DEBUG DATA
-	    echo "        DEBUG       Summary BEFORE transaction" >2
-	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
-	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
-	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
-	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
-	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
-	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
-	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
-	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
-	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
+	    Marketplace_Merchant_Debug_Transaction "Summary BEFORE transaction"
 	    # // DEBUG
-
 
 	    # Do the transaction if it is valid
 	    # Info: The COST can be the player's (for BARGAIN_TYPE 1 ) or the merchant's (for BARGAIN_TYPE 2).
@@ -506,19 +508,7 @@ Marketplace_Merchant() {
 	    fi
 
 	    # DEBUG DATA
-	    echo "        DEBUG       Summary BEFORE transaction" >2
-	    echo "        DEBUG       MERCHANDISE: $MERCHANDISE" >2
-	    echo "        DEBUG       QUANTITY:    $QUANTITY" >2
-	    echo "        DEBUG       MERCHANTVAR: $MERCHANTVAR" >2
-	    echo "        DEBUG       COST_GOLD:   $COST_GOLD" >2
-	    echo "        DEBUG       COST_TOBACCO $COST_TOBACCO" >2
-	    echo "        DEBUG       COST_FOOD:   $COST_FOOD" >2
-	    echo "        DEBUG       COST_ITEM:   $COST_ITEM" >2
-	    echo "        DEBUG       TRANSACTION: $TRANSACTION_STATUS" >2
-	    echo "        DEBUG       CHAR_TOBAC:  $CHAR_TOBACCO" >2
-	    echo "        DEBUG       CHAR_GOLD:   $CHAR_GOLD" >2
-	    echo "        DEBUG       CHAR_FOOD:   $CHAR_FOOD" >2
-	    ## COPY/PASTE the above debug lines here whenever needed.
+	    Marketplace_Merchant_Debug_Transaction "Summary BEFORE transaction" # TODO "BEFORE" ???
 	    # // DEBUG
 
 

@@ -173,7 +173,7 @@ Rest() {
     GX_Rest
     echo "$HR"
     CheckForFight "$1" 		# Check for fight current scenario
-    if (($? == 0)); then		# no fight was
+    if (($? == 0)); then	# If no fight was
 	case "$1" in
 	    H ) if (( CHAR_HEALTH < 100 )); then
 		    CHAR_HEALTH=100

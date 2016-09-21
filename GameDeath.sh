@@ -38,7 +38,7 @@ ResetStarvation() {
 # TODO: not check for food at the 1st turn ??? Yes, skip it the 1st round, like NODICE
 # TODO: make lesser sleep after successful check
 #-----------------------------------------------------------------------
-CheckForStarvation(){
+CheckForStarvation() {
     if (( $(bc <<< "${CHAR_FOOD} > 0") )) ; then
 	CHAR_FOOD=$( bc <<< "${CHAR_FOOD} - 0.25" )
 	Echo "You eat from your stock: $CHAR_FOOD remaining .." "[-.25 FOOD]"

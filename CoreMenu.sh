@@ -59,7 +59,7 @@ LoadGame() {
 # Read and show 10 highscore entries or from $HIGHSCORE file
 # Used: HighScore(), MainMenu(), CLI_Announce() and Death()
 #-----------------------------------------------------------------------
-HighscoreRead() {
+HighscoreRead() { 
     sort -g -r "$HIGHSCORE" -o "$HIGHSCORE"
     local i=1 HIGHSCORE_TMP=" #;Hero;EXP;Wins;Items;Entered History\n"
     # Read values from highscore file (BashFAQ/001)
@@ -154,7 +154,7 @@ CleanUp() {
 # Used: MainMenu(), Death();
 #-----------------------------------------------------------------------
 HighScore() {
-    GX_HighScore
+    GX_HighScore  
     echo ""
     # Show 10 highscore entries or die if Highscore list is empty
     [[ -s "$HIGHSCORE" ]] && HighscoreRead || echo -e " The highscore list is unfortunately empty right now.\n You have to play some to get some!"
@@ -167,10 +167,8 @@ HighScore() {
 # Defines $CHAR or show misc options
 #-----------------------------------------------------------------------
 MainMenu() {
-    GX_Banner
-    tput sc
     while [[ ! "$CHAR" ]] ; do # Until $CHAR is defined
-	tput rc
+	GX_Banner
 	MakePrompt '(P)lay;(L)oad game;(H)ighscore;(C)redits;(Q)uit'
 	case $(Read) in
 	    [pP] ) ReadLine "${CLEAR_LINE} Enter character name (case sensitive): ";
@@ -191,3 +189,4 @@ done
 #                                                                      #
 #                                                                      #
 ########################################################################
+

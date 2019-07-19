@@ -1,0 +1,126 @@
+--- archive/biamin.sh-1.3.9	2019-07-19 14:39:16.940450549 +0200
++++ biamin.sh	2019-07-19 15:34:32.377786434 +0200
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+ # Back In A Minute created by Sigg3.net (C) 2014
+ # Code is GNU GPLv3 & ASCII art is CC BY-NC-SA 4.0
+-VERSION="1.3.9"
++VERSION="1.3.9_2019"
+ WEBURL="http://sigg3.net/biamin/"
+ 
+ ########################################################################
+@@ -741,13 +741,13 @@
+ # FILL THE $MAP file using either default or custom map
+ MapCreate() {
+     if [ -f "$GAMEDIR/CUSTOM.map" ]; then
+-	if grep -q 'Z' "$GAMEDIR/CUSTOM.map" ; then
+-	    echo "Whoops! Custom map file still contains Z's!"
+-	    echo "Use ONLY symbols from the legend (x . T @ H C) in your custom maps!"
+-	    CustomMapError
+-	else
+-	    MAP=$(cat "$GAMEDIR/CUSTOM.map")
+-	fi
++		if grep -q 'Z' "$GAMEDIR/CUSTOM.map" ; then
++			echo "Whoops! Custom map file still contains Z's!"
++			echo "Use ONLY symbols from the legend (x . T @ H C) in your custom maps!"
++			CustomMapError
++		else
++			MAP=$(cat "$GAMEDIR/CUSTOM.map")
++		fi
+     else
+ 	MAP=$(cat <<EOT
+        A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R 
+@@ -1702,19 +1702,20 @@
+ GX_Place() {     # Used in NewSector() and MapNav()
+     # Display scenario GFX
+     case "$1" in
+-	H ) GX_Home ;;
+-	x ) GX_Mountains ;;
+-	. ) GX_Road ;;
+-	T ) GX_Town ;;
+-	@ ) GX_Forest ;;
+-	C ) GX_Castle ;;
+-	Z | * )  clear
++	"H" ) GX_Home ;;
++	"x" ) GX_Mountains ;;
++	"." ) GX_Road ;;
++	"T" ) GX_Town ;;
++	"@" ) GX_Forest ;;
++	"C" ) GX_Castle ;;
++	"Z" | * ) clear
+ 	    echo "Whoops! There is an error with your map file!"
+ 	    echo "Either it contains unknown characters or it uses incorrect whitespace."
+ 	    echo "Recognized characters are: x . T @ H C"
+ 	    echo "Please run game with --map argument to create a new template as a guide."
+ 	    echo ""
+-	    CustomMapError;;
++	    CustomMapError
++	    ;;
+     esac
+ }   # Return to NewSector() or MapNav()
+ 
+@@ -1728,10 +1729,41 @@
+ 	[[ $NODICE ]] && { DICE=99 && DICE_SIZE=100 && unset NODICE ;} || RollDice 100
+ 	# GPS_Fix()  Find out where we are
+ 	# Fixes LOCATION in CHAR_GPS "A1" to a place on the MapNav "X1,Y1"
+-	read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS")
+-	MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn
++	#read -r MAP_X MAP_Y  <<< $(awk '{ print substr($0, 1 ,1); print substr($0, 2); }' <<< "$CHAR_GPS") # works in bash 4.3 and older
++	#MAP_X=$(awk '{print index("ABCDEFGHIJKLMNOPQR", $0)}' <<< "$MAP_X") # converts {A..R} to {1..18} #kstn # works in bash 4.3 and older
++
++	# bash 4.3 and newer (2019)
++	MAP_X="${CHAR_GPS:0:1}" ; MAP_Y="${CHAR_GPS:1:1}" # Get coordinates, e.g. "C3"
++	case "$MAP_X" in # translate "C" to numeric 1-18
++	"A" ) MAP_X="1" ;;
++	"B" ) MAP_X="2" ;;
++	"C" ) MAP_X="3" ;;
++	"D" ) MAP_X="4" ;;
++	"E" ) MAP_X="5" ;;
++	"F" ) MAP_X="6" ;;
++	"G" ) MAP_X="7" ;;
++	"H" ) MAP_X="8" ;;
++	"I" ) MAP_X="9" ;;
++	"J" ) MAP_X="10" ;;
++	"K" ) MAP_X="11" ;;
++	"L" ) MAP_X="12" ;;
++	"M" ) MAP_X="13" ;;
++	"N" ) MAP_X="14" ;;
++	"O" ) MAP_X="15" ;;
++	"P" ) MAP_X="16" ;;
++	"Q" ) MAP_X="17" ;;
++	"R" ) MAP_X="18" ;;
++	esac
++	
+ 	# MAP_Y+2 MAP_X+2 - padding for borders
+ 	SCENARIO=$(awk '{ if ( NR == '$((MAP_Y+2))') { print $'$((MAP_X+2))'; }}' <<< "$MAP" )
++	
++	
++	
++	
++	#echo " MAP "
++	#echo -e "$MAP"
++	#echo "debug"
+ 	# Finish GPS_Fix() 
+ 	# Look for treasure @ current GPS location
+ 	(( CHAR_ITEMS < 8 )) && { # Checks current section for treasure
+@@ -1743,13 +1775,13 @@
+ 	GX_Place "$SCENARIO"
+ 	# Find out if we're attacked - FightMode() if RollForEvent return 0
+ 	case "$SCENARIO" in
+-	    H ) RollForEvent 1  && FightMode ;; 
+-	    x ) RollForEvent 50 && FightMode ;;
+-	    . ) RollForEvent 20 && FightMode ;;
+-	    T ) RollForEvent 15 && FightMode ;;
+-	    @ ) RollForEvent 35 && FightMode ;;
+-	    C ) RollForEvent 10 && FightMode ;;
+-	    Z | * )  clear
++	    "H" ) RollForEvent 1  && FightMode ;; 
++	    "x" ) RollForEvent 50 && FightMode ;;
++	    "." ) RollForEvent 20 && FightMode ;;
++	    "T" ) RollForEvent 15 && FightMode ;;
++	    "@" ) RollForEvent 35 && FightMode ;;
++	    "C" ) RollForEvent 10 && FightMode ;;
++	    "Z" | * ) clear
+ 		echo "Whoops! There is an error with your map file!"
+ 		echo "Either it contains unknown characters or it uses incorrect whitespace."
+ 		echo "Recognized characters are: x . T @ H C"
